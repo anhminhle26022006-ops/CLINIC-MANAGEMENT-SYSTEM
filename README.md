@@ -28,25 +28,30 @@ Appointment booking
 Check-in management
 Queue generation
 Payment handling
+
 🟩 Doctor Module
 Patient examination
 Medical records (EMR)
 Lab & imaging requests
 Prescription creation
 Follow-up scheduling
+
 🟨 Nurse Module
 Vital signs input
 Patient queue handling
 Clinical data tracking
+
 🟪 Technician Module
 Lab test processing
 MRI/X-Ray upload
 Result management (PACS-like view)
+
 🟧 Pharmacist Module
 Prescription processing
 Medicine dispensing
 Inventory control
 Pharmacy billing
+
 🟥 Admin Module
 User & role management
 Employee management
