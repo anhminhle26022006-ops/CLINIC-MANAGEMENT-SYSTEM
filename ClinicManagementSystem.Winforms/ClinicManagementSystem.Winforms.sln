@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.37216.2 d17.14
+VisualStudioVersion = 17.14.37216.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicManagementSystem.Winforms", "ClinicManagementSystem.Winforms\ClinicManagementSystem.Winforms.csproj", "{8C135B22-A11C-4B74-8AB4-8924DA19CAE7}"
 EndProject
@@ -17,28 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesExternal", "ServicesExternal\ServicesExternal.csproj", "{F56ACE16-0756-4929-8DCE-4FB562BEB725}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{0CF999C6-F66B-4EB0-AAD2-21E03C97BC7D}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PDFS", "PDFS", "{0B9E914C-5F23-46DF-B864-61DD06C4529C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Temp", "Temp", "{5B42C743-3E34-46C7-A117-CA39CB55104B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MRI", "MRI", "{145E554E-2135-455B-BFC0-EF0D3BF7D514}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XRAY", "XRAY", "{D8487FFA-FB52-433A-BAE7-EADA843CC39F}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AVARTAR", "AVARTAR", "{1A4F2B65-EFEC-4E66-A749-5F5AB93A5D87}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{BA25C1E0-A6EA-459C-BD4D-4572FBF07BDA}"
-	ProjectSection(SolutionItems) = preProject
-		CMS.sql = CMS.sql
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		Database\CMS.sql = Database\CMS.sql
 	EndProjectSection
 EndProject
 Global
@@ -78,14 +60,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{0CF999C6-F66B-4EB0-AAD2-21E03C97BC7D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{0B9E914C-5F23-46DF-B864-61DD06C4529C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{5B42C743-3E34-46C7-A117-CA39CB55104B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{145E554E-2135-455B-BFC0-EF0D3BF7D514} = {0CF999C6-F66B-4EB0-AAD2-21E03C97BC7D}
-		{D8487FFA-FB52-433A-BAE7-EADA843CC39F} = {0CF999C6-F66B-4EB0-AAD2-21E03C97BC7D}
-		{1A4F2B65-EFEC-4E66-A749-5F5AB93A5D87} = {0CF999C6-F66B-4EB0-AAD2-21E03C97BC7D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BFF1EBE9-B42D-4553-84F5-BBFE7FEE5C98}
