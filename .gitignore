@@ -1,0 +1,11 @@
+.vs/
+.sixth/
+bin/
+obj/
+packages/
+*.user
+*.suo
+*.cache
+*.zip
+*.log
+TestResults/
