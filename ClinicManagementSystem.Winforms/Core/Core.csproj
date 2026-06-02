@@ -6,11 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Identity\" />
-    <Folder Include="Constants\" />
-    <Folder Include="Utils\" />
-    <Folder Include="Session\" />
-  </ItemGroup>
-
 </Project>
