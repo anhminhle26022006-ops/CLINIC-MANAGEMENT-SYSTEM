@@ -3,9 +3,12 @@
 bin/
 obj/
 packages/
+backend/node_modules/
 *.user
 *.suo
 *.cache
 *.zip
 *.log
+*.env
+backend/.env
 TestResults/
