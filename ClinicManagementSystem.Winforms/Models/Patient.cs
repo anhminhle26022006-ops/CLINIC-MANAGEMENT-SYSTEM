@@ -32,8 +32,6 @@ namespace Models
 
         public DateTime CreatedDate { get; set; }
 
-        public bool IsActive { get; set; }
-
         public int GetAge()
         {
             return DateTime.Now.Year - DateOfBirth.Year;
