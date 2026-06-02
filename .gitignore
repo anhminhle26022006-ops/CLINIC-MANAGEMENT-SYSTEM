@@ -1,0 +1,10 @@
+.vs/
+bin/
+obj/
+packages/
+backend/node_modules/
+*.user
+*.suo
+*.log
+*.env
+backend/.env
