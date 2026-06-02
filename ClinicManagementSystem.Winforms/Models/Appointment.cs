@@ -8,37 +8,32 @@ namespace Models
 {
     public class Appointment
     {
-        public int AppointmentId { get; set; }
+        public Guid AppointmentId { get; set; }
 
-        // Bệnh nhân
-        public int PatientId { get; set; }
+        public Guid PatientId { get; set; }
 
-        // Khoa khám
-        public int DepartmentId { get; set; }
+        public Guid DepartmentId { get; set; }
 
-        // Bác sĩ
-        public int DoctorId { get; set; }
+        public Guid DoctorId { get; set; }
 
-        // Ngày khám
+        public Guid? RoomId { get; set; }
+
         public DateTime AppointmentDate { get; set; }
 
-        // Giờ khám
         public TimeSpan AppointmentTime { get; set; }
 
-        // Lý do khám
         public string Reason { get; set; }
 
-        // Trạng thái
         public AppointmentStatus Status { get; set; }
 
-        // Ngày tạo lịch
         public DateTime CreatedAt { get; set; }
     }
 
     public enum AppointmentStatus
     {
-        Pending,
-        Confirmed,
-        Cancelled
+        Pending = 1,
+        Confirmed = 2,
+        Completed = 3,
+        Cancelled = 4
     }
 }
