@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace ClinicManagementSystem.Winforms.Forms.Integrations
+namespace TEST_MOCK_API
 {
     public class DoctorTest
     {

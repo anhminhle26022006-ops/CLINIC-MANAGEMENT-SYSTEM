@@ -1,12 +1,15 @@
-﻿using System;
+using System;
 using System.Text.Json.Serialization;
 
-namespace ClinicManagementSystem.Winforms.Forms.Integrations
+namespace DTO
 {
-    public class PatientTest
+    public class ApiPatientDTO
     {
         [JsonPropertyName("patientid")]
-        public Guid? PatientID { get; set; } // Đổi sang Guid? để hứng chuỗi UUID từ Supabase một cách an toàn
+        public Guid? PatientId { get; set; }
+
+        [JsonPropertyName("patientuuid")]
+        public Guid? LegacyPatientUuid { get; set; }
 
         [JsonPropertyName("patientcode")]
         public string PatientCode { get; set; }
@@ -18,7 +21,7 @@ namespace ClinicManagementSystem.Winforms.Forms.Integrations
         public string Gender { get; set; }
 
         [JsonPropertyName("dob")]
-        public string DOB { get; set; } // Bổ sung trường Ngày sinh
+        public string DOB { get; set; }
 
         [JsonPropertyName("phone")]
         public string Phone { get; set; }
@@ -31,5 +34,12 @@ namespace ClinicManagementSystem.Winforms.Forms.Integrations
 
         [JsonPropertyName("allergy")]
         public string Allergy { get; set; }
+
+        [JsonIgnore]
+        public Guid? SyncUuid
+        {
+            get => PatientId ?? LegacyPatientUuid;
+            set => PatientId = value;
+        }
     }
 }

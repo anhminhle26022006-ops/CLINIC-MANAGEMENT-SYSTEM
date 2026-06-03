@@ -1,4 +1,4 @@
-﻿﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Configuration;
@@ -13,12 +13,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DTO;
-using DAL.DataContext;
-using BUS.Services;
-using ServicesExternal;
 
-namespace ClinicManagementSystem.Winforms.Forms
+namespace MOMO_QR_DANANG
 {
     public partial class PayOsPaymentForm : Form
     {
@@ -155,7 +151,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             }
 
             long orderCode;
-            if (string.IsNullOrWhiteSpace(txtSoTaiKhoan.Text) || IsCurrentOrderCodeText())
+            if (string.IsNullOrWhiteSpace(txtSoTaiKhoan.Text))
             {
                 orderCode = GenerateOrderCode();
                 txtSoTaiKhoan.Text = orderCode.ToString(CultureInfo.InvariantCulture);
@@ -498,17 +494,7 @@ namespace ClinicManagementSystem.Winforms.Forms
 
         private static long GenerateOrderCode()
         {
-            return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        }
-
-        private bool IsCurrentOrderCodeText()
-        {
-            if (!currentOrderCode.HasValue)
-            {
-                return false;
-            }
-
-            return string.Equals(txtSoTaiKhoan.Text.Trim(), currentOrderCode.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+            return long.Parse(DateTime.Now.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
         }
 
         private static string NormalizePayOsDescription(string input)

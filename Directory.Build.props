@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
     <NuGetAudit>false</NuGetAudit>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
 </Project>
