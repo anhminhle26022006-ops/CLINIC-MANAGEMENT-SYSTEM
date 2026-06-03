@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace MOMO_QR_DANANG
+namespace ServicesExternal
 {
     public class PayOsCreatePaymentRequest
     {
@@ -98,4 +98,3 @@ namespace MOMO_QR_DANANG
         }
     }
 }
-
