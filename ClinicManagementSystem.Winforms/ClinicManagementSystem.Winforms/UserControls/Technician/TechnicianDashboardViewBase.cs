@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using ClinicManagementSystem.Winforms.Forms;
 using BUS.Services;
 using DTO;
-using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Technician
 {
@@ -136,7 +136,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             list.Controls.Add(CreateLabel(col2, 9F, style, fore, 200, y, 90, 24));
             list.Controls.Add(CreateLabel(col3, 9F, style, fore, 310, y, 180, 24));
             list.Controls.Add(CreateLabel(col4, 9F, style, fore, 510, y, 160, 24));
-            bool waiting = col5.Contains("Chờ") || col5.Contains("Cho");
+            bool waiting = col5.Contains("Chá»") || col5.Contains("Cho");
             list.Controls.Add(CreateBadge(col5, waiting ? Color.FromArgb(254, 249, 195) : Color.FromArgb(220, 252, 231), waiting ? Color.FromArgb(161, 98, 7) : Color.FromArgb(34, 139, 74), list.Width - 140, y - 2, 110, 28));
         }
 
@@ -169,7 +169,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
             tb.Enter += (s, ev) =>
             {
-                if (tb.Text.Contains("Tìm kiếm..."))
+                if (tb.Text.Contains("TÃ¬m kiáº¿m..."))
                 {
                     tb.Text = "";
                     tb.ForeColor = textMain;
@@ -374,7 +374,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             section.Controls.Add(CreateLabel(title, 13F, FontStyle.Bold, textMain, 18, 18, 420, 28));
             if (link)
             {
-                section.Controls.Add(CreateLabel("Xem tất cả", 9F, FontStyle.Bold, primary, section.Width - 100, 22, 80, 22, ContentAlignment.MiddleRight));
+                section.Controls.Add(CreateLabel("Xem táº¥t cáº£", 9F, FontStyle.Bold, primary, section.Width - 100, 22, 80, 22, ContentAlignment.MiddleRight));
             }
 
             return section;
@@ -389,5 +389,4 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
     
     }
 }
-
 

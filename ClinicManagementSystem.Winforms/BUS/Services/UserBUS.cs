@@ -1,52 +1,36 @@
 using System;
-using BUS.Interfaces;
-using DAL.Interfaces;
 using DAL.Repositories;
 using DTO;
 
 namespace BUS.Services
 {
-    public class UserBUS : IUserBUS
+    public class UserBUS
     {
-        private readonly IUserDAL _userDAL;
+        private readonly UserDAL dal = new UserDAL();
 
-        public UserBUS()
-        {
-            _userDAL = new UserDAL();
-        }
-
-        public UserDTO Login(
-            string username,
-            string password)
+        public UserDTO Login(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username))
-                throw new ArgumentException(
-                    "Tên đăng nhập không được để trống.");
-
+            {
+                throw new ArgumentException("Tên đăng nhập không được để trống.");
+            }
             if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException(
-                    "Mật khẩu không được để trống.");
+            {
+                throw new ArgumentException("Mật khẩu không được để trống.");
+            }
 
-            return _userDAL.Authenticate(
-                username.Trim(),
-                password);
+            return dal.Authenticate(username.Trim(), password);
         }
 
         public bool CreateUser(UserDTO user)
         {
-            if (user == null)
+            if (user == null) return false;
+            if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Password) || string.IsNullOrWhiteSpace(user.Name))
+            {
                 return false;
-
-            if (string.IsNullOrWhiteSpace(user.Username))
-                return false;
-
-            if (string.IsNullOrWhiteSpace(user.PasswordHash))
-                return false;
-
-            if (user.RoleID <= 0)
-                return false;
-
-            return _userDAL.AddUser(user);
+            }
+            return dal.AddUser(user);
         }
     }
 }
+
