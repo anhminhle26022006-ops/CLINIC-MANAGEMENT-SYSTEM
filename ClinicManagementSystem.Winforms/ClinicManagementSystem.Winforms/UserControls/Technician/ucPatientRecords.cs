@@ -1,14 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using DAL.DataContext;
+using ClinicManagementSystem.Winforms.Forms;
+using DAL;
 using DTO;
 using Newtonsoft.Json.Linq;
-using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Technician
 {
@@ -45,7 +45,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void RenderRecords()
         {
-            var page = BeginPage("Hồ Sơ Bệnh Án", "Xem hồ sơ bệnh án, lịch sử chụp phim và kết quả xét nghiệm của bệnh nhân");
+            var page = BeginPage("Há»“ SÆ¡ Bá»‡nh Ãn", "Xem há»“ sÆ¡ bá»‡nh Ã¡n, lá»‹ch sá»­ chá»¥p phim vÃ  káº¿t quáº£ xÃ©t nghiá»‡m cá»§a bá»‡nh nhÃ¢n");
 
             int leftWidth = Math.Max(320, (int)(PageWidth() * 0.32F));
             int rightWidth = Math.Max(500, PageWidth() - leftWidth - 20);
@@ -71,7 +71,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 Margin = new Padding(0, 0, 16, 0)
             };
 
-            txtRecordSearch = CreateTextBox("Tìm kiếm bệnh nhân...", 18, 22, leftWidth - 46, 38);
+            txtRecordSearch = CreateTextBox("TÃ¬m kiáº¿m bá»‡nh nhÃ¢n...", 18, 22, leftWidth - 46, 38);
             txtRecordSearch.TextChanged += (s, ev) => FilterRecordPatientsList();
             recordPatientListPanel.Controls.Add(txtRecordSearch);
 
@@ -103,7 +103,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 recordPatientListPanel.Controls.RemoveAt(i);
             }
 
-            string term = txtRecordSearch.Text.Contains("Tìm") ? "" : txtRecordSearch.Text.Trim();
+            string term = txtRecordSearch.Text.Contains("TÃ¬m") ? "" : txtRecordSearch.Text.Trim();
             List<PatientDTO> patients = new List<PatientDTO>();
             try
             {
@@ -143,7 +143,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             lblCode.Click += (s, ev) => SelectRecordPatient(pat);
             row.Controls.Add(lblCode);
 
-            var lblAge = CreateLabel($"{pat.Age} tuổi - {pat.Gender}", 8.5F, FontStyle.Bold, textMuted, 70, 50, 180, 18);
+            var lblAge = CreateLabel($"{pat.Age} tuá»•i - {pat.Gender}", 8.5F, FontStyle.Bold, textMuted, 70, 50, 180, 18);
             lblAge.Click += (s, ev) => SelectRecordPatient(pat);
             row.Controls.Add(lblAge);
 
@@ -157,9 +157,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         private void RenderRecordRightEmpty(int width)
         {
             recordsRightPanel.Controls.Clear();
-            recordsRightPanel.Controls.Add(CreateLabel("♡", 52F, FontStyle.Regular, Color.FromArgb(156, 163, 175), 0, 100, width, 70, ContentAlignment.MiddleCenter));
-            recordsRightPanel.Controls.Add(CreateLabel("Chọn bệnh nhân để xem lịch sử hồ sơ bệnh án", 13F, FontStyle.Regular, textMuted, 0, 180, width, 32, ContentAlignment.MiddleCenter));
-            recordsRightPanel.Controls.Add(CreateLabel("Danh sách bệnh nhân đăng ký hiển thị phía bên trái", 10F, FontStyle.Regular, textMuted, 0, 218, width, 28, ContentAlignment.MiddleCenter));
+            recordsRightPanel.Controls.Add(CreateLabel("â™¡", 52F, FontStyle.Regular, Color.FromArgb(156, 163, 175), 0, 100, width, 70, ContentAlignment.MiddleCenter));
+            recordsRightPanel.Controls.Add(CreateLabel("Chá»n bá»‡nh nhÃ¢n Ä‘á»ƒ xem lá»‹ch sá»­ há»“ sÆ¡ bá»‡nh Ã¡n", 13F, FontStyle.Regular, textMuted, 0, 180, width, 32, ContentAlignment.MiddleCenter));
+            recordsRightPanel.Controls.Add(CreateLabel("Danh sÃ¡ch bá»‡nh nhÃ¢n Ä‘Äƒng kÃ½ hiá»ƒn thá»‹ phÃ­a bÃªn trÃ¡i", 10F, FontStyle.Regular, textMuted, 0, 218, width, 28, ContentAlignment.MiddleCenter));
         }
 
         private void SelectRecordPatient(PatientDTO pat)
@@ -170,22 +170,22 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
             // Details panel
             recordsRightPanel.Controls.Add(CreateLabel(pat.Name, 14F, FontStyle.Bold, textMain, 24, 24, 400, 30));
-            recordsRightPanel.Controls.Add(CreateLabel($"Mã BN: {pat.PatientCode} | Giới tính: {pat.Gender} | Tuổi: {pat.Age}", 9.5F, FontStyle.Bold, textMuted, 24, 58, 400, 22));
-            recordsRightPanel.Controls.Add(CreateLabel($"SĐT: {pat.Phone} | Địa chỉ: {pat.Address}", 9.5F, FontStyle.Regular, textMuted, 24, 82, 450, 22));
+            recordsRightPanel.Controls.Add(CreateLabel($"MÃ£ BN: {pat.PatientCode} | Giá»›i tÃ­nh: {pat.Gender} | Tuá»•i: {pat.Age}", 9.5F, FontStyle.Bold, textMuted, 24, 58, 400, 22));
+            recordsRightPanel.Controls.Add(CreateLabel($"SÄT: {pat.Phone} | Äá»‹a chá»‰: {pat.Address}", 9.5F, FontStyle.Regular, textMuted, 24, 82, 450, 22));
 
-            recordsRightPanel.Controls.Add(CreateLabel("LỊCH SỬ KẾT QUẢ XÉT NGHIỆM", 10F, FontStyle.Bold, primary, 24, 130, 400, 22));
+            recordsRightPanel.Controls.Add(CreateLabel("Lá»ŠCH Sá»¬ Káº¾T QUáº¢ XÃ‰T NGHIá»†M", 10F, FontStyle.Bold, primary, 24, 130, 400, 22));
 
             // Load patient history
             List<RequestDTO> history = new List<RequestDTO>();
             try
             {
-                history = requestBUS.GetRequestsByPatient(pat.PatientID).Where(r => r.Status == "Hoàn thành").ToList();
+                history = requestBUS.GetRequestsByPatient(pat.PatientID).Where(r => r.Status == "HoÃ n thÃ nh").ToList();
             }
             catch { }
 
             if (history.Count == 0)
             {
-                recordsRightPanel.Controls.Add(CreateLabel("Bệnh nhân này chưa có kết quả xét nghiệm hoàn thành nào.", 9.5F, FontStyle.Italic, textMuted, 24, 170, panelW, 30));
+                recordsRightPanel.Controls.Add(CreateLabel("Bá»‡nh nhÃ¢n nÃ y chÆ°a cÃ³ káº¿t quáº£ xÃ©t nghiá»‡m hoÃ n thÃ nh nÃ o.", 9.5F, FontStyle.Italic, textMuted, 24, 170, panelW, 30));
                 return;
             }
 
@@ -202,14 +202,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 };
 
                 card.Controls.Add(CreateLabel(req.ServiceType, 11F, FontStyle.Bold, textMain, 18, 12, 350, 24));
-                card.Controls.Add(CreateLabel($"Bác sĩ chỉ định: {req.DoctorName} | Ngày: {req.RequestDate:dd/MM/yyyy HH:mm}", 8.5F, FontStyle.Regular, textMuted, 18, 38, 450, 20));
+                card.Controls.Add(CreateLabel($"BÃ¡c sÄ© chá»‰ Ä‘á»‹nh: {req.DoctorName} | NgÃ y: {req.RequestDate:dd/MM/yyyy HH:mm}", 8.5F, FontStyle.Regular, textMuted, 18, 38, 450, 20));
 
                 if (!string.IsNullOrEmpty(req.ResultFile))
                 {
-                    card.Controls.Add(CreateLabel("Kết quả: Đã chụp phim MRI/X-Ray.", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 64, 400, 20));
-                    card.Controls.Add(CreateLabel("Kết luận: " + req.RequestNote, 9F, FontStyle.Regular, textMain, 18, 86, 400, 20));
+                    card.Controls.Add(CreateLabel("Káº¿t quáº£: ÄÃ£ chá»¥p phim MRI/X-Ray.", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 64, 400, 20));
+                    card.Controls.Add(CreateLabel("Káº¿t luáº­n: " + req.RequestNote, 9F, FontStyle.Regular, textMain, 18, 86, 400, 20));
 
-                    var btnViewImage = CreateFlatButton("Xem hình phim...", Color.White, primary, 18, 114, 150, 32);
+                    var btnViewImage = CreateFlatButton("Xem hÃ¬nh phim...", Color.White, primary, 18, 114, 150, 32);
                     btnViewImage.Click += (s, ev) =>
                     {
                         if (File.Exists(req.ResultFile))
@@ -218,16 +218,16 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                         }
                         else
                         {
-                            MessageBox.Show("Không tìm thấy tệp ảnh gốc. Có thể tệp đã bị di chuyển.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("KhÃ´ng tÃ¬m tháº¥y tá»‡p áº£nh gá»‘c. CÃ³ thá»ƒ tá»‡p Ä‘Ã£ bá»‹ di chuyá»ƒn.", "Lá»—i", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     };
                     card.Controls.Add(btnViewImage);
                 }
                 else if (!string.IsNullOrEmpty(req.ResultPDF))
                 {
-                    card.Controls.Add(CreateLabel("Kết quả: Báo cáo xét nghiệm tổng hợp định dạng PDF.", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 64, 400, 20));
+                    card.Controls.Add(CreateLabel("Káº¿t quáº£: BÃ¡o cÃ¡o xÃ©t nghiá»‡m tá»•ng há»£p Ä‘á»‹nh dáº¡ng PDF.", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 64, 400, 20));
                     
-                    var btnViewPDF = CreateFlatButton("Mở file PDF...", Color.White, primary, 18, 114, 150, 32);
+                    var btnViewPDF = CreateFlatButton("Má»Ÿ file PDF...", Color.White, primary, 18, 114, 150, 32);
                     btnViewPDF.Click += (s, ev) =>
                     {
                         if (File.Exists(req.ResultPDF))
@@ -236,14 +236,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                         }
                         else
                         {
-                            MessageBox.Show("Không tìm thấy file PDF chẩn đoán.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("KhÃ´ng tÃ¬m tháº¥y file PDF cháº©n Ä‘oÃ¡n.", "Lá»—i", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     };
                     card.Controls.Add(btnViewPDF);
                 }
                 else if (!string.IsNullOrEmpty(req.LabValues))
                 {
-                    card.Controls.Add(CreateLabel("Kết quả: Các chỉ số sinh hóa máu đo được:", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 62, 400, 20));
+                    card.Controls.Add(CreateLabel("Káº¿t quáº£: CÃ¡c chá»‰ sá»‘ sinh hÃ³a mÃ¡u Ä‘o Ä‘Æ°á»£c:", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 62, 400, 20));
                     try
                     {
                         JObject vals = JObject.Parse(req.LabValues);
@@ -252,7 +252,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     }
                     catch
                     {
-                        card.Controls.Add(CreateLabel("Dữ liệu chỉ số lab không đúng định dạng.", 9F, FontStyle.Regular, textMain, 18, 84, 400, 20));
+                        card.Controls.Add(CreateLabel("Dá»¯ liá»‡u chá»‰ sá»‘ lab khÃ´ng Ä‘Ãºng Ä‘á»‹nh dáº¡ng.", 9F, FontStyle.Regular, textMain, 18, 84, 400, 20));
                     }
                 }
 
@@ -265,5 +265,4 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
     }
 }
-
 

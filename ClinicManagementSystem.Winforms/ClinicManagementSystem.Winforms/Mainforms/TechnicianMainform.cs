@@ -12,11 +12,11 @@ using ClinicManagementSystem.Winforms.UserControls.Technician;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
-namespace ClinicManagementSystem.Winforms.UserControls
+namespace ClinicManagementSystem.Winforms.Mainforms
 {
     public partial class ucTechnicianDashboard : UserControl
     {
-private readonly Color primary = Color.FromArgb(47, 94, 240);
+        private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;
         private readonly Color pageBack = Color.FromArgb(247, 249, 252);
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
