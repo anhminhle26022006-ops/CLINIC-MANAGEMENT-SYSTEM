@@ -4,9 +4,7 @@ namespace Models
 {
     public class Patient
     {
-        public Guid PatientId { get; set; }
-
-        public string PatientCode { get; set; }
+        public string PatientId { get; set; }
 
         public string FullName { get; set; }
 
@@ -26,24 +24,19 @@ namespace Models
 
         public string BloodType { get; set; }
 
-        public string Allergy { get; set; }
-
         public string EmergencyContactName { get; set; }
 
         public string EmergencyContactPhone { get; set; }
 
         public string EmergencyContactRelation { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedDate { get; set; }
+
+        public bool IsActive { get; set; }
 
         public int GetAge()
         {
-            int age = DateTime.Today.Year - DateOfBirth.Year;
-
-            if (DateOfBirth.Date > DateTime.Today.AddYears(-age))
-                age--;
-
-            return age;
+            return DateTime.Now.Year - DateOfBirth.Year;
         }
     }
 }
