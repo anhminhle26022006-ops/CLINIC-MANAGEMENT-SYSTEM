@@ -30,7 +30,7 @@ CREATE TABLE Departments (
 
 CREATE TABLE Rooms (
    RoomID INT PRIMARY KEY IDENTITY,
-   RoomCode VARCHAR(50),
+   RoomCode VARCHAR(50) UNIQUE,
    DepartmentID INT,
    Status NVARCHAR(50),
 
@@ -39,18 +39,19 @@ CREATE TABLE Rooms (
 
 CREATE TABLE Employees (
    EmployeeID INT PRIMARY KEY IDENTITY,
-   EmployeeCode VARCHAR(50),
+   EmployeeCode VARCHAR(50) UNIQUE,
    FullName NVARCHAR(255),
-   RoleName NVARCHAR(100),
+   RoleID INT,
    DepartmentID INT,
    Phone VARCHAR(20),
    Status NVARCHAR(50),
 
+   FOREIGN KEY (RoleID) REFERENCES Roles(RoleID),
    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
 );
 CREATE TABLE Patients (
    PatientID INT PRIMARY KEY IDENTITY,
-   PatientCode VARCHAR(50),
+   PatientCode VARCHAR(50) UNIQUE,
    FullName NVARCHAR(255),
    Gender NVARCHAR(20),
    DOB DATE,
@@ -70,7 +71,9 @@ CREATE TABLE Appointments (
    Status NVARCHAR(50),
 
    FOREIGN KEY (PatientID) REFERENCES Patients(PatientID),
-   FOREIGN KEY (DoctorID) REFERENCES Employees(EmployeeID)
+   FOREIGN KEY (DoctorID) REFERENCES Employees(EmployeeID),
+   FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID),
+   FOREIGN KEY (RoomID) REFERENCES Rooms(RoomID)
 );
 
 CREATE TABLE Encounters (
@@ -82,17 +85,23 @@ CREATE TABLE Encounters (
    EndTime DATETIME,
    Status NVARCHAR(50),
 
-   FOREIGN KEY (AppointmentID) REFERENCES Appointments(AppointmentID)
+   FOREIGN KEY (AppointmentID) REFERENCES Appointments(AppointmentID),
+   FOREIGN KEY (PatientID)
+   REFERENCES Patients(PatientID),
+
+FOREIGN KEY (DoctorID)
+   REFERENCES Employees(EmployeeID)
 );
 
-CREATE TABLE Queue (
+CREATE TABLE PatientQueues (
    QueueID INT PRIMARY KEY IDENTITY,
    EncounterID INT,
    Priority NVARCHAR(50),
    Status NVARCHAR(50),
    CurrentStep NVARCHAR(50),
 
-   FOREIGN KEY (EncounterID) REFERENCES Encounters(EncounterID)
+   FOREIGN KEY (EncounterID)
+      REFERENCES Encounters(EncounterID)
 );
 CREATE TABLE MedicalRecords (
    RecordID INT PRIMARY KEY IDENTITY,
@@ -134,28 +143,57 @@ CREATE TABLE LabResults (
    ResultText NVARCHAR(MAX),
    FileURL NVARCHAR(MAX),
    CompletedAt DATETIME
+   FOREIGN KEY (LabID)
+   REFERENCES LabRequests(LabID)
 );
 CREATE TABLE ImagingRequests (
-   ImagingID INT PRIMARY KEY IDENTITY,
+   ImagingRequestID INT PRIMARY KEY IDENTITY,
    EncounterID INT,
    DoctorID INT,
-   Type NVARCHAR(100),
-   Status NVARCHAR(50)
+   ImagingServiceID INT,
+   BodyPart NVARCHAR(100),
+   Priority NVARCHAR(50),
+   Status NVARCHAR(50),
+
+   FOREIGN KEY (EncounterID)
+      REFERENCES Encounters(EncounterID),
+
+   FOREIGN KEY (DoctorID)
+      REFERENCES Employees(EmployeeID),
+
+   FOREIGN KEY (ImagingServiceID)
+      REFERENCES ImagingServices(ImagingServiceID)
 );
 
 CREATE TABLE ImagingResults (
-   ResultID INT PRIMARY KEY IDENTITY,
-   ImagingID INT,
+   ImagingResultID INT PRIMARY KEY IDENTITY,
+   ImagingRequestID INT,
+   ResultText NVARCHAR(MAX),
    ImageURL NVARCHAR(MAX),
    PDFURL NVARCHAR(MAX),
-   Notes NVARCHAR(MAX)
+   TechnicianNote NVARCHAR(MAX),
+   CompletedAt DATETIME,
+
+   FOREIGN KEY (ImagingRequestID)
+      REFERENCES ImagingRequests(ImagingRequestID)
+);
+CREATE TABLE ImagingFiles (
+    FileID INT PRIMARY KEY IDENTITY,
+    ImagingResultID INT,
+    FileType NVARCHAR(50),
+    FileURL NVARCHAR(MAX),
+
+    FOREIGN KEY (ImagingResultID)
+       REFERENCES ImagingResults(ImagingResultID)
 );
 CREATE TABLE Medicines (
    MedicineID INT PRIMARY KEY IDENTITY,
    Name NVARCHAR(255),
    Unit NVARCHAR(50),
    Price DECIMAL(18,2),
-   Stock INT
+   Stock INT,
+   BatchNumber NVARCHAR(100),
+   ExpiryDate DATE,
 );
 
 CREATE TABLE Prescriptions (
@@ -163,6 +201,11 @@ CREATE TABLE Prescriptions (
    EncounterID INT,
    DoctorID INT,
    Status NVARCHAR(50)
+   FOREIGN KEY (EncounterID)
+   REFERENCES Encounters(EncounterID),
+
+FOREIGN KEY (DoctorID)
+   REFERENCES Employees(EmployeeID)
 );
 
 CREATE TABLE PrescriptionDetails (
@@ -171,6 +214,11 @@ CREATE TABLE PrescriptionDetails (
    MedicineID INT,
    Quantity INT,
    Dosage NVARCHAR(100)
+   FOREIGN KEY (PrescriptionID)
+   REFERENCES Prescriptions(PrescriptionID),
+
+FOREIGN KEY (MedicineID)
+   REFERENCES Medicines(MedicineID)
 );
 CREATE TABLE Dispense (
    DispenseID INT PRIMARY KEY IDENTITY,
@@ -178,6 +226,11 @@ CREATE TABLE Dispense (
    PharmacistID INT,
    TotalAmount DECIMAL(18,2),
    Status NVARCHAR(50)
+   FOREIGN KEY (PrescriptionID)
+   REFERENCES Prescriptions(PrescriptionID),
+
+FOREIGN KEY (PharmacistID)
+   REFERENCES Employees(EmployeeID)
 );
 
 CREATE TABLE Payments (
@@ -186,13 +239,21 @@ CREATE TABLE Payments (
    Amount DECIMAL(18,2),
    Method NVARCHAR(50),
    Status NVARCHAR(50),
-   PaidAt DATETIME
+   PaidAt DATETIME,
+   PatientID INT,
+
+FOREIGN KEY (PatientID)
+REFERENCES Patients(PatientID),
+   FOREIGN KEY (EncounterID)
+   REFERENCES Encounters(EncounterID)
 );
 CREATE TABLE Services (
    ServiceID INT PRIMARY KEY IDENTITY,
    ServiceName NVARCHAR(255),
    Price DECIMAL(18,2),
    DepartmentID INT
+   FOREIGN KEY (DepartmentID)
+   REFERENCES Departments(DepartmentID)
 );
 
 CREATE TABLE Invoices (
@@ -201,6 +262,11 @@ CREATE TABLE Invoices (
    PatientID INT,
    Total DECIMAL(18,2),
    Status NVARCHAR(50)
+   FOREIGN KEY (EncounterID)
+   REFERENCES Encounters(EncounterID),
+
+FOREIGN KEY (PatientID)
+   REFERENCES Patients(PatientID)
 );
 
 CREATE TABLE InvoiceDetails (
@@ -209,6 +275,11 @@ CREATE TABLE InvoiceDetails (
    ServiceID INT,
    Quantity INT,
    Price DECIMAL(18,2)
+   FOREIGN KEY (InvoiceID)
+   REFERENCES Invoices(InvoiceID),
+
+FOREIGN KEY (ServiceID)
+   REFERENCES Services(ServiceID)
 );
 CREATE TABLE Files (
    FileID INT PRIMARY KEY IDENTITY,
@@ -216,12 +287,16 @@ CREATE TABLE Files (
    FileType NVARCHAR(50),
    FileURL NVARCHAR(MAX),
    UploadedAt DATETIME DEFAULT GETDATE()
+   FOREIGN KEY (EncounterID)
+   REFERENCES Encounters(EncounterID)
 );
 CREATE TABLE FollowUps (
    FollowUpID INT PRIMARY KEY IDENTITY,
    EncounterID INT,
    FollowUpDate DATETIME,
    Status NVARCHAR(50)
+   FOREIGN KEY (EncounterID)
+   REFERENCES Encounters(EncounterID)
 );
 
 CREATE TABLE Transfers (
@@ -230,6 +305,8 @@ CREATE TABLE Transfers (
    Reason NVARCHAR(MAX),
    Severity NVARCHAR(50),
    Status NVARCHAR(50)
+   FOREIGN KEY (EncounterID)
+   REFERENCES Encounters(EncounterID)
 );
 CREATE TABLE Shifts (
    ShiftID INT PRIMARY KEY IDENTITY,
@@ -244,13 +321,17 @@ CREATE TABLE EmployeeShifts (
    ShiftID INT,
    WorkDate DATE,
 
-   FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+   FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
+   FOREIGN KEY (ShiftID)
+   REFERENCES Shifts(ShiftID)
 );
 CREATE TABLE Notifications (
    NotificationID INT PRIMARY KEY IDENTITY,
    UserID INT,
    Message NVARCHAR(MAX),
    IsRead BIT DEFAULT 0
+   FOREIGN KEY (UserID)
+   REFERENCES Users(UserID)
 );
 
 CREATE TABLE AuditLogs (
@@ -259,4 +340,27 @@ CREATE TABLE AuditLogs (
    Action NVARCHAR(100),
    TableName NVARCHAR(100),
    CreatedAt DATETIME DEFAULT GETDATE()
+   FOREIGN KEY (UserID)
+   REFERENCES Users(UserID)
+);
+
+CREATE TABLE PatientIdentifiers (
+    IdentifierID INT PRIMARY KEY IDENTITY,
+    PatientID INT,
+    SourceSystem NVARCHAR(100),
+    IdentifierType NVARCHAR(100),
+    IdentifierValue NVARCHAR(255),
+
+    FOREIGN KEY (PatientID)
+        REFERENCES Patients(PatientID),
+
+    UNIQUE(SourceSystem, IdentifierValue)
+);
+CREATE TABLE ImagingServices (
+    ImagingServiceID INT PRIMARY KEY IDENTITY,
+    ServiceCode VARCHAR(50),
+    ServiceName NVARCHAR(255),
+    Modality NVARCHAR(50),
+    Price DECIMAL(18,2),
+    IsActive BIT DEFAULT 1
 );
