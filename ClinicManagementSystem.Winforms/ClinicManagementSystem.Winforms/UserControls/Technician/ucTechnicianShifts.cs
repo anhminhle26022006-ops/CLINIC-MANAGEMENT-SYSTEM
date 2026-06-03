@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using DAL.DataContext;
+using DAL;
 using DTO;
 using Newtonsoft.Json.Linq;
 using ClinicManagementSystem.Winforms.Forms;
@@ -41,13 +41,13 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         // ==========================================
         private void RenderShifts()
         {
-            var page = BeginPage("Lịch Làm Việc", "Xem ca trực và phòng khám được phân công của Kỹ thuật viên");
+            var page = BeginPage("Lá»‹ch LÃ m Viá»‡c", "Xem ca trá»±c vÃ  phÃ²ng khÃ¡m Ä‘Æ°á»£c phÃ¢n cÃ´ng cá»§a Ká»¹ thuáº­t viÃªn");
 
-            var btnReg = CreateFlatButton("Đăng ký ca mới", Color.White, primary, PageWidth() - 190, 0, 180, 42);
+            var btnReg = CreateFlatButton("ÄÄƒng kÃ½ ca má»›i", Color.White, primary, PageWidth() - 190, 0, 180, 42);
             btnReg.Margin = new Padding(0, -70, 0, 20);
             btnReg.Click += (s, ev) =>
             {
-                RegisterShiftForm register = new RegisterShiftForm(currentUser != null ? currentUser.Name : "Lữ Võ Hoàng Phúc");
+                RegisterShiftForm register = new RegisterShiftForm(currentUser != null ? currentUser.Name : "Lá»¯ VÃµ HoÃ ng PhÃºc");
                 if (register.ShowDialog() == DialogResult.OK) NavigateTo(TechnicianViewTarget.Shifts);
             };
             page.Controls.Add(btnReg);
@@ -61,14 +61,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             catch { }
 
             var stats = CreateGrid(3, 110);
-            stats.Controls.Add(CreateStatRowCard("Tổng ca đăng ký", countShifts.ToString(), "CAL", Color.FromArgb(219, 234, 254), primary), 0, 0);
-            stats.Controls.Add(CreateStatRowCard("Ca đang trực", "1", "TIME", Color.FromArgb(254, 249, 195), Color.FromArgb(180, 83, 9)), 1, 0);
-            stats.Controls.Add(CreateStatRowCard("Giờ hoàn thành", (countShifts * 5) + "h", "CLK", Color.FromArgb(220, 252, 231), Color.FromArgb(34, 139, 74)), 2, 0);
+            stats.Controls.Add(CreateStatRowCard("Tá»•ng ca Ä‘Äƒng kÃ½", countShifts.ToString(), "CAL", Color.FromArgb(219, 234, 254), primary), 0, 0);
+            stats.Controls.Add(CreateStatRowCard("Ca Ä‘ang trá»±c", "1", "TIME", Color.FromArgb(254, 249, 195), Color.FromArgb(180, 83, 9)), 1, 0);
+            stats.Controls.Add(CreateStatRowCard("Giá» hoÃ n thÃ nh", (countShifts * 5) + "h", "CLK", Color.FromArgb(220, 252, 231), Color.FromArgb(34, 139, 74)), 2, 0);
             page.Controls.Add(stats);
 
             // Calendar Section (Hardcoded layout displaying dynamic shifts)
-            var calendar = CreateSection("Lịch làm việc tuần này", 290);
-            string[] days = { "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật" };
+            var calendar = CreateSection("Lá»‹ch lÃ m viá»‡c tuáº§n nÃ y", 290);
+            string[] days = { "Thá»© 2", "Thá»© 3", "Thá»© 4", "Thá»© 5", "Thá»© 6", "Thá»© 7", "Chá»§ Nháº­t" };
             int cellW = (calendar.Width - 62) / 7;
 
             // Get shifts for the week
@@ -112,7 +112,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 }
                 else
                 {
-                    dayBox.Controls.Add(CreateLabel("Trống ca", 8F, FontStyle.Italic, textMuted, 10, 50, dayBox.Width - 20, 22, ContentAlignment.MiddleCenter));
+                    dayBox.Controls.Add(CreateLabel("Trá»‘ng ca", 8F, FontStyle.Italic, textMuted, 10, 50, dayBox.Width - 20, 22, ContentAlignment.MiddleCenter));
                 }
 
                 calendar.Controls.Add(dayBox);
@@ -120,8 +120,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             page.Controls.Add(calendar);
 
             // Shift Table List
-            var listPanel = CreateSection("Danh sách ca trực chi tiết", 310);
-            AddShiftRow(listPanel, "NGÀY", "CA", "CHUYÊN KHOA", "PHÒNG KHÁM", "TRẠNG THÁI", 60, true);
+            var listPanel = CreateSection("Danh sÃ¡ch ca trá»±c chi tiáº¿t", 310);
+            AddShiftRow(listPanel, "NGÃ€Y", "CA", "CHUYÃŠN KHOA", "PHÃ’NG KHÃM", "TRáº NG THÃI", 60, true);
 
             int yShift = 100;
             foreach (var s in weekShifts)
@@ -136,5 +136,4 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
     }
 }
-
 

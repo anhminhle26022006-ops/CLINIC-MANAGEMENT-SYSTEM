@@ -4,10 +4,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using ClinicManagementSystem.Winforms.Forms;
+using ClinicManagementSystem.Winforms;
 using BUS.Services;
 using DTO;
-using DAL.DataContext;
+using DAL;
 using ClinicManagementSystem.Winforms.UserControls.Technician;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
@@ -52,12 +52,12 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
             lblUserName.Text = user.Name;
             lblUserEmail.Text = user.Email ?? user.Username;
             lblAvatar.Text = string.IsNullOrEmpty(user.Name) ? "K" : user.Name.Substring(0, 1).ToUpper();
-            lblPageSubtitle.Text = "Xin chào, " + user.Name;
+            lblPageSubtitle.Text = "Xin chÃ o, " + user.Name;
         }
 
         private void ucTechnicianDashboard_Load(object sender, EventArgs e)
         {
-            txtGlobalSearch.Text = "  Tìm kiếm...";
+            txtGlobalSearch.Text = "  TÃ¬m kiáº¿m...";
             txtGlobalSearch.ForeColor = Color.FromArgb(148, 163, 184);
 
             // Re-arrange default sidebar buttons
@@ -65,9 +65,9 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
             btnNavRequests.Location = new Point(12, 124);
 
             // Add programmatically styled sidebar buttons for remaining tasks
-            btnNavUploadMRI = CreateSidebarButton("Tải lên MRI/X-Ray", new Point(12, 170), btnNavUploadMRI_Click);
-            btnNavUploadPDF = CreateSidebarButton("Tải lên PDF", new Point(12, 216), btnNavUploadPDF_Click);
-            btnNavLabResult = CreateSidebarButton("Nhập kết quả Lab", new Point(12, 262), btnNavLabResult_Click);
+            btnNavUploadMRI = CreateSidebarButton("Táº£i lÃªn MRI/X-Ray", new Point(12, 170), btnNavUploadMRI_Click);
+            btnNavUploadPDF = CreateSidebarButton("Táº£i lÃªn PDF", new Point(12, 216), btnNavUploadPDF_Click);
+            btnNavLabResult = CreateSidebarButton("Nháº­p káº¿t quáº£ Lab", new Point(12, 262), btnNavLabResult_Click);
             btnNavRecords.Location = new Point(12, 308);
             btnNavShifts.Location = new Point(12, 354);
             btnNavSeederTool = CreateSidebarButton("Seeder Tool (Test)", new Point(12, 400), btnNavSeederTool_Click);
@@ -122,16 +122,16 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
 
         private void ShowOverview()
         {
-            lblPageTitle.Text = "Tổng quan";
-            lblPageSubtitle.Text = "Xin chào, " + (currentUser != null ? currentUser.Name : "Kỹ thuật viên");
+            lblPageTitle.Text = "Tá»•ng quan";
+            lblPageSubtitle.Text = "Xin chÃ o, " + (currentUser != null ? currentUser.Name : "Ká»¹ thuáº­t viÃªn");
             SetActiveNav(btnNavOverview);
             LoadContentView(new ucTechnicianOverview());
         }
 
         private void ShowRequests()
         {
-            lblPageTitle.Text = "Xét nghiệm";
-            lblPageSubtitle.Text = "Quản lý yêu cầu xét nghiệm và chụp ảnh từ Bác sĩ";
+            lblPageTitle.Text = "XÃ©t nghiá»‡m";
+            lblPageSubtitle.Text = "Quáº£n lÃ½ yÃªu cáº§u xÃ©t nghiá»‡m vÃ  chá»¥p áº£nh tá»« BÃ¡c sÄ©";
             SetActiveNav(btnNavRequests);
             LoadContentView(new ucTechnicianRequests());
         }
@@ -139,8 +139,8 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
         private void ShowUploadMRI(int preselectedId = 0)
         {
             activeRequestId = preselectedId;
-            lblPageTitle.Text = "Tải lên MRI/X-Ray";
-            lblPageSubtitle.Text = "Lưu và upload hình ảnh phim chụp của bệnh nhân";
+            lblPageTitle.Text = "Táº£i lÃªn MRI/X-Ray";
+            lblPageSubtitle.Text = "LÆ°u vÃ  upload hÃ¬nh áº£nh phim chá»¥p cá»§a bá»‡nh nhÃ¢n";
             SetActiveNav(btnNavUploadMRI);
             LoadContentView(new ucTechnicianUploadMri(), preselectedId);
         }
@@ -148,8 +148,8 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
         private void ShowUploadPDF(int preselectedId = 0)
         {
             activeRequestId = preselectedId;
-            lblPageTitle.Text = "Tải lên kết quả PDF";
-            lblPageSubtitle.Text = "Upload tệp PDF kết quả xét nghiệm tổng hợp";
+            lblPageTitle.Text = "Táº£i lÃªn káº¿t quáº£ PDF";
+            lblPageSubtitle.Text = "Upload tá»‡p PDF káº¿t quáº£ xÃ©t nghiá»‡m tá»•ng há»£p";
             SetActiveNav(btnNavUploadPDF);
             LoadContentView(new ucTechnicianUploadPdf(), preselectedId);
         }
@@ -157,24 +157,24 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
         private void ShowLabResult(int preselectedId = 0)
         {
             activeRequestId = preselectedId;
-            lblPageTitle.Text = "Nhập kết quả Lab";
-            lblPageSubtitle.Text = "Nhập chỉ số xét nghiệm sinh hóa chi tiết";
+            lblPageTitle.Text = "Nháº­p káº¿t quáº£ Lab";
+            lblPageSubtitle.Text = "Nháº­p chá»‰ sá»‘ xÃ©t nghiá»‡m sinh hÃ³a chi tiáº¿t";
             SetActiveNav(btnNavLabResult);
             LoadContentView(new ucTechnicianLabResult(), preselectedId);
         }
 
         private void ShowShifts()
         {
-            lblPageTitle.Text = "Ca làm việc";
-            lblPageSubtitle.Text = "Quản lý lịch trình làm việc và lịch trực";
+            lblPageTitle.Text = "Ca lÃ m viá»‡c";
+            lblPageSubtitle.Text = "Quáº£n lÃ½ lá»‹ch trÃ¬nh lÃ m viá»‡c vÃ  lá»‹ch trá»±c";
             SetActiveNav(btnNavShifts);
             LoadContentView(new ucTechnicianShifts());
         }
 
         private void ShowRecords()
         {
-            lblPageTitle.Text = "Hồ sơ bệnh án";
-            lblPageSubtitle.Text = "Tìm kiếm hồ sơ bệnh nhân và lịch sử kết quả xét nghiệm";
+            lblPageTitle.Text = "Há»“ sÆ¡ bá»‡nh Ã¡n";
+            lblPageSubtitle.Text = "TÃ¬m kiáº¿m há»“ sÆ¡ bá»‡nh nhÃ¢n vÃ  lá»‹ch sá»­ káº¿t quáº£ xÃ©t nghiá»‡m";
             SetActiveNav(btnNavRecords);
             LoadContentView(new ucPatientRecords());
         }
@@ -182,7 +182,7 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
         private void ShowSeederTool()
         {
             lblPageTitle.Text = "Seeder Tool";
-            lblPageSubtitle.Text = "Công cụ tạo dữ liệu mẫu cho SQL Server";
+            lblPageSubtitle.Text = "CÃ´ng cá»¥ táº¡o dá»¯ liá»‡u máº«u cho SQL Server";
             SetActiveNav(btnNavSeederTool);
             LoadContentView(new ucSeederTool());
         }
@@ -256,5 +256,4 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
 
     }
 }
-
 
