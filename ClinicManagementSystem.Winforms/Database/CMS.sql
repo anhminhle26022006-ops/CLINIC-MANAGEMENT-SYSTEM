@@ -1,4 +1,4 @@
-﻿CREATE DATABASE CMS;
+CREATE DATABASE CMS;
 GO
 
 USE CMS;
@@ -544,11 +544,7 @@ UNIQUE (PatientUUID);
 
 
 /* Employees */
-ALTER TABLE Employees
-ADD EmployeeUUID UNIQUEIDENTIFIER
-    NOT NULL
-    DEFAULT NEWID();
-
+-- EmployeeUUID is already defined in CREATE TABLE Employees, so we only add the UNIQUE constraint
 ALTER TABLE Employees
 ADD CONSTRAINT UQ_Employees_UUID
 UNIQUE (EmployeeUUID);
