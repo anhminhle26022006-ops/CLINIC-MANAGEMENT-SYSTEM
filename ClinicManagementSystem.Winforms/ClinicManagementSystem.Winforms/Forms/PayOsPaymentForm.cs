@@ -1,5 +1,4 @@
-using Newtonsoft.Json;
-using RestSharp;
+﻿using Newtonsoft.Json;
 using System;
 using System.Configuration;
 using System.Diagnostics;
@@ -8,14 +7,13 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DTO;
-using DAL.DataContext;
-using BUS.Services;
 using ServicesExternal;
 
 namespace ClinicManagementSystem.Winforms.Forms
@@ -271,7 +269,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             return await ExecuteJsonAsync(
                 backendBaseUrl.TrimEnd('/'),
                 "/api/payos/create-payment",
-                Method.Post,
+                HttpMethod.Post,
                 payload,
                 cancellationToken);
         }
@@ -298,7 +296,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             return await ExecuteJsonAsync(
                 "https://api-merchant.payos.vn",
                 "/v2/payment-requests",
-                Method.Post,
+                HttpMethod.Post,
                 payload,
                 cancellationToken,
                 clientId,
@@ -369,7 +367,7 @@ namespace ClinicManagementSystem.Winforms.Forms
                     return await ExecuteJsonAsync(
                         backendBaseUrl.TrimEnd('/'),
                         $"/api/payos/payments/{orderCode}",
-                        Method.Get,
+                        HttpMethod.Get,
                         null,
                         cancellationToken);
                 }
@@ -392,63 +390,55 @@ namespace ClinicManagementSystem.Winforms.Forms
             return await ExecuteJsonAsync(
                 "https://api-merchant.payos.vn",
                 $"/v2/payment-requests/{orderCode}",
-                Method.Get,
+                HttpMethod.Get,
                 null,
                 cancellationToken,
                 RequireSetting("PayOSClientId"),
                 RequireSetting("PayOSApiKey"));
         }
 
-        private async Task<PayOsApiResponse> ExecuteJsonAsync(string baseUrl, string resource, Method method, object payload, CancellationToken cancellationToken, string clientId = null, string apiKey = null)
+        private async Task<PayOsApiResponse> ExecuteJsonAsync(string baseUrl, string resource, HttpMethod method, object payload, CancellationToken cancellationToken, string clientId = null, string apiKey = null)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            var request = new RestRequest(resource, method)
+            using var client = new HttpClient
             {
+                BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/"),
                 Timeout = TimeSpan.FromSeconds(ApiTimeoutSeconds)
             };
-            request.AddHeader("Accept", "application/json");
+
+            using var request = new HttpRequestMessage(method, resource.TrimStart('/'));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             if (!string.IsNullOrWhiteSpace(clientId))
             {
-                request.AddHeader("x-client-id", clientId);
+                request.Headers.Add("x-client-id", clientId);
             }
 
             if (!string.IsNullOrWhiteSpace(apiKey))
             {
-                request.AddHeader("x-api-key", apiKey);
+                request.Headers.Add("x-api-key", apiKey);
             }
 
             if (payload != null)
             {
-                request.AddHeader("Content-Type", "application/json");
-                request.AddParameter("application/json", JsonConvert.SerializeObject(payload), ParameterType.RequestBody);
+                request.Content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
             }
 
-            RestResponse response;
-            using (var client = new RestClient(new RestClientOptions(baseUrl)
-            {
-                Timeout = TimeSpan.FromSeconds(ApiTimeoutSeconds)
-            }))
-            {
-                response = await client.ExecuteAsync(request, cancellationToken);
-            }
+            using var response = await client.SendAsync(request, cancellationToken);
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            if (!response.IsSuccessful || string.IsNullOrWhiteSpace(response.Content))
+            if (!response.IsSuccessStatusCode || string.IsNullOrWhiteSpace(content))
             {
-                var errorMessage = response.ResponseStatus == ResponseStatus.TimedOut
-                    ? $"API không phản hồi sau {ApiTimeoutSeconds} giây."
-                    : response.ErrorMessage;
-
-                throw new InvalidOperationException($"HTTP: {(int)response.StatusCode} {response.StatusDescription}\nTrạng thái: {response.ResponseStatus}\n{errorMessage}\n{response.Content}");
+                throw new InvalidOperationException($"HTTP: {(int)response.StatusCode} {response.ReasonPhrase}\nTrạng thái: {response.StatusCode}\n{content}");
             }
 
             try
             {
-                return JsonConvert.DeserializeObject<PayOsApiResponse>(response.Content);
+                return JsonConvert.DeserializeObject<PayOsApiResponse>(content);
             }
             catch (JsonException ex)
             {
-                throw new InvalidOperationException($"API trả về dữ liệu không hợp lệ.\n{ex.Message}\n{response.Content}", ex);
+                throw new InvalidOperationException($"API trả về dữ liệu không hợp lệ.\n{ex.Message}\n{content}", ex);
             }
         }
 
@@ -579,4 +569,6 @@ namespace ClinicManagementSystem.Winforms.Forms
         }
     }
 }
+
+
 
