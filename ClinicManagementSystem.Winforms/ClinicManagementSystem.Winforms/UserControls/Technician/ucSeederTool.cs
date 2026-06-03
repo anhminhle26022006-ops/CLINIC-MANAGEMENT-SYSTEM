@@ -9,6 +9,7 @@ using DAL.DataContext;
 using DTO;
 using Newtonsoft.Json.Linq;
 using ClinicManagementSystem.Winforms.Forms;
+using ClinicManagementSystem.Winforms.Forms.Integrations;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Technician
 {
@@ -72,7 +73,17 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             };
             panel.Controls.Add(btnTestPayOS);
 
-            panel.Controls.Add(CreateLabel("Log bảng điều khiển Seeder:", 9.5F, FontStyle.Bold, textMain, 24, 126, 300, 22));
+            var btnSyncApi = CreateFlatButton("ĐỒNG BỘ API SHEETDB / SUPABASE", Color.White, Color.FromArgb(16, 185, 129), 24, 124, panel.Width - 48, 48);
+            btnSyncApi.Click += (s, ev) =>
+            {
+                using (var syncForm = new MockApiSyncForm())
+                {
+                    syncForm.ShowDialog(this);
+                }
+            };
+            panel.Controls.Add(btnSyncApi);
+
+            panel.Controls.Add(CreateLabel("Log bảng điều khiển Seeder:", 9.5F, FontStyle.Bold, textMain, 24, 190, 300, 22));
 
             txtSeederLog = new TextBox
             {
@@ -81,8 +92,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 BackColor = Color.FromArgb(17, 24, 39),
                 ForeColor = Color.FromArgb(34, 197, 94),
                 Font = new Font("Consolas", 10F),
-                Location = new Point(24, 150),
-                Size = new Size(panel.Width - 48, 330),
+                Location = new Point(24, 218),
+                Size = new Size(panel.Width - 48, 262),
                 BorderStyle = BorderStyle.FixedSingle,
                 ScrollBars = ScrollBars.Vertical
             };
