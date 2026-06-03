@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using BUS.Services;
 using DTO;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace ClinicManagementSystem.Winforms.Forms
 {
@@ -115,6 +117,31 @@ namespace ClinicManagementSystem.Winforms.Forms
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
                     conn.Open();
+                    // Check if Roles table exists (new CMS schema)
+                    bool hasRolesTable = false;
+                    try
+                    {
+                        using (SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Roles]') AND type in (N'U')", conn))
+                        {
+                            hasRolesTable = Convert.ToInt32(checkCmd.ExecuteScalar()) > 0;
+                        }
+                    }
+                    catch { }
+
+                    if (dbName.Equals("CMS", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!hasRolesTable)
+                        {
+                            // If CMS database exists but doesn't have the roles table, we try to run CMS.sql
+                            string scriptPath = FindSqlScriptPath("CMS.sql");
+                            if (!string.IsNullOrEmpty(scriptPath))
+                            {
+                                ExecuteSqlScript(scriptPath, connString);
+                            }
+                        }
+                        return; // Done initializing CMS database
+                    }
+
                     // Create Users table
                     string createUsersTable = @"
                         IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Users]') AND type in (N'U'))
@@ -255,6 +282,68 @@ namespace ClinicManagementSystem.Winforms.Forms
                 catch
                 {
                     // Continue trying next instance
+                }
+            }
+        }
+
+        private string FindSqlScriptPath(string fileName)
+        {
+            string startPath = AppDomain.CurrentDomain.BaseDirectory;
+            string current = startPath;
+            for (int i = 0; i < 5; i++)
+            {
+                string path1 = System.IO.Path.Combine(current, fileName);
+                if (System.IO.File.Exists(path1)) return path1;
+
+                string path2 = System.IO.Path.Combine(current, "Database", fileName);
+                if (System.IO.File.Exists(path2)) return path2;
+
+                string path3 = System.IO.Path.Combine(current, "ClinicManagementSystem.Winforms", "Database", fileName);
+                if (System.IO.File.Exists(path3)) return path3;
+
+                string parent = System.IO.Path.GetDirectoryName(current);
+                if (string.IsNullOrEmpty(parent) || parent == current) break;
+                current = parent;
+            }
+            return null;
+        }
+
+        private void ExecuteSqlScript(string scriptPath, string connString)
+        {
+            if (!System.IO.File.Exists(scriptPath)) return;
+
+            string scriptContent = System.IO.File.ReadAllText(scriptPath);
+
+            // Split script into batches by 'GO'
+            string[] batches = System.Text.RegularExpressions.Regex.Split(
+                scriptContent,
+                @"^\s*GO\s*$",
+                System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+                foreach (string batch in batches)
+                {
+                    if (string.IsNullOrWhiteSpace(batch)) continue;
+
+                    // Skip database creation commands to avoid errors
+                    if (batch.Contains("CREATE DATABASE") || batch.Contains("USE "))
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        using (SqlCommand cmd = new SqlCommand(batch, conn))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("SQL Batch Error: " + ex.Message);
+                    }
                 }
             }
         }
