@@ -17,9 +17,5 @@ namespace ClinicManagementSystem.Winforms.Forms
             InitializeComponent();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

@@ -603,7 +603,6 @@
             btnSave.TabIndex = 1;
             btnSave.Text = "Lưu hồ sơ";
             btnSave.UseVisualStyleBackColor = false;
-            btnSave.Click += button2_Click;
             // 
             // CreateNewPatient
             // 
