@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 using DTO;
-using ClinicManagementSystem.Winforms.UserControls;
+using ClinicManagementSystem.Winforms.Mainforms;
 
 namespace ClinicManagementSystem.Winforms.Forms
 {
@@ -21,14 +21,68 @@ namespace ClinicManagementSystem.Winforms.Forms
 
         private void TechnicianDashboardForm_Load(object sender, EventArgs e)
         {
-            var dashboard = currentUser == null
-                ? new ucTechnicianDashboard()
-                : new ucTechnicianDashboard(currentUser);
+            UserControl dashboard = null;
+
+            if (currentUser != null && !string.IsNullOrEmpty(currentUser.Role))
+            {
+                string role = currentUser.Role.Trim();
+                if (role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    dashboard = new AdminMainform(currentUser);
+                }
+                else if (role.Equals("Doctor", StringComparison.OrdinalIgnoreCase))
+                {
+                    dashboard = new DoctorMainform(currentUser);
+                }
+                else if (role.Equals("Nurse", StringComparison.OrdinalIgnoreCase))
+                {
+                    dashboard = new NurseMainform(currentUser);
+                }
+                else if (role.Equals("Pharmacist", StringComparison.OrdinalIgnoreCase))
+                {
+                    dashboard = new PharmacyMainform(currentUser);
+                }
+                else if (role.Equals("Receptionist", StringComparison.OrdinalIgnoreCase))
+                {
+                    dashboard = new ReceptionistMainform(currentUser);
+                }
+                else if (role.Equals("Technician", StringComparison.OrdinalIgnoreCase))
+                {
+                    dashboard = new ucTechnicianDashboard(currentUser);
+                }
+            }
+
+            if (dashboard == null)
+            {
+                dashboard = currentUser == null
+                    ? new ucTechnicianDashboard()
+                    : new ucTechnicianDashboard(currentUser);
+            }
 
             dashboard.Dock = DockStyle.Fill;
 
-            dashboard.LogoutRequested += Dashboard_LogoutRequested;
-            dashboard.CloseRequested += (s, ev) => Application.Exit();
+            // Wire up events dynamically
+            try
+            {
+                var logoutEvent = dashboard.GetType().GetEvent("LogoutRequested");
+                if (logoutEvent != null)
+                {
+                    EventHandler handler = Dashboard_LogoutRequested;
+                    logoutEvent.AddEventHandler(dashboard, handler);
+                }
+            }
+            catch { }
+
+            try
+            {
+                var closeEvent = dashboard.GetType().GetEvent("CloseRequested");
+                if (closeEvent != null)
+                {
+                    EventHandler handler = (s, ev) => Application.Exit();
+                    closeEvent.AddEventHandler(dashboard, handler);
+                }
+            }
+            catch { }
 
             Controls.Add(dashboard);
         }

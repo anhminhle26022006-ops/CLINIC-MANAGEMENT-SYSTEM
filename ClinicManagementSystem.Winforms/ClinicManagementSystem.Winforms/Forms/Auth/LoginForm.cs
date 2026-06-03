@@ -42,22 +42,11 @@ namespace ClinicManagementSystem.Winforms.Forms
 
                 if (user != null)
                 {
-                    if (user.Role.Equals("Technician", StringComparison.OrdinalIgnoreCase))
-                    {
-                        // Open Technician Dashboard
-                        TechnicianDashboardForm dashboard = new TechnicianDashboardForm(user);
-                        this.Hide();
-                        dashboard.ShowDialog();
-                        this.Close();
-                    }
-                    else
-                    {
-                        MessageBox.Show(
-                            $"Chào mừng {user.Name} ({user.Role}).\nPhân hệ dành cho {user.Role} đang được phát triển.\nVui lòng đăng nhập bằng tài khoản Kỹ thuật viên (ví dụ: ktv / 123) để trải nghiệm chức năng chính.",
-                            "Phân luồng hệ thống",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                    }
+                    // Open Dashboard Form which dynamically hosts the correct role control
+                    TechnicianDashboardForm dashboard = new TechnicianDashboardForm(user);
+                    this.Hide();
+                    dashboard.ShowDialog();
+                    this.Close();
                 }
                 else
                 {
