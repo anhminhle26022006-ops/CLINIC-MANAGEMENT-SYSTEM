@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using DAL;
 using DTO;
 using Newtonsoft.Json.Linq;
+using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Technician
 {
@@ -43,7 +44,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void RenderLabResult()
         {
-            var page = BeginPage("Nháº­p káº¿t quáº£ chá»‰ sá»‘ Lab", "Nháº­p cÃ¡c chá»‰ sá»‘ sinh hÃ³a mÃ¡u cá»§a bá»‡nh nhÃ¢n tá»« phÃ²ng Lab");
+            var page = BeginPage("Nhập kết quả chỉ số Lab", "Nhập các chỉ số sinh hóa máu của bệnh nhân từ phòng Lab");
 
             var panel = new RoundedPanel
             {
@@ -55,7 +56,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 Margin = new Padding(0, 10, 0, 20)
             };
 
-            panel.Controls.Add(CreateLabel("Chá»n yÃªu cáº§u xÃ©t nghiá»‡m sinh hÃ³a:", 9.5F, FontStyle.Bold, textMain, 24, 24, 300, 22));
+            panel.Controls.Add(CreateLabel("Chọn yêu cầu xét nghiệm sinh hóa:", 9.5F, FontStyle.Bold, textMain, 24, 24, 300, 22));
 
             cboLabRequests = new ComboBox
             {
@@ -69,7 +70,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             List<RequestDTO> list = new List<RequestDTO>();
             try
             {
-                list = requestBUS.GetList().Where(r => r.Status != "HoÃ n thÃ nh" && !r.ServiceType.Contains("MRI") && !r.ServiceType.Contains("X-quang") && !r.ServiceType.Contains("SiÃªu Ã¢m") && !r.ServiceType.Contains("xÃ©t nghiá»‡m mÃ¡u tá»•ng quÃ¡t")).ToList();
+                list = requestBUS.GetList().Where(r => r.Status != "Hoàn thành" && !r.ServiceType.Contains("MRI") && !r.ServiceType.Contains("X-quang") && !r.ServiceType.Contains("Siêu âm") && !r.ServiceType.Contains("xét nghiệm máu tổng quát")).ToList();
             }
             catch { }
 
@@ -100,28 +101,28 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
             // Input Fields
             int x1 = 24, x2 = 360;
-            panel.Controls.Add(CreateLabel("Há»“ng cáº§u (RBC) - T.chuáº©n: 3.8 - 5.8 T/L", 9F, FontStyle.Bold, textMain, x1, 100, 300, 22));
+            panel.Controls.Add(CreateLabel("Hồng cầu (RBC) - T.chuẩn: 3.8 - 5.8 T/L", 9F, FontStyle.Bold, textMain, x1, 100, 300, 22));
             txtRBC = new TextBox { Font = new Font("Segoe UI", 10F), Location = new Point(x1, 125), Size = new Size(280, 28), BorderStyle = BorderStyle.FixedSingle, Text = "4.5" };
             panel.Controls.Add(txtRBC);
 
-            panel.Controls.Add(CreateLabel("Báº¡ch cáº§u (WBC) - T.chuáº©n: 4.0 - 10.0 G/L", 9F, FontStyle.Bold, textMain, x2, 100, 300, 22));
+            panel.Controls.Add(CreateLabel("Bạch cầu (WBC) - T.chuẩn: 4.0 - 10.0 G/L", 9F, FontStyle.Bold, textMain, x2, 100, 300, 22));
             txtWBC = new TextBox { Font = new Font("Segoe UI", 10F), Location = new Point(x2, 125), Size = new Size(280, 28), BorderStyle = BorderStyle.FixedSingle, Text = "7.2" };
             panel.Controls.Add(txtWBC);
 
-            panel.Controls.Add(CreateLabel("ÄÆ°á»ng huyáº¿t (Glucose) - T.chuáº©n: 3.9 - 6.4 mmol/L", 9F, FontStyle.Bold, textMain, x1, 180, 300, 22));
+            panel.Controls.Add(CreateLabel("Đường huyết (Glucose) - T.chuẩn: 3.9 - 6.4 mmol/L", 9F, FontStyle.Bold, textMain, x1, 180, 300, 22));
             txtGlucose = new TextBox { Font = new Font("Segoe UI", 10F), Location = new Point(x1, 205), Size = new Size(280, 28), BorderStyle = BorderStyle.FixedSingle, Text = "5.6" };
             panel.Controls.Add(txtGlucose);
 
-            panel.Controls.Add(CreateLabel("Acid Uric - T.chuáº©n: 140 - 420 umol/L", 9F, FontStyle.Bold, textMain, x2, 180, 300, 22));
+            panel.Controls.Add(CreateLabel("Acid Uric - T.chuẩn: 140 - 420 umol/L", 9F, FontStyle.Bold, textMain, x2, 180, 300, 22));
             txtUricAcid = new TextBox { Font = new Font("Segoe UI", 10F), Location = new Point(x2, 205), Size = new Size(280, 28), BorderStyle = BorderStyle.FixedSingle, Text = "310" };
             panel.Controls.Add(txtUricAcid);
 
-            var btnSubmit = CreateFlatButton("LÆ°u chá»‰ sá»‘ xÃ©t nghiá»‡m & XÃ¡c nháº­n káº¿t quáº£", Color.White, primary, 24, 290, panel.Width - 48, 44);
+            var btnSubmit = CreateFlatButton("Lưu chỉ số xét nghiệm & Xác nhận kết quả", Color.White, primary, 24, 290, panel.Width - 48, 44);
             btnSubmit.Click += (s, ev) =>
             {
                 if (cboLabRequests.SelectedItem == null)
                 {
-                    MessageBox.Show("Vui lÃ²ng chá»n yÃªu cáº§u xÃ©t nghiá»‡m.", "Cáº£nh bÃ¡o", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Vui lòng chọn yêu cầu xét nghiệm.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -129,7 +130,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 if (!double.TryParse(txtRBC.Text, out _) || !double.TryParse(txtWBC.Text, out _) ||
                     !double.TryParse(txtGlucose.Text, out _) || !double.TryParse(txtUricAcid.Text, out _))
                 {
-                    MessageBox.Show("Vui lÃ²ng Ä‘iá»n Ä‘Ãºng thÃ´ng sá»‘ káº¿t quáº£ (pháº£i lÃ  sá»‘ thá»±c).", "Lá»—i dá»¯ liá»‡u", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Vui lòng điền đúng thông số kết quả (phải là số thực).", "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -147,14 +148,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     bool ok = requestBUS.SaveLabResult(reqId, json.ToString());
                     if (ok)
                     {
-                        MessageBox.Show("LÆ°u káº¿t quáº£ xÃ©t nghiá»‡m thÃ nh cÃ´ng!", "ThÃ nh cÃ´ng", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Lưu kết quả xét nghiệm thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         activeRequestId = 0;
                         NavigateTo(TechnicianViewTarget.Requests);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Lá»—i: " + ex.Message);
+                    MessageBox.Show("Lỗi: " + ex.Message);
                 }
             };
             panel.Controls.Add(btnSubmit);

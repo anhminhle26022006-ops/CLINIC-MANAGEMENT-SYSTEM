@@ -1,4 +1,4 @@
-﻿namespace ClinicManagementSystem.Winforms.Forms
+namespace ClinicManagementSystem.Winforms.Forms
 {
     partial class CreateNewPatient
     {
@@ -603,7 +603,7 @@
             btnSave.TabIndex = 1;
             btnSave.Text = "Lưu hồ sơ";
             btnSave.UseVisualStyleBackColor = false;
-            btnSave.Click += button2_Click;
+            btnSave.Click += btnSave_Click;
             // 
             // CreateNewPatient
             // 

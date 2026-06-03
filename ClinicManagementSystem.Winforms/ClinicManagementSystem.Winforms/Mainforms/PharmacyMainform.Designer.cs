@@ -1,4 +1,4 @@
-﻿using System.Drawing.Printing;
+using System.Drawing.Printing;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -534,9 +534,9 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             Controls.Add(panelSidebar);
             Font = new Font("Segoe UI", 9F);
             Margin = new Padding(3, 4, 3, 4);
-            Name = "NurseMainform";
+            Name = "PharmacyMainform";
             Size = new Size(1678, 1046);
-            Load += ReceptionistMainform_Load;
+            Load += PharmacyMainform_Load;
             panelSidebar.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             panel10.ResumeLayout(false);
@@ -592,8 +592,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private Panel panel11;
         private Panel panel12;
         private Panel panel13;
-        private Button btnDepartmentManagement;
-        private Button btnStatitics;
         private Button btnVitalSigns;
     }
 }

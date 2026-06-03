@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using DTO;
 using DAL.DataContext;
 
@@ -9,9 +9,22 @@ namespace DAL.Repositories
 {
     public class ShiftDAL
     {
+        private string GetTableName()
+        {
+            try
+            {
+                string checkQuery = "SELECT COUNT(*) FROM sys.tables WHERE name = 'TechnicianShifts'";
+                int count = Convert.ToInt32(DatabaseHelper.ExecuteScalar(checkQuery));
+                if (count > 0) return "TechnicianShifts";
+            }
+            catch { }
+            return "Shifts";
+        }
+
         public List<ShiftDTO> GetAll()
         {
-            string query = "SELECT * FROM Shifts ORDER BY ShiftDate ASC, ShiftName ASC";
+            string tableName = GetTableName();
+            string query = $"SELECT * FROM {tableName} ORDER BY ShiftDate ASC, ShiftName ASC";
             DataTable dt = DatabaseHelper.ExecuteQuery(query);
             List<ShiftDTO> list = new List<ShiftDTO>();
 
@@ -25,7 +38,7 @@ namespace DAL.Repositories
                     Room = row["Room"].ToString(),
                     Department = row["Department"].ToString(),
                     Status = row["Status"].ToString(),
-                    TechnicianName = row["TechnicianName"].ToString()
+                    TechnicianName = row.Table.Columns.Contains("TechnicianName") ? row["TechnicianName"].ToString() : ""
                 });
             }
             return list;
@@ -33,7 +46,8 @@ namespace DAL.Repositories
 
         public bool Add(ShiftDTO shift)
         {
-            string query = "INSERT INTO Shifts (ShiftDate, ShiftName, Room, Department, Status, TechnicianName) VALUES (@ShiftDate, @ShiftName, @Room, @Department, @Status, @TechnicianName)";
+            string tableName = GetTableName();
+            string query = $"INSERT INTO {tableName} (ShiftDate, ShiftName, Room, Department, Status, TechnicianName) VALUES (@ShiftDate, @ShiftName, @Room, @Department, @Status, @TechnicianName)";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@ShiftDate", shift.ShiftDate.Date),
@@ -49,7 +63,8 @@ namespace DAL.Repositories
 
         public int GetCount()
         {
-            string query = "SELECT COUNT(*) FROM Shifts";
+            string tableName = GetTableName();
+            string query = $"SELECT COUNT(*) FROM {tableName}";
             object res = DatabaseHelper.ExecuteScalar(query);
             return res != null ? Convert.ToInt32(res) : 0;
         }

@@ -1,4 +1,4 @@
-﻿namespace ClinicManagementSystem.Winforms.Forms
+﻿﻿﻿namespace ClinicManagementSystem.Winforms.Forms
 {
     partial class PayOsPaymentForm
     {

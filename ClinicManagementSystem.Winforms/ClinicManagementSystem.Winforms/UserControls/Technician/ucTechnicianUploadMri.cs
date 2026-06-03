@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using DAL;
 using DTO;
 using Newtonsoft.Json.Linq;
+using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Technician
 {
@@ -45,7 +46,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void RenderUploadMRI()
         {
-            var page = BeginPage("Táº£i lÃªn phim MRI/X-Ray", "Chá»¥p phim cháº©n Ä‘oÃ¡n vÃ  táº£i áº£nh káº¿t quáº£ phim lÃªn há»‡ thá»‘ng");
+            var page = BeginPage("Tải lên phim MRI/X-Ray", "Chụp phim chẩn đoán và tải ảnh kết quả phim lên hệ thống");
 
             var panel = new RoundedPanel
             {
@@ -57,7 +58,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 Margin = new Padding(0, 10, 0, 20)
             };
 
-            panel.Controls.Add(CreateLabel("Chá»n yÃªu cáº§u chá»¥p phim:", 9.5F, FontStyle.Bold, textMain, 24, 24, 300, 22));
+            panel.Controls.Add(CreateLabel("Chọn yêu cầu chụp phim:", 9.5F, FontStyle.Bold, textMain, 24, 24, 300, 22));
 
             cboMRIRequests = new ComboBox
             {
@@ -72,7 +73,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             List<RequestDTO> list = new List<RequestDTO>();
             try
             {
-                list = requestBUS.GetList().Where(r => r.Status != "HoÃ n thÃ nh" && (r.ServiceType.Contains("MRI") || r.ServiceType.Contains("X-quang") || r.ServiceType.Contains("SiÃªu Ã¢m"))).ToList();
+                list = requestBUS.GetList().Where(r => r.Status != "Hoàn thành" && (r.ServiceType.Contains("MRI") || r.ServiceType.Contains("X-quang") || r.ServiceType.Contains("Siêu âm"))).ToList();
             }
             catch { }
 
@@ -103,10 +104,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             }
 
             // Image picker elements
-            var btnSelectFile = CreateFlatButton("Chá»n tá»‡p phim...", textMain, Color.FromArgb(243, 244, 246), 24, 100, 160, 36);
+            var btnSelectFile = CreateFlatButton("Chọn tệp phim...", textMain, Color.FromArgb(243, 244, 246), 24, 100, 160, 36);
             btnSelectFile.Click += (s, ev) =>
             {
-                using (OpenFileDialog ofd = new OpenFileDialog { Filter = "áº¢nh káº¿t quáº£ (*.jpg;*.png;*.jpeg)|*.jpg;*.png;*.jpeg" })
+                using (OpenFileDialog ofd = new OpenFileDialog { Filter = "Ảnh kết quả (*.jpg;*.png;*.jpeg)|*.jpg;*.png;*.jpeg" })
                 {
                     if (ofd.ShowDialog() == DialogResult.OK)
                     {
@@ -127,7 +128,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             };
             panel.Controls.Add(picMRIPreview);
 
-            panel.Controls.Add(CreateLabel("Káº¿t luáº­n / Ghi chÃº ká»¹ thuáº­t viÃªn:", 9.5F, FontStyle.Bold, textMain, 360, 100, 300, 22));
+            panel.Controls.Add(CreateLabel("Kết luận / Ghi chú kỹ thuật viên:", 9.5F, FontStyle.Bold, textMain, 360, 100, 300, 22));
             txtMRINote = new TextBox
             {
                 Multiline = true,
@@ -138,17 +139,17 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             };
             panel.Controls.Add(txtMRINote);
 
-            var btnSubmit = CreateFlatButton("Táº£i lÃªn káº¿t quáº£ & HoÃ n thÃ nh", Color.White, primary, 24, 420, panel.Width - 48, 44);
+            var btnSubmit = CreateFlatButton("Tải lên kết quả & Hoàn thành", Color.White, primary, 24, 420, panel.Width - 48, 44);
             btnSubmit.Click += (s, ev) =>
             {
                 if (cboMRIRequests.SelectedItem == null)
                 {
-                    MessageBox.Show("Vui lÃ²ng chá»n yÃªu cáº§u thá»±c hiá»‡n.", "Cáº£nh bÃ¡o", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Vui lòng chọn yêu cầu thực hiện.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
                 if (string.IsNullOrEmpty(selectedImagePath))
                 {
-                    MessageBox.Show("Vui lÃ²ng chá»n tá»‡p áº£nh phim chá»¥p.", "Cáº£nh bÃ¡o", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Vui lòng chọn tệp ảnh phim chụp.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -164,14 +165,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     bool ok = requestBUS.SaveImagingResult(reqId, destFile, txtMRINote.Text.Trim());
                     if (ok)
                     {
-                        MessageBox.Show("Táº£i lÃªn káº¿t quáº£ phim vÃ  cáº­p nháº­t há»“ sÆ¡ thÃ nh cÃ´ng!", "ThÃ nh cÃ´ng", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Tải lên kết quả phim và cập nhật hồ sơ thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         activeRequestId = 0;
                         NavigateTo(TechnicianViewTarget.Requests);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Lá»—i: " + ex.Message);
+                    MessageBox.Show("Lỗi: " + ex.Message);
                 }
             };
             panel.Controls.Add(btnSubmit);

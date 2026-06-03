@@ -1,5 +1,6 @@
 using System;
-using System.Data.SqlClient;
+using System.Configuration;
+using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using BUS.Services;
@@ -102,21 +103,27 @@ namespace ClinicManagementSystem.Winforms.Forms
             // If the database connection works, but tables are missing, we will create them.
             try
             {
-                string masterConnStr = "Server=localhost;Database=master;Trusted_Connection=True;";
+                string connString = ConfigurationManager.ConnectionStrings["DbConnection"]?.ConnectionString;
+                if (string.IsNullOrEmpty(connString)) return;
+
+                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connString);
+                string dbName = builder.InitialCatalog;
+                builder.InitialCatalog = "master";
+                string masterConnStr = builder.ConnectionString;
+
                 using (SqlConnection masterConn = new SqlConnection(masterConnStr))
                 {
                     masterConn.Open();
                     // Create DB if not exists
-                    string createDbQuery = "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'HealthCareDB') CREATE DATABASE HealthCareDB;";
+                    string createDbQuery = $"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'{dbName}') CREATE DATABASE [{dbName}];";
                     using (SqlCommand cmd = new SqlCommand(createDbQuery, masterConn))
                     {
                         cmd.ExecuteNonQuery();
                     }
                 }
 
-                // Now connect to HealthCareDB and create tables if not exist
-                string connStr = "Server=localhost;Database=HealthCareDB;Trusted_Connection=True;";
-                using (SqlConnection conn = new SqlConnection(connStr))
+                // Now connect to target DB and create tables if not exist
+                using (SqlConnection conn = new SqlConnection(connString))
                 {
                     conn.Open();
                     // Create Users table
@@ -200,11 +207,11 @@ namespace ClinicManagementSystem.Winforms.Forms
                         cmd.ExecuteNonQuery();
                     }
 
-                    // Create Shifts
+                    // Create TechnicianShifts
                     string createShiftsTable = @"
-                        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Shifts]') AND type in (N'U'))
+                        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TechnicianShifts]') AND type in (N'U'))
                         BEGIN
-                            CREATE TABLE [dbo].[Shifts] (
+                            CREATE TABLE [dbo].[TechnicianShifts] (
                                 [ShiftID] INT IDENTITY(1,1) PRIMARY KEY,
                                 [ShiftDate] DATE NOT NULL,
                                 [ShiftName] NVARCHAR(50) NOT NULL,
@@ -228,8 +235,17 @@ namespace ClinicManagementSystem.Winforms.Forms
 
         private void TryCreateLocalDatabase()
         {
+            string connString = ConfigurationManager.ConnectionStrings["DbConnection"]?.ConnectionString;
+            if (string.IsNullOrEmpty(connString)) return;
+
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connString);
+            string dbName = builder.InitialCatalog;
+
             // Try connecting to master on SQLEXPRESS or default instance to create DB and tables
-            string[] instances = new string[] { "Server=localhost;Database=master;Trusted_Connection=True;", "Server=.\\SQLEXPRESS;Database=master;Trusted_Connection=True;" };
+            string[] instances = new string[] {
+                "Server=localhost;Database=master;Trusted_Connection=True;TrustServerCertificate=True;",
+                "Server=.\\SQLEXPRESS;Database=master;Trusted_Connection=True;TrustServerCertificate=True;"
+            };
             foreach (var inst in instances)
             {
                 try
@@ -237,13 +253,13 @@ namespace ClinicManagementSystem.Winforms.Forms
                     using (SqlConnection masterConn = new SqlConnection(inst))
                     {
                         masterConn.Open();
-                        string createDbQuery = "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'HealthCareDB') CREATE DATABASE HealthCareDB;";
+                        string createDbQuery = $"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'{dbName}') CREATE DATABASE [{dbName}];";
                         using (SqlCommand cmd = new SqlCommand(createDbQuery, masterConn))
                         {
                             cmd.ExecuteNonQuery();
                         }
                     }
-                    MessageBox.Show("Đã tự động cấu hình và tạo cơ sở dữ liệu HealthCareDB thành công trên SQL Server!", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Đã tự động cấu hình và tạo cơ sở dữ liệu {dbName} thành công trên SQL Server!", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     AutoInitializeDatabase();
                     return;
                 }
@@ -253,6 +269,7 @@ namespace ClinicManagementSystem.Winforms.Forms
                 }
             }
         }
+
     }
 }
 

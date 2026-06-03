@@ -1,4 +1,4 @@
-﻿using BUS.Services;
+﻿﻿﻿using BUS.Services;
 using ClinicManagementSystem.Winforms;
 using DAL;
 using DTO;
@@ -28,13 +28,8 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private bool layoutReady;
 
         // Custom Navigation Buttons
-        private Button btnNavUploadMRI;
-        private Button btnNavUploadPDF;
-        private Button btnNavLabResult;
-        private Button btnNavSeederTool;
 
         // Active request for processing transitions
-        private int activeRequestId = 0;
 
         public event EventHandler LogoutRequested;
         public event EventHandler CloseRequested;
@@ -51,7 +46,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             lblUserName.Text = user.Name;
             lblUserEmail.Text = user.Email ?? user.Username;
             lblAvatar.Text = string.IsNullOrEmpty(user.Name) ? "K" : user.Name.Substring(0, 1).ToUpper();
-            lblPageSubtitle.Text = "Xin chÃ o, " + user.Name;
+            lblPageSubtitle.Text = "Xin chào, " + user.Name;
         }
 
         private void ReceptionistMainform_Load(object sender, EventArgs e)

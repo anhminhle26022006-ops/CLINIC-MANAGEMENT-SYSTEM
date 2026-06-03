@@ -60,7 +60,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             this.cardPanel.FillColor = System.Drawing.Color.White;
             this.cardPanel.Location = new System.Drawing.Point(50, 40);
             this.cardPanel.Name = "cardPanel";
-            this.cardPanel.Size = new System.Drawing.Size(400, 460);
+            this.cardPanel.Size = new System.Drawing.Size(400, 440);
             this.cardPanel.TabIndex = 0;
             // 
             // lblBrand
@@ -179,7 +179,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.ClientSize = new System.Drawing.Size(500, 540);
+            this.ClientSize = new System.Drawing.Size(500, 520);
             this.Controls.Add(this.cardPanel);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

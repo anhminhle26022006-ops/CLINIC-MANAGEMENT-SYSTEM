@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using DAL.DataContext;
 using DTO;
 using Newtonsoft.Json.Linq;
+using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Technician
 {
@@ -42,7 +43,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void RenderSeederTool()
         {
-            var page = BeginPage("CÃ´ng cá»¥ Khá»Ÿi táº¡o CÆ¡ sá»Ÿ dá»¯ liá»‡u", "Há»‡ thá»‘ng mock dá»¯ liá»‡u máº«u giÃºp cháº¡y demo nhanh cho Ä‘á»“ Ã¡n 3 lá»›p");
+            var page = BeginPage("Công cụ Khởi tạo Cơ sở dữ liệu", "Hệ thống mock dữ liệu mẫu giúp chạy demo nhanh cho đồ án 3 lớp");
 
             var panel = new RoundedPanel
             {
@@ -54,13 +55,24 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 Margin = new Padding(0, 10, 0, 20)
             };
 
-            panel.Controls.Add(CreateLabel("Báº¥m nÃºt bÃªn dÆ°á»›i Ä‘á»ƒ dá»n sáº¡ch báº£ng vÃ  táº¡o dá»¯ liá»‡u máº«u bá»‡nh nhÃ¢n, bÃ¡c sÄ©, lá»‹ch trá»±c & yÃªu cáº§u má»›i:", 10F, FontStyle.Regular, textMain, 24, 24, panel.Width - 48, 24));
+            panel.Controls.Add(CreateLabel("Bấm nút bên dưới để dọn sạch bảng và tạo dữ liệu mẫu bệnh nhân, bác sĩ, lịch trực & yêu cầu mới:", 10F, FontStyle.Regular, textMain, 24, 24, panel.Width - 48, 24));
 
-            var btnRunSeed = CreateFlatButton("KHá»žI Táº O Láº I Dá»® LIá»†U MáºªU (SEED DATABASE)", Color.White, Color.FromArgb(239, 68, 68), 24, 60, panel.Width - 48, 48);
+            int buttonWidth = (panel.Width - 64) / 2;
+
+            var btnRunSeed = CreateFlatButton("KHỞI TẠO LẠI DỮ LIỆU MẪU (SEED DATABASE)", Color.White, Color.FromArgb(239, 68, 68), 24, 60, buttonWidth, 48);
             btnRunSeed.Click += (s, ev) => RunDatabaseSeeder();
             panel.Controls.Add(btnRunSeed);
 
-            panel.Controls.Add(CreateLabel("Log báº£ng Ä‘iá»u khiá»ƒn Seeder:", 9.5F, FontStyle.Bold, textMain, 24, 126, 300, 22));
+            var btnTestPayOS = CreateFlatButton("KIỂM TRA CỔNG THANH TOÁN (PAYOS)", Color.White, Color.FromArgb(59, 130, 246), 24 + buttonWidth + 16, 60, buttonWidth, 48);
+            btnTestPayOS.Click += (s, ev) => {
+                using (var paymentForm = new PayOsPaymentForm())
+                {
+                    paymentForm.ShowDialog();
+                }
+            };
+            panel.Controls.Add(btnTestPayOS);
+
+            panel.Controls.Add(CreateLabel("Log bảng điều khiển Seeder:", 9.5F, FontStyle.Bold, textMain, 24, 126, 300, 22));
 
             txtSeederLog = new TextBox
             {
@@ -82,38 +94,46 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         private void RunDatabaseSeeder()
         {
             txtSeederLog.Clear();
-            LogSeed("Äang báº¯t Ä‘áº§u khá»Ÿi táº¡o láº¡i cÆ¡ sá»Ÿ dá»¯ liá»‡u HealthCareDB...");
+            LogSeed("Đang bắt đầu khởi tạo lại cơ sở dữ liệu HealthCareDB...");
 
             try
             {
+                string shiftTable = "Shifts";
+                try
+                {
+                    int count = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM sys.tables WHERE name = 'TechnicianShifts'"));
+                    if (count > 0) shiftTable = "TechnicianShifts";
+                }
+                catch { }
+
                 // Clear existing tables
-                DatabaseHelper.ExecuteNonQuery("DELETE FROM Shifts;");
+                DatabaseHelper.ExecuteNonQuery($"DELETE FROM {shiftTable};");
                 DatabaseHelper.ExecuteNonQuery("DELETE FROM Requests;");
                 DatabaseHelper.ExecuteNonQuery("DELETE FROM Patients;");
                 DatabaseHelper.ExecuteNonQuery("DELETE FROM Doctors;");
                 DatabaseHelper.ExecuteNonQuery("DELETE FROM Users;");
-                LogSeed("-> ÄÃ£ xÃ³a sáº¡ch dá»¯ liá»‡u cÅ©.");
+                LogSeed("-> Đã xóa sạch dữ liệu cũ.");
 
                 // Add default login accounts
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Users (Username, Password, Name, Role, Email) VALUES ('ktv', '123', N'Lá»¯ VÃµ HoÃ ng PhÃºc', 'Technician', 'tech@phongkham.vn');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Users (Username, Password, Name, Role, Email) VALUES ('admin', 'admin123', N'Quáº£n Trá»‹ ViÃªn', 'Admin', 'admin@phongkham.vn');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Users (Username, Password, Name, Role, Email) VALUES ('bacsi', '123', N'BÃ¡c sÄ© Nguyá»…n VÄƒn Minh', 'Doctor', 'doctor@phongkham.vn');");
-                LogSeed("-> ÄÃ£ thÃªm 3 tÃ i khoáº£n Ä‘Äƒng nháº­p (Ká»¹ thuáº­t viÃªn: 'ktv' | BÃ¡c sÄ©: 'bacsi' | Admin: 'admin').");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Users (Username, Password, Name, Role, Email) VALUES ('ktv', '123', N'Lữ Võ Hoàng Phúc', 'Technician', 'tech@phongkham.vn');");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Users (Username, Password, Name, Role, Email) VALUES ('admin', 'admin123', N'Quản Trị Viên', 'Admin', 'admin@phongkham.vn');");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Users (Username, Password, Name, Role, Email) VALUES ('bacsi', '123', N'Bác sĩ Nguyễn Văn Minh', 'Doctor', 'doctor@phongkham.vn');");
+                LogSeed("-> Đã thêm 3 tài khoản đăng nhập (Kỹ thuật viên: 'ktv' | Bác sĩ: 'bacsi' | Admin: 'admin').");
 
                 // Seed Doctors
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS001', N'BS. Nguyá»…n VÄƒn Minh', N'Khoa Ná»™i');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS002', N'BS. Tráº§n B', N'Cháº©n Ä‘oÃ¡n hÃ¬nh áº£nh');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS003', N'BS. Pháº¡m D', N'Khoa Ná»™i');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS004', N'BS. LÃª H', N'Khoa Tim máº¡ch');");
-                LogSeed("-> ÄÃ£ náº¡p 4 há»“ sÆ¡ BÃ¡c sÄ© chá»‰ Ä‘á»‹nh.");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS001', N'BS. Nguyễn Văn Minh', N'Khoa Nội');");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS002', N'BS. Trần B', N'Chẩn đoán hình ảnh');");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS003', N'BS. Phạm D', N'Khoa Nội');");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS004', N'BS. Lê H', N'Khoa Tim mạch');");
+                LogSeed("-> Đã nạp 4 hồ sơ Bác sĩ chỉ định.");
 
                 // Seed Patients
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN001', N'Nguyá»…n VÄƒn A', '1981-05-15', N'Nam', '0905111222', N'Háº£i ChÃ¢u, ÄÃ  Náºµng');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN002', N'Tráº§n Thá»‹ B', '1994-08-22', N'Ná»¯', '0905333444', N'SÆ¡n TrÃ , ÄÃ  Náºµng');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN003', N'LÃª VÄƒn C', '1998-11-30', N'Nam', '0905555666', N'LiÃªn Chiá»ƒu, ÄÃ  Náºµng');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN004', N'Pháº¡m Thá»‹ D', '1971-02-10', N'Ná»¯', '0905777888', N'NgÅ© HÃ nh SÆ¡n, ÄÃ  Náºµng');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN005', N'HoÃ ng VÄƒn E', '1988-04-05', N'Nam', '0905999000', N'Thanh KhÃª, ÄÃ  Náºµng');");
-                LogSeed("-> ÄÃ£ náº¡p 5 bá»‡nh nhÃ¢n Ä‘Äƒng kÃ½.");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN001', N'Nguyễn Văn A', '1981-05-15', N'Nam', '0905111222', N'Hải Châu, Đà Nẵng');");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN002', N'Trần Thị B', '1994-08-22', N'Nữ', '0905333444', N'Sơn Trà, Đà Nẵng');");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN003', N'Lê Văn C', '1998-11-30', N'Nam', '0905555666', N'Liên Chiểu, Đà Nẵng');");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN004', N'Phạm Thị D', '1971-02-10', N'Nữ', '0905777888', N'Ngũ Hành Sơn, Đà Nẵng');");
+                DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN005', N'Hoàng Văn E', '1988-04-05', N'Nam', '0905999000', N'Thanh Khê, Đà Nẵng');");
+                LogSeed("-> Đã nạp 5 bệnh nhân đăng ký.");
 
                 // Fetch IDs
                 int p1 = (int)DatabaseHelper.ExecuteScalar("SELECT PatientID FROM Patients WHERE PatientCode = 'BN001'");
@@ -128,11 +148,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 int d4 = (int)DatabaseHelper.ExecuteScalar("SELECT DoctorID FROM Doctors WHERE DoctorCode = 'BS004'");
 
                 // Seed Requests
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ001', {p3}, {d3}, N'Äiá»‡n tÃ¢m Ä‘á»“ (ECG)', N'ÄÃ¡nh giÃ¡ rá»‘i loáº¡n nhá»‹p tim', N'Æ¯u tiÃªn cao', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chá» xá»­ lÃ½');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ002', {p3}, {d3}, N'SiÃªu Ã¢m tim', N'ÄÃ¡nh giÃ¡ cáº¥u trÃºc tim', N'Æ¯u tiÃªn cao', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chá» xá»­ lÃ½');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ004', {p5}, {d2}, N'Chá»¥p MRI cá»™t sá»‘ng', N'Nghi ngá» thoÃ¡t vá»‹ Ä‘Ä©a Ä‘á»‡m', N'Æ¯u tiÃªn', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chá» xá»­ lÃ½');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ005', {p2}, {d4}, N'XÃ©t nghiá»‡m sinh hÃ³a mÃ¡u', N'Äá»‹nh lÆ°á»£ng Glucose vÃ  Acid Uric', N'ThÆ°á»ng', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chá» xá»­ lÃ½');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ006', {p4}, {d2}, N'Chá»¥p X-quang phá»•i', N'Ho kÃ©o dÃ i, nghi ngá» viÃªm phá»•i', N'ThÆ°á»ng', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Äang xá»­ lÃ½');");
+                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ001', {p3}, {d3}, N'Điện tâm đồ (ECG)', N'Đánh giá rối loạn nhịp tim', N'Ưu tiên cao', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chờ xử lý');");
+                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ002', {p3}, {d3}, N'Siêu âm tim', N'Đánh giá cấu trúc tim', N'Ưu tiên cao', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chờ xử lý');");
+                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ004', {p5}, {d2}, N'Chụp MRI cột sống', N'Nghi ngờ thoát vị đĩa đệm', N'Ưu tiên', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chờ xử lý');");
+                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ005', {p2}, {d4}, N'Xét nghiệm sinh hóa máu', N'Định lượng Glucose và Acid Uric', N'Thường', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chờ xử lý');");
+                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ006', {p4}, {d2}, N'Chụp X-quang phổi', N'Ho kéo dài, nghi ngờ viêm phổi', N'Thường', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Đang xử lý');");
 
                 // Seed one completed request with PDF path
                 string uploadFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "uploads");
@@ -140,26 +160,26 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 string dummyPdf = Path.Combine(uploadFolder, "sample_result.pdf");
                 if (!File.Exists(dummyPdf)) File.WriteAllBytes(dummyPdf, new byte[] { 0x25, 0x50, 0x44, 0x46, 0x0A }); // dummy empty pdf header
 
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status, ResultPDF) VALUES ('REQ003', {p1}, {d1}, N'XÃ©t nghiá»‡m mÃ¡u tá»•ng quÃ¡t', N'Kiá»ƒm tra cÃ´ng thá»©c mÃ¡u', N'ThÆ°á»ng', '{DateTime.Now.AddDays(-1):yyyy-MM-dd HH:mm:ss}', N'HoÃ n thÃ nh', '{dummyPdf.Replace("\\", "\\\\")}');");
+                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status, ResultPDF) VALUES ('REQ003', {p1}, {d1}, N'Xét nghiệm máu tổng quát', N'Kiểm tra công thức máu', N'Thường', '{DateTime.Now.AddDays(-1):yyyy-MM-dd HH:mm:ss}', N'Hoàn thành', '{dummyPdf.Replace("\\", "\\\\")}');");
 
-                LogSeed("-> ÄÃ£ náº¡p 6 yÃªu cáº§u dá»‹ch vá»¥.");
+                LogSeed("-> Đã nạp 6 yêu cầu dịch vụ.");
 
                 // Seed Shifts
                 DateTime mon = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Shifts (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon:yyyy-MM-dd}', N'SÃ¡ng', N'PhÃ²ng khÃ¡m 101', N'Khoa Ná»™i', N'ÄÃ£ Ä‘Äƒng kÃ½');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Shifts (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon.AddDays(1):yyyy-MM-dd}', N'Chiá»u', N'PhÃ²ng khÃ¡m 102', N'Khoa Ná»™i', N'ÄÃ£ Ä‘Äƒng kÃ½');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Shifts (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon.AddDays(2):yyyy-MM-dd}', N'SÃ¡ng', N'PhÃ²ng khÃ¡m 201', N'Khoa Tim máº¡ch', N'ÄÃ£ Ä‘Äƒng kÃ½');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Shifts (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon.AddDays(3):yyyy-MM-dd}', N'Chiá»u', N'PhÃ²ng khÃ¡m 103', N'Khoa Ná»™i', N'Chá» xÃ¡c nháº­n');");
-                LogSeed("-> ÄÃ£ náº¡p 4 ca trá»±c hÃ ng tuáº§n cá»§a Ká»¹ thuáº­t viÃªn.");
+                DatabaseHelper.ExecuteNonQuery($"INSERT INTO {shiftTable} (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon:yyyy-MM-dd}', N'Sáng', N'Phòng khám 101', N'Khoa Nội', N'Đã đăng ký');");
+                DatabaseHelper.ExecuteNonQuery($"INSERT INTO {shiftTable} (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon.AddDays(1):yyyy-MM-dd}', N'Chiều', N'Phòng khám 102', N'Khoa Nội', N'Đã đăng ký');");
+                DatabaseHelper.ExecuteNonQuery($"INSERT INTO {shiftTable} (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon.AddDays(2):yyyy-MM-dd}', N'Sáng', N'Phòng khám 201', N'Khoa Tim mạch', N'Đã đăng ký');");
+                DatabaseHelper.ExecuteNonQuery($"INSERT INTO {shiftTable} (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon.AddDays(3):yyyy-MM-dd}', N'Chiều', N'Phòng khám 103', N'Khoa Nội', N'Chờ xác nhận');");
+                LogSeed("-> Đã nạp 4 ca trực hàng tuần của Kỹ thuật viên.");
 
-                LogSeed("\n[HOÃ€N THÃ€NH] Khá»Ÿi táº¡o dá»¯ liá»‡u máº«u thÃ nh cÃ´ng! Báº¡n cÃ³ thá»ƒ sá»­ dá»¥ng cÃ¡c chá»©c nÄƒng cá»§a Ká»¹ thuáº­t viÃªn ngay láº­p tá»©c.");
-                MessageBox.Show("ÄÃ£ náº¡p toÃ n bá»™ dá»¯ liá»‡u máº«u vÃ o SQL Server thÃ nh cÃ´ng!", "Seeder Tool", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LogSeed("\n[HOÀN THÀNH] Khởi tạo dữ liệu mẫu thành công! Bạn có thể sử dụng các chức năng của Kỹ thuật viên ngay lập tức.");
+                MessageBox.Show("Đã nạp toàn bộ dữ liệu mẫu vào SQL Server thành công!", "Seeder Tool", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                LogSeed("\n[Lá»–I] Khá»Ÿi táº¡o dá»¯ liá»‡u tháº¥t báº¡i. Chi tiáº¿t lá»—i:");
+                LogSeed("\n[LỖI] Khởi tạo dữ liệu thất bại. Chi tiết lỗi:");
                 LogSeed(ex.ToString());
-                MessageBox.Show("Seed dá»¯ liá»‡u tháº¥t báº¡i: " + ex.Message, "Lá»—i", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Seed dữ liệu thất bại: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using DTO;
 using DAL.DataContext;
 
@@ -9,22 +9,35 @@ namespace DAL.Repositories
 {
     public class RequestDAL
     {
-        private const string BaseSelect = @"
-            SELECT r.*, p.Name AS PatientName, p.PatientCode AS PatientCode, d.Name AS DoctorName 
-            FROM Requests r
-            INNER JOIN Patients p ON r.PatientID = p.PatientID
-            INNER JOIN Doctors d ON r.DoctorID = d.DoctorID";
+        private string GetBaseSelect(out bool isNewSchema)
+        {
+            string checkColumnQuery = "SELECT COUNT(*) FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Patients]') AND name = 'Name'";
+            int nameColumnExists = 0;
+            try
+            {
+                nameColumnExists = Convert.ToInt32(DatabaseHelper.ExecuteScalar(checkColumnQuery));
+            }
+            catch { }
+            isNewSchema = nameColumnExists == 0;
+
+            string patientNameColumn = isNewSchema ? "p.FullName" : "p.Name";
+            return $@"
+                SELECT r.*, {patientNameColumn} AS PatientName, p.PatientCode AS PatientCode, d.Name AS DoctorName 
+                FROM Requests r
+                INNER JOIN Patients p ON r.PatientID = p.PatientID
+                INNER JOIN Doctors d ON r.DoctorID = d.DoctorID";
+        }
 
         public List<RequestDTO> GetAll()
         {
-            string query = BaseSelect + " ORDER BY r.RequestDate DESC";
+            string query = GetBaseSelect(out _) + " ORDER BY r.RequestDate DESC";
             DataTable dt = DatabaseHelper.ExecuteQuery(query);
             return MapTableToList(dt);
         }
 
         public List<RequestDTO> GetByStatus(string status)
         {
-            string query = BaseSelect + " WHERE r.Status = @Status ORDER BY r.RequestDate DESC";
+            string query = GetBaseSelect(out _) + " WHERE r.Status = @Status ORDER BY r.RequestDate DESC";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@Status", status)
@@ -35,7 +48,8 @@ namespace DAL.Repositories
 
         public List<RequestDTO> Search(string term, string status)
         {
-            string query = BaseSelect + " WHERE 1=1";
+            bool isNewSchema;
+            string query = GetBaseSelect(out isNewSchema) + " WHERE 1=1";
             List<SqlParameter> listParams = new List<SqlParameter>();
 
             if (!string.IsNullOrEmpty(status) && status != "Tất cả trạng thái")
@@ -46,7 +60,14 @@ namespace DAL.Repositories
 
             if (!string.IsNullOrEmpty(term))
             {
-                query += " AND (p.Name LIKE @Term OR p.PatientCode LIKE @Term OR r.ServiceType LIKE @Term)";
+                if (isNewSchema)
+                {
+                    query += " AND (p.FullName LIKE @Term OR p.PatientCode LIKE @Term OR r.ServiceType LIKE @Term)";
+                }
+                else
+                {
+                    query += " AND (p.Name LIKE @Term OR p.PatientCode LIKE @Term OR r.ServiceType LIKE @Term)";
+                }
                 listParams.Add(new SqlParameter("@Term", "%" + term + "%"));
             }
 
@@ -57,7 +78,7 @@ namespace DAL.Repositories
 
         public List<RequestDTO> GetByPatient(int patientId)
         {
-            string query = BaseSelect + " WHERE r.PatientID = @PatientID ORDER BY r.RequestDate DESC";
+            string query = GetBaseSelect(out _) + " WHERE r.PatientID = @PatientID ORDER BY r.RequestDate DESC";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@PatientID", patientId)

@@ -592,8 +592,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private Panel panel11;
         private Panel panel12;
         private Panel panel13;
-        private Button btnDepartmentManagement;
-        private Button btnStatitics;
         private Button btnVitalSigns;
     }
 }

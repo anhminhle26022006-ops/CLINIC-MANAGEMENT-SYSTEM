@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using DTO;
 using DAL.DataContext;
 
@@ -9,9 +9,24 @@ namespace DAL.Repositories
 {
     public class PatientDAL
     {
+        private bool IsNewSchema()
+        {
+            string checkColumnQuery = "SELECT COUNT(*) FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Patients]') AND name = 'Name'";
+            int nameColumnExists = 0;
+            try
+            {
+                nameColumnExists = Convert.ToInt32(DatabaseHelper.ExecuteScalar(checkColumnQuery));
+            }
+            catch { }
+            return nameColumnExists == 0;
+        }
+
         public List<PatientDTO> GetAll()
         {
-            string query = "SELECT * FROM Patients";
+            string query = IsNewSchema() 
+                ? "SELECT PatientID, PatientCode, FullName AS Name, DOB AS BirthDate, Gender, Phone, Address FROM Patients"
+                : "SELECT * FROM Patients";
+
             DataTable dt = DatabaseHelper.ExecuteQuery(query);
             List<PatientDTO> list = new List<PatientDTO>();
 
@@ -24,7 +39,10 @@ namespace DAL.Repositories
 
         public List<PatientDTO> Search(string term)
         {
-            string query = "SELECT * FROM Patients WHERE Name LIKE @Term OR PatientCode LIKE @Term OR Phone LIKE @Term";
+            string query = IsNewSchema()
+                ? "SELECT PatientID, PatientCode, FullName AS Name, DOB AS BirthDate, Gender, Phone, Address FROM Patients WHERE FullName LIKE @Term OR PatientCode LIKE @Term OR Phone LIKE @Term"
+                : "SELECT * FROM Patients WHERE Name LIKE @Term OR PatientCode LIKE @Term OR Phone LIKE @Term";
+
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@Term", "%" + term + "%")
@@ -42,7 +60,10 @@ namespace DAL.Repositories
 
         public bool Add(PatientDTO patient)
         {
-            string query = "INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES (@PatientCode, @Name, @BirthDate, @Gender, @Phone, @Address)";
+            string query = IsNewSchema()
+                ? "INSERT INTO Patients (PatientCode, FullName, DOB, Gender, Phone, Address) VALUES (@PatientCode, @Name, @BirthDate, @Gender, @Phone, @Address)"
+                : "INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES (@PatientCode, @Name, @BirthDate, @Gender, @Phone, @Address)";
+
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@PatientCode", patient.PatientCode),
