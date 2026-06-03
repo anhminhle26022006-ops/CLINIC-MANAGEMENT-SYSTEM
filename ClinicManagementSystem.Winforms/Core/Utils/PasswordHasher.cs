@@ -4,14 +4,14 @@
     {
         public static string Hash(string password)
         {
-            return password?.Trim() ?? string.Empty;
+            return password;
         }
 
         public static bool Verify(
             string password,
             string storedHash)
         {
-            return Hash(password) == Hash(storedHash);
+            return password == storedHash;
         }
     }
 }
