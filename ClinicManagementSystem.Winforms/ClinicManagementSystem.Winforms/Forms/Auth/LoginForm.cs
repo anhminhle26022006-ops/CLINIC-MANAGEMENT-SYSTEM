@@ -92,15 +92,18 @@ namespace ClinicManagementSystem.Winforms.Forms
         {
             // Run in background / quietly check if connection works and users table exists.
             // If the database connection works, but tables are missing, we will create them.
+            string connString = ConfigurationManager.ConnectionStrings["DbConnection"]?.ConnectionString;
+            if (string.IsNullOrEmpty(connString)) return;
+
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connString);
+            string dbName = builder.InitialCatalog;
+
+            // 1. Try to create the database via master connection if missing.
             try
             {
-                string connString = ConfigurationManager.ConnectionStrings["DbConnection"]?.ConnectionString;
-                if (string.IsNullOrEmpty(connString)) return;
-
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connString);
-                string dbName = builder.InitialCatalog;
-                builder.InitialCatalog = "master";
-                string masterConnStr = builder.ConnectionString;
+                SqlConnectionStringBuilder masterBuilder = new SqlConnectionStringBuilder(connString);
+                masterBuilder.InitialCatalog = "master";
+                string masterConnStr = masterBuilder.ConnectionString;
 
                 using (SqlConnection masterConn = new SqlConnection(masterConnStr))
                 {
@@ -112,11 +115,19 @@ namespace ClinicManagementSystem.Winforms.Forms
                         cmd.ExecuteNonQuery();
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Database auto-creation on master skipped or failed: " + ex.Message);
+            }
 
-                // Now connect to target DB and create tables if not exist
+            // 2. Connect to the target DB and create tables if not exist.
+            try
+            {
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
                     conn.Open();
+
                     // Check if Roles table exists (new CMS schema)
                     bool hasRolesTable = false;
                     try
@@ -136,116 +147,157 @@ namespace ClinicManagementSystem.Winforms.Forms
                             string scriptPath = FindSqlScriptPath("CMS.sql");
                             if (!string.IsNullOrEmpty(scriptPath))
                             {
-                                ExecuteSqlScript(scriptPath, connString);
+                                try
+                                {
+                                    ExecuteSqlScript(scriptPath, connString);
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.Diagnostics.Debug.WriteLine("CMS.sql execution failed: " + ex.Message);
+                                }
                             }
                         }
-                        return; // Done initializing CMS database
                     }
 
-                    // Create Users table
-                    string createUsersTable = @"
-                        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Users]') AND type in (N'U'))
-                        BEGIN
-                            CREATE TABLE [dbo].[Users] (
-                                [UserID] INT IDENTITY(1,1) PRIMARY KEY,
-                                [Username] VARCHAR(100) NOT NULL UNIQUE,
-                                [Password] VARCHAR(100) NOT NULL,
-                                [Name] NVARCHAR(100) NOT NULL,
-                                [Role] VARCHAR(50) NOT NULL,
-                                [Email] VARCHAR(100) NULL
-                            );
-                            -- Insert seed technician and admin
-                            INSERT INTO [dbo].[Users] (Username, Password, Name, Role, Email) VALUES ('ktv', '123', N'Lữ Võ Hoàng Phúc', 'Technician', 'tech@phongkham.vn');
-                            INSERT INTO [dbo].[Users] (Username, Password, Name, Role, Email) VALUES ('admin', 'admin123', N'Quản Trị Viên', 'Admin', 'admin@phongkham.vn');
-                            INSERT INTO [dbo].[Users] (Username, Password, Name, Role, Email) VALUES ('bacsi', '123', N'Bác sĩ Nguyễn Văn Minh', 'Doctor', 'doctor@phongkham.vn');
-                        END";
-                    using (SqlCommand cmd = new SqlCommand(createUsersTable, conn))
+                    // Create Users table (wrapped in try-catch to avoid compile-time column checks blocking other queries)
+                    try
                     {
-                        cmd.ExecuteNonQuery();
+                        string createUsersTable = @"
+                            IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Users]') AND type in (N'U'))
+                            BEGIN
+                                 CREATE TABLE [dbo].[Users] (
+                                     [UserID] INT IDENTITY(1,1) PRIMARY KEY,
+                                     [Username] VARCHAR(100) NOT NULL UNIQUE,
+                                     [Password] VARCHAR(100) NOT NULL,
+                                     [Name] NVARCHAR(100) NOT NULL,
+                                     [Role] VARCHAR(50) NOT NULL,
+                                     [Email] VARCHAR(100) NULL
+                                 );
+                                 -- Insert seed technician and admin
+                                 INSERT INTO [dbo].[Users] (Username, Password, Name, Role, Email) VALUES ('ktv', '123', N'Lữ Võ Hoàng Phúc', 'Technician', 'tech@phongkham.vn');
+                                 INSERT INTO [dbo].[Users] (Username, Password, Name, Role, Email) VALUES ('admin', 'admin123', N'Quản Trị Viên', 'Admin', 'admin@phongkham.vn');
+                                 INSERT INTO [dbo].[Users] (Username, Password, Name, Role, Email) VALUES ('bacsi', '123', N'Bác sĩ Nguyễn Văn Minh', 'Doctor', 'doctor@phongkham.vn');
+                             END";
+                        using (SqlCommand cmd = new SqlCommand(createUsersTable, conn))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Users table creation skipped or failed: " + ex.Message);
                     }
 
                     // Create Patients
-                    string createPatientsTable = @"
-                        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Patients]') AND type in (N'U'))
-                        BEGIN
-                            CREATE TABLE [dbo].[Patients] (
-                                [PatientID] INT IDENTITY(1,1) PRIMARY KEY,
-                                [PatientCode] VARCHAR(50) NOT NULL UNIQUE,
-                                [Name] NVARCHAR(100) NOT NULL,
-                                [BirthDate] DATE NOT NULL,
-                                [Gender] NVARCHAR(20) NOT NULL,
-                                [Phone] VARCHAR(20) NULL,
-                                [Address] NVARCHAR(250) NULL
-                            );
-                        END";
-                    using (SqlCommand cmd = new SqlCommand(createPatientsTable, conn))
+                    try
                     {
-                        cmd.ExecuteNonQuery();
+                        string createPatientsTable = @"
+                            IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Patients]') AND type in (N'U'))
+                            BEGIN
+                                CREATE TABLE [dbo].[Patients] (
+                                    [PatientID] INT IDENTITY(1,1) PRIMARY KEY,
+                                    [PatientCode] VARCHAR(50) NOT NULL UNIQUE,
+                                    [Name] NVARCHAR(100) NOT NULL,
+                                    [BirthDate] DATE NOT NULL,
+                                    [Gender] NVARCHAR(20) NOT NULL,
+                                    [Phone] VARCHAR(20) NULL,
+                                    [Address] NVARCHAR(250) NULL
+                                );
+                            END";
+                        using (SqlCommand cmd = new SqlCommand(createPatientsTable, conn))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Patients table creation skipped or failed: " + ex.Message);
                     }
 
                     // Create Doctors
-                    string createDoctorsTable = @"
-                        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Doctors]') AND type in (N'U'))
-                        BEGIN
-                            CREATE TABLE [dbo].[Doctors] (
-                                [DoctorID] INT IDENTITY(1,1) PRIMARY KEY,
-                                [DoctorCode] VARCHAR(50) NOT NULL UNIQUE,
-                                [Name] NVARCHAR(100) NOT NULL,
-                                [Department] NVARCHAR(100) NOT NULL
-                            );
-                        END";
-                    using (SqlCommand cmd = new SqlCommand(createDoctorsTable, conn))
+                    try
                     {
-                        cmd.ExecuteNonQuery();
+                        string createDoctorsTable = @"
+                            IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Doctors]') AND type in (N'U'))
+                            BEGIN
+                                CREATE TABLE [dbo].[Doctors] (
+                                    [DoctorID] INT IDENTITY(1,1) PRIMARY KEY,
+                                    [DoctorCode] VARCHAR(50) NOT NULL UNIQUE,
+                                    [Name] NVARCHAR(100) NOT NULL,
+                                    [Department] NVARCHAR(100) NOT NULL
+                                );
+                            END";
+                        using (SqlCommand cmd = new SqlCommand(createDoctorsTable, conn))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Doctors table creation failed: " + ex.Message);
                     }
 
                     // Create Requests
-                    string createRequestsTable = @"
-                        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Requests]') AND type in (N'U'))
-                        BEGIN
-                            CREATE TABLE [dbo].[Requests] (
-                                [RequestID] INT IDENTITY(1,1) PRIMARY KEY,
-                                [RequestCode] VARCHAR(50) NOT NULL UNIQUE,
-                                [PatientID] INT NOT NULL,
-                                [DoctorID] INT NOT NULL,
-                                [ServiceType] NVARCHAR(100) NOT NULL,
-                                [RequestNote] NVARCHAR(500) NULL,
-                                [Priority] NVARCHAR(50) NOT NULL DEFAULT N'Thường',
-                                [RequestDate] DATETIME NOT NULL DEFAULT GETDATE(),
-                                [Status] NVARCHAR(50) NOT NULL DEFAULT N'Chờ xử lý',
-                                [ResultFile] VARCHAR(500) NULL,
-                                [ResultPDF] VARCHAR(500) NULL,
-                                [LabValues] NVARCHAR(MAX) NULL
-                            );
-                        END";
-                    using (SqlCommand cmd = new SqlCommand(createRequestsTable, conn))
+                    try
                     {
-                        cmd.ExecuteNonQuery();
+                        string createRequestsTable = @"
+                            IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Requests]') AND type in (N'U'))
+                            BEGIN
+                                CREATE TABLE [dbo].[Requests] (
+                                    [RequestID] INT IDENTITY(1,1) PRIMARY KEY,
+                                    [RequestCode] VARCHAR(50) NOT NULL UNIQUE,
+                                    [PatientID] INT NOT NULL,
+                                    [DoctorID] INT NOT NULL,
+                                    [ServiceType] NVARCHAR(100) NOT NULL,
+                                    [RequestNote] NVARCHAR(500) NULL,
+                                    [Priority] NVARCHAR(50) NOT NULL DEFAULT N'Thường',
+                                    [RequestDate] DATETIME NOT NULL DEFAULT GETDATE(),
+                                    [Status] NVARCHAR(50) NOT NULL DEFAULT N'Chờ xử lý',
+                                    [ResultFile] VARCHAR(500) NULL,
+                                    [ResultPDF] VARCHAR(500) NULL,
+                                    [LabValues] NVARCHAR(MAX) NULL
+                                );
+                            END";
+                        using (SqlCommand cmd = new SqlCommand(createRequestsTable, conn))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Requests table creation failed: " + ex.Message);
                     }
 
                     // Create TechnicianShifts
-                    string createShiftsTable = @"
-                        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TechnicianShifts]') AND type in (N'U'))
-                        BEGIN
-                            CREATE TABLE [dbo].[TechnicianShifts] (
-                                [ShiftID] INT IDENTITY(1,1) PRIMARY KEY,
-                                [ShiftDate] DATE NOT NULL,
-                                [ShiftName] NVARCHAR(50) NOT NULL,
-                                [Room] NVARCHAR(50) NOT NULL,
-                                [Department] NVARCHAR(100) NOT NULL,
-                                [Status] NVARCHAR(50) NOT NULL DEFAULT N'Đã đăng ký',
-                                [TechnicianName] NVARCHAR(100) NOT NULL DEFAULT N'Lữ Võ Hoàng Phúc'
-                            );
-                        END";
-                    using (SqlCommand cmd = new SqlCommand(createShiftsTable, conn))
+                    try
                     {
-                        cmd.ExecuteNonQuery();
+                        string createShiftsTable = @"
+                            IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TechnicianShifts]') AND type in (N'U'))
+                            BEGIN
+                                CREATE TABLE [dbo].[TechnicianShifts] (
+                                    [ShiftID] INT IDENTITY(1,1) PRIMARY KEY,
+                                    [ShiftDate] DATE NOT NULL,
+                                    [ShiftName] NVARCHAR(50) NOT NULL,
+                                    [Room] NVARCHAR(50) NOT NULL,
+                                    [Department] NVARCHAR(100) NOT NULL,
+                                    [Status] NVARCHAR(50) NOT NULL DEFAULT N'Đã đăng ký',
+                                    [TechnicianName] NVARCHAR(100) NOT NULL DEFAULT N'Lữ Võ Hoàng Phúc'
+                                );
+                            END";
+                        using (SqlCommand cmd = new SqlCommand(createShiftsTable, conn))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("TechnicianShifts table creation failed: " + ex.Message);
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Silent catch, user will see error on login if database connection still fails.
+                System.Diagnostics.Debug.WriteLine("Target DB connection error: " + ex.Message);
             }
         }
 
