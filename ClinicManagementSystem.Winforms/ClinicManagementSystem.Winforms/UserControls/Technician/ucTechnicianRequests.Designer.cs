@@ -16,6 +16,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         private void InitializeComponent()
         {
             this.viewHostPanel = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            this.btnSyncCloud = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.pnlStatsGrid = new System.Windows.Forms.TableLayoutPanel();
@@ -60,6 +61,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.viewHostPanel.Controls.Add(this.pnlStatsGrid);
             this.viewHostPanel.Controls.Add(this.lblSubtitle);
             this.viewHostPanel.Controls.Add(this.lblTitle);
+            this.viewHostPanel.Controls.Add(this.btnSyncCloud);
             this.viewHostPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.viewHostPanel.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
             this.viewHostPanel.Location = new System.Drawing.Point(0, 0);
@@ -365,7 +367,24 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblStep3.TabIndex = 3;
             this.lblStep3.Text = "3. Hoàn thành: Tải lên hình ảnh phim (MRI/X-Ray), tệp PDF, hoặc điền số liệu Lab để hoàn thành.";
             // 
+            // btnSyncCloud
+            // 
+            this.btnSyncCloud.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSyncCloud.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(94)))), ((int)(((byte)(240)))));
+            this.btnSyncCloud.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSyncCloud.FlatAppearance.BorderSize = 0;
+            this.btnSyncCloud.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSyncCloud.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnSyncCloud.ForeColor = System.Drawing.Color.White;
+            this.btnSyncCloud.Location = new System.Drawing.Point(1030, 24);
+            this.btnSyncCloud.Name = "btnSyncCloud";
+            this.btnSyncCloud.Size = new System.Drawing.Size(190, 40);
+            this.btnSyncCloud.TabIndex = 7;
+            this.btnSyncCloud.Text = "Đồng bộ Cloud";
+            this.btnSyncCloud.UseVisualStyleBackColor = false;
+            // 
             // ucTechnicianRequests
+
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -413,5 +432,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         private System.Windows.Forms.Label lblStep1;
         private System.Windows.Forms.Label lblStep2;
         private System.Windows.Forms.Label lblStep3;
+        private System.Windows.Forms.Button btnSyncCloud;
     }
 }

@@ -315,7 +315,7 @@ namespace ClinicManagementSystem.Winforms.UserControls
             panelTopbar.Location = new Point(274, 0);
             panelTopbar.Margin = new Padding(3, 4, 3, 4);
             panelTopbar.Name = "panelTopbar";
-            panelTopbar.Size = new Size(1422, 164);
+            panelTopbar.Size = new Size(1422, 101);
             panelTopbar.TabIndex = 1;
             // 
             // lblAvatar
@@ -413,10 +413,10 @@ namespace ClinicManagementSystem.Winforms.UserControls
             // 
             contentPanel.BackColor = Color.FromArgb(247, 249, 252);
             contentPanel.Dock = DockStyle.Fill;
-            contentPanel.Location = new Point(274, 164);
+            contentPanel.Location = new Point(274, 101);
             contentPanel.Margin = new Padding(3, 4, 3, 4);
             contentPanel.Name = "contentPanel";
-            contentPanel.Size = new Size(1422, 929);
+            contentPanel.Size = new Size(1422, 992);
             contentPanel.TabIndex = 2;
             contentPanel.Resize += contentPanel_Resize;
             // 

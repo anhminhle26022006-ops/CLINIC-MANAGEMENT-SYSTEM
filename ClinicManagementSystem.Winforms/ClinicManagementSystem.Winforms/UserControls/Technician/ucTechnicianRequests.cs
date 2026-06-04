@@ -24,6 +24,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             txtRequestSearch.Leave += TxtRequestSearch_Leave;
             txtRequestSearch.TextChanged += TxtRequestSearch_TextChanged;
             comboRequestStatusFilter.SelectedIndexChanged += ComboRequestStatusFilter_SelectedIndexChanged;
+            btnSyncCloud.Click += BtnSyncCloud_Click;
 
             LoadRequests();
         }
@@ -230,6 +231,30 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
             card.Controls.Add(detail);
             return card;
+        }
+
+        private async void BtnSyncCloud_Click(object sender, EventArgs e)
+        {
+            btnSyncCloud.Enabled = false;
+            string originalText = btnSyncCloud.Text;
+            btnSyncCloud.Text = "Đang đồng bộ...";
+
+            try
+            {
+                var apiSyncBUS = new BUS.Services.ApiSyncBUS();
+                string resultMessage = await apiSyncBUS.SyncRequestsFromSupabaseAsync();
+                LoadRequests();
+                MessageBox.Show(resultMessage, "Đồng bộ thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Có lỗi xảy ra khi đồng bộ yêu cầu:\n" + ex.Message, "Lỗi đồng bộ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnSyncCloud.Text = originalText;
+                btnSyncCloud.Enabled = true;
+            }
         }
     }
 }
