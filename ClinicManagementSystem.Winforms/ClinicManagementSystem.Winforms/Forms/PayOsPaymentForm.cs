@@ -22,7 +22,7 @@ namespace ClinicManagementSystem.Winforms.Forms
 {
     public partial class PayOsPaymentForm : Form
     {
-        private const int ApiTimeoutSeconds = 20;
+        private const int ApiTimeoutSeconds = 60;
         private const string DefaultBackendBaseUrl = "http://localhost:5000";
 
         private CancellationTokenSource apiRequestCancellation;

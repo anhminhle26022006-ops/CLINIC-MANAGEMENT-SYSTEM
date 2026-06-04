@@ -53,12 +53,10 @@ CREATE TABLE Employees (
         NOT NULL,
     DateOfBirth DATE,
     Gender NVARCHAR(10),
-    CitizenId VARCHAR(20)
-        UNIQUE,
+    CitizenId VARCHAR(20),
     Address NVARCHAR(500),
     Phone VARCHAR(20),
-    Email VARCHAR(255)
-        UNIQUE,
+    Email VARCHAR(255),
     HireDate DATE,
     Salary DECIMAL(18,2),
     RoleID INT NOT NULL,
@@ -73,6 +71,14 @@ CREATE TABLE Employees (
     FOREIGN KEY (UserID)
         REFERENCES Users(UserID)
 );
+
+CREATE UNIQUE INDEX UX_Employees_CitizenId_NotNull
+ON Employees(CitizenId)
+WHERE CitizenId IS NOT NULL;
+
+CREATE UNIQUE INDEX UX_Employees_Email_NotNull
+ON Employees(Email)
+WHERE Email IS NOT NULL;
 
 CREATE TABLE Patients (
    PatientID INT PRIMARY KEY IDENTITY,

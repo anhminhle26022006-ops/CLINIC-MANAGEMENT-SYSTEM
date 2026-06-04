@@ -26,7 +26,7 @@ namespace BUS.Services
                 .ToList();
 
             var supabaseEmployees = supabaseEmployeesRaw
-                .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode) || !string.IsNullOrWhiteSpace(e.FullName))
+                .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode))
                 .Where(e => !string.IsNullOrWhiteSpace(e.FullName))
                 .ToList();
 
@@ -36,7 +36,7 @@ namespace BUS.Services
                 .ToList();
 
             var sheetEmployees = sheetEmployeesRaw
-                .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode) || !string.IsNullOrWhiteSpace(e.FullName))
+                .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode))
                 .Where(e => !string.IsNullOrWhiteSpace(e.FullName))
                 .ToList();
 
@@ -86,18 +86,15 @@ namespace BUS.Services
         {
             foreach (var employee in sheetEmployees.Where(e => !e.SyncUuid.HasValue))
             {
-                var existingByCode = !string.IsNullOrWhiteSpace(employee.SyncCode)
-                    ? supabaseEmployees.FirstOrDefault(x => x.SyncUuid.HasValue && NormalizeCode(x.SyncCode) == NormalizeCode(employee.SyncCode))
-                    : null;
-                var existingByName = existingByCode ?? supabaseEmployees.FirstOrDefault(x => x.SyncUuid.HasValue && NormalizeCode(x.FullName) == NormalizeCode(employee.FullName));
-                if (existingByName == null) continue;
+                if (string.IsNullOrWhiteSpace(employee.SyncCode)) continue;
 
-                employee.SyncUuid = existingByName.SyncUuid;
-                if (string.IsNullOrWhiteSpace(employee.SyncCode) && !string.IsNullOrWhiteSpace(existingByName.SyncCode))
-                {
-                    employee.SyncCode = existingByName.SyncCode;
-                }
-                await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, employee.FullName, existingByName.SyncUuid.Value);
+                var existingByCode = supabaseEmployees.FirstOrDefault(x =>
+                    x.SyncUuid.HasValue &&
+                    NormalizeCode(x.SyncCode) == NormalizeCode(employee.SyncCode));
+                if (existingByCode == null) continue;
+
+                employee.SyncUuid = existingByCode.SyncUuid;
+                await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, existingByCode.SyncUuid.Value);
                 result.PatchedEmployeeUuidToSheet++;
                 result.LinkedExistingEmployeeByCode++;
             }
@@ -149,7 +146,7 @@ namespace BUS.Services
 
                 if (patchSheetWhenMissingUuid && missingExternalUuid)
                 {
-                    await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, employee.FullName, local.Uuid);
+                    await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, local.Uuid);
                     result.PatchedEmployeeUuidToSheet++;
                 }
             }
@@ -218,38 +215,38 @@ namespace BUS.Services
                 var existingByCode = !string.IsNullOrWhiteSpace(employee.SyncCode)
                     ? supabaseEmployees.FirstOrDefault(x => NormalizeCode(x.SyncCode) == NormalizeCode(employee.SyncCode))
                     : null;
-                var existingByName = existingByCode ?? supabaseEmployees.FirstOrDefault(x => NormalizeCode(x.FullName) == NormalizeCode(employee.FullName));
 
                 if (existingByUuid != null)
                 {
                     continue;
                 }
 
-                if (existingByName != null)
+                if (existingByCode != null)
                 {
-                    if (employee.SyncUuid.HasValue && !existingByName.SyncUuid.HasValue)
+                    if (employee.SyncUuid.HasValue && !existingByCode.SyncUuid.HasValue)
                     {
-                        await repository.PatchSupabaseEmployeeUuidByCodeAsync(existingByName.SyncCode, employee.SyncUuid.Value);
-                        existingByName.SyncUuid = employee.SyncUuid;
+                        await repository.PatchSupabaseEmployeeUuidByCodeAsync(existingByCode.SyncCode, employee.SyncUuid.Value);
+                        existingByCode.SyncUuid = employee.SyncUuid;
                         result.PatchedEmployeeUuidToSupabase++;
                     }
-                    else if (!employee.SyncUuid.HasValue && existingByName.SyncUuid.HasValue)
+                    else if (!employee.SyncUuid.HasValue && existingByCode.SyncUuid.HasValue)
                     {
-                        await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, employee.FullName, existingByName.SyncUuid.Value);
-                        employee.SyncUuid = existingByName.SyncUuid;
+                        await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, existingByCode.SyncUuid.Value);
+                        employee.SyncUuid = existingByCode.SyncUuid;
                         result.PatchedEmployeeUuidToSheet++;
                         result.LinkedExistingEmployeeByCode++;
                     }
                     continue;
                 }
 
+                await repository.EnsureSupabaseDepartmentAsync(employee.DepartmentID, employee.DepartmentName);
                 var inserted = await repository.InsertSupabaseEmployeeAsync(BuildSupabaseEmployeePayload(employee, includeUuid: employee.SyncUuid.HasValue));
                 if (inserted != null)
                 {
                     result.InsertedEmployeesToSupabase++;
                     if (!employee.SyncUuid.HasValue && inserted.SyncUuid.HasValue)
                     {
-                        await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, employee.FullName, inserted.SyncUuid.Value);
+                        await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, inserted.SyncUuid.Value);
                         employee.SyncUuid = inserted.SyncUuid;
                         result.PatchedEmployeeUuidToSheet++;
                     }
@@ -348,15 +345,13 @@ namespace BUS.Services
             if (includeUuid && employee.SyncUuid.HasValue)
             {
                 payload["employeeid"] = employee.SyncUuid.Value.ToString();
-                payload["doctorid"] = employee.SyncUuid.Value.ToString();
-                payload["patientid"] = employee.SyncUuid.Value.ToString();
             }
 
             payload["employeecode"] = SafeString(employee.SyncCode);
-            payload["patientcode"] = SafeString(employee.SyncCode);
             payload["fullname"] = SafeString(employee.FullName);
             payload["rolename"] = SafeString(employee.RoleName);
             payload["departmentid"] = employee.DepartmentID.HasValue ? (object)employee.DepartmentID.Value : null;
+            payload["departmentname"] = SafeString(employee.DepartmentName);
             payload["phone"] = SafeString(employee.Phone);
             payload["status"] = SafeString(employee.Status);
             return payload;
