@@ -6,16 +6,16 @@ using ClinicManagementSystem.Winforms.UserControls;
 
 namespace ClinicManagementSystem.Winforms.Forms
 {
-    public partial class TechnicianDashboardForm : Form
+    public partial class MainformRole : Form
     {
         private readonly UserDTO currentUser;
 
-        public TechnicianDashboardForm()
+        public MainformRole()
         {
             InitializeComponent();
         }
 
-        public TechnicianDashboardForm(UserDTO user) : this()
+        public MainformRole(UserDTO user) : this()
         {
             currentUser = user;
         }

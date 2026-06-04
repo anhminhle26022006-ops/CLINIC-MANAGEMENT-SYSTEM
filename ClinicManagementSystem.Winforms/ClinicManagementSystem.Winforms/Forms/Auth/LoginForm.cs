@@ -45,7 +45,7 @@ namespace ClinicManagementSystem.Winforms.Forms
                 if (user != null)
                 {
                     // Open Dashboard Form which dynamically hosts the correct role control
-                    TechnicianDashboardForm dashboard = new TechnicianDashboardForm(user);
+                    MainformRole dashboard = new MainformRole(user);
                     this.Hide();
                     dashboard.ShowDialog();
                     this.Close();
