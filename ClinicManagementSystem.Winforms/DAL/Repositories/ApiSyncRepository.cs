@@ -25,8 +25,12 @@ namespace DAL.Repositories
         {
             supabaseUrl = ReadSetting("ApiSyncSupabaseUrl", "https://swnbagptdoozwvcxfmqp.supabase.co").TrimEnd('/');
             supabaseKey = ReadSetting("ApiSyncSupabaseKey", "sb_publishable_0WsU65Jd6rTgCTHqA5-yng_5fn0Q9x0");
-            sheetDbPatientUrl = ReadSetting("ApiSyncSheetDbPatientUrl", "https://sheetdb.io/api/v1/bdiy5t2crif1p").TrimEnd('/');
-            sheetDbEmployeeUrl = ReadSetting("ApiSyncSheetDbEmployeeUrl", "https://sheetdb.io/api/v1/jci04wz60pp1n").TrimEnd('/');
+            sheetDbPatientUrl = WithSheetName(
+                ReadSetting("ApiSyncSheetDbPatientUrl", "https://sheetdb.io/api/v1/bdiy5t2crif1p"),
+                ReadSetting("ApiSyncSheetDbPatientSheet", "Patient"));
+            sheetDbEmployeeUrl = WithSheetName(
+                ReadSetting("ApiSyncSheetDbEmployeeUrl", "https://sheetdb.io/api/v1/jci04wz60pp1n"),
+                ReadSetting("ApiSyncSheetDbEmployeeSheet", "Doctor"));
 
             jsonOptions = new JsonSerializerOptions
             {
@@ -67,33 +71,55 @@ namespace DAL.Repositories
             return PostJsonReturnOneAsync<ApiEmployeeDTO>($"{supabaseUrl}/rest/v1/employees", payload, true, "POST SHEET EMPLOYEE -> SUPABASE");
         }
 
+        public async Task EnsureSupabaseDepartmentAsync(int? departmentId, string departmentName)
+        {
+            if (!departmentId.HasValue) return;
+
+            string lookupUrl = $"{supabaseUrl}/rest/v1/departments?departmentid=eq.{departmentId.Value}&select=departmentid";
+            using (var client = CreateClient(true))
+            {
+                var response = await client.GetAsync(lookupUrl);
+                string responseText = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw BuildHttpException("GET SUPABASE DEPARTMENT", "GET", lookupUrl, null, response, responseText);
+                }
+
+                if (!string.IsNullOrWhiteSpace(responseText) && responseText.Trim() != "[]")
+                {
+                    return;
+                }
+            }
+
+            var payload = new Dictionary<string, object>
+            {
+                ["departmentid"] = departmentId.Value,
+                ["departmentname"] = string.IsNullOrWhiteSpace(departmentName) ? $"Khoa {departmentId.Value}" : departmentName.Trim()
+            };
+            await PostJsonAsync($"{supabaseUrl}/rest/v1/departments", payload, true, "POST SHEET DEPARTMENT -> SUPABASE");
+        }
+
         public Task<bool> PatchPatientSheetUuidAsync(string patientCode, Guid patientUuid)
         {
             return PatchSheetByColumnAsync(sheetDbPatientUrl, "patientcode", patientCode, new Dictionary<string, object>
             {
-                ["patientid"] = patientUuid.ToString(),
-                ["patientuuid"] = patientUuid.ToString()
+                ["patientid"] = patientUuid.ToString()
             }, "PATCH PATIENT UUID BACK TO SHEET");
         }
 
-        public Task<bool> PatchEmployeeSheetUuidAsync(string employeeCode, string fullName, Guid employeeUuid)
+        public Task<bool> PatchEmployeeSheetUuidAsync(string employeeCode, Guid employeeUuid)
         {
             var fields = new Dictionary<string, object>
             {
-                ["employeeid"] = employeeUuid.ToString(),
-                ["doctorid"] = employeeUuid.ToString(),
-                ["patientid"] = employeeUuid.ToString(),
-                ["employeeuuid"] = employeeUuid.ToString()
+                ["employeeid"] = employeeUuid.ToString()
             };
 
-            if (!string.IsNullOrWhiteSpace(employeeCode))
+            if (string.IsNullOrWhiteSpace(employeeCode))
             {
-                return PatchSheetByColumnAsync(sheetDbEmployeeUrl, "patientcode", employeeCode, fields, "PATCH EMPLOYEE UUID BACK TO SHEET BY CODE");
+                return Task.FromResult(false);
             }
-            else
-            {
-                return PatchSheetByColumnAsync(sheetDbEmployeeUrl, "fullname", fullName, fields, "PATCH EMPLOYEE UUID BACK TO SHEET BY NAME");
-            }
+
+            return PatchSheetByColumnAsync(sheetDbEmployeeUrl, "employeecode", employeeCode, fields, "PATCH EMPLOYEE UUID BACK TO SHEET BY CODE");
         }
 
         public Task<bool> PatchSupabasePatientUuidByCodeAsync(string patientCode, Guid patientUuid)
@@ -204,13 +230,11 @@ namespace DAL.Repositories
                     existingByCode = await GetEmployeeByCodeAsync(conn, employee.SyncCode, isNew);
                 }
 
-                LocalIdentity existingByName = existingByCode ?? await GetEmployeeByNameAsync(conn, employee.FullName, isNew);
-
-                if (existingByName != null)
+                if (existingByCode != null)
                 {
-                    Guid finalUuid = employee.SyncUuid ?? existingByName.Uuid ?? uuid;
-                    await UpdateLocalEmployeeAsync(conn, existingByName.Id, employee, finalUuid, isNew);
-                    return new ApiLocalUuidResultDTO { Uuid = finalUuid, Inserted = false, Generated = !existingByName.Uuid.HasValue && generated };
+                    Guid finalUuid = employee.SyncUuid ?? existingByCode.Uuid ?? uuid;
+                    await UpdateLocalEmployeeAsync(conn, existingByCode.Id, employee, finalUuid, isNew);
+                    return new ApiLocalUuidResultDTO { Uuid = finalUuid, Inserted = false, Generated = !existingByCode.Uuid.HasValue && generated };
                 }
 
                 await InsertLocalEmployeeAsync(conn, employee, uuid, isNew);
@@ -266,6 +290,9 @@ BEGIN
     EXEC('CREATE UNIQUE INDEX UQ_Employees_UUID ON dbo.Employees(EmployeeUUID) WHERE EmployeeUUID IS NOT NULL');
 END;";
                 await ExecuteNonQueryAsync(conn, indexSql);
+
+                await EnsureNullableEmployeeUniqueIndexAsync(conn, "CitizenId", "UX_Employees_CitizenId_NotNull");
+                await EnsureNullableEmployeeUniqueIndexAsync(conn, "Email", "UX_Employees_Email_NotNull");
             }
             else
             {
@@ -514,7 +541,7 @@ SET EmployeeUUID = @EmployeeUUID,
 WHERE EmployeeID = @EmployeeID";
                 await ExecuteNonQueryAsync(conn, sql,
                     new SqlParameter("@EmployeeUUID", uuid),
-                    new SqlParameter("@EmployeeCode", DbValue(employee.SyncCode)),
+                    new SqlParameter("@EmployeeCode", DbRequiredValue(employee.SyncCode, BuildEmployeeFallbackCode(uuid))),
                     new SqlParameter("@FullName", DbValue(employee.FullName)),
                     new SqlParameter("@RoleID", roleId),
                     new SqlParameter("@DepartmentID", departmentId),
@@ -637,6 +664,53 @@ OUTPUT inserted.DepartmentID
 VALUES(@DepartmentName);";
             object inserted = await ExecuteScalarAsync(conn, insertSql, new SqlParameter("@DepartmentName", fallbackName));
             return Convert.ToInt32(inserted);
+        }
+
+        private static async Task EnsureNullableEmployeeUniqueIndexAsync(SqlConnection conn, string columnName, string indexName)
+        {
+            string sql = @"
+DECLARE @constraintName sysname;
+
+SELECT TOP 1 @constraintName = kc.name
+FROM sys.key_constraints kc
+JOIN sys.index_columns ic
+    ON kc.parent_object_id = ic.object_id
+   AND kc.unique_index_id = ic.index_id
+JOIN sys.columns c
+    ON c.object_id = ic.object_id
+   AND c.column_id = ic.column_id
+WHERE kc.parent_object_id = OBJECT_ID(N'dbo.Employees')
+  AND kc.type = 'UQ'
+  AND c.name = @ColumnName;
+
+IF @constraintName IS NOT NULL
+BEGIN
+    DECLARE @dropSql nvarchar(max) =
+        N'ALTER TABLE dbo.Employees DROP CONSTRAINT ' + QUOTENAME(@constraintName);
+    EXEC sp_executesql @dropSql;
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE object_id = OBJECT_ID(N'dbo.Employees')
+      AND name = @IndexName
+)
+BEGIN
+    DECLARE @createSql nvarchar(max) =
+        N'CREATE UNIQUE INDEX ' + QUOTENAME(@IndexName) +
+        N' ON dbo.Employees(' + QUOTENAME(@ColumnName) + N') WHERE ' +
+        QUOTENAME(@ColumnName) + N' IS NOT NULL';
+    EXEC sp_executesql @createSql;
+END;";
+            await ExecuteNonQueryAsync(conn, sql,
+                new SqlParameter("@ColumnName", columnName),
+                new SqlParameter("@IndexName", indexName));
+        }
+
+        private static string BuildEmployeeFallbackCode(Guid uuid)
+        {
+            return "EMP" + uuid.ToString("N").Substring(0, 8).ToUpperInvariant();
         }
 
         private static string NormalizeRoleName(string roleName)
@@ -773,7 +847,7 @@ VALUES(@DepartmentName);";
 
         private async Task<bool> PatchSheetByColumnAsync(string baseUrl, string columnName, string columnValue, Dictionary<string, object> fields, string stepName)
         {
-            string url = $"{baseUrl}/{columnName}/{Uri.EscapeDataString(columnValue)}";
+            string url = BuildSheetRowUrl(baseUrl, columnName, columnValue);
             var payload = new Dictionary<string, object> { ["data"] = fields };
             string json = JsonSerializer.Serialize(payload, jsonOptions);
 
@@ -859,6 +933,33 @@ VALUES(@DepartmentName);";
         {
             string value = ConfigurationManager.AppSettings[key];
             return string.IsNullOrWhiteSpace(value) ? fallback : value;
+        }
+
+        private static string WithSheetName(string baseUrl, string sheetName)
+        {
+            string url = (baseUrl ?? "").Trim().TrimEnd('/');
+            if (string.IsNullOrWhiteSpace(sheetName) || url.IndexOf("sheet=", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return url;
+            }
+
+            string separator = url.Contains("?") ? "&" : "?";
+            return $"{url}{separator}sheet={Uri.EscapeDataString(sheetName.Trim())}";
+        }
+
+        private static string BuildSheetRowUrl(string baseUrl, string columnName, string columnValue)
+        {
+            string url = (baseUrl ?? "").Trim();
+            int queryIndex = url.IndexOf('?');
+            string rowPath = $"/{columnName}/{Uri.EscapeDataString(columnValue)}";
+            if (queryIndex < 0)
+            {
+                return url.TrimEnd('/') + rowPath;
+            }
+
+            string path = url.Substring(0, queryIndex).TrimEnd('/');
+            string query = url.Substring(queryIndex);
+            return path + rowPath + query;
         }
 
         private static Exception BuildHttpException(string stepName, string method, string url, string requestJson, HttpResponseMessage response, string responseText)
