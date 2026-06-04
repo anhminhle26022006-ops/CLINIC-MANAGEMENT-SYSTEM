@@ -20,12 +20,22 @@ namespace DAL.Repositories
             catch { }
             isNewSchema = nameColumnExists == 0;
 
-            string patientNameColumn = isNewSchema ? "p.FullName" : "p.Name";
-            return $@"
-                SELECT r.*, {patientNameColumn} AS PatientName, p.PatientCode AS PatientCode, d.Name AS DoctorName 
-                FROM Requests r
-                INNER JOIN Patients p ON r.PatientID = p.PatientID
-                INNER JOIN Doctors d ON r.DoctorID = d.DoctorID";
+            if (isNewSchema)
+            {
+                return @"
+                    SELECT r.*, p.FullName AS PatientName, p.PatientCode AS PatientCode, e.FullName AS DoctorName 
+                    FROM Requests r
+                    INNER JOIN Patients p ON r.PatientID = p.PatientID
+                    INNER JOIN Employees e ON r.DoctorID = e.EmployeeID";
+            }
+            else
+            {
+                return @"
+                    SELECT r.*, p.Name AS PatientName, p.PatientCode AS PatientCode, d.Name AS DoctorName 
+                    FROM Requests r
+                    INNER JOIN Patients p ON r.PatientID = p.PatientID
+                    INNER JOIN Doctors d ON r.DoctorID = d.DoctorID";
+            }
         }
 
         public List<RequestDTO> GetAll()

@@ -26,7 +26,7 @@ namespace BUS.Services
                 .ToList();
 
             var supabaseEmployees = supabaseEmployeesRaw
-                .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode) || !string.IsNullOrWhiteSpace(e.FullName))
+                .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode))
                 .Where(e => !string.IsNullOrWhiteSpace(e.FullName))
                 .ToList();
 
@@ -36,7 +36,7 @@ namespace BUS.Services
                 .ToList();
 
             var sheetEmployees = sheetEmployeesRaw
-                .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode) || !string.IsNullOrWhiteSpace(e.FullName))
+                .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode))
                 .Where(e => !string.IsNullOrWhiteSpace(e.FullName))
                 .ToList();
 
@@ -86,18 +86,15 @@ namespace BUS.Services
         {
             foreach (var employee in sheetEmployees.Where(e => !e.SyncUuid.HasValue))
             {
-                var existingByCode = !string.IsNullOrWhiteSpace(employee.SyncCode)
-                    ? supabaseEmployees.FirstOrDefault(x => x.SyncUuid.HasValue && NormalizeCode(x.SyncCode) == NormalizeCode(employee.SyncCode))
-                    : null;
-                var existingByName = existingByCode ?? supabaseEmployees.FirstOrDefault(x => x.SyncUuid.HasValue && NormalizeCode(x.FullName) == NormalizeCode(employee.FullName));
-                if (existingByName == null) continue;
+                if (string.IsNullOrWhiteSpace(employee.SyncCode)) continue;
 
-                employee.SyncUuid = existingByName.SyncUuid;
-                if (string.IsNullOrWhiteSpace(employee.SyncCode) && !string.IsNullOrWhiteSpace(existingByName.SyncCode))
-                {
-                    employee.SyncCode = existingByName.SyncCode;
-                }
-                await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, employee.FullName, existingByName.SyncUuid.Value);
+                var existingByCode = supabaseEmployees.FirstOrDefault(x =>
+                    x.SyncUuid.HasValue &&
+                    NormalizeCode(x.SyncCode) == NormalizeCode(employee.SyncCode));
+                if (existingByCode == null) continue;
+
+                employee.SyncUuid = existingByCode.SyncUuid;
+                await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, existingByCode.SyncUuid.Value);
                 result.PatchedEmployeeUuidToSheet++;
                 result.LinkedExistingEmployeeByCode++;
             }
@@ -149,7 +146,7 @@ namespace BUS.Services
 
                 if (patchSheetWhenMissingUuid && missingExternalUuid)
                 {
-                    await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, employee.FullName, local.Uuid);
+                    await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, local.Uuid);
                     result.PatchedEmployeeUuidToSheet++;
                 }
             }
@@ -218,38 +215,38 @@ namespace BUS.Services
                 var existingByCode = !string.IsNullOrWhiteSpace(employee.SyncCode)
                     ? supabaseEmployees.FirstOrDefault(x => NormalizeCode(x.SyncCode) == NormalizeCode(employee.SyncCode))
                     : null;
-                var existingByName = existingByCode ?? supabaseEmployees.FirstOrDefault(x => NormalizeCode(x.FullName) == NormalizeCode(employee.FullName));
 
                 if (existingByUuid != null)
                 {
                     continue;
                 }
 
-                if (existingByName != null)
+                if (existingByCode != null)
                 {
-                    if (employee.SyncUuid.HasValue && !existingByName.SyncUuid.HasValue)
+                    if (employee.SyncUuid.HasValue && !existingByCode.SyncUuid.HasValue)
                     {
-                        await repository.PatchSupabaseEmployeeUuidByCodeAsync(existingByName.SyncCode, employee.SyncUuid.Value);
-                        existingByName.SyncUuid = employee.SyncUuid;
+                        await repository.PatchSupabaseEmployeeUuidByCodeAsync(existingByCode.SyncCode, employee.SyncUuid.Value);
+                        existingByCode.SyncUuid = employee.SyncUuid;
                         result.PatchedEmployeeUuidToSupabase++;
                     }
-                    else if (!employee.SyncUuid.HasValue && existingByName.SyncUuid.HasValue)
+                    else if (!employee.SyncUuid.HasValue && existingByCode.SyncUuid.HasValue)
                     {
-                        await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, employee.FullName, existingByName.SyncUuid.Value);
-                        employee.SyncUuid = existingByName.SyncUuid;
+                        await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, existingByCode.SyncUuid.Value);
+                        employee.SyncUuid = existingByCode.SyncUuid;
                         result.PatchedEmployeeUuidToSheet++;
                         result.LinkedExistingEmployeeByCode++;
                     }
                     continue;
                 }
 
+                await repository.EnsureSupabaseDepartmentAsync(employee.DepartmentID, employee.DepartmentName);
                 var inserted = await repository.InsertSupabaseEmployeeAsync(BuildSupabaseEmployeePayload(employee, includeUuid: employee.SyncUuid.HasValue));
                 if (inserted != null)
                 {
                     result.InsertedEmployeesToSupabase++;
                     if (!employee.SyncUuid.HasValue && inserted.SyncUuid.HasValue)
                     {
-                        await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, employee.FullName, inserted.SyncUuid.Value);
+                        await repository.PatchEmployeeSheetUuidAsync(employee.SyncCode, inserted.SyncUuid.Value);
                         employee.SyncUuid = inserted.SyncUuid;
                         result.PatchedEmployeeUuidToSheet++;
                     }
@@ -348,15 +345,13 @@ namespace BUS.Services
             if (includeUuid && employee.SyncUuid.HasValue)
             {
                 payload["employeeid"] = employee.SyncUuid.Value.ToString();
-                payload["doctorid"] = employee.SyncUuid.Value.ToString();
-                payload["patientid"] = employee.SyncUuid.Value.ToString();
             }
 
             payload["employeecode"] = SafeString(employee.SyncCode);
-            payload["patientcode"] = SafeString(employee.SyncCode);
             payload["fullname"] = SafeString(employee.FullName);
             payload["rolename"] = SafeString(employee.RoleName);
             payload["departmentid"] = employee.DepartmentID.HasValue ? (object)employee.DepartmentID.Value : null;
+            payload["departmentname"] = SafeString(employee.DepartmentName);
             payload["phone"] = SafeString(employee.Phone);
             payload["status"] = SafeString(employee.Status);
             return payload;
@@ -406,6 +401,187 @@ namespace BUS.Services
             return value == "không có" || value == "khong co" || value == "none" || value == "no"
                 ? "No allergy"
                 : "Has allergy";
+        }
+
+        public async Task<string> SyncRequestsFromSupabaseAsync()
+        {
+            // 1. Sync core Patients and Employees first to update references
+            try
+            {
+                await SyncAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Core Sync failed: " + ex.Message);
+            }
+
+            int imagingCount = 0;
+            int labCount = 0;
+
+            // 2. Fetch flat requests and details lists from Supabase
+            var details = await repository.GetSupabaseImagingRequestDetailsFlatAsync();
+            var reqs = await repository.GetSupabaseImagingRequestsFlatAsync();
+            var encs = await repository.GetSupabaseEncountersFlatAsync();
+            var pats = await repository.GetSupabasePatientsAsync();
+            var emps = await repository.GetSupabaseEmployeesAsync();
+            var svcs = await repository.GetSupabaseServicesFlatAsync();
+            var resList = await repository.GetSupabaseImagingResultsFlatAsync();
+
+            var labRequests = await repository.GetSupabaseLabRequestsFlatAsync();
+            var labResults = await repository.GetSupabaseLabResultsFlatAsync();
+
+            // 3. Create lookups/dictionaries for O(1) matching
+            var reqMap = reqs.ToDictionary(r => r.ImagingID, StringComparer.OrdinalIgnoreCase);
+            var encMap = encs.ToDictionary(e => e.EncounterID);
+            var svcMap = svcs.ToDictionary(s => s.ServiceID);
+            var resMap = resList.GroupBy(r => r.DetailID).ToDictionary(g => g.Key, g => g.FirstOrDefault());
+            var labResMap = labResults.GroupBy(r => r.LabID).ToDictionary(g => g.Key, g => g.FirstOrDefault());
+
+            // 4. Process Imaging Requests
+            foreach (var detail in details)
+            {
+                // Find parent request
+                if (string.IsNullOrEmpty(detail.ImagingID) || !reqMap.TryGetValue(detail.ImagingID, out var req)) continue;
+
+                // Find encounter
+                if (!encMap.TryGetValue(req.EncounterID, out var enc)) continue;
+
+                // Find patient code
+                ApiPatientDTO patient = null;
+                if (!string.IsNullOrEmpty(enc.PatientID))
+                {
+                    var normalizedPatientId = enc.PatientID.Trim().ToLowerInvariant();
+                    patient = pats.FirstOrDefault(p => 
+                        (p.PatientId.HasValue && p.PatientId.Value.ToString().ToLowerInvariant() == normalizedPatientId) ||
+                        (p.LegacyPatientUuid.HasValue && p.LegacyPatientUuid.Value.ToString().ToLowerInvariant() == normalizedPatientId)
+                    );
+                }
+                var patientCode = patient?.PatientCode;
+
+                // Find doctor code
+                ApiEmployeeDTO doctor = null;
+                if (!string.IsNullOrEmpty(req.DoctorID))
+                {
+                    var normalizedDoctorId = req.DoctorID.Trim().ToLowerInvariant();
+                    doctor = emps.FirstOrDefault(e => 
+                        e.EmployeeId.HasValue && e.EmployeeId.Value.ToString().ToLowerInvariant() == normalizedDoctorId
+                    );
+                }
+                var doctorCode = doctor?.EmployeeCode;
+
+                if (string.IsNullOrEmpty(patientCode) || string.IsNullOrEmpty(doctorCode)) continue;
+
+                var patId = await repository.GetLocalPatientIdByCodeAsync(patientCode);
+                if (!patId.HasValue && patient != null)
+                {
+                    await repository.UpsertLocalPatientAsync(patient);
+                    patId = await repository.GetLocalPatientIdByCodeAsync(patientCode);
+                }
+
+                var docId = await repository.GetLocalDoctorIdByCodeAsync(doctorCode);
+                if (!docId.HasValue && doctor != null)
+                {
+                    await repository.UpsertLocalEmployeeAsync(doctor);
+                    docId = await repository.GetLocalDoctorIdByCodeAsync(doctorCode);
+                }
+
+                if (!patId.HasValue || !docId.HasValue) continue;
+
+                string code = !string.IsNullOrEmpty(req.ImagingCode) 
+                    ? $"{req.ImagingCode}_{detail.DetailID}" 
+                    : $"IM_REQ_DET_{detail.DetailID}";
+
+                // Find service name
+                svcMap.TryGetValue(detail.ServiceID, out var svc);
+                string serviceType = svc?.ServiceName ?? "Chụp MRI/X-Ray";
+
+                // Find result
+                resMap.TryGetValue(detail.DetailID, out var res);
+                string note = res?.Notes;
+                string imageUrl = res?.ImageUrl;
+                string pdfUrl = res?.PdfUrl;
+                string status = MapRequestStatus(detail.Status);
+
+                DateTime? reqDate = null;
+                if (!string.IsNullOrEmpty(req.CreatedAt) && DateTime.TryParse(req.CreatedAt, out DateTime parsedDate))
+                {
+                    reqDate = parsedDate;
+                }
+
+                await repository.UpsertLocalRequestAsync(code, patId.Value, docId.Value, serviceType, note, "Thường", status, imageUrl, pdfUrl, null, reqDate);
+                imagingCount++;
+            }
+
+            // 5. Process Lab Requests
+            foreach (var lab in labRequests)
+            {
+                // Find encounter
+                if (!encMap.TryGetValue(lab.EncounterID, out var enc)) continue;
+
+                // Find patient code
+                ApiPatientDTO patient = null;
+                if (!string.IsNullOrEmpty(enc.PatientID))
+                {
+                    var normalizedPatientId = enc.PatientID.Trim().ToLowerInvariant();
+                    patient = pats.FirstOrDefault(p => 
+                        (p.PatientId.HasValue && p.PatientId.Value.ToString().ToLowerInvariant() == normalizedPatientId) ||
+                        (p.LegacyPatientUuid.HasValue && p.LegacyPatientUuid.Value.ToString().ToLowerInvariant() == normalizedPatientId)
+                    );
+                }
+                var patientCode = patient?.PatientCode;
+
+                // Find doctor code
+                ApiEmployeeDTO doctor = null;
+                if (!string.IsNullOrEmpty(lab.DoctorID))
+                {
+                    var normalizedDoctorId = lab.DoctorID.Trim().ToLowerInvariant();
+                    doctor = emps.FirstOrDefault(e => 
+                        e.EmployeeId.HasValue && e.EmployeeId.Value.ToString().ToLowerInvariant() == normalizedDoctorId
+                    );
+                }
+                var doctorCode = doctor?.EmployeeCode;
+
+                if (string.IsNullOrEmpty(patientCode) || string.IsNullOrEmpty(doctorCode)) continue;
+
+                var patId = await repository.GetLocalPatientIdByCodeAsync(patientCode);
+                if (!patId.HasValue && patient != null)
+                {
+                    await repository.UpsertLocalPatientAsync(patient);
+                    patId = await repository.GetLocalPatientIdByCodeAsync(patientCode);
+                }
+
+                var docId = await repository.GetLocalDoctorIdByCodeAsync(doctorCode);
+                if (!docId.HasValue && doctor != null)
+                {
+                    await repository.UpsertLocalEmployeeAsync(doctor);
+                    docId = await repository.GetLocalDoctorIdByCodeAsync(doctorCode);
+                }
+
+                if (!patId.HasValue || !docId.HasValue) continue;
+
+                string code = $"LAB_REQ_{lab.LabID}";
+                string serviceType = lab.TestType ?? "Xét nghiệm sinh hóa máu";
+
+                // Find result
+                labResMap.TryGetValue(lab.LabID, out var res);
+                string labValues = res?.ResultText;
+                string pdfUrl = res?.FileUrl;
+                string status = MapRequestStatus(lab.Status);
+
+                await repository.UpsertLocalRequestAsync(code, patId.Value, docId.Value, serviceType, null, "Thường", status, null, pdfUrl, labValues);
+                labCount++;
+            }
+
+            return $"Đồng bộ thành công!\n- Kéo về {imagingCount} chỉ định hình ảnh (MRI/X-Ray).\n- Kéo về {labCount} chỉ định xét nghiệm Lab.";
+        }
+
+        private string MapRequestStatus(string status)
+        {
+            if (string.IsNullOrWhiteSpace(status)) return "Chờ xử lý";
+            string s = status.Trim().ToLowerInvariant();
+            if (s.Contains("hoàn thành") || s.Contains("completed") || s.Contains("done")) return "Hoàn thành";
+            if (s.Contains("đang xử lý") || s.Contains("processing") || s.Contains("inprogress")) return "Đang xử lý";
+            return "Chờ xử lý";
         }
     }
 }

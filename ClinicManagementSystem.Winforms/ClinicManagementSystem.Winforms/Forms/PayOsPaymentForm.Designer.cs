@@ -28,240 +28,240 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtSoTaiKhoan = new System.Windows.Forms.TextBox();
-            this.txtSoTien = new System.Windows.Forms.TextBox();
-            this.txtNoiDung = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.picLogo = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.picQRMOMO = new System.Windows.Forms.PictureBox();
-            this.txtTenTaiKhoan = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cboNganHang = new System.Windows.Forms.ComboBox();
-            this.label8 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picQRMOMO)).BeginInit();
-            this.SuspendLayout();
+            label1 = new Label();
+            label2 = new Label();
+            label3 = new Label();
+            txtSoTaiKhoan = new TextBox();
+            txtSoTien = new TextBox();
+            txtNoiDung = new TextBox();
+            label4 = new Label();
+            label5 = new Label();
+            picLogo = new PictureBox();
+            button1 = new Button();
+            label6 = new Label();
+            button2 = new Button();
+            groupBox1 = new GroupBox();
+            picQRMOMO = new PictureBox();
+            groupBox2 = new GroupBox();
+            cboNganHang = new ComboBox();
+            label8 = new Label();
+            txtTenTaiKhoan = new TextBox();
+            label7 = new Label();
+            ((System.ComponentModel.ISupportInitialize)picLogo).BeginInit();
+            groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picQRMOMO).BeginInit();
+            groupBox2.SuspendLayout();
+            SuspendLayout();
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(39, 78);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 14);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Mã đơn hàng:";
+            label1.AutoSize = true;
+            label1.Location = new Point(39, 78);
+            label1.Name = "label1";
+            label1.Size = new Size(100, 18);
+            label1.TabIndex = 0;
+            label1.Text = "Mã đơn hàng:";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(68, 153);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(50, 14);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Số tiền:";
+            label2.AutoSize = true;
+            label2.Location = new Point(68, 153);
+            label2.Name = "label2";
+            label2.Size = new Size(57, 18);
+            label2.TabIndex = 1;
+            label2.Text = "Số tiền:";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(58, 187);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 14);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Nội dung:";
+            label3.AutoSize = true;
+            label3.Location = new Point(58, 187);
+            label3.Name = "label3";
+            label3.Size = new Size(70, 18);
+            label3.TabIndex = 2;
+            label3.Text = "Nội dung:";
             // 
             // txtSoTaiKhoan
             // 
-            this.txtSoTaiKhoan.Location = new System.Drawing.Point(134, 75);
-            this.txtSoTaiKhoan.Name = "txtSoTaiKhoan";
-            this.txtSoTaiKhoan.Size = new System.Drawing.Size(287, 22);
-            this.txtSoTaiKhoan.TabIndex = 3;
+            txtSoTaiKhoan.Location = new Point(134, 75);
+            txtSoTaiKhoan.Name = "txtSoTaiKhoan";
+            txtSoTaiKhoan.Size = new Size(287, 26);
+            txtSoTaiKhoan.TabIndex = 3;
             // 
             // txtSoTien
             // 
-            this.txtSoTien.Location = new System.Drawing.Point(134, 145);
-            this.txtSoTien.Name = "txtSoTien";
-            this.txtSoTien.Size = new System.Drawing.Size(287, 22);
-            this.txtSoTien.TabIndex = 4;
+            txtSoTien.Location = new Point(134, 145);
+            txtSoTien.Name = "txtSoTien";
+            txtSoTien.Size = new Size(287, 26);
+            txtSoTien.TabIndex = 4;
             // 
             // txtNoiDung
             // 
-            this.txtNoiDung.Location = new System.Drawing.Point(134, 184);
-            this.txtNoiDung.Name = "txtNoiDung";
-            this.txtNoiDung.Size = new System.Drawing.Size(287, 22);
-            this.txtNoiDung.TabIndex = 5;
+            txtNoiDung.Location = new Point(134, 184);
+            txtNoiDung.Name = "txtNoiDung";
+            txtNoiDung.Size = new Size(287, 26);
+            txtNoiDung.TabIndex = 5;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(131, 209);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(134, 14);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "(PayOS sẽ rút gọn nội dung về tối đa 9 ký tự)";
+            label4.AutoSize = true;
+            label4.Font = new Font("Tahoma", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label4.Location = new Point(131, 209);
+            label4.Name = "label4";
+            label4.Size = new Size(310, 18);
+            label4.TabIndex = 6;
+            label4.Text = "(PayOS sẽ rút gọn nội dung về tối đa 9 ký tự)";
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(76, 235);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(38, 14);
-            this.label5.TabIndex = 7;
-            this.label5.Text = "Logo:";
+            label5.AutoSize = true;
+            label5.Location = new Point(76, 235);
+            label5.Name = "label5";
+            label5.Size = new Size(44, 18);
+            label5.TabIndex = 7;
+            label5.Text = "Logo:";
             // 
             // picLogo
             // 
-            this.picLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.picLogo.Location = new System.Drawing.Point(134, 235);
-            this.picLogo.Name = "picLogo";
-            this.picLogo.Size = new System.Drawing.Size(64, 64);
-            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picLogo.TabIndex = 8;
-            this.picLogo.TabStop = false;
+            picLogo.BackColor = SystemColors.ButtonHighlight;
+            picLogo.Location = new Point(134, 235);
+            picLogo.Name = "picLogo";
+            picLogo.Size = new Size(64, 64);
+            picLogo.SizeMode = PictureBoxSizeMode.Zoom;
+            picLogo.TabIndex = 8;
+            picLogo.TabStop = false;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(122, 305);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(94, 23);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "Chọn logo";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            button1.Location = new Point(118, 305);
+            button1.Name = "button1";
+            button1.Size = new Size(94, 23);
+            button1.TabIndex = 9;
+            button1.Text = "Chọn logo";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Tahoma", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.DeepPink;
-            this.label6.Location = new System.Drawing.Point(272, 19);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(354, 29);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "TẠO MÃ THANH TOÁN PAYOS";
+            label6.AutoSize = true;
+            label6.Font = new Font("Tahoma", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.ForeColor = Color.DeepPink;
+            label6.Location = new Point(272, 19);
+            label6.Name = "label6";
+            label6.Size = new Size(457, 36);
+            label6.TabIndex = 10;
+            label6.Text = "TẠO MÃ THANH TOÁN PAYOS";
             // 
             // button2
             // 
-            this.button2.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.ForeColor = System.Drawing.Color.DeepPink;
-            this.button2.Location = new System.Drawing.Point(270, 254);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(151, 45);
-            this.button2.TabIndex = 11;
-            this.button2.Text = "Tạo mã thanh toán";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            button2.Font = new Font("Tahoma", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button2.ForeColor = Color.DeepPink;
+            button2.Location = new Point(290, 283);
+            button2.Name = "button2";
+            button2.Size = new Size(151, 45);
+            button2.TabIndex = 11;
+            button2.Text = "Tạo mã thanh toán";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // groupBox1
             // 
-            this.groupBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.groupBox1.Controls.Add(this.picQRMOMO);
-            this.groupBox1.Location = new System.Drawing.Point(530, 70);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(345, 364);
-            this.groupBox1.TabIndex = 12;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Mã QR PayOS";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.cboNganHang);
-            this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.txtTenTaiKhoan);
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.txtSoTaiKhoan);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.button2);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.button1);
-            this.groupBox2.Controls.Add(this.txtSoTien);
-            this.groupBox2.Controls.Add(this.picLogo);
-            this.groupBox2.Controls.Add(this.txtNoiDung);
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Location = new System.Drawing.Point(12, 70);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(487, 364);
-            this.groupBox2.TabIndex = 13;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Thông tin thanh toán";
+            groupBox1.BackgroundImageLayout = ImageLayout.Zoom;
+            groupBox1.Controls.Add(picQRMOMO);
+            groupBox1.Location = new Point(530, 70);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(345, 364);
+            groupBox1.TabIndex = 12;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Mã QR PayOS";
             // 
             // picQRMOMO
             // 
-            this.picQRMOMO.Location = new System.Drawing.Point(6, 40);
-            this.picQRMOMO.Name = "picQRMOMO";
-            this.picQRMOMO.Size = new System.Drawing.Size(333, 290);
-            this.picQRMOMO.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picQRMOMO.TabIndex = 0;
-            this.picQRMOMO.TabStop = false;
+            picQRMOMO.Location = new Point(6, 40);
+            picQRMOMO.Name = "picQRMOMO";
+            picQRMOMO.Size = new Size(333, 290);
+            picQRMOMO.SizeMode = PictureBoxSizeMode.Zoom;
+            picQRMOMO.TabIndex = 0;
+            picQRMOMO.TabStop = false;
             // 
-            // txtTenTaiKhoan
+            // groupBox2
             // 
-            this.txtTenTaiKhoan.Location = new System.Drawing.Point(134, 113);
-            this.txtTenTaiKhoan.Name = "txtTenTaiKhoan";
-            this.txtTenTaiKhoan.Size = new System.Drawing.Size(287, 22);
-            this.txtTenTaiKhoan.TabIndex = 13;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(29, 116);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(87, 14);
-            this.label7.TabIndex = 12;
-            this.label7.Text = "Người mua:";
+            groupBox2.Controls.Add(cboNganHang);
+            groupBox2.Controls.Add(label8);
+            groupBox2.Controls.Add(txtTenTaiKhoan);
+            groupBox2.Controls.Add(label7);
+            groupBox2.Controls.Add(txtSoTaiKhoan);
+            groupBox2.Controls.Add(label1);
+            groupBox2.Controls.Add(button2);
+            groupBox2.Controls.Add(label2);
+            groupBox2.Controls.Add(label3);
+            groupBox2.Controls.Add(button1);
+            groupBox2.Controls.Add(txtSoTien);
+            groupBox2.Controls.Add(picLogo);
+            groupBox2.Controls.Add(txtNoiDung);
+            groupBox2.Controls.Add(label5);
+            groupBox2.Controls.Add(label4);
+            groupBox2.Location = new Point(12, 70);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(487, 364);
+            groupBox2.TabIndex = 13;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Thông tin thanh toán";
             // 
             // cboNganHang
             // 
-            this.cboNganHang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboNganHang.FormattingEnabled = true;
-            this.cboNganHang.Location = new System.Drawing.Point(134, 40);
-            this.cboNganHang.Name = "cboNganHang";
-            this.cboNganHang.Size = new System.Drawing.Size(287, 22);
-            this.cboNganHang.TabIndex = 15;
+            cboNganHang.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboNganHang.FormattingEnabled = true;
+            cboNganHang.Location = new Point(134, 40);
+            cboNganHang.Name = "cboNganHang";
+            cboNganHang.Size = new Size(287, 26);
+            cboNganHang.TabIndex = 15;
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(47, 43);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(69, 14);
-            this.label8.TabIndex = 14;
-            this.label8.Text = "Cổng:";
+            label8.AutoSize = true;
+            label8.Location = new Point(47, 43);
+            label8.Name = "label8";
+            label8.Size = new Size(46, 18);
+            label8.TabIndex = 14;
+            label8.Text = "Cổng:";
+            // 
+            // txtTenTaiKhoan
+            // 
+            txtTenTaiKhoan.Location = new Point(134, 113);
+            txtTenTaiKhoan.Name = "txtTenTaiKhoan";
+            txtTenTaiKhoan.Size = new Size(287, 26);
+            txtTenTaiKhoan.TabIndex = 13;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(29, 116);
+            label7.Name = "label7";
+            label7.Size = new Size(84, 18);
+            label7.TabIndex = 12;
+            label7.Text = "Người mua:";
             // 
             // PayOsPaymentForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(949, 458);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.label6);
-            this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.Name = "PayOsPaymentForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Tạo mã thanh toán PayOS";
-            this.Load += new System.EventHandler(this.PayOsPaymentForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picQRMOMO)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(8F, 18F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(949, 458);
+            Controls.Add(groupBox2);
+            Controls.Add(groupBox1);
+            Controls.Add(label6);
+            Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "PayOsPaymentForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Tạo mã thanh toán PayOS";
+            Load += PayOsPaymentForm_Load;
+            ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();
+            groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)picQRMOMO).EndInit();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

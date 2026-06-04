@@ -1,4 +1,4 @@
-﻿﻿using BUS.Services;
+﻿using BUS.Services;
 using ClinicManagementSystem.Winforms;
 using DAL;
 using DTO;
@@ -52,10 +52,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void PharmacyMainform_Load(object sender, EventArgs e)
         {
-            // Re-arrange default sidebar buttons
-            btnNavOverview.Location = new Point(12, 78);
-            btnQueue.Location = new Point(12, 124);
-
             // Set Log Out click handler
             btnLogout.Click += (s, ev) =>
             {

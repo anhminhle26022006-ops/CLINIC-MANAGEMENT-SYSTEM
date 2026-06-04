@@ -1,14 +1,13 @@
-﻿﻿﻿﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using ClinicManagementSystem.Winforms.Forms;
-using DAL;
 using DTO;
 using Newtonsoft.Json.Linq;
+using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Technician
 {
@@ -23,87 +22,46 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void ucPatientRecords_Load(object sender, EventArgs e)
         {
-            RenderView();
+            txtRecordSearch.Enter += TxtRecordSearch_Enter;
+            txtRecordSearch.Leave += TxtRecordSearch_Leave;
+            txtRecordSearch.TextChanged += TxtRecordSearch_TextChanged;
+            
+            FilterRecordPatientsList();
         }
 
         private void ucPatientRecords_Resize(object sender, EventArgs e)
         {
-            if (Width < 400) return;
-            RenderView();
+            // Anchored layouts resize automatically.
         }
 
-        private void RenderView()
+        private void TxtRecordSearch_Enter(object sender, EventArgs e)
         {
-            RenderRecords();
+            if (txtRecordSearch.Text.Contains("Tìm kiếm bệnh nhân..."))
+            {
+                txtRecordSearch.Text = "";
+                txtRecordSearch.ForeColor = textMain;
+            }
         }
 
-        // 6. RECORDS VIEW (ResultArchiveForm)
-        // ==========================================
-        private RoundedPanel recordsRightPanel;
-        private TextBox txtRecordSearch;
-        private RoundedPanel recordPatientListPanel;
-
-        private void RenderRecords()
+        private void TxtRecordSearch_Leave(object sender, EventArgs e)
         {
-            var page = BeginPage("Hồ Sơ Bệnh Án", "Xem hồ sơ bệnh án, lịch sử chụp phim và kết quả xét nghiệm của bệnh nhân");
-
-            int leftWidth = Math.Max(320, (int)(PageWidth() * 0.32F));
-            int rightWidth = Math.Max(500, PageWidth() - leftWidth - 20);
-
-            var split = new TableLayoutPanel
+            if (string.IsNullOrEmpty(txtRecordSearch.Text))
             {
-                ColumnCount = 2,
-                Height = 600,
-                Margin = new Padding(0, 14, 0, 0),
-                RowCount = 1,
-                Width = PageWidth()
-            };
-            split.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 32F));
-            split.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 68F));
-            split.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+                txtRecordSearch.Text = "Tìm kiếm bệnh nhân...";
+                txtRecordSearch.ForeColor = Color.FromArgb(148, 163, 184);
+            }
+        }
 
-            recordPatientListPanel = new RoundedPanel
-            {
-                BorderColor = Color.FromArgb(229, 231, 235),
-                CornerRadius = 8,
-                Dock = DockStyle.Fill,
-                FillColor = Color.White,
-                Margin = new Padding(0, 0, 16, 0)
-            };
-
-            txtRecordSearch = CreateTextBox("Tìm kiếm bệnh nhân...", 18, 22, leftWidth - 46, 38);
-            txtRecordSearch.TextChanged += (s, ev) => FilterRecordPatientsList();
-            recordPatientListPanel.Controls.Add(txtRecordSearch);
-
+        private void TxtRecordSearch_TextChanged(object sender, EventArgs e)
+        {
             FilterRecordPatientsList();
-
-            split.Controls.Add(recordPatientListPanel, 0, 0);
-
-            recordsRightPanel = new RoundedPanel
-            {
-                BorderColor = Color.FromArgb(229, 231, 235),
-                CornerRadius = 8,
-                Dock = DockStyle.Fill,
-                FillColor = Color.White,
-                Margin = new Padding(0),
-                AutoScroll = true
-            };
-
-            RenderRecordRightEmpty(rightWidth);
-            split.Controls.Add(recordsRightPanel, 1, 0);
-
-            page.Controls.Add(split);
         }
 
         private void FilterRecordPatientsList()
         {
-            // Remove lines
-            for (int i = recordPatientListPanel.Controls.Count - 1; i >= 1; i--)
-            {
-                recordPatientListPanel.Controls.RemoveAt(i);
-            }
+            flpPatients.Controls.Clear();
 
-            string term = txtRecordSearch.Text.Contains("Tìm") ? "" : txtRecordSearch.Text.Trim();
+            string term = txtRecordSearch.Text.Contains("Tìm kiếm bệnh nhân...") ? "" : txtRecordSearch.Text.Trim();
             List<PatientDTO> patients = new List<PatientDTO>();
             try
             {
@@ -111,69 +69,73 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             }
             catch { }
 
-            int y = 88;
             foreach (var pat in patients)
             {
-                AddPatientRecordRow(recordPatientListPanel, pat, y);
-                y += 84;
+                AddPatientRecordRow(pat);
             }
         }
 
-        private void AddPatientRecordRow(RoundedPanel container, PatientDTO pat, int y)
+        private void AddPatientRecordRow(PatientDTO pat)
         {
             string init = pat.Name.Substring(0, 1).ToUpper();
+            
             var row = new Panel
             {
-                Location = new Point(10, y),
-                Size = new Size(container.Width - 20, 76),
+                Size = new Size(flpPatients.Width - 25, 76),
                 BackColor = Color.FromArgb(249, 250, 251),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Margin = new Padding(0, 0, 0, 8)
             };
-            row.Click += (s, ev) => SelectRecordPatient(pat);
+
+            // Set up clicks recursively for child controls
+            Action<object, EventArgs> onClick = (s, ev) => SelectRecordPatient(pat);
+            row.Click += new EventHandler(onClick);
 
             var avatar = CreateAvatar(init, 12, 14);
-            avatar.Click += (s, ev) => SelectRecordPatient(pat);
+            avatar.Click += new EventHandler(onClick);
             row.Controls.Add(avatar);
 
             var lblName = CreateLabel(pat.Name, 10.5F, FontStyle.Bold, textMain, 70, 8, 180, 24);
-            lblName.Click += (s, ev) => SelectRecordPatient(pat);
+            lblName.Click += new EventHandler(onClick);
             row.Controls.Add(lblName);
 
             var lblCode = CreateLabel(pat.PatientCode, 8.5F, FontStyle.Regular, textMuted, 70, 32, 180, 18);
-            lblCode.Click += (s, ev) => SelectRecordPatient(pat);
+            lblCode.Click += new EventHandler(onClick);
             row.Controls.Add(lblCode);
 
             var lblAge = CreateLabel($"{pat.Age} tuổi - {pat.Gender}", 8.5F, FontStyle.Bold, textMuted, 70, 50, 180, 18);
-            lblAge.Click += (s, ev) => SelectRecordPatient(pat);
+            lblAge.Click += new EventHandler(onClick);
             row.Controls.Add(lblAge);
 
             var lblChevron = CreateLabel(">", 16F, FontStyle.Regular, Color.FromArgb(156, 163, 175), row.Width - 36, 20, 24, 30, ContentAlignment.MiddleCenter);
-            lblChevron.Click += (s, ev) => SelectRecordPatient(pat);
+            lblChevron.Click += new EventHandler(onClick);
+            lblChevron.Anchor = AnchorStyles.Right;
             row.Controls.Add(lblChevron);
 
-            container.Controls.Add(row);
-        }
-
-        private void RenderRecordRightEmpty(int width)
-        {
-            recordsRightPanel.Controls.Clear();
-            recordsRightPanel.Controls.Add(CreateLabel("♡", 52F, FontStyle.Regular, Color.FromArgb(156, 163, 175), 0, 100, width, 70, ContentAlignment.MiddleCenter));
-            recordsRightPanel.Controls.Add(CreateLabel("Chọn bệnh nhân để xem lịch sử hồ sơ bệnh án", 13F, FontStyle.Regular, textMuted, 0, 180, width, 32, ContentAlignment.MiddleCenter));
-            recordsRightPanel.Controls.Add(CreateLabel("Danh sách bệnh nhân đăng ký hiển thị phía bên trái", 10F, FontStyle.Regular, textMuted, 0, 218, width, 28, ContentAlignment.MiddleCenter));
+            flpPatients.Controls.Add(row);
         }
 
         private void SelectRecordPatient(PatientDTO pat)
         {
-            recordsRightPanel.Controls.Clear();
+            // Hide notices
+            lblHeart.Visible = false;
+            lblNotice1.Visible = false;
+            lblNotice2.Visible = false;
 
-            int panelW = recordsRightPanel.Width - 40;
+            // Show and populate details
+            lblPatientName.Text = pat.Name;
+            lblPatientName.Visible = true;
 
-            // Details panel
-            recordsRightPanel.Controls.Add(CreateLabel(pat.Name, 14F, FontStyle.Bold, textMain, 24, 24, 400, 30));
-            recordsRightPanel.Controls.Add(CreateLabel($"Mã BN: {pat.PatientCode} | Giới tính: {pat.Gender} | Tuổi: {pat.Age}", 9.5F, FontStyle.Bold, textMuted, 24, 58, 400, 22));
-            recordsRightPanel.Controls.Add(CreateLabel($"SĐT: {pat.Phone} | Địa chỉ: {pat.Address}", 9.5F, FontStyle.Regular, textMuted, 24, 82, 450, 22));
+            lblPatientMeta.Text = $"Mã BN: {pat.PatientCode} | Giới tính: {pat.Gender} | Tuổi: {pat.Age}";
+            lblPatientMeta.Visible = true;
 
-            recordsRightPanel.Controls.Add(CreateLabel("LỊCH SỬ KẾT QUẢ XÉT NGHIỆM", 10F, FontStyle.Bold, primary, 24, 130, 400, 22));
+            lblPatientContact.Text = $"SĐT: {pat.Phone} | Địa chỉ: {pat.Address}";
+            lblPatientContact.Visible = true;
+
+            lblHistoryTitle.Visible = true;
+            flpHistory.Visible = true;
+
+            flpHistory.Controls.Clear();
 
             // Load patient history
             List<RequestDTO> history = new List<RequestDTO>();
@@ -185,11 +147,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
             if (history.Count == 0)
             {
-                recordsRightPanel.Controls.Add(CreateLabel("Bệnh nhân này chưa có kết quả xét nghiệm hoàn thành nào.", 9.5F, FontStyle.Italic, textMuted, 24, 170, panelW, 30));
+                var lblEmpty = CreateLabel("Bệnh nhân này chưa có kết quả xét nghiệm hoàn thành nào.", 9.5F, FontStyle.Italic, textMuted, 0, 0, flpHistory.Width - 10, 30);
+                flpHistory.Controls.Add(lblEmpty);
                 return;
             }
 
-            int yPos = 170;
+            int cardW = flpHistory.Width - 25;
             foreach (var req in history)
             {
                 var card = new RoundedPanel
@@ -197,8 +160,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     BorderColor = Color.FromArgb(229, 231, 235),
                     CornerRadius = 8,
                     FillColor = Color.FromArgb(249, 250, 251),
-                    Location = new Point(24, yPos),
-                    Size = new Size(panelW - 10, 160)
+                    Size = new Size(cardW, 160),
+                    Margin = new Padding(0, 0, 0, 16)
                 };
 
                 card.Controls.Add(CreateLabel(req.ServiceType, 11F, FontStyle.Bold, textMain, 18, 12, 350, 24));
@@ -212,9 +175,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     var btnViewImage = CreateFlatButton("Xem hình phim...", Color.White, primary, 18, 114, 150, 32);
                     btnViewImage.Click += (s, ev) =>
                     {
-                        if (File.Exists(req.ResultFile))
+                        string path = req.ResultFile;
+                        bool isUrl = !string.IsNullOrEmpty(path) && (path.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
+                        if (isUrl || File.Exists(path))
                         {
-                            Process.Start(new ProcessStartInfo(req.ResultFile) { UseShellExecute = true });
+                            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
                         }
                         else
                         {
@@ -225,14 +190,16 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 }
                 else if (!string.IsNullOrEmpty(req.ResultPDF))
                 {
-                    card.Controls.Add(CreateLabel("Kết quả: Báo cáo xét nghiệm tổng hợp định dạng PDF.", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 64, 400, 20));
-                    
+                    card.Controls.Add(CreateLabel("Kết quả: Báo cáo xét nghiệm PDF tổng hợp.", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 64, 400, 20));
+
                     var btnViewPDF = CreateFlatButton("Mở file PDF...", Color.White, primary, 18, 114, 150, 32);
                     btnViewPDF.Click += (s, ev) =>
                     {
-                        if (File.Exists(req.ResultPDF))
+                        string path = req.ResultPDF;
+                        bool isUrl = !string.IsNullOrEmpty(path) && (path.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
+                        if (isUrl || File.Exists(path))
                         {
-                            Process.Start(new ProcessStartInfo(req.ResultPDF) { UseShellExecute = true });
+                            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
                         }
                         else
                         {
@@ -256,13 +223,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     }
                 }
 
-                recordsRightPanel.Controls.Add(card);
-                yPos += 176;
+                flpHistory.Controls.Add(card);
             }
         }
-
-        // ==========================================
-
     }
 }
-

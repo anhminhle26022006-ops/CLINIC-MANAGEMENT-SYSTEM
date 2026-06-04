@@ -8,18 +8,6 @@ namespace DTO
         [JsonPropertyName("employeeid")]
         public Guid? EmployeeId { get; set; }
 
-        [JsonPropertyName("doctorid")]
-        public Guid? LegacyDoctorId { get; set; }
-
-        [JsonPropertyName("employeeuuid")]
-        public Guid? LegacyEmployeeUuid { get; set; }
-
-        [JsonPropertyName("patientid")]
-        public Guid? LegacyPatientId { get; set; }
-
-        [JsonPropertyName("patientcode")]
-        public string LegacyPatientCode { get; set; }
-
         [JsonPropertyName("employeecode")]
         public string EmployeeCode { get; set; }
 
@@ -32,6 +20,9 @@ namespace DTO
         [JsonPropertyName("departmentid")]
         public int? DepartmentID { get; set; }
 
+        [JsonPropertyName("departmentname")]
+        public string DepartmentName { get; set; }
+
         [JsonPropertyName("phone")]
         public string Phone { get; set; }
 
@@ -41,14 +32,14 @@ namespace DTO
         [JsonIgnore]
         public Guid? SyncUuid
         {
-            get => EmployeeId ?? LegacyDoctorId ?? LegacyEmployeeUuid ?? LegacyPatientId;
+            get => EmployeeId;
             set => EmployeeId = value;
         }
 
         [JsonIgnore]
         public string SyncCode
         {
-            get => !string.IsNullOrWhiteSpace(EmployeeCode) ? EmployeeCode : (!string.IsNullOrWhiteSpace(LegacyPatientCode) ? LegacyPatientCode : "");
+            get => EmployeeCode ?? "";
             set => EmployeeCode = value;
         }
     }

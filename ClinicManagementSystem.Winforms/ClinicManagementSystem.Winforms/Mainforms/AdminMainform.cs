@@ -1,4 +1,4 @@
-﻿﻿﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -51,12 +51,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void ucTechnicianDashboard_Load(object sender, EventArgs e)
         {
-
-            // Re-arrange default sidebar buttons
-            btnNavOverview.Location = new Point(12, 78);
-            btnEmployeeManagement.Location = new Point(12, 124);
-
-
             // Set Log Out click handler
             btnLogout.Click += (s, ev) =>
             {
