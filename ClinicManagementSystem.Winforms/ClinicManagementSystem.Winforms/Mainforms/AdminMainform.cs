@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
-    public partial class AdminMainform : UserControl
+    public partial class AdminMainform : Form
     {
         private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;

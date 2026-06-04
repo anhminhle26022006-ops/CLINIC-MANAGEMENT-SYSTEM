@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
-    public partial class ReceptionistMainform : UserControl
+    public partial class ReceptionistMainform : Form
     {
         private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;

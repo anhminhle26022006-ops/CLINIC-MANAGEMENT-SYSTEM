@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace ClinicManagementSystem.Winforms.UserControls
 {
-    public partial class ucTechnicianDashboard : UserControl
+    public partial class ucTechnicianDashboard : Form
     {
 private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;

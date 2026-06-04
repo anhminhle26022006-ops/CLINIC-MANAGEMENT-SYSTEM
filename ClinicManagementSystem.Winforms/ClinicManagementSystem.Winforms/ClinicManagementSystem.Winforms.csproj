@@ -45,10 +45,10 @@
     <Compile Update="UserControls\Technician\ucSeederTool.Designer.cs">
       <DependentUpon>ucSeederTool.cs</DependentUpon>
     </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianDashboard.cs">
+    <Compile Update="Mainforms\ucTechnicianDashboard.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianDashboard.Designer.cs">
+    <Compile Update="Mainforms\ucTechnicianDashboard.Designer.cs">
       <DependentUpon>ucTechnicianDashboard.cs</DependentUpon>
     </Compile>
     <Compile Update="UserControls\Technician\ucTechnicianLabResult.cs">
@@ -100,7 +100,7 @@
     <EmbeddedResource Update="UserControls\Technician\ucSeederTool.resx">
       <DependentUpon>ucSeederTool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="UserControls\Technician\ucTechnicianDashboard.resx">
+    <EmbeddedResource Update="Mainforms\ucTechnicianDashboard.resx">
       <DependentUpon>ucTechnicianDashboard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="UserControls\Technician\ucTechnicianLabResult.resx">
