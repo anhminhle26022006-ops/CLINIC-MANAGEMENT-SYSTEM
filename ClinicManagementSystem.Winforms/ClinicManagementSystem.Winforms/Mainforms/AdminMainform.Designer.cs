@@ -567,13 +567,13 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(247, 249, 252);
-            ClientSize = new Size(1678, 1046);
             Controls.Add(contentPanel);
             Controls.Add(panelTopbar);
             Controls.Add(panelSidebar);
             Font = new Font("Segoe UI", 9F);
             Margin = new Padding(3, 4, 3, 4);
             Name = "AdminMainform";
+            Size = new Size(1678, 1046);
             Load += ucTechnicianDashboard_Load;
             panelSidebar.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);

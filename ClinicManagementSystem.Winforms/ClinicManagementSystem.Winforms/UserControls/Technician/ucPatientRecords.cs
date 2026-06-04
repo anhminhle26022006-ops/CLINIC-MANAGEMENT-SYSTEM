@@ -175,9 +175,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     var btnViewImage = CreateFlatButton("Xem hình phim...", Color.White, primary, 18, 114, 150, 32);
                     btnViewImage.Click += (s, ev) =>
                     {
-                        if (File.Exists(req.ResultFile))
+                        string path = req.ResultFile;
+                        bool isUrl = !string.IsNullOrEmpty(path) && (path.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
+                        if (isUrl || File.Exists(path))
                         {
-                            Process.Start(new ProcessStartInfo(req.ResultFile) { UseShellExecute = true });
+                            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
                         }
                         else
                         {
@@ -193,9 +195,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     var btnViewPDF = CreateFlatButton("Mở file PDF...", Color.White, primary, 18, 114, 150, 32);
                     btnViewPDF.Click += (s, ev) =>
                     {
-                        if (File.Exists(req.ResultPDF))
+                        string path = req.ResultPDF;
+                        bool isUrl = !string.IsNullOrEmpty(path) && (path.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
+                        if (isUrl || File.Exists(path))
                         {
-                            Process.Start(new ProcessStartInfo(req.ResultPDF) { UseShellExecute = true });
+                            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
                         }
                         else
                         {
