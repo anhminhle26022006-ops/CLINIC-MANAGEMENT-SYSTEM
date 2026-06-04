@@ -34,6 +34,10 @@ namespace ClinicManagementSystem.Winforms.UserControls
             this.btnNavShifts = new System.Windows.Forms.Button();
             this.btnNavRequests = new System.Windows.Forms.Button();
             this.btnNavOverview = new System.Windows.Forms.Button();
+            this.btnNavUploadMRI = new System.Windows.Forms.Button();
+            this.btnNavUploadPDF = new System.Windows.Forms.Button();
+            this.btnNavLabResult = new System.Windows.Forms.Button();
+            this.btnNavSeederTool = new System.Windows.Forms.Button();
             this.lblBrandSub = new System.Windows.Forms.Label();
             this.lblBrand = new System.Windows.Forms.Label();
             this.lblLogo = new System.Windows.Forms.Label();
@@ -57,8 +61,12 @@ namespace ClinicManagementSystem.Winforms.UserControls
             this.panelSidebar.BackColor = System.Drawing.Color.White;
             this.panelSidebar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelSidebar.Controls.Add(this.btnLogout);
-            this.panelSidebar.Controls.Add(this.btnNavRecords);
+            this.panelSidebar.Controls.Add(this.btnNavSeederTool);
             this.panelSidebar.Controls.Add(this.btnNavShifts);
+            this.panelSidebar.Controls.Add(this.btnNavRecords);
+            this.panelSidebar.Controls.Add(this.btnNavLabResult);
+            this.panelSidebar.Controls.Add(this.btnNavUploadPDF);
+            this.panelSidebar.Controls.Add(this.btnNavUploadMRI);
             this.panelSidebar.Controls.Add(this.btnNavRequests);
             this.panelSidebar.Controls.Add(this.btnNavOverview);
             this.panelSidebar.Controls.Add(this.lblBrandSub);
@@ -88,6 +96,78 @@ namespace ClinicManagementSystem.Winforms.UserControls
             this.btnLogout.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnLogout.UseVisualStyleBackColor = false;
             // 
+            // btnNavRequests
+            // 
+            this.btnNavRequests.BackColor = System.Drawing.Color.White;
+            this.btnNavRequests.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavRequests.FlatAppearance.BorderSize = 0;
+            this.btnNavRequests.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavRequests.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnNavRequests.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.btnNavRequests.Location = new System.Drawing.Point(12, 124);
+            this.btnNavRequests.Name = "btnNavRequests";
+            this.btnNavRequests.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            this.btnNavRequests.Size = new System.Drawing.Size(214, 44);
+            this.btnNavRequests.TabIndex = 5;
+            this.btnNavRequests.Text = "Xét nghiệm";
+            this.btnNavRequests.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNavRequests.UseVisualStyleBackColor = false;
+            this.btnNavRequests.Click += new System.EventHandler(this.btnNavRequests_Click);
+            // 
+            // btnNavUploadMRI
+            // 
+            this.btnNavUploadMRI.BackColor = System.Drawing.Color.White;
+            this.btnNavUploadMRI.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavUploadMRI.FlatAppearance.BorderSize = 0;
+            this.btnNavUploadMRI.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavUploadMRI.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnNavUploadMRI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.btnNavUploadMRI.Location = new System.Drawing.Point(12, 170);
+            this.btnNavUploadMRI.Name = "btnNavUploadMRI";
+            this.btnNavUploadMRI.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            this.btnNavUploadMRI.Size = new System.Drawing.Size(214, 44);
+            this.btnNavUploadMRI.TabIndex = 6;
+            this.btnNavUploadMRI.Text = "Tải lên MRI/X-Ray";
+            this.btnNavUploadMRI.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNavUploadMRI.UseVisualStyleBackColor = false;
+            this.btnNavUploadMRI.Click += new System.EventHandler(this.btnNavUploadMRI_Click);
+            // 
+            // btnNavUploadPDF
+            // 
+            this.btnNavUploadPDF.BackColor = System.Drawing.Color.White;
+            this.btnNavUploadPDF.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavUploadPDF.FlatAppearance.BorderSize = 0;
+            this.btnNavUploadPDF.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavUploadPDF.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnNavUploadPDF.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.btnNavUploadPDF.Location = new System.Drawing.Point(12, 216);
+            this.btnNavUploadPDF.Name = "btnNavUploadPDF";
+            this.btnNavUploadPDF.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            this.btnNavUploadPDF.Size = new System.Drawing.Size(214, 44);
+            this.btnNavUploadPDF.TabIndex = 7;
+            this.btnNavUploadPDF.Text = "Tải lên PDF";
+            this.btnNavUploadPDF.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNavUploadPDF.UseVisualStyleBackColor = false;
+            this.btnNavUploadPDF.Click += new System.EventHandler(this.btnNavUploadPDF_Click);
+            // 
+            // btnNavLabResult
+            // 
+            this.btnNavLabResult.BackColor = System.Drawing.Color.White;
+            this.btnNavLabResult.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavLabResult.FlatAppearance.BorderSize = 0;
+            this.btnNavLabResult.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavLabResult.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnNavLabResult.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.btnNavLabResult.Location = new System.Drawing.Point(12, 262);
+            this.btnNavLabResult.Name = "btnNavLabResult";
+            this.btnNavLabResult.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            this.btnNavLabResult.Size = new System.Drawing.Size(214, 44);
+            this.btnNavLabResult.TabIndex = 8;
+            this.btnNavLabResult.Text = "Nhập kết quả Lab";
+            this.btnNavLabResult.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNavLabResult.UseVisualStyleBackColor = false;
+            this.btnNavLabResult.Click += new System.EventHandler(this.btnNavLabResult_Click);
+            // 
             // btnNavRecords
             // 
             this.btnNavRecords.BackColor = System.Drawing.Color.White;
@@ -96,11 +176,11 @@ namespace ClinicManagementSystem.Winforms.UserControls
             this.btnNavRecords.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavRecords.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnNavRecords.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this.btnNavRecords.Location = new System.Drawing.Point(12, 228);
+            this.btnNavRecords.Location = new System.Drawing.Point(12, 308);
             this.btnNavRecords.Name = "btnNavRecords";
             this.btnNavRecords.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
             this.btnNavRecords.Size = new System.Drawing.Size(214, 44);
-            this.btnNavRecords.TabIndex = 7;
+            this.btnNavRecords.TabIndex = 9;
             this.btnNavRecords.Text = "Hồ sơ bệnh án";
             this.btnNavRecords.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnNavRecords.UseVisualStyleBackColor = false;
@@ -114,33 +194,33 @@ namespace ClinicManagementSystem.Winforms.UserControls
             this.btnNavShifts.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavShifts.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnNavShifts.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this.btnNavShifts.Location = new System.Drawing.Point(12, 178);
+            this.btnNavShifts.Location = new System.Drawing.Point(12, 354);
             this.btnNavShifts.Name = "btnNavShifts";
             this.btnNavShifts.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
             this.btnNavShifts.Size = new System.Drawing.Size(214, 44);
-            this.btnNavShifts.TabIndex = 6;
+            this.btnNavShifts.TabIndex = 10;
             this.btnNavShifts.Text = "Ca làm việc";
             this.btnNavShifts.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnNavShifts.UseVisualStyleBackColor = false;
             this.btnNavShifts.Click += new System.EventHandler(this.btnNavShifts_Click);
             // 
-            // btnNavRequests
+            // btnNavSeederTool
             // 
-            this.btnNavRequests.BackColor = System.Drawing.Color.White;
-            this.btnNavRequests.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnNavRequests.FlatAppearance.BorderSize = 0;
-            this.btnNavRequests.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNavRequests.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnNavRequests.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this.btnNavRequests.Location = new System.Drawing.Point(12, 128);
-            this.btnNavRequests.Name = "btnNavRequests";
-            this.btnNavRequests.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.btnNavRequests.Size = new System.Drawing.Size(214, 44);
-            this.btnNavRequests.TabIndex = 5;
-            this.btnNavRequests.Text = "Xét nghiệm";
-            this.btnNavRequests.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnNavRequests.UseVisualStyleBackColor = false;
-            this.btnNavRequests.Click += new System.EventHandler(this.btnNavRequests_Click);
+            this.btnNavSeederTool.BackColor = System.Drawing.Color.White;
+            this.btnNavSeederTool.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavSeederTool.FlatAppearance.BorderSize = 0;
+            this.btnNavSeederTool.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavSeederTool.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnNavSeederTool.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.btnNavSeederTool.Location = new System.Drawing.Point(12, 400);
+            this.btnNavSeederTool.Name = "btnNavSeederTool";
+            this.btnNavSeederTool.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            this.btnNavSeederTool.Size = new System.Drawing.Size(214, 44);
+            this.btnNavSeederTool.TabIndex = 11;
+            this.btnNavSeederTool.Text = "Seeder Tool (Test)";
+            this.btnNavSeederTool.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNavSeederTool.UseVisualStyleBackColor = false;
+            this.btnNavSeederTool.Click += new System.EventHandler(this.btnNavSeederTool_Click);
             // 
             // btnNavOverview
             // 
@@ -354,6 +434,10 @@ namespace ClinicManagementSystem.Winforms.UserControls
         private System.Windows.Forms.Button btnNavShifts;
         private System.Windows.Forms.Button btnNavRequests;
         private System.Windows.Forms.Button btnNavOverview;
+        private System.Windows.Forms.Button btnNavUploadMRI;
+        private System.Windows.Forms.Button btnNavUploadPDF;
+        private System.Windows.Forms.Button btnNavLabResult;
+        private System.Windows.Forms.Button btnNavSeederTool;
         private System.Windows.Forms.Label lblBrandSub;
         private System.Windows.Forms.Label lblBrand;
         private System.Windows.Forms.Label lblLogo;

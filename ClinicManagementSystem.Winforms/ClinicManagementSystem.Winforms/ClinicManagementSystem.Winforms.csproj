@@ -33,12 +33,93 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="UserControls\Technician\ucPatientRecords.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucPatientRecords.Designer.cs">
+      <DependentUpon>ucPatientRecords.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucSeederTool.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucSeederTool.Designer.cs">
+      <DependentUpon>ucSeederTool.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianDashboard.Designer.cs">
+      <DependentUpon>ucTechnicianDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianLabResult.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianLabResult.Designer.cs">
+      <DependentUpon>ucTechnicianLabResult.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianOverview.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianOverview.Designer.cs">
+      <DependentUpon>ucTechnicianOverview.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianRequests.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianRequests.Designer.cs">
+      <DependentUpon>ucTechnicianRequests.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianShifts.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianShifts.Designer.cs">
+      <DependentUpon>ucTechnicianShifts.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianUploadMri.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianUploadMri.Designer.cs">
+      <DependentUpon>ucTechnicianUploadMri.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianUploadPdf.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianUploadPdf.Designer.cs">
+      <DependentUpon>ucTechnicianUploadPdf.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucPatientRecords.resx">
+      <DependentUpon>ucPatientRecords.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucSeederTool.resx">
+      <DependentUpon>ucSeederTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianDashboard.resx">
+      <DependentUpon>ucTechnicianDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianLabResult.resx">
+      <DependentUpon>ucTechnicianLabResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianOverview.resx">
+      <DependentUpon>ucTechnicianOverview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianRequests.resx">
+      <DependentUpon>ucTechnicianRequests.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianShifts.resx">
+      <DependentUpon>ucTechnicianShifts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianUploadMri.resx">
+      <DependentUpon>ucTechnicianUploadMri.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianUploadPdf.resx">
+      <DependentUpon>ucTechnicianUploadPdf.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
 
