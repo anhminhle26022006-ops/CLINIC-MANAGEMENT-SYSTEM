@@ -115,7 +115,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             control.Dock = DockStyle.Fill;
             contentPanel.Controls.Add(control);
 
-            lblPageTitle.Text = control switch
+            lblPageSubtitle.Text = control switch
             {
                 PatientManagement => "Quản lý bệnh nhân",
                 CreateAppointment => "Tạo lịch hẹn",

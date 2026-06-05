@@ -46,6 +46,9 @@ namespace DTO
 
         [JsonPropertyName("patientid")]
         public string PatientID { get; set; }
+
+        [JsonPropertyName("starttime")]
+        public string StartTime { get; set; }
     }
 
     public class FlatService

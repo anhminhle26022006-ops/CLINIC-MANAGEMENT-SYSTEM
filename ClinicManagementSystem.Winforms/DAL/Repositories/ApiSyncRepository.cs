@@ -39,6 +39,8 @@ namespace DAL.Repositories
                 WriteIndented = true
             };
             jsonOptions.Converters.Add(new NullableGuidConverter());
+            jsonOptions.Converters.Add(new FlexibleInt32Converter());
+            jsonOptions.Converters.Add(new NullableInt32Converter());
         }
 
         public Task<List<ApiPatientDTO>> GetSupabasePatientsAsync()
@@ -1072,6 +1074,7 @@ END;";
                             ServiceType = @ServiceType,
                             RequestNote = @RequestNote,
                             Priority = @Priority,
+                            RequestDate = COALESCE(@RequestDate, RequestDate),
                             Status = @Status,
                             ResultFile = @ResultFile,
                             ResultPDF = @ResultPDF,
@@ -1085,6 +1088,7 @@ END;";
                         cmd.Parameters.AddWithValue("@ServiceType", serviceType ?? "");
                         cmd.Parameters.AddWithValue("@RequestNote", (object)note ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@Priority", priority ?? "Thường");
+                        cmd.Parameters.AddWithValue("@RequestDate", (object)requestDate ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@Status", status ?? "Chờ xử lý");
                         cmd.Parameters.AddWithValue("@ResultFile", (object)resultFile ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@ResultPDF", (object)resultPdf ?? DBNull.Value);
@@ -1141,6 +1145,56 @@ END;";
             public override void Write(Utf8JsonWriter writer, Guid? value, JsonSerializerOptions options)
             {
                 if (value.HasValue) writer.WriteStringValue(value.Value.ToString());
+                else writer.WriteNullValue();
+            }
+        }
+
+        private class FlexibleInt32Converter : JsonConverter<int>
+        {
+            public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.Number)
+                {
+                    return reader.GetInt32();
+                }
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    string value = reader.GetString();
+                    if (string.IsNullOrWhiteSpace(value)) return 0;
+                    if (int.TryParse(value, out int result)) return result;
+                    return 0;
+                }
+                return 0;
+            }
+
+            public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options)
+            {
+                writer.WriteNumberValue(value);
+            }
+        }
+
+        private class NullableInt32Converter : JsonConverter<int?>
+        {
+            public override int? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.Null) return null;
+                if (reader.TokenType == JsonTokenType.Number)
+                {
+                    return reader.GetInt32();
+                }
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    string value = reader.GetString();
+                    if (string.IsNullOrWhiteSpace(value)) return null;
+                    if (int.TryParse(value, out int result)) return result;
+                    return null;
+                }
+                return null;
+            }
+
+            public override void Write(Utf8JsonWriter writer, int? value, JsonSerializerOptions options)
+            {
+                if (value.HasValue) writer.WriteNumberValue(value.Value);
                 else writer.WriteNullValue();
             }
         }
