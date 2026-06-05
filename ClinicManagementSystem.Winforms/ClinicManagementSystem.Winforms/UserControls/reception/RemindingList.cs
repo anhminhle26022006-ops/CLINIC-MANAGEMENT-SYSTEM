@@ -10,12 +10,11 @@ using System.Windows.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.reception
 {
-    public partial class ScheduleToday : UserControl
+    public partial class RemindingList : UserControl
     {
-        public ScheduleToday()
+        public RemindingList()
         {
             InitializeComponent();
         }
-
     }
 }
