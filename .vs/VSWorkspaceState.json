@@ -1,7 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\ClinicManagementSystem.Winforms",
+    "\\ClinicManagementSystem.Winforms\\BUS",
+    "\\ClinicManagementSystem.Winforms\\BUS\\Services",
+    "\\ClinicManagementSystem.Winforms\\DAL",
+    "\\ClinicManagementSystem.Winforms\\DAL\\Interfaces"
   ],
-  "SelectedNode": "\\TEST_MOCK_API.slnx",
+  "SelectedNode": "\\ClinicManagementSystem.Winforms\\BUS\\ShiftBUS.cs",
   "PreviewInSolutionExplorer": false
 }

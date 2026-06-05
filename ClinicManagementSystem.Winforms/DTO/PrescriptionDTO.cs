@@ -1,8 +1,19 @@
 ﻿using System;
 
-public class Class1
+namespace DTO
 {
-	public Class1()
-	{
-	}
+    public class PrescriptionDTO
+    {
+        public Guid PrescriptionID { get; set; }
+
+        public Guid AppointmentID { get; set; }
+
+        public Guid DoctorID { get; set; }
+
+        public string Status { get; set; }
+
+        public string Notes { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+    }
 }
