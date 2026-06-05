@@ -31,12 +31,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         private void LoadRequests()
         {
             cboLabRequests.Items.Clear();
-            List<RequestDTO> list = new List<RequestDTO>();
+            List<TechnicianRequestDTO> list = new List<TechnicianRequestDTO>();
             try
             {
-                list = requestBUS.GetList().Where(r => r.Status != "Hoàn thành" && !r.ServiceType.Contains("MRI") && !r.ServiceType.Contains("X-quang") && !r.ServiceType.Contains("Siêu âm") && !r.ServiceType.Contains("xét nghiệm máu tổng quát")).ToList();
+                list = requestBUS.GetList().Where(r => r.Status != "Hoàn thành" && !CMS.Core.Utils.ServiceTypeHelper.IsImagingService(r.ServiceType) && !CMS.Core.Utils.ServiceTypeHelper.IsPdfUploadService(r.ServiceType)).ToList();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error loading Lab requests: " + ex);
+            }
 
             foreach (var req in list)
             {
@@ -56,7 +59,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                         cboLabRequests.Enabled = false;
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error loading active Lab request: " + ex);
+                }
             }
             else if (cboLabRequests.Items.Count > 0)
             {
@@ -101,7 +107,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("Error submitting Lab result: " + ex);
+                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

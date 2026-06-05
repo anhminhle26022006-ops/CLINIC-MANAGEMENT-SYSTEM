@@ -1,15 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using DAL.DataContext;
-using DTO;
-using Newtonsoft.Json.Linq;
 using ClinicManagementSystem.Winforms.Forms;
 using ClinicManagementSystem.Winforms.Forms.Integrations;
+using DAL.DataContext;
+using Microsoft.Data.SqlClient;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Technician
 {
@@ -53,151 +48,70 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         private void RunDatabaseSeeder()
         {
             txtSeederLog.Clear();
-            LogSeed("Đang bắt đầu khởi tạo lại cơ sở dữ liệu HealthCareDB...");
+            LogSeed("Đang khởi tạo dữ liệu mẫu theo schema CMS.sql...");
 
             try
             {
-                string shiftTable = "Shifts";
-                try
-                {
-                    int count = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM sys.tables WHERE name = 'TechnicianShifts'"));
-                    if (count > 0) shiftTable = "TechnicianShifts";
-                }
-                catch { }
+                EnsureCmsSchema();
 
-                // Detect if it is the CMS database schema
-                bool isNewSchema = false;
-                try
-                {
-                    int rolesCount = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Roles]') AND type in (N'U')"));
-                    isNewSchema = rolesCount > 0;
-                }
-                catch { }
+                int adminRoleId = EnsureRole("Admin");
+                int doctorRoleId = EnsureRole("Doctor");
+                int technicianRoleId = EnsureRole("Technician");
 
-                if (isNewSchema)
-                {
-                    // Clear requests, doctors, and shifts (avoid deleting from Users/Patients because of foreign key constraints)
-                    DatabaseHelper.ExecuteNonQuery($"DELETE FROM {shiftTable};");
-                    DatabaseHelper.ExecuteNonQuery("DELETE FROM Requests;");
-                    DatabaseHelper.ExecuteNonQuery("DELETE FROM Doctors;");
-                    LogSeed("-> Đã xóa sạch dữ liệu cũ (Requests, Doctors, Shifts).");
+                int adminDepartmentId = EnsureDepartment("Hành chính");
+                int labDepartmentId = EnsureDepartment("Xét nghiệm");
+                int imagingDepartmentId = EnsureDepartment("Chẩn đoán hình ảnh");
+                int generalDepartmentId = EnsureDepartment("Khám tổng quát");
+                int cardiologyDepartmentId = EnsureDepartment("Tim mạch");
 
-                    // Ensure Roles exist or get RoleIDs
-                    int techRoleId = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT RoleID FROM Roles WHERE RoleName = 'Technician'") ?? 6);
-                    int adminRoleId = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT RoleID FROM Roles WHERE RoleName = 'Admin'") ?? 1);
-                    int doctorRoleId = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT RoleID FROM Roles WHERE RoleName = 'Doctor'") ?? 3);
+                int technicianId = EnsureUserEmployee("ktv", "123", "tech@phongkham.vn", technicianRoleId, "EMP_KTV", "Lữ Võ Hoàng Phúc", labDepartmentId);
+                EnsureUserEmployee("admin", "admin123", "admin@phongkham.vn", adminRoleId, "EMP_ADM", "Quản Trị Viên", adminDepartmentId);
+                int doctor1 = EnsureUserEmployee("bacsi", "123", "doctor@phongkham.vn", doctorRoleId, "BS001", "BS. Nguyễn Văn Minh", generalDepartmentId);
+                int doctor2 = EnsureEmployee("BS002", "BS. Trần B", doctorRoleId, imagingDepartmentId);
+                int doctor3 = EnsureEmployee("BS003", "BS. Phạm D", doctorRoleId, generalDepartmentId);
+                int doctor4 = EnsureEmployee("BS004", "BS. Lê H", doctorRoleId, cardiologyDepartmentId);
+                LogSeed("-> Đã đồng bộ tài khoản và nhân sự qua Users/Employees/Roles.");
 
-                    // Ensure 'ktv'
-                    if (Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM Users WHERE Username = 'ktv'")) == 0)
-                    {
-                        DatabaseHelper.ExecuteNonQuery($"INSERT INTO Users (Username, PasswordHash, Email, RoleID) VALUES ('ktv', '123', 'tech@phongkham.vn', {techRoleId});");
-                        int userId = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT UserID FROM Users WHERE Username = 'ktv'"));
-                        DatabaseHelper.ExecuteNonQuery($"INSERT INTO Employees (EmployeeCode, FullName, RoleID, DepartmentID, Status, UserID) VALUES ('EMP_KTV', N'Lữ Võ Hoàng Phúc', {techRoleId}, (SELECT TOP 1 DepartmentID FROM Departments WHERE DepartmentName = N'Xét nghiệm' OR DepartmentName = N'Chẩn đoán hình ảnh'), 'Active', {userId});");
-                    }
-                    // Ensure 'admin'
-                    if (Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM Users WHERE Username = 'admin'")) == 0)
-                    {
-                        DatabaseHelper.ExecuteNonQuery($"INSERT INTO Users (Username, PasswordHash, Email, RoleID) VALUES ('admin', 'admin123', 'admin@phongkham.vn', {adminRoleId});");
-                        int userId = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT UserID FROM Users WHERE Username = 'admin'"));
-                        DatabaseHelper.ExecuteNonQuery($"INSERT INTO Employees (EmployeeCode, FullName, RoleID, DepartmentID, Status, UserID) VALUES ('EMP_ADM', N'Quản Trị Viên', {adminRoleId}, (SELECT TOP 1 DepartmentID FROM Departments WHERE DepartmentName = N'Hành chính'), 'Active', {userId});");
-                    }
-                    // Ensure 'bacsi'
-                    if (Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM Users WHERE Username = 'bacsi'")) == 0)
-                    {
-                        DatabaseHelper.ExecuteNonQuery($"INSERT INTO Users (Username, PasswordHash, Email, RoleID) VALUES ('bacsi', '123', 'doctor@phongkham.vn', {doctorRoleId});");
-                        int userId = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT UserID FROM Users WHERE Username = 'bacsi'"));
-                        DatabaseHelper.ExecuteNonQuery($"INSERT INTO Employees (EmployeeCode, FullName, RoleID, DepartmentID, Status, UserID) VALUES ('EMP_DOC', N'Bác sĩ Nguyễn Văn Minh', {doctorRoleId}, (SELECT TOP 1 DepartmentID FROM Departments WHERE DepartmentName = N'Khám tổng quát' OR DepartmentName = N'Khoa Nội'), 'Active', {userId});");
-                    }
-                    LogSeed("-> Đã kiểm tra và thêm tài khoản đăng nhập nếu chưa có.");
+                int p1 = EnsurePatient("BN001", "Nguyễn Văn A", "1981-05-15", "Nam", "0905111222", "Hải Châu, Đà Nẵng");
+                int p2 = EnsurePatient("BN002", "Trần Thị B", "1994-08-22", "Nữ", "0905333444", "Sơn Trà, Đà Nẵng");
+                int p3 = EnsurePatient("BN003", "Lê Văn C", "1998-11-30", "Nam", "0905555666", "Liên Chiểu, Đà Nẵng");
+                int p4 = EnsurePatient("BN004", "Phạm Thị D", "1971-02-10", "Nữ", "0905777888", "Ngũ Hành Sơn, Đà Nẵng");
+                int p5 = EnsurePatient("BN005", "Hoàng Văn E", "1988-04-05", "Nam", "0905999000", "Thanh Khê, Đà Nẵng");
+                LogSeed("-> Đã đồng bộ bệnh nhân mẫu qua Patients.");
 
-                    // Local helper to ensure patient exists in the database
-                    void EnsurePatientExists(string code, string name, string dob, string gender, string phone, string address)
-                    {
-                        int cnt = Convert.ToInt32(DatabaseHelper.ExecuteScalar($"SELECT COUNT(*) FROM Patients WHERE PatientCode = '{code}'"));
-                        if (cnt == 0)
-                        {
-                            DatabaseHelper.ExecuteNonQuery($"INSERT INTO Patients (PatientCode, FullName, DOB, Gender, Phone, Address) VALUES ('{code}', N'{name}', '{dob}', N'{gender}', '{phone}', N'{address}');");
-                        }
-                    }
+                ClearSampleTechnicianData(technicianId);
 
-                    EnsurePatientExists("BN001", "Nguyễn Văn A", "1981-05-15", "Nam", "0905111222", "Hải Châu, Đà Nẵng");
-                    EnsurePatientExists("BN002", "Trần Thị B", "1994-08-22", "Nữ", "0905333444", "Sơn Trà, Đà Nẵng");
-                    EnsurePatientExists("BN003", "Lê Văn C", "1998-11-30", "Nam", "0905555666", "Liên Chiểu, Đà Nẵng");
-                    EnsurePatientExists("BN004", "Phạm Thị D", "1971-02-10", "Nữ", "0905777888", "Ngũ Hành Sơn, Đà Nẵng");
-                    EnsurePatientExists("BN005", "Hoàng Văn E", "1988-04-05", "Nam", "0905999000", "Thanh Khê, Đà Nẵng");
-                    LogSeed("-> Đã kiểm tra và nạp bệnh nhân mẫu nếu chưa có.");
-                }
-                else
-                {
-                    // Clear existing tables
-                    DatabaseHelper.ExecuteNonQuery($"DELETE FROM {shiftTable};");
-                    DatabaseHelper.ExecuteNonQuery("DELETE FROM Requests;");
-                    DatabaseHelper.ExecuteNonQuery("DELETE FROM Patients;");
-                    DatabaseHelper.ExecuteNonQuery("DELETE FROM Doctors;");
-                    DatabaseHelper.ExecuteNonQuery("DELETE FROM Users;");
-                    LogSeed("-> Đã xóa sạch dữ liệu cũ.");
+                SeedLabRequest(p3, doctor3, "Điện tâm đồ (ECG)", "Chờ xử lý");
+                SeedImagingRequest(p3, doctor3, "Siêu âm tim", "Tim", "Ưu tiên cao", "Chờ xử lý");
+                SeedImagingRequest(p5, doctor2, "Chụp MRI cột sống", "Cột sống", "Ưu tiên", "Chờ xử lý");
+                SeedLabRequest(p2, doctor4, "Xét nghiệm sinh hóa máu", "Chờ xử lý");
+                SeedImagingRequest(p4, doctor2, "Chụp X-quang phổi", "Phổi", "Thường", "Đang xử lý");
 
-                    // Add default login accounts
-                    DatabaseHelper.ExecuteNonQuery("INSERT INTO Users (Username, Password, Name, Role, Email) VALUES ('ktv', '123', N'Lữ Võ Hoàng Phúc', 'Technician', 'tech@phongkham.vn');");
-                    DatabaseHelper.ExecuteNonQuery("INSERT INTO Users (Username, Password, Name, Role, Email) VALUES ('admin', 'admin123', N'Quản Trị Viên', 'Admin', 'admin@phongkham.vn');");
-                    DatabaseHelper.ExecuteNonQuery("INSERT INTO Users (Username, Password, Name, Role, Email) VALUES ('bacsi', '123', N'Bác sĩ Nguyễn Văn Minh', 'Doctor', 'doctor@phongkham.vn');");
-                    LogSeed("-> Đã thêm 3 tài khoản đăng nhập (Kỹ thuật viên: 'ktv' | Bác sĩ: 'bacsi' | Admin: 'admin').");
-
-                    // Seed Patients
-                    DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN001', N'Nguyễn Văn A', '1981-05-15', N'Nam', '0905111222', N'Hải Châu, Đà Nẵng');");
-                    DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN002', N'Trần Thị B', '1994-08-22', N'Nữ', '0905333444', N'Sơn Trà, Đà Nẵng');");
-                    DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN003', N'Lê Văn C', '1998-11-30', N'Nam', '0905555666', N'Liên Chiểu, Đà Nẵng');");
-                    DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN004', N'Phạm Thị D', '1971-02-10', N'Nữ', '0905777888', N'Ngũ Hành Sơn, Đà Nẵng');");
-                    DatabaseHelper.ExecuteNonQuery("INSERT INTO Patients (PatientCode, Name, BirthDate, Gender, Phone, Address) VALUES ('BN005', N'Hoàng Văn E', '1988-04-05', N'Nam', '0905999000', N'Thanh Khê, Đà Nẵng');");
-                    LogSeed("-> Đã nạp 5 bệnh nhân đăng ký.");
-                }
-
-                // Seed Doctors
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS001', N'BS. Nguyễn Văn Minh', N'Khoa Nội');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS002', N'BS. Trần B', N'Chẩn đoán hình ảnh');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS003', N'BS. Phạm D', N'Khoa Nội');");
-                DatabaseHelper.ExecuteNonQuery("INSERT INTO Doctors (DoctorCode, Name, Department) VALUES ('BS004', N'BS. Lê H', N'Khoa Tim mạch');");
-                LogSeed("-> Đã nạp 4 hồ sơ Bác sĩ chỉ định.");
-
-                // Fetch IDs
-                int p1 = (int)DatabaseHelper.ExecuteScalar("SELECT PatientID FROM Patients WHERE PatientCode = 'BN001'");
-                int p2 = (int)DatabaseHelper.ExecuteScalar("SELECT PatientID FROM Patients WHERE PatientCode = 'BN002'");
-                int p3 = (int)DatabaseHelper.ExecuteScalar("SELECT PatientID FROM Patients WHERE PatientCode = 'BN003'");
-                int p4 = (int)DatabaseHelper.ExecuteScalar("SELECT PatientID FROM Patients WHERE PatientCode = 'BN004'");
-                int p5 = (int)DatabaseHelper.ExecuteScalar("SELECT PatientID FROM Patients WHERE PatientCode = 'BN005'");
-
-                int d1 = (int)DatabaseHelper.ExecuteScalar("SELECT DoctorID FROM Doctors WHERE DoctorCode = 'BS001'");
-                int d2 = (int)DatabaseHelper.ExecuteScalar("SELECT DoctorID FROM Doctors WHERE DoctorCode = 'BS002'");
-                int d3 = (int)DatabaseHelper.ExecuteScalar("SELECT DoctorID FROM Doctors WHERE DoctorCode = 'BS003'");
-                int d4 = (int)DatabaseHelper.ExecuteScalar("SELECT DoctorID FROM Doctors WHERE DoctorCode = 'BS004'");
-
-                // Seed Requests
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ001', {p3}, {d3}, N'Điện tâm đồ (ECG)', N'Đánh giá rối loạn nhịp tim', N'Ưu tiên cao', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chờ xử lý');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ002', {p3}, {d3}, N'Siêu âm tim', N'Đánh giá cấu trúc tim', N'Ưu tiên cao', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chờ xử lý');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ004', {p5}, {d2}, N'Chụp MRI cột sống', N'Nghi ngờ thoát vị đĩa đệm', N'Ưu tiên', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chờ xử lý');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ005', {p2}, {d4}, N'Xét nghiệm sinh hóa máu', N'Định lượng Glucose và Acid Uric', N'Thường', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Chờ xử lý');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status) VALUES ('REQ006', {p4}, {d2}, N'Chụp X-quang phổi', N'Ho kéo dài, nghi ngờ viêm phổi', N'Thường', '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', N'Đang xử lý');");
-
-                // Seed one completed request with PDF path
+                int completedLabId = SeedLabRequest(p1, doctor1, "Xét nghiệm máu tổng quát", "Hoàn thành");
                 string uploadFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "uploads");
                 if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
                 string dummyPdf = Path.Combine(uploadFolder, "sample_result.pdf");
-                if (!File.Exists(dummyPdf)) File.WriteAllBytes(dummyPdf, new byte[] { 0x25, 0x50, 0x44, 0x46, 0x0A }); // dummy empty pdf header
+                if (!File.Exists(dummyPdf)) File.WriteAllBytes(dummyPdf, new byte[] { 0x25, 0x50, 0x44, 0x46, 0x0A });
+                DatabaseHelper.ExecuteNonQuery(
+                    "INSERT INTO LabResults (LabID, ResultText, FileURL, CompletedAt) VALUES (@LabID, @ResultText, @FileURL, @CompletedAt)",
+                    new[]
+                    {
+                        new SqlParameter("@LabID", completedLabId),
+                        new SqlParameter("@ResultText", "Công thức máu trong giới hạn theo dữ liệu mẫu."),
+                        new SqlParameter("@FileURL", dummyPdf),
+                        new SqlParameter("@CompletedAt", DateTime.Now.AddDays(-1))
+                    });
+                LogSeed("-> Đã nạp yêu cầu kỹ thuật qua LabRequests/ImagingRequests và bảng kết quả tương ứng.");
 
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO Requests (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status, ResultPDF) VALUES ('REQ003', {p1}, {d1}, N'Xét nghiệm máu tổng quát', N'Kiểm tra công thức máu', N'Thường', '{DateTime.Now.AddDays(-1):yyyy-MM-dd HH:mm:ss}', N'Hoàn thành', '{dummyPdf.Replace("\\", "\\\\")}');");
+                DateTime monday = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
+                SeedEmployeeShift(technicianId, "Sáng", "08:00", "12:00", monday);
+                SeedEmployeeShift(technicianId, "Chiều", "13:00", "17:00", monday.AddDays(1));
+                SeedEmployeeShift(technicianId, "Sáng", "08:00", "12:00", monday.AddDays(2));
+                SeedEmployeeShift(technicianId, "Chiều", "13:00", "17:00", monday.AddDays(3));
+                LogSeed("-> Đã nạp ca kỹ thuật viên qua Shifts/EmployeeShifts.");
 
-                LogSeed("-> Đã nạp 6 yêu cầu dịch vụ.");
-
-                // Seed Shifts
-                DateTime mon = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO {shiftTable} (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon:yyyy-MM-dd}', N'Sáng', N'Phòng khám 101', N'Khoa Nội', N'Đã đăng ký');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO {shiftTable} (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon.AddDays(1):yyyy-MM-dd}', N'Chiều', N'Phòng khám 102', N'Khoa Nội', N'Đã đăng ký');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO {shiftTable} (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon.AddDays(2):yyyy-MM-dd}', N'Sáng', N'Phòng khám 201', N'Khoa Tim mạch', N'Đã đăng ký');");
-                DatabaseHelper.ExecuteNonQuery($"INSERT INTO {shiftTable} (ShiftDate, ShiftName, Room, Department, Status) VALUES ('{mon.AddDays(3):yyyy-MM-dd}', N'Chiều', N'Phòng khám 103', N'Khoa Nội', N'Chờ xác nhận');");
-                LogSeed("-> Đã nạp 4 ca trực hàng tuần của Kỹ thuật viên.");
-
-                LogSeed("\n[HOÀN THÀNH] Khởi tạo dữ liệu mẫu thành công! Bạn có thể sử dụng các chức năng của Kỹ thuật viên ngay lập tức.");
-                MessageBox.Show("Đã nạp toàn bộ dữ liệu mẫu vào SQL Server thành công!", "Seeder Tool", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LogSeed("\n[HOÀN THÀNH] Dữ liệu mẫu đã đồng nhất với CMS.sql.");
+                MessageBox.Show("Đã nạp dữ liệu mẫu theo schema CMS.sql thành công!", "Seeder Tool", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -207,13 +121,276 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             }
         }
 
+        private static void EnsureCmsSchema()
+        {
+            int rolesCount = Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "SELECT COUNT(*) FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Roles]') AND type in (N'U')"));
+            int diagnosticsCount = Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "SELECT COUNT(*) FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[LabRequests]') AND type in (N'U')"));
+
+            if (rolesCount == 0 || diagnosticsCount == 0)
+            {
+                throw new InvalidOperationException("Database hiện tại chưa phải schema CMS.sql. Hãy chạy Database/CMS.sql trước.");
+            }
+        }
+
+        private static int EnsureRole(string roleName)
+        {
+            object roleId = DatabaseHelper.ExecuteScalar(
+                "SELECT RoleID FROM Roles WHERE RoleName = @RoleName",
+                new[] { new SqlParameter("@RoleName", roleName) });
+
+            if (roleId != null && roleId != DBNull.Value)
+            {
+                return Convert.ToInt32(roleId);
+            }
+
+            DatabaseHelper.ExecuteNonQuery(
+                "INSERT INTO Roles (RoleName, Description) VALUES (@RoleName, @Description)",
+                new[]
+                {
+                    new SqlParameter("@RoleName", roleName),
+                    new SqlParameter("@Description", roleName)
+                });
+            return Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "SELECT RoleID FROM Roles WHERE RoleName = @RoleName",
+                new[] { new SqlParameter("@RoleName", roleName) }));
+        }
+
+        private static int EnsureDepartment(string departmentName)
+        {
+            object departmentId = DatabaseHelper.ExecuteScalar(
+                "SELECT DepartmentID FROM Departments WHERE DepartmentName = @DepartmentName",
+                new[] { new SqlParameter("@DepartmentName", departmentName) });
+
+            if (departmentId != null && departmentId != DBNull.Value)
+            {
+                return Convert.ToInt32(departmentId);
+            }
+
+            DatabaseHelper.ExecuteNonQuery(
+                "INSERT INTO Departments (DepartmentName) VALUES (@DepartmentName)",
+                new[] { new SqlParameter("@DepartmentName", departmentName) });
+            return Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "SELECT DepartmentID FROM Departments WHERE DepartmentName = @DepartmentName",
+                new[] { new SqlParameter("@DepartmentName", departmentName) }));
+        }
+
+        private static int EnsureUserEmployee(string username, string password, string email, int roleId, string employeeCode, string fullName, int departmentId)
+        {
+            object userId = DatabaseHelper.ExecuteScalar(
+                "SELECT UserID FROM Users WHERE Username = @Username",
+                new[] { new SqlParameter("@Username", username) });
+
+            if (userId == null || userId == DBNull.Value)
+            {
+                DatabaseHelper.ExecuteNonQuery(
+                    "INSERT INTO Users (Username, PasswordHash, Email, RoleID, IsActive) VALUES (@Username, @PasswordHash, @Email, @RoleID, 1)",
+                    new[]
+                    {
+                        new SqlParameter("@Username", username),
+                        new SqlParameter("@PasswordHash", password),
+                        new SqlParameter("@Email", email),
+                        new SqlParameter("@RoleID", roleId)
+                    });
+                userId = DatabaseHelper.ExecuteScalar(
+                    "SELECT UserID FROM Users WHERE Username = @Username",
+                    new[] { new SqlParameter("@Username", username) });
+            }
+
+            return EnsureEmployee(employeeCode, fullName, roleId, departmentId, Convert.ToInt32(userId));
+        }
+
+        private static int EnsureEmployee(string employeeCode, string fullName, int roleId, int departmentId, int? userId = null)
+        {
+            object employeeId = DatabaseHelper.ExecuteScalar(
+                "SELECT EmployeeID FROM Employees WHERE EmployeeCode = @EmployeeCode",
+                new[] { new SqlParameter("@EmployeeCode", employeeCode) });
+
+            if (employeeId != null && employeeId != DBNull.Value)
+            {
+                return Convert.ToInt32(employeeId);
+            }
+
+            DatabaseHelper.ExecuteNonQuery(
+                "INSERT INTO Employees (EmployeeCode, FullName, RoleID, DepartmentID, Status, UserID) VALUES (@EmployeeCode, @FullName, @RoleID, @DepartmentID, @Status, @UserID)",
+                new[]
+                {
+                    new SqlParameter("@EmployeeCode", employeeCode),
+                    new SqlParameter("@FullName", fullName),
+                    new SqlParameter("@RoleID", roleId),
+                    new SqlParameter("@DepartmentID", departmentId),
+                    new SqlParameter("@Status", "Active"),
+                    new SqlParameter("@UserID", (object)userId ?? DBNull.Value)
+                });
+
+            return Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "SELECT EmployeeID FROM Employees WHERE EmployeeCode = @EmployeeCode",
+                new[] { new SqlParameter("@EmployeeCode", employeeCode) }));
+        }
+
+        private static int EnsurePatient(string code, string name, string dob, string gender, string phone, string address)
+        {
+            object patientId = DatabaseHelper.ExecuteScalar(
+                "SELECT PatientID FROM Patients WHERE PatientCode = @PatientCode",
+                new[] { new SqlParameter("@PatientCode", code) });
+
+            if (patientId != null && patientId != DBNull.Value)
+            {
+                return Convert.ToInt32(patientId);
+            }
+
+            DatabaseHelper.ExecuteNonQuery(
+                "INSERT INTO Patients (PatientCode, FullName, DOB, Gender, Phone, Address) VALUES (@PatientCode, @FullName, @DOB, @Gender, @Phone, @Address)",
+                new[]
+                {
+                    new SqlParameter("@PatientCode", code),
+                    new SqlParameter("@FullName", name),
+                    new SqlParameter("@DOB", dob),
+                    new SqlParameter("@Gender", gender),
+                    new SqlParameter("@Phone", phone),
+                    new SqlParameter("@Address", address)
+                });
+
+            return Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "SELECT PatientID FROM Patients WHERE PatientCode = @PatientCode",
+                new[] { new SqlParameter("@PatientCode", code) }));
+        }
+
+        private static void ClearSampleTechnicianData(int technicianId)
+        {
+            DatabaseHelper.ExecuteNonQuery("DELETE FROM ImagingFiles");
+            DatabaseHelper.ExecuteNonQuery("DELETE FROM ImagingResults");
+            DatabaseHelper.ExecuteNonQuery("DELETE FROM LabResults");
+            DatabaseHelper.ExecuteNonQuery("DELETE FROM ImagingRequests");
+            DatabaseHelper.ExecuteNonQuery("DELETE FROM LabRequests");
+            DatabaseHelper.ExecuteNonQuery(
+                "DELETE FROM EmployeeShifts WHERE EmployeeID = @EmployeeID",
+                new[] { new SqlParameter("@EmployeeID", technicianId) });
+        }
+
+        private static int CreateEncounter(int patientId, int doctorId)
+        {
+            return Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "INSERT INTO Encounters (PatientID, DoctorID, StartTime, Status) VALUES (@PatientID, @DoctorID, @StartTime, @Status); SELECT CAST(SCOPE_IDENTITY() AS int);",
+                new[]
+                {
+                    new SqlParameter("@PatientID", patientId),
+                    new SqlParameter("@DoctorID", doctorId),
+                    new SqlParameter("@StartTime", DateTime.Now),
+                    new SqlParameter("@Status", "Open")
+                }));
+        }
+
+        private static int SeedLabRequest(int patientId, int doctorId, string testType, string status)
+        {
+            int encounterId = CreateEncounter(patientId, doctorId);
+            return Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "INSERT INTO LabRequests (EncounterID, DoctorID, TestType, Status, CreatedAt) VALUES (@EncounterID, @DoctorID, @TestType, @Status, @CreatedAt); SELECT CAST(SCOPE_IDENTITY() AS int);",
+                new[]
+                {
+                    new SqlParameter("@EncounterID", encounterId),
+                    new SqlParameter("@DoctorID", doctorId),
+                    new SqlParameter("@TestType", testType),
+                    new SqlParameter("@Status", status),
+                    new SqlParameter("@CreatedAt", DateTime.Now)
+                }));
+        }
+
+        private static void SeedImagingRequest(int patientId, int doctorId, string serviceName, string bodyPart, string priority, string status)
+        {
+            int encounterId = CreateEncounter(patientId, doctorId);
+            int serviceId = EnsureImagingService(serviceName);
+            DatabaseHelper.ExecuteNonQuery(
+                "INSERT INTO ImagingRequests (EncounterID, DoctorID, ImagingServiceID, BodyPart, CreatedAt, Priority, Status) VALUES (@EncounterID, @DoctorID, @ServiceID, @BodyPart, @CreatedAt, @Priority, @Status)",
+                new[]
+                {
+                    new SqlParameter("@EncounterID", encounterId),
+                    new SqlParameter("@DoctorID", doctorId),
+                    new SqlParameter("@ServiceID", serviceId),
+                    new SqlParameter("@BodyPart", bodyPart),
+                    new SqlParameter("@CreatedAt", DateTime.Now),
+                    new SqlParameter("@Priority", priority),
+                    new SqlParameter("@Status", status)
+                });
+        }
+
+        private static int EnsureImagingService(string serviceName)
+        {
+            object serviceId = DatabaseHelper.ExecuteScalar(
+                "SELECT ImagingServiceID FROM ImagingServices WHERE ServiceName = @ServiceName",
+                new[] { new SqlParameter("@ServiceName", serviceName) });
+
+            if (serviceId != null && serviceId != DBNull.Value)
+            {
+                return Convert.ToInt32(serviceId);
+            }
+
+            DatabaseHelper.ExecuteNonQuery(
+                "INSERT INTO ImagingServices (ServiceName, Modality, Price, IsActive) VALUES (@ServiceName, @Modality, 0, 1)",
+                new[]
+                {
+                    new SqlParameter("@ServiceName", serviceName),
+                    new SqlParameter("@Modality", InferModality(serviceName))
+                });
+            return Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "SELECT ImagingServiceID FROM ImagingServices WHERE ServiceName = @ServiceName",
+                new[] { new SqlParameter("@ServiceName", serviceName) }));
+        }
+
+        private static void SeedEmployeeShift(int employeeId, string shiftName, string startTime, string endTime, DateTime workDate)
+        {
+            int shiftId = EnsureShift(shiftName, startTime, endTime);
+            DatabaseHelper.ExecuteNonQuery(
+                "INSERT INTO EmployeeShifts (EmployeeID, ShiftID, WorkDate) VALUES (@EmployeeID, @ShiftID, @WorkDate)",
+                new[]
+                {
+                    new SqlParameter("@EmployeeID", employeeId),
+                    new SqlParameter("@ShiftID", shiftId),
+                    new SqlParameter("@WorkDate", workDate.Date)
+                });
+        }
+
+        private static int EnsureShift(string name, string startTime, string endTime)
+        {
+            object shiftId = DatabaseHelper.ExecuteScalar(
+                "SELECT ShiftID FROM Shifts WHERE Name = @Name",
+                new[] { new SqlParameter("@Name", name) });
+
+            if (shiftId != null && shiftId != DBNull.Value)
+            {
+                return Convert.ToInt32(shiftId);
+            }
+
+            DatabaseHelper.ExecuteNonQuery(
+                "INSERT INTO Shifts (Name, StartTime, EndTime) VALUES (@Name, @StartTime, @EndTime)",
+                new[]
+                {
+                    new SqlParameter("@Name", name),
+                    new SqlParameter("@StartTime", startTime),
+                    new SqlParameter("@EndTime", endTime)
+                });
+            return Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "SELECT ShiftID FROM Shifts WHERE Name = @Name",
+                new[] { new SqlParameter("@Name", name) }));
+        }
+
+        private static string InferModality(string serviceName)
+        {
+            string value = (serviceName ?? "").ToLowerInvariant();
+            if (value.Contains("mri")) return "MRI";
+            if (value.Contains("x-quang") || value.Contains("xray") || value.Contains("x-ray")) return "X-Ray";
+            if (value.Contains("siêu âm") || value.Contains("sieu am")) return "Ultrasound";
+            return "Imaging";
+        }
+
         private void LogSeed(string msg)
         {
             txtSeederLog.AppendText(msg + "\r\n");
         }
 
-        // ==========================================
-
+        private void btnSyncApi_Click(object sender, EventArgs e)
+        {
+        }
     }
 }
-

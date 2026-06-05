@@ -33,12 +33,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         private void LoadRequests()
         {
             cboMRIRequests.Items.Clear();
-            List<RequestDTO> list = new List<RequestDTO>();
+            List<TechnicianRequestDTO> list = new List<TechnicianRequestDTO>();
             try
             {
-                list = requestBUS.GetList().Where(r => r.Status != "Hoàn thành" && (r.ServiceType.Contains("MRI") || r.ServiceType.Contains("X-quang") || r.ServiceType.Contains("Siêu âm"))).ToList();
+                list = requestBUS.GetList().Where(r => r.Status != "Hoàn thành" && CMS.Core.Utils.ServiceTypeHelper.IsImagingService(r.ServiceType)).ToList();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error loading MRI requests: " + ex);
+            }
 
             foreach (var req in list)
             {
@@ -58,7 +61,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                         cboMRIRequests.Enabled = false;
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error loading active request: " + ex);
+                }
             }
             else if (cboMRIRequests.Items.Count > 0)
             {
@@ -73,7 +79,23 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     selectedImagePath = ofd.FileName;
-                    picMRIPreview.Image = Image.FromFile(selectedImagePath);
+                    if (picMRIPreview.Image != null)
+                    {
+                        picMRIPreview.Image.Dispose();
+                        picMRIPreview.Image = null;
+                    }
+                    try
+                    {
+                        using (var stream = new FileStream(selectedImagePath, FileMode.Open, FileAccess.Read))
+                        {
+                            picMRIPreview.Image = Image.FromStream(stream);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Error loading preview image: " + ex);
+                        MessageBox.Show("Không thể tải ảnh xem trước: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -110,7 +132,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("Error submitting MRI result: " + ex);
+                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

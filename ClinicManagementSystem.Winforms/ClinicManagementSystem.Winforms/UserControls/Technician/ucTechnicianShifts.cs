@@ -44,17 +44,23 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             {
                 countShifts = shiftBUS.GetShiftCount();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error getting shift count: " + ex);
+            }
 
             lblStatTotalNum.Text = countShifts.ToString();
             lblStatHoursNum.Text = (countShifts * 5) + "h";
 
-            List<ShiftDTO> weekShifts = new List<ShiftDTO>();
+            List<TechnicianShiftDTO> weekShifts = new List<TechnicianShiftDTO>();
             try
             {
                 weekShifts = shiftBUS.GetList();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error getting shifts list: " + ex);
+            }
 
             // Populate Calendar
             DateTime startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);

@@ -43,8 +43,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         protected readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
         protected readonly PatientBUS patientBUS = new PatientBUS();
-        protected readonly RequestBUS requestBUS = new RequestBUS();
-        protected readonly ShiftBUS shiftBUS = new ShiftBUS();
+        protected readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
+        protected readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
 
         protected UserDTO currentUser;
         protected int activeRequestId;

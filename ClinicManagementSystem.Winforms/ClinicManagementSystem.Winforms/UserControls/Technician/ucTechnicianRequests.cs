@@ -64,12 +64,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void LoadRequests()
         {
-            List<RequestDTO> list = new List<RequestDTO>();
+            List<TechnicianRequestDTO> list = new List<TechnicianRequestDTO>();
             try
             {
                 list = requestBUS.GetList();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error loading requests list: " + ex);
+            }
 
             int pending = list.Count(r => r.Status == "Chờ xử lý");
             int processing = list.Count(r => r.Status == "Đang xử lý");
@@ -88,11 +91,19 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         {
             string term = txtRequestSearch.Text.Contains("Tìm kiếm") ? "" : txtRequestSearch.Text.Trim();
             string status = comboRequestStatusFilter.SelectedItem != null ? comboRequestStatusFilter.SelectedItem.ToString() : "Tất cả trạng thái";
-            List<RequestDTO> filtered = requestBUS.FilterList(term, status);
+            List<TechnicianRequestDTO> filtered = new List<TechnicianRequestDTO>();
+            try
+            {
+                filtered = requestBUS.FilterList(term, status);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error filtering requests: " + ex);
+            }
             RenderFilteredRequests(filtered);
         }
 
-        private void RenderFilteredRequests(List<RequestDTO> filteredList)
+        private void RenderFilteredRequests(List<TechnicianRequestDTO> filteredList)
         {
             flpRequests.Controls.Clear();
 
@@ -108,7 +119,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             }
         }
 
-        private RoundedPanel CreateGroupedRequestCard(List<RequestDTO> requests)
+        private RoundedPanel CreateGroupedRequestCard(List<TechnicianRequestDTO> requests)
         {
             var first = requests.First();
             bool allCompleted = requests.All(r => r.Status == "Hoàn thành");
@@ -122,7 +133,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 BorderColor = borderColor,
                 CornerRadius = 8,
                 FillColor = Color.White,
-                Size = new Size(flpRequests.Width - 25, cardHeight),
+                Size = new Size(flpRequests.Width - 32, cardHeight),
                 Margin = new Padding(0, 0, 0, 16)
             };
 
@@ -195,7 +206,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 {
                     var btnView = CreateFlatButton("Xem", Color.FromArgb(34, 139, 74), Color.FromArgb(220, 252, 231), detail.Width - 90, y + 12, 76, 28);
                     btnView.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-                    btnView.Click += (s, ev) => NavigateTo(TechnicianViewTarget.Records);
+                    btnView.Click += (s, ev) => NavigateTo(TechnicianViewTarget.Records, req.RequestID);
                     detail.Controls.Add(btnView);
                 }
                 else
@@ -205,18 +216,24 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     actionBtn.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
                     actionBtn.Click += (s, ev) =>
                     {
-                        if (req.Status == "Chờ xử lý")
+                        try
                         {
-                            requestBUS.StartProcessing(req.RequestID);
-                            req.Status = "Đang xử lý";
+                            if (req.Status == "Chờ xử lý")
+                            {
+                                requestBUS.StartProcessing(req.RequestID);
+                                req.Status = "Đang xử lý";
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine("Error StartProcessing: " + ex);
                         }
 
-                        string type = req.ServiceType.ToLower();
-                        if (type.Contains("mri") || type.Contains("x-quang") || type.Contains("siêu âm"))
+                        if (CMS.Core.Utils.ServiceTypeHelper.IsImagingService(req.ServiceType))
                         {
                             NavigateTo(TechnicianViewTarget.UploadMRI, req.RequestID);
                         }
-                        else if (type.Contains("xét nghiệm máu tổng quát") || type.Contains("pdf"))
+                        else if (CMS.Core.Utils.ServiceTypeHelper.IsPdfUploadService(req.ServiceType))
                         {
                             NavigateTo(TechnicianViewTarget.UploadPDF, req.RequestID);
                         }
@@ -248,6 +265,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine("Error during requests sync: " + ex);
                 MessageBox.Show("Có lỗi xảy ra khi đồng bộ yêu cầu:\n" + ex.Message, "Lỗi đồng bộ", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally

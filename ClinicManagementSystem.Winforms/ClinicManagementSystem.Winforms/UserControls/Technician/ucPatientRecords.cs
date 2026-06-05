@@ -27,6 +27,26 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             txtRecordSearch.TextChanged += TxtRecordSearch_TextChanged;
             
             FilterRecordPatientsList();
+
+            if (activeRequestId != 0)
+            {
+                try
+                {
+                    var req = requestBUS.GetList().FirstOrDefault(r => r.RequestID == activeRequestId);
+                    if (req != null)
+                    {
+                        var patient = patientBUS.FilterList("").FirstOrDefault(p => p.PatientID == req.PatientID);
+                        if (patient != null)
+                        {
+                            SelectRecordPatient(patient);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error in ucPatientRecords_Load activeRequestId: " + ex);
+                }
+            }
         }
 
         private void ucPatientRecords_Resize(object sender, EventArgs e)
@@ -67,7 +87,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             {
                 patients = patientBUS.FilterList(term);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error filtering patients: " + ex);
+            }
 
             foreach (var pat in patients)
             {
@@ -77,11 +100,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void AddPatientRecordRow(PatientDTO pat)
         {
-            string init = pat.Name.Substring(0, 1).ToUpper();
+            string init = string.IsNullOrEmpty(pat.Name) ? "?" : pat.Name.Substring(0, 1).ToUpper();
             
             var row = new Panel
             {
-                Size = new Size(flpPatients.Width - 25, 76),
+                Size = new Size(flpPatients.Width - 32, 76),
                 BackColor = Color.FromArgb(249, 250, 251),
                 Cursor = Cursors.Hand,
                 Margin = new Padding(0, 0, 0, 8)
@@ -138,12 +161,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             flpHistory.Controls.Clear();
 
             // Load patient history
-            List<RequestDTO> history = new List<RequestDTO>();
+            List<TechnicianRequestDTO> history = new List<TechnicianRequestDTO>();
             try
             {
                 history = requestBUS.GetRequestsByPatient(pat.PatientID).Where(r => r.Status == "Hoàn thành").ToList();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error getting patient history: " + ex);
+            }
 
             if (history.Count == 0)
             {
@@ -152,7 +178,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 return;
             }
 
-            int cardW = flpHistory.Width - 25;
+            int cardW = flpHistory.Width - 32;
             foreach (var req in history)
             {
                 var card = new RoundedPanel
@@ -179,11 +205,19 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                         bool isUrl = !string.IsNullOrEmpty(path) && (path.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
                         if (isUrl || File.Exists(path))
                         {
-                            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+                            try
+                            {
+                                Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Error opening image file: " + ex);
+                                MessageBox.Show("Không thể mở file kết quả: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("Không tìm thấy tệp ảnh gốc. Có thể tệp đã bị di chuyển.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Không tìm thấy tệp ảnh phim gốc. Có thể tệp đã bị di chuyển hoặc bị xóa.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     };
                     card.Controls.Add(btnViewImage);
@@ -199,7 +233,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                         bool isUrl = !string.IsNullOrEmpty(path) && (path.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
                         if (isUrl || File.Exists(path))
                         {
-                            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+                            try
+                            {
+                                Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Error opening PDF file: " + ex);
+                                MessageBox.Show("Không thể mở file PDF: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                         else
                         {
@@ -217,8 +259,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                         string resStr = $"RBC: {vals["RBC"]} T/L | WBC: {vals["WBC"]} G/L | Glucose: {vals["Glucose"]} mmol/L | Acid Uric: {vals["UricAcid"]} umol/L";
                         card.Controls.Add(CreateLabel(resStr, 9F, FontStyle.Regular, textMain, 18, 84, 450, 20));
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        System.Diagnostics.Debug.WriteLine("Error parsing LabValues: " + ex);
                         card.Controls.Add(CreateLabel("Dữ liệu chỉ số lab không đúng định dạng.", 9F, FontStyle.Regular, textMain, 18, 84, 400, 20));
                     }
                 }

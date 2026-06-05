@@ -6,22 +6,22 @@ namespace CMS.Core.Identity
     public static class AuthManager
     {
         public static bool IsAdmin()
-            => UserSession.RoleName == Role.Admin;
+            => RoleNormalizer.Normalize(UserSession.RoleName) == Role.Admin;
 
         public static bool IsDoctor()
-            => UserSession.RoleName == Role.Doctor;
+            => RoleNormalizer.Normalize(UserSession.RoleName) == Role.Doctor;
 
         public static bool IsReceptionist()
-            => UserSession.RoleName == Role.Receptionist;
+            => RoleNormalizer.Normalize(UserSession.RoleName) == Role.Receptionist;
 
         public static bool IsNurse()
-            => UserSession.RoleName == Role.Nurse;
+            => RoleNormalizer.Normalize(UserSession.RoleName) == Role.Nurse;
 
         public static bool IsPharmacist()
-            => UserSession.RoleName == Role.Pharmacist;
+            => RoleNormalizer.Normalize(UserSession.RoleName) == Role.Pharmacist;
 
         public static bool IsTechnician()
-            => UserSession.RoleName == Role.Technician;
+            => RoleNormalizer.Normalize(UserSession.RoleName) == Role.Technician;
 
         // 7 chuyên khoa
 

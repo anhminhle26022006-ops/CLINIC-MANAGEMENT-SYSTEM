@@ -282,7 +282,7 @@ CREATE TABLE ImagingRequests (
    EncounterID INT,
    DoctorID INT,
    ImagingServiceID INT,
-   BodyPart NVARCHAR(100),
+   BodyPart NVARCHAR(500),
    CreatedAt DATETIME DEFAULT GETDATE(),
    Priority NVARCHAR(50),
    Status NVARCHAR(50),

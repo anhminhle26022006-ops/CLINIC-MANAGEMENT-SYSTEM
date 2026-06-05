@@ -22,8 +22,8 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
         private readonly PatientBUS patientBUS = new PatientBUS();
-        private readonly RequestBUS requestBUS = new RequestBUS();
-        private readonly ShiftBUS shiftBUS = new ShiftBUS();
+        private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
+        private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
         private UserDTO currentUser;
         private bool layoutReady;
 
