@@ -9,7 +9,7 @@
 
         public static string GeneratePatientCode(int id)
         {
-            return $"PT{id:D5}";
+            return $"BN{id:D5}";
         }
 
         public static string GenerateEmployeeCode(int id)

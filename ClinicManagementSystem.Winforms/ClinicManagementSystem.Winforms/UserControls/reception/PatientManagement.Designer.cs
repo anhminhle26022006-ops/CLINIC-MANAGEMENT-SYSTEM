@@ -33,8 +33,8 @@
             panel2 = new Panel();
             tableLayoutPanel9 = new TableLayoutPanel();
             cbGender = new ComboBox();
-            cbDepartment = new ComboBox();
-            textBox1 = new TextBox();
+            cbAge = new ComboBox();
+            txtSearch = new TextBox();
             panel3 = new Panel();
             tableLayoutPanel2 = new TableLayoutPanel();
             panel6 = new Panel();
@@ -131,8 +131,8 @@
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             tableLayoutPanel9.Controls.Add(cbGender, 1, 0);
-            tableLayoutPanel9.Controls.Add(cbDepartment, 2, 0);
-            tableLayoutPanel9.Controls.Add(textBox1, 0, 0);
+            tableLayoutPanel9.Controls.Add(cbAge, 2, 0);
+            tableLayoutPanel9.Controls.Add(txtSearch, 0, 0);
             tableLayoutPanel9.Dock = DockStyle.Fill;
             tableLayoutPanel9.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             tableLayoutPanel9.Location = new Point(0, 0);
@@ -151,24 +151,27 @@
             cbGender.Name = "cbGender";
             cbGender.Size = new Size(217, 30);
             cbGender.TabIndex = 0;
+            cbGender.SelectedIndexChanged += FilterChanged;
             // 
-            // cbDepartment
+            // cbAge
             // 
-            cbDepartment.Dock = DockStyle.Fill;
-            cbDepartment.FormattingEnabled = true;
-            cbDepartment.Location = new Point(672, 3);
-            cbDepartment.Name = "cbDepartment";
-            cbDepartment.Size = new Size(217, 30);
-            cbDepartment.TabIndex = 1;
+            cbAge.Dock = DockStyle.Fill;
+            cbAge.FormattingEnabled = true;
+            cbAge.Location = new Point(672, 3);
+            cbAge.Name = "cbAge";
+            cbAge.Size = new Size(217, 30);
+            cbAge.TabIndex = 1;
+            cbAge.SelectedIndexChanged += FilterChanged;
             // 
-            // textBox1
+            // txtSearch
             // 
-            textBox1.Dock = DockStyle.Fill;
-            textBox1.Location = new Point(3, 3);
-            textBox1.Name = "textBox1";
-            textBox1.PlaceholderText = "Tìm bệnh nhân theo tên, mã, hoặc số điện thoại";
-            textBox1.Size = new Size(440, 30);
-            textBox1.TabIndex = 2;
+            txtSearch.Dock = DockStyle.Fill;
+            txtSearch.Location = new Point(3, 3);
+            txtSearch.Name = "txtSearch";
+            txtSearch.PlaceholderText = "Tìm bệnh nhân theo tên, mã, hoặc số điện thoại";
+            txtSearch.Size = new Size(440, 30);
+            txtSearch.TabIndex = 2;
+            txtSearch.TextChanged += txtSearch_TextChanged;
             // 
             // panel3
             // 
@@ -485,6 +488,7 @@
             button1.TabIndex = 0;
             button1.Text = "+ Thêm bệnh nhân";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // dgvPatientMana
             // 
@@ -564,8 +568,8 @@
         private Label lbappointment;
         private TableLayoutPanel tableLayoutPanel9;
         private ComboBox cbGender;
-        private ComboBox cbDepartment;
-        private TextBox textBox1;
+        private ComboBox cbAge;
+        private TextBox txtSearch;
         private DataGridView dgvPatientMana;
     }
 }
