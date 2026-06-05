@@ -1,4 +1,4 @@
-﻿﻿﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
-    public partial class AdminMainform : UserControl
+    public partial class AdminMainform : Form
     {
         private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;
@@ -51,12 +51,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void ucTechnicianDashboard_Load(object sender, EventArgs e)
         {
-
-            // Re-arrange default sidebar buttons
-            btnNavOverview.Location = new Point(12, 78);
-            btnEmployeeManagement.Location = new Point(12, 124);
-
-
             // Set Log Out click handler
             btnLogout.Click += (s, ev) =>
             {

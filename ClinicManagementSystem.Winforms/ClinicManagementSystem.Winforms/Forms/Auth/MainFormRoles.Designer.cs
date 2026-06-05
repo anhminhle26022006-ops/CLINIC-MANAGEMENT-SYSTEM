@@ -1,6 +1,6 @@
 namespace ClinicManagementSystem.Winforms.Forms
 {
-    partial class TechnicianDashboardForm
+    partial class MainformRole
     {
         private System.ComponentModel.IContainer components = null;
 

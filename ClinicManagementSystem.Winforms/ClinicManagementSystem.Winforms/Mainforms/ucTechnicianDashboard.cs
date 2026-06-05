@@ -12,11 +12,11 @@ using ClinicManagementSystem.Winforms.UserControls.Technician;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
-namespace ClinicManagementSystem.Winforms.Mainforms
+namespace ClinicManagementSystem.Winforms.UserControls
 {
-    public partial class ucTechnicianDashboard : UserControl
+    public partial class ucTechnicianDashboard : Form
     {
-        private readonly Color primary = Color.FromArgb(47, 94, 240);
+private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;
         private readonly Color pageBack = Color.FromArgb(247, 249, 252);
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
@@ -28,11 +28,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private UserDTO currentUser;
         private bool layoutReady;
 
-        // Custom Navigation Buttons
-        private Button btnNavUploadMRI;
-        private Button btnNavUploadPDF;
-        private Button btnNavLabResult;
-        private Button btnNavSeederTool;
+
 
         // Active request for processing transitions
         private int activeRequestId = 0;
@@ -57,17 +53,8 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void ucTechnicianDashboard_Load(object sender, EventArgs e)
         {
-            // Re-arrange default sidebar buttons
-            btnNavOverview.Location = new Point(12, 78);
-            btnNavRequests.Location = new Point(12, 124);
-
-            // Add programmatically styled sidebar buttons for remaining tasks
-            btnNavUploadMRI = CreateSidebarButton("Tải lên MRI/X-Ray", new Point(12, 170), btnNavUploadMRI_Click);
-            btnNavUploadPDF = CreateSidebarButton("Tải lên PDF", new Point(12, 216), btnNavUploadPDF_Click);
-            btnNavLabResult = CreateSidebarButton("Nhập kết quả Lab", new Point(12, 262), btnNavLabResult_Click);
-            btnNavRecords.Location = new Point(12, 308);
-            btnNavShifts.Location = new Point(12, 354);
-            btnNavSeederTool = CreateSidebarButton("Seeder Tool (Test)", new Point(12, 400), btnNavSeederTool_Click);
+            txtGlobalSearch.Text = "  Tìm kiếm...";
+            txtGlobalSearch.ForeColor = Color.FromArgb(148, 163, 184);
 
             // Set Log Out click handler
             btnLogout.Click += (s, ev) =>
@@ -79,28 +66,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
 
             ShowOverview();
-        }
-
-        private Button CreateSidebarButton(string text, Point location, EventHandler onClick)
-        {
-            Button btn = new Button
-            {
-                Text = text,
-                Location = location,
-                Size = new Size(214, 44),
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                FlatStyle = FlatStyle.Flat,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(16, 0, 0, 0),
-                Cursor = Cursors.Hand,
-                BackColor = Color.White,
-                ForeColor = Color.FromArgb(55, 65, 81),
-                UseVisualStyleBackColor = false
-            };
-            btn.FlatAppearance.BorderSize = 0;
-            btn.Click += onClick;
-            panelSidebar.Controls.Add(btn);
-            return btn;
         }
 
         private void btnNavOverview_Click(object sender, EventArgs e) => ShowOverview();

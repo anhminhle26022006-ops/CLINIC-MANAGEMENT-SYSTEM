@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
-    partial class ReceptionistMainform : UserControl
+    partial class ReceptionistMainform : Form
     {
         /// <summary>
         /// Required designer variable.
