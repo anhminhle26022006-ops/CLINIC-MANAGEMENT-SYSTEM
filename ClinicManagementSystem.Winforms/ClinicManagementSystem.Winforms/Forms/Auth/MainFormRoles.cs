@@ -2,26 +2,27 @@ using System;
 using System.Windows.Forms;
 using DTO;
 using ClinicManagementSystem.Winforms.Mainforms;
+using ClinicManagementSystem.Winforms.UserControls;
 
 namespace ClinicManagementSystem.Winforms.Forms
 {
-    public partial class TechnicianDashboardForm : Form
+    public partial class MainformRole : Form
     {
         private readonly UserDTO currentUser;
 
-        public TechnicianDashboardForm()
+        public MainformRole()
         {
             InitializeComponent();
         }
 
-        public TechnicianDashboardForm(UserDTO user) : this()
+        public MainformRole(UserDTO user) : this()
         {
             currentUser = user;
         }
 
         private void TechnicianDashboardForm_Load(object sender, EventArgs e)
         {
-            UserControl dashboard = null;
+            Form dashboard = null;
 
             if (currentUser != null && !string.IsNullOrEmpty(currentUser.Role))
             {
@@ -48,15 +49,15 @@ namespace ClinicManagementSystem.Winforms.Forms
                 }
                 else if (role.Equals("Technician", StringComparison.OrdinalIgnoreCase))
                 {
-                    dashboard = new ClinicManagementSystem.Winforms.UserControls.ucTechnicianDashboard(currentUser);
+                    dashboard = new TechnicianMainform(currentUser);
                 }
             }
 
             if (dashboard == null)
             {
                 dashboard = currentUser == null
-                    ? new ClinicManagementSystem.Winforms.UserControls.ucTechnicianDashboard()
-                    : new ClinicManagementSystem.Winforms.UserControls.ucTechnicianDashboard(currentUser);
+                    ? new TechnicianMainform()
+                    : new TechnicianMainform(currentUser);
             }
 
             dashboard.Dock = DockStyle.Fill;
@@ -84,7 +85,12 @@ namespace ClinicManagementSystem.Winforms.Forms
             }
             catch { }
 
-            Controls.Add(dashboard);
+            dashboard.TopLevel = false;
+            dashboard.FormBorderStyle = FormBorderStyle.None;
+            dashboard.Dock = DockStyle.Fill;
+
+            this.Controls.Add(dashboard);
+            dashboard.Show();
         }
 
         private void Dashboard_LogoutRequested(object sender, EventArgs e)

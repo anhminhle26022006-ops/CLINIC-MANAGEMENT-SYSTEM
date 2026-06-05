@@ -16,5 +16,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
         {
             InitializeComponent();
         }
+
     }
 }

@@ -21,6 +21,7 @@ namespace DTO
         public int SkippedPatientRows { get; set; }
         public int SkippedEmployeeRows { get; set; }
         public List<ApiPatientDTO> MergedPatients { get; set; } = new List<ApiPatientDTO>();
+        public List<ApiEmployeeDTO> MergedEmployees { get; set; } = new List<ApiEmployeeDTO>();
 
         public string ToUserMessage()
         {
@@ -47,7 +48,7 @@ namespace DTO
                 "--- DÒNG BỊ BỎ QUA ---\n" +
                 $"+ Sheet bệnh nhân thiếu mã hoặc tên: {SkippedPatientRows}\n" +
                 $"+ Sheet bác sĩ/nhân viên thiếu mã hoặc tên: {SkippedEmployeeRows}\n\n" +
-                $"=> Grid đang hiển thị: {MergedPatients.Count} bệnh nhân.";
+                $"=> Đã đồng bộ: {MergedPatients.Count} bệnh nhân và {MergedEmployees.Count} bác sĩ/nhân viên.";
         }
     }
 }

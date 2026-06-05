@@ -1,6 +1,6 @@
 ﻿namespace ClinicManagementSystem.Winforms.Mainforms
 {
-    partial class AdminMainform : UserControl
+    partial class AdminMainform : Form
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -87,7 +87,7 @@
             panelSidebar.Location = new Point(0, 0);
             panelSidebar.Margin = new Padding(4);
             panelSidebar.Name = "panelSidebar";
-            panelSidebar.Size = new Size(362, 1308);
+            panelSidebar.Size = new Size(290, 1046);
             panelSidebar.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -109,146 +109,168 @@
             tableLayoutPanel1.Margin = new Padding(4);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 10;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 126F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.111F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.111F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.111F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.111F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.111F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.111F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.111F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.111F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.111F));
-            tableLayoutPanel1.Size = new Size(360, 1306);
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 101F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
+            tableLayoutPanel1.Size = new Size(288, 1044);
             tableLayoutPanel1.TabIndex = 9;
             // 
             // panel1
             // 
-            panel1.Controls.Add(lblLogo);
-            panel1.Controls.Add(lblBrand);
-            panel1.Controls.Add(btnClose);
-            panel1.Controls.Add(lblBrandSub);
-            panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(4, 4);
-            panel1.Margin = new Padding(4);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(352, 118);
-            panel1.TabIndex = 0;
+            panel10.Controls.Add(btnLogout);
+            panel10.Dock = DockStyle.Fill;
+            panel10.Location = new Point(3, 936);
+            panel10.Name = "panel10";
+            panel10.Size = new Size(282, 105);
+            panel10.TabIndex = 9;
             // 
             // lblLogo
             // 
-            lblLogo.BackColor = Color.FromArgb(47, 94, 240);
-            lblLogo.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            lblLogo.ForeColor = Color.White;
-            lblLogo.Location = new Point(16, 26);
-            lblLogo.Margin = new Padding(4, 0, 4, 0);
-            lblLogo.Name = "lblLogo";
-            lblLogo.Size = new Size(54, 64);
-            lblLogo.TabIndex = 1;
-            lblLogo.Text = "H+";
-            lblLogo.TextAlign = ContentAlignment.MiddleCenter;
+            btnLogout.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnLogout.BackColor = Color.White;
+            btnLogout.Cursor = Cursors.Hand;
+            btnLogout.FlatAppearance.BorderSize = 0;
+            btnLogout.FlatStyle = FlatStyle.Flat;
+            btnLogout.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnLogout.ForeColor = Color.FromArgb(220, 38, 38);
+            btnLogout.Location = new Point(17, 25);
+            btnLogout.Margin = new Padding(3, 4, 3, 4);
+            btnLogout.Name = "btnLogout";
+            btnLogout.Size = new Size(245, 56);
+            btnLogout.TabIndex = 8;
+            btnLogout.Text = "Đăng xuất";
+            btnLogout.UseVisualStyleBackColor = false;
             // 
             // lblBrand
             // 
-            lblBrand.AutoSize = true;
-            lblBrand.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
-            lblBrand.ForeColor = Color.FromArgb(17, 24, 39);
-            lblBrand.Location = new Point(78, 12);
-            lblBrand.Margin = new Padding(4, 0, 4, 0);
-            lblBrand.Name = "lblBrand";
-            lblBrand.Size = new Size(196, 41);
-            lblBrand.TabIndex = 2;
-            lblBrand.Text = "HealthCare+";
+            panel9.Dock = DockStyle.Fill;
+            panel9.Location = new Point(3, 832);
+            panel9.Name = "panel9";
+            panel9.Size = new Size(282, 98);
+            panel9.TabIndex = 8;
             // 
             // btnClose
             // 
-            btnClose.BackColor = Color.White;
-            btnClose.Cursor = Cursors.Hand;
-            btnClose.FlatAppearance.BorderSize = 0;
-            btnClose.FlatStyle = FlatStyle.Flat;
-            btnClose.Font = new Font("Segoe UI", 13F);
-            btnClose.Location = new Point(290, 31);
-            btnClose.Margin = new Padding(4);
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(38, 54);
-            btnClose.TabIndex = 0;
-            btnClose.Text = "x";
-            btnClose.UseVisualStyleBackColor = false;
+            panel8.Controls.Add(btnAdvancedAnalysis);
+            panel8.Dock = DockStyle.Fill;
+            panel8.Location = new Point(3, 728);
+            panel8.Name = "panel8";
+            panel8.Size = new Size(282, 98);
+            panel8.TabIndex = 7;
             // 
             // lblBrandSub
             // 
-            lblBrandSub.AutoSize = true;
-            lblBrandSub.Font = new Font("Segoe UI", 8.5F);
-            lblBrandSub.ForeColor = Color.FromArgb(107, 114, 128);
-            lblBrandSub.Location = new Point(78, 65);
-            lblBrandSub.Margin = new Padding(4, 0, 4, 0);
-            lblBrandSub.Name = "lblBrandSub";
-            lblBrandSub.Size = new Size(107, 23);
-            lblBrandSub.TabIndex = 3;
-            lblBrandSub.Text = "Phòng khám";
+            btnAdvancedAnalysis.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnAdvancedAnalysis.BackColor = Color.White;
+            btnAdvancedAnalysis.Cursor = Cursors.Hand;
+            btnAdvancedAnalysis.FlatAppearance.BorderSize = 0;
+            btnAdvancedAnalysis.FlatStyle = FlatStyle.Flat;
+            btnAdvancedAnalysis.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnAdvancedAnalysis.ForeColor = Color.FromArgb(55, 65, 81);
+            btnAdvancedAnalysis.Location = new Point(17, 22);
+            btnAdvancedAnalysis.Margin = new Padding(3, 4, 3, 4);
+            btnAdvancedAnalysis.Name = "btnAdvancedAnalysis";
+            btnAdvancedAnalysis.Padding = new Padding(18, 0, 0, 0);
+            btnAdvancedAnalysis.Size = new Size(245, 59);
+            btnAdvancedAnalysis.TabIndex = 8;
+            btnAdvancedAnalysis.Text = "Phân tích nâng cao";
+            btnAdvancedAnalysis.UseVisualStyleBackColor = false;
             // 
             // panel2
             // 
-            panel2.Controls.Add(btnNavOverview);
-            panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(4, 130);
-            panel2.Margin = new Padding(4);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(352, 123);
-            panel2.TabIndex = 1;
+            panel7.Controls.Add(btnStatitics);
+            panel7.Dock = DockStyle.Fill;
+            panel7.Location = new Point(3, 624);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(282, 98);
+            panel7.TabIndex = 6;
             // 
             // btnNavOverview
             // 
-            btnNavOverview.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnNavOverview.BackColor = Color.Transparent;
-            btnNavOverview.Cursor = Cursors.Hand;
-            btnNavOverview.FlatAppearance.BorderSize = 0;
-            btnNavOverview.FlatStyle = FlatStyle.Flat;
-            btnNavOverview.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnNavOverview.ForeColor = Color.FromArgb(55, 65, 81);
-            btnNavOverview.Location = new Point(4, 24);
-            btnNavOverview.Margin = new Padding(4);
-            btnNavOverview.Name = "btnNavOverview";
-            btnNavOverview.Size = new Size(345, 74);
-            btnNavOverview.TabIndex = 4;
-            btnNavOverview.Text = "Tổng quan";
-            btnNavOverview.UseVisualStyleBackColor = false;
+            btnStatitics.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnStatitics.BackColor = Color.White;
+            btnStatitics.Cursor = Cursors.Hand;
+            btnStatitics.FlatAppearance.BorderSize = 0;
+            btnStatitics.FlatStyle = FlatStyle.Flat;
+            btnStatitics.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnStatitics.ForeColor = Color.FromArgb(55, 65, 81);
+            btnStatitics.Location = new Point(17, 19);
+            btnStatitics.Margin = new Padding(3, 4, 3, 4);
+            btnStatitics.Name = "btnStatitics";
+            btnStatitics.Padding = new Padding(18, 0, 0, 0);
+            btnStatitics.Size = new Size(245, 59);
+            btnStatitics.TabIndex = 8;
+            btnStatitics.Text = "Thống kê";
+            btnStatitics.UseVisualStyleBackColor = false;
             // 
             // panel3
             // 
-            panel3.Controls.Add(btnEmployeeManagement);
-            panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(4, 261);
-            panel3.Margin = new Padding(4);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(352, 123);
-            panel3.TabIndex = 2;
+            panel6.Controls.Add(btnNavShifts);
+            panel6.Dock = DockStyle.Fill;
+            panel6.Location = new Point(3, 520);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(282, 98);
+            panel6.TabIndex = 5;
             // 
             // btnEmployeeManagement
             // 
-            btnEmployeeManagement.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnEmployeeManagement.BackColor = Color.White;
-            btnEmployeeManagement.Cursor = Cursors.Hand;
-            btnEmployeeManagement.FlatAppearance.BorderSize = 0;
-            btnEmployeeManagement.FlatStyle = FlatStyle.Flat;
-            btnEmployeeManagement.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnEmployeeManagement.ForeColor = Color.FromArgb(55, 65, 81);
-            btnEmployeeManagement.Location = new Point(4, 24);
-            btnEmployeeManagement.Margin = new Padding(4);
-            btnEmployeeManagement.Name = "btnEmployeeManagement";
-            btnEmployeeManagement.Size = new Size(345, 74);
-            btnEmployeeManagement.TabIndex = 5;
-            btnEmployeeManagement.Text = "Quản lý nhân viên";
-            btnEmployeeManagement.UseVisualStyleBackColor = false;
+            btnNavShifts.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnNavShifts.BackColor = Color.White;
+            btnNavShifts.Cursor = Cursors.Hand;
+            btnNavShifts.FlatAppearance.BorderSize = 0;
+            btnNavShifts.FlatStyle = FlatStyle.Flat;
+            btnNavShifts.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnNavShifts.ForeColor = Color.FromArgb(55, 65, 81);
+            btnNavShifts.Location = new Point(17, 20);
+            btnNavShifts.Margin = new Padding(3, 4, 3, 4);
+            btnNavShifts.Name = "btnNavShifts";
+            btnNavShifts.Padding = new Padding(18, 0, 0, 0);
+            btnNavShifts.Size = new Size(245, 59);
+            btnNavShifts.TabIndex = 6;
+            btnNavShifts.Text = "Ca làm việc";
+            btnNavShifts.UseVisualStyleBackColor = false;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(btnShiftManagement);
+            panel5.Dock = DockStyle.Fill;
+            panel5.Location = new Point(3, 416);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(282, 98);
+            panel5.TabIndex = 4;
+            // 
+            // btnShiftManagement
+            // 
+            btnShiftManagement.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnShiftManagement.BackColor = Color.White;
+            btnShiftManagement.Cursor = Cursors.Hand;
+            btnShiftManagement.FlatAppearance.BorderSize = 0;
+            btnShiftManagement.FlatStyle = FlatStyle.Flat;
+            btnShiftManagement.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnShiftManagement.ForeColor = Color.FromArgb(55, 65, 81);
+            btnShiftManagement.Location = new Point(17, 20);
+            btnShiftManagement.Margin = new Padding(3, 4, 3, 4);
+            btnShiftManagement.Name = "btnShiftManagement";
+            btnShiftManagement.Padding = new Padding(18, 0, 0, 0);
+            btnShiftManagement.Size = new Size(245, 59);
+            btnShiftManagement.TabIndex = 8;
+            btnShiftManagement.Text = "Quản lý ca trực";
+            btnShiftManagement.UseVisualStyleBackColor = false;
             // 
             // panel4
             // 
             panel4.Controls.Add(btnUserManagement);
             panel4.Dock = DockStyle.Fill;
-            panel4.Location = new Point(4, 392);
-            panel4.Margin = new Padding(4);
+            panel4.Location = new Point(3, 312);
             panel4.Name = "panel4";
-            panel4.Size = new Size(352, 123);
+            panel4.Size = new Size(282, 98);
             panel4.TabIndex = 3;
             // 
             // btnUserManagement
@@ -280,85 +302,77 @@
             // 
             // btnDepartmentManagement
             // 
-            btnDepartmentManagement.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             btnDepartmentManagement.BackColor = Color.White;
             btnDepartmentManagement.Cursor = Cursors.Hand;
+            btnDepartmentManagement.Dock = DockStyle.Fill;
             btnDepartmentManagement.FlatAppearance.BorderSize = 0;
             btnDepartmentManagement.FlatStyle = FlatStyle.Flat;
             btnDepartmentManagement.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnDepartmentManagement.ForeColor = Color.FromArgb(55, 65, 81);
-            btnDepartmentManagement.Location = new Point(4, 27);
-            btnDepartmentManagement.Margin = new Padding(4);
+            btnDepartmentManagement.Location = new Point(17, 20);
+            btnDepartmentManagement.Margin = new Padding(3, 4, 3, 4);
             btnDepartmentManagement.Name = "btnDepartmentManagement";
-            btnDepartmentManagement.Size = new Size(344, 74);
+            btnDepartmentManagement.Padding = new Padding(18, 0, 0, 0);
+            btnDepartmentManagement.Size = new Size(245, 59);
             btnDepartmentManagement.TabIndex = 7;
             btnDepartmentManagement.Text = "Quản lý chuyên khoa";
+            btnDepartmentManagement.TextAlign = ContentAlignment.MiddleLeft;
             btnDepartmentManagement.UseVisualStyleBackColor = false;
             btnDepartmentManagement.Click += btnDepartmentManagement_Click;
             // 
             // panel6
             // 
-            panel6.Controls.Add(btnShiftManagement);
-            panel6.Dock = DockStyle.Fill;
-            panel6.Location = new Point(4, 654);
-            panel6.Margin = new Padding(4);
-            panel6.Name = "panel6";
-            panel6.Size = new Size(352, 123);
-            panel6.TabIndex = 5;
-            // 
-            // btnShiftManagement
-            // 
-            btnShiftManagement.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnShiftManagement.BackColor = Color.White;
-            btnShiftManagement.Cursor = Cursors.Hand;
-            btnShiftManagement.FlatAppearance.BorderSize = 0;
-            btnShiftManagement.FlatStyle = FlatStyle.Flat;
-            btnShiftManagement.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnShiftManagement.ForeColor = Color.FromArgb(55, 65, 81);
-            btnShiftManagement.Location = new Point(4, 26);
-            btnShiftManagement.Margin = new Padding(4);
-            btnShiftManagement.Name = "btnShiftManagement";
-            btnShiftManagement.Size = new Size(344, 74);
-            btnShiftManagement.TabIndex = 8;
-            btnShiftManagement.Text = "Quản lý ca trực";
-            btnShiftManagement.UseVisualStyleBackColor = false;
+            panel3.Controls.Add(btnEmployeeManagement);
+            panel3.Dock = DockStyle.Fill;
+            panel3.Location = new Point(3, 208);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(282, 98);
+            panel3.TabIndex = 2;
             // 
             // panel7
             // 
-            panel7.Controls.Add(btnNavShifts);
-            panel7.Dock = DockStyle.Fill;
-            panel7.Location = new Point(4, 785);
-            panel7.Margin = new Padding(4);
-            panel7.Name = "panel7";
-            panel7.Size = new Size(352, 123);
-            panel7.TabIndex = 6;
+            btnEmployeeManagement.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnEmployeeManagement.BackColor = Color.White;
+            btnEmployeeManagement.Cursor = Cursors.Hand;
+            btnEmployeeManagement.FlatAppearance.BorderSize = 0;
+            btnEmployeeManagement.FlatStyle = FlatStyle.Flat;
+            btnEmployeeManagement.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnEmployeeManagement.ForeColor = Color.FromArgb(55, 65, 81);
+            btnEmployeeManagement.Location = new Point(17, 20);
+            btnEmployeeManagement.Margin = new Padding(3, 4, 3, 4);
+            btnEmployeeManagement.Name = "btnEmployeeManagement";
+            btnEmployeeManagement.Padding = new Padding(18, 0, 0, 0);
+            btnEmployeeManagement.Size = new Size(245, 59);
+            btnEmployeeManagement.TabIndex = 5;
+            btnEmployeeManagement.Text = "Quản lý nhân viên";
+            btnEmployeeManagement.UseVisualStyleBackColor = false;
             // 
             // btnNavShifts
             // 
-            btnNavShifts.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnNavShifts.BackColor = Color.White;
-            btnNavShifts.Cursor = Cursors.Hand;
-            btnNavShifts.FlatAppearance.BorderSize = 0;
-            btnNavShifts.FlatStyle = FlatStyle.Flat;
-            btnNavShifts.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnNavShifts.ForeColor = Color.FromArgb(55, 65, 81);
-            btnNavShifts.Location = new Point(4, 25);
-            btnNavShifts.Margin = new Padding(4);
-            btnNavShifts.Name = "btnNavShifts";
-            btnNavShifts.Size = new Size(344, 74);
-            btnNavShifts.TabIndex = 6;
-            btnNavShifts.Text = "Ca làm việc";
-            btnNavShifts.UseVisualStyleBackColor = false;
+            panel2.Controls.Add(btnNavOverview);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(3, 104);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(282, 98);
+            panel2.TabIndex = 1;
             // 
             // panel8
             // 
-            panel8.Controls.Add(btnStatitics);
-            panel8.Dock = DockStyle.Fill;
-            panel8.Location = new Point(4, 916);
-            panel8.Margin = new Padding(4);
-            panel8.Name = "panel8";
-            panel8.Size = new Size(352, 123);
-            panel8.TabIndex = 7;
+            btnNavOverview.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnNavOverview.BackColor = Color.Transparent;
+            btnNavOverview.Cursor = Cursors.Hand;
+            btnNavOverview.FlatAppearance.BorderSize = 0;
+            btnNavOverview.FlatStyle = FlatStyle.Flat;
+            btnNavOverview.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnNavOverview.ForeColor = Color.FromArgb(55, 65, 81);
+            btnNavOverview.Location = new Point(17, 21);
+            btnNavOverview.Margin = new Padding(3, 4, 3, 4);
+            btnNavOverview.Name = "btnNavOverview";
+            btnNavOverview.Padding = new Padding(18, 0, 0, 0);
+            btnNavOverview.Size = new Size(245, 59);
+            btnNavOverview.TabIndex = 4;
+            btnNavOverview.Text = "Tổng quan";
+            btnNavOverview.UseVisualStyleBackColor = false;
             // 
             // btnStatitics
             // 
@@ -440,7 +454,7 @@
             panelTopbar.Location = new Point(362, 0);
             panelTopbar.Margin = new Padding(4);
             panelTopbar.Name = "panelTopbar";
-            panelTopbar.Size = new Size(1736, 126);
+            panelTopbar.Size = new Size(1388, 101);
             panelTopbar.TabIndex = 1;
             // 
             // tableLayoutPanel2
@@ -460,7 +474,7 @@
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel2.Size = new Size(1734, 124);
+            tableLayoutPanel2.Size = new Size(1386, 99);
             tableLayoutPanel2.TabIndex = 0;
             // 
             // panel11
@@ -576,8 +590,8 @@
             panel13.Location = new Point(1438, 4);
             panel13.Margin = new Padding(4);
             panel13.Name = "panel13";
-            panel13.Size = new Size(292, 116);
-            panel13.TabIndex = 3;
+            panel13.Size = new Size(272, 93);
+            panel13.TabIndex = 2;
             // 
             // lblAvatar
             // 
@@ -585,8 +599,7 @@
             lblAvatar.BackColor = Color.FromArgb(47, 94, 240);
             lblAvatar.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblAvatar.ForeColor = Color.White;
-            lblAvatar.Location = new Point(234, 27);
-            lblAvatar.Margin = new Padding(4, 0, 4, 0);
+            lblAvatar.Location = new Point(200, 18);
             lblAvatar.Name = "lblAvatar";
             lblAvatar.Size = new Size(54, 58);
             lblAvatar.TabIndex = 7;
@@ -598,8 +611,7 @@
             lblUserName.AutoSize = true;
             lblUserName.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             lblUserName.ForeColor = Color.FromArgb(17, 24, 39);
-            lblUserName.Location = new Point(15, 28);
-            lblUserName.Margin = new Padding(4, 0, 4, 0);
+            lblUserName.Location = new Point(12, 18);
             lblUserName.Name = "lblUserName";
             lblUserName.Size = new Size(127, 25);
             lblUserName.TabIndex = 5;
@@ -610,8 +622,7 @@
             lblUserEmail.AutoSize = true;
             lblUserEmail.Font = new Font("Segoe UI", 8.5F);
             lblUserEmail.ForeColor = Color.FromArgb(107, 114, 128);
-            lblUserEmail.Location = new Point(15, 60);
-            lblUserEmail.Margin = new Padding(4, 0, 4, 0);
+            lblUserEmail.Location = new Point(12, 51);
             lblUserEmail.Name = "lblUserEmail";
             lblUserEmail.Size = new Size(188, 23);
             lblUserEmail.TabIndex = 6;
@@ -624,7 +635,7 @@
             contentPanel.Location = new Point(362, 126);
             contentPanel.Margin = new Padding(4);
             contentPanel.Name = "contentPanel";
-            contentPanel.Size = new Size(1736, 1182);
+            contentPanel.Size = new Size(1388, 945);
             contentPanel.TabIndex = 2;
             contentPanel.Resize += contentPanel_Resize;
             // 
@@ -633,6 +644,7 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(247, 249, 252);
+            ClientSize = new Size(1678, 1046);
             Controls.Add(contentPanel);
             Controls.Add(panelTopbar);
             Controls.Add(panelSidebar);

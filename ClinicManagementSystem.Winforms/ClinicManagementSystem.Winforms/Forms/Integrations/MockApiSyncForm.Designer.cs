@@ -1,4 +1,4 @@
-﻿namespace ClinicManagementSystem.Winforms.Forms.Integrations
+namespace ClinicManagementSystem.Winforms.Forms.Integrations
 {
     partial class MockApiSyncForm
     {
@@ -28,30 +28,65 @@
         /// </summary>
         private void InitializeComponent()
         {
-            dgvTest = new DataGridView();
+            dgvPatients = new DataGridView();
+            dgvEmployees = new DataGridView();
+            lblPatientsTitle = new Label();
+            lblEmployeesTitle = new Label();
             btnSync = new Button();
-            ((System.ComponentModel.ISupportInitialize)dgvTest).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvPatients).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvEmployees).BeginInit();
             SuspendLayout();
             // 
-            // dgvTest
+            // dgvPatients
             // 
-            dgvTest.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvTest.Location = new Point(111, 115);
-            dgvTest.Margin = new Padding(3, 4, 3, 4);
-            dgvTest.Name = "dgvTest";
-            dgvTest.RowHeadersWidth = 51;
-            dgvTest.RowTemplate.Height = 24;
-            dgvTest.Size = new Size(466, 252);
-            dgvTest.TabIndex = 0;
+            dgvPatients.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvPatients.Location = new Point(20, 60);
+            dgvPatients.Margin = new Padding(3, 4, 3, 4);
+            dgvPatients.Name = "dgvPatients";
+            dgvPatients.RowHeadersWidth = 51;
+            dgvPatients.RowTemplate.Height = 24;
+            dgvPatients.Size = new Size(600, 600);
+            dgvPatients.TabIndex = 0;
+            // 
+            // dgvEmployees
+            // 
+            dgvEmployees.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvEmployees.Location = new Point(660, 60);
+            dgvEmployees.Margin = new Padding(3, 4, 3, 4);
+            dgvEmployees.Name = "dgvEmployees";
+            dgvEmployees.RowHeadersWidth = 51;
+            dgvEmployees.RowTemplate.Height = 24;
+            dgvEmployees.Size = new Size(600, 600);
+            dgvEmployees.TabIndex = 1;
+            // 
+            // lblPatientsTitle
+            // 
+            lblPatientsTitle.AutoSize = true;
+            lblPatientsTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblPatientsTitle.Location = new Point(20, 20);
+            lblPatientsTitle.Name = "lblPatientsTitle";
+            lblPatientsTitle.Size = new Size(311, 28);
+            lblPatientsTitle.TabIndex = 2;
+            lblPatientsTitle.Text = "Danh sách Bệnh nhân đồng bộ";
+            // 
+            // lblEmployeesTitle
+            // 
+            lblEmployeesTitle.AutoSize = true;
+            lblEmployeesTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblEmployeesTitle.Location = new Point(660, 20);
+            lblEmployeesTitle.Name = "lblEmployeesTitle";
+            lblEmployeesTitle.Size = new Size(393, 28);
+            lblEmployeesTitle.TabIndex = 3;
+            lblEmployeesTitle.Text = "Danh sách Bác sĩ / Nhân viên đồng bộ";
             // 
             // btnSync
             // 
-            btnSync.Location = new Point(792, 229);
+            btnSync.Location = new Point(20, 685);
             btnSync.Margin = new Padding(3, 4, 3, 4);
             btnSync.Name = "btnSync";
-            btnSync.Size = new Size(75, 29);
-            btnSync.TabIndex = 1;
-            btnSync.Text = "MockApi";
+            btnSync.Size = new Size(200, 45);
+            btnSync.TabIndex = 4;
+            btnSync.Text = "Đồng bộ API";
             btnSync.UseVisualStyleBackColor = true;
             btnSync.Click += btnSync_Click;
             // 
@@ -59,21 +94,29 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1245, 790);
+            BackColor = Color.White;
+            ClientSize = new Size(1280, 760);
+            Controls.Add(lblEmployeesTitle);
+            Controls.Add(lblPatientsTitle);
             Controls.Add(btnSync);
-            Controls.Add(dgvTest);
+            Controls.Add(dgvPatients);
+            Controls.Add(dgvEmployees);
             Margin = new Padding(3, 4, 3, 4);
             Name = "MockApiSyncForm";
-            Text = "Mock API Sync";
+            Text = "Mock API Sync Dashboard";
             Load += MockApiSyncForm_Load;
-            ((System.ComponentModel.ISupportInitialize)dgvTest).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvPatients).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvEmployees).EndInit();
             ResumeLayout(false);
-
+            PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dgvTest;
+        private System.Windows.Forms.DataGridView dgvPatients;
+        private System.Windows.Forms.DataGridView dgvEmployees;
+        private System.Windows.Forms.Label lblPatientsTitle;
+        private System.Windows.Forms.Label lblEmployeesTitle;
         private System.Windows.Forms.Button btnSync;
     }
 }

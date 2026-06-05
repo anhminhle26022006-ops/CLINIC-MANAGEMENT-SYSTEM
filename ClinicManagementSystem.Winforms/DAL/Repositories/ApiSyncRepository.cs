@@ -39,6 +39,8 @@ namespace DAL.Repositories
                 WriteIndented = true
             };
             jsonOptions.Converters.Add(new NullableGuidConverter());
+            jsonOptions.Converters.Add(new FlexibleInt32Converter());
+            jsonOptions.Converters.Add(new NullableInt32Converter());
         }
 
         public Task<List<ApiPatientDTO>> GetSupabasePatientsAsync()
@@ -979,6 +981,149 @@ END;";
             return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "\n\n... [Đã rút gọn vì quá dài]";
         }
 
+        public Task<List<FlatImagingRequestDetail>> GetSupabaseImagingRequestDetailsFlatAsync()
+        {
+            return GetListAsync<FlatImagingRequestDetail>($"{supabaseUrl}/rest/v1/imagingrequestdetails?select=*", true, "GET FLAT DETAILS");
+        }
+
+        public Task<List<FlatImagingRequest>> GetSupabaseImagingRequestsFlatAsync()
+        {
+            return GetListAsync<FlatImagingRequest>($"{supabaseUrl}/rest/v1/imagingrequests?select=*", true, "GET FLAT REQUESTS");
+        }
+
+        public Task<List<FlatEncounter>> GetSupabaseEncountersFlatAsync()
+        {
+            return GetListAsync<FlatEncounter>($"{supabaseUrl}/rest/v1/encounters?select=*", true, "GET FLAT ENCOUNTERS");
+        }
+
+        public Task<List<FlatService>> GetSupabaseServicesFlatAsync()
+        {
+            return GetListAsync<FlatService>($"{supabaseUrl}/rest/v1/services?select=*", true, "GET FLAT SERVICES");
+        }
+
+        public Task<List<FlatImagingResult>> GetSupabaseImagingResultsFlatAsync()
+        {
+            return GetListAsync<FlatImagingResult>($"{supabaseUrl}/rest/v1/imagingresults?select=*", true, "GET FLAT RESULTS");
+        }
+
+        public Task<List<FlatLabRequest>> GetSupabaseLabRequestsFlatAsync()
+        {
+            return GetListAsync<FlatLabRequest>($"{supabaseUrl}/rest/v1/labrequests?select=*", true, "GET FLAT LAB REQUESTS");
+        }
+
+        public Task<List<FlatLabResult>> GetSupabaseLabResultsFlatAsync()
+        {
+            return GetListAsync<FlatLabResult>($"{supabaseUrl}/rest/v1/labresults?select=*", true, "GET FLAT LAB RESULTS");
+        }
+
+        public async Task<int?> GetLocalPatientIdByCodeAsync(string patientCode)
+        {
+            if (string.IsNullOrWhiteSpace(patientCode)) return null;
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                await conn.OpenAsync();
+                string sql = "SELECT TOP 1 PatientID FROM dbo.Patients WHERE PatientCode = @Code";
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Code", patientCode.Trim());
+                    var val = await cmd.ExecuteScalarAsync();
+                    return val == null || val == DBNull.Value ? (int?)null : Convert.ToInt32(val);
+                }
+            }
+        }
+
+        public async Task<int?> GetLocalDoctorIdByCodeAsync(string doctorCode)
+        {
+            if (string.IsNullOrWhiteSpace(doctorCode)) return null;
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                await conn.OpenAsync();
+                bool isNew = IsNewSchema(conn);
+                string table = isNew ? "Employees" : "Doctors";
+                string idCol = isNew ? "EmployeeID" : "DoctorID";
+                string codeCol = isNew ? "EmployeeCode" : "DoctorCode";
+                string sql = $"SELECT TOP 1 {idCol} FROM dbo.{table} WHERE {codeCol} = @Code";
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Code", doctorCode.Trim());
+                    var val = await cmd.ExecuteScalarAsync();
+                    return val == null || val == DBNull.Value ? (int?)null : Convert.ToInt32(val);
+                }
+            }
+        }
+
+        public async Task UpsertLocalRequestAsync(string code, int patientId, int doctorId, string serviceType, string note, string priority, string status, string resultFile, string resultPdf, string labValues, DateTime? requestDate = null)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                await conn.OpenAsync();
+                string checkSql = "SELECT COUNT(*) FROM dbo.Requests WHERE RequestCode = @Code";
+                int count = 0;
+                using (var cmd = new SqlCommand(checkSql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Code", code);
+                    count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                }
+
+                if (count > 0)
+                {
+                    string updateSql = @"
+                        UPDATE dbo.Requests
+                        SET PatientID = @PatientID,
+                            DoctorID = @DoctorID,
+                            ServiceType = @ServiceType,
+                            RequestNote = @RequestNote,
+                            Priority = @Priority,
+                            RequestDate = COALESCE(@RequestDate, RequestDate),
+                            Status = @Status,
+                            ResultFile = @ResultFile,
+                            ResultPDF = @ResultPDF,
+                            LabValues = @LabValues
+                        WHERE RequestCode = @Code";
+                    
+                    using (var cmd = new SqlCommand(updateSql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@PatientID", patientId);
+                        cmd.Parameters.AddWithValue("@DoctorID", doctorId);
+                        cmd.Parameters.AddWithValue("@ServiceType", serviceType ?? "");
+                        cmd.Parameters.AddWithValue("@RequestNote", (object)note ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Priority", priority ?? "Thường");
+                        cmd.Parameters.AddWithValue("@RequestDate", (object)requestDate ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Status", status ?? "Chờ xử lý");
+                        cmd.Parameters.AddWithValue("@ResultFile", (object)resultFile ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ResultPDF", (object)resultPdf ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@LabValues", (object)labValues ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Code", code);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+                else
+                {
+                    string insertSql = @"
+                        INSERT INTO dbo.Requests 
+                        (RequestCode, PatientID, DoctorID, ServiceType, RequestNote, Priority, RequestDate, Status, ResultFile, ResultPDF, LabValues)
+                        VALUES 
+                        (@Code, @PatientID, @DoctorID, @ServiceType, @RequestNote, @Priority, @RequestDate, @Status, @ResultFile, @ResultPDF, @LabValues)";
+                    
+                    using (var cmd = new SqlCommand(insertSql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Code", code);
+                        cmd.Parameters.AddWithValue("@PatientID", patientId);
+                        cmd.Parameters.AddWithValue("@DoctorID", doctorId);
+                        cmd.Parameters.AddWithValue("@ServiceType", serviceType ?? "");
+                        cmd.Parameters.AddWithValue("@RequestNote", (object)note ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Priority", priority ?? "Thường");
+                        cmd.Parameters.AddWithValue("@RequestDate", requestDate ?? DateTime.Now);
+                        cmd.Parameters.AddWithValue("@Status", status ?? "Chờ xử lý");
+                        cmd.Parameters.AddWithValue("@ResultFile", (object)resultFile ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ResultPDF", (object)resultPdf ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@LabValues", (object)labValues ?? DBNull.Value);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+        }
+
         private class LocalIdentity
         {
             public int Id { get; set; }
@@ -1000,6 +1145,56 @@ END;";
             public override void Write(Utf8JsonWriter writer, Guid? value, JsonSerializerOptions options)
             {
                 if (value.HasValue) writer.WriteStringValue(value.Value.ToString());
+                else writer.WriteNullValue();
+            }
+        }
+
+        private class FlexibleInt32Converter : JsonConverter<int>
+        {
+            public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.Number)
+                {
+                    return reader.GetInt32();
+                }
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    string value = reader.GetString();
+                    if (string.IsNullOrWhiteSpace(value)) return 0;
+                    if (int.TryParse(value, out int result)) return result;
+                    return 0;
+                }
+                return 0;
+            }
+
+            public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options)
+            {
+                writer.WriteNumberValue(value);
+            }
+        }
+
+        private class NullableInt32Converter : JsonConverter<int?>
+        {
+            public override int? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.Null) return null;
+                if (reader.TokenType == JsonTokenType.Number)
+                {
+                    return reader.GetInt32();
+                }
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    string value = reader.GetString();
+                    if (string.IsNullOrWhiteSpace(value)) return null;
+                    if (int.TryParse(value, out int result)) return result;
+                    return null;
+                }
+                return null;
+            }
+
+            public override void Write(Utf8JsonWriter writer, int? value, JsonSerializerOptions options)
+            {
+                if (value.HasValue) writer.WriteNumberValue(value.Value);
                 else writer.WriteNullValue();
             }
         }

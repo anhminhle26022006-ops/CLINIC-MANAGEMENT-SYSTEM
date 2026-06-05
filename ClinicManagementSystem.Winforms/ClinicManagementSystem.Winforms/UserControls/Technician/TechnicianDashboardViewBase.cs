@@ -1,4 +1,5 @@
 ﻿﻿﻿﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using ClinicManagementSystem.Winforms.Forms;
@@ -33,6 +34,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
     public class TechnicianDashboardViewBase : UserControl
     {
+        private const string RuntimeGeneratedViewTag = "__TechnicianRuntimeView";
+
         protected readonly Color primary = Color.FromArgb(47, 94, 240);
         protected readonly Color surface = Color.White;
         protected readonly Color pageBack = Color.FromArgb(247, 249, 252);
@@ -54,6 +57,62 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         protected virtual Panel ContentPanel => null;
 
         public event EventHandler<TechnicianNavigationEventArgs> NavigateRequested;
+
+        protected bool IsInVisualDesigner()
+        {
+            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
+            {
+                return true;
+            }
+
+            for (Control control = this; control != null; control = control.Parent)
+            {
+                if (control.Site?.DesignMode == true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        protected bool ShouldRenderRuntimeView(Control designPreview = null)
+        {
+            if (designPreview != null)
+            {
+                designPreview.Visible = false;
+            }
+
+            if (!IsInVisualDesigner() && HasDesignerAuthoredContent(designPreview))
+            {
+                return false;
+            }
+
+            return !IsInVisualDesigner();
+        }
+
+        private bool HasDesignerAuthoredContent(Control designPreview)
+        {
+            if (ContentPanel == null)
+            {
+                return false;
+            }
+
+            foreach (Control control in ContentPanel.Controls)
+            {
+                if (ReferenceEquals(control, designPreview))
+                {
+                    continue;
+                }
+
+                if (!string.Equals(control.Tag as string, RuntimeGeneratedViewTag, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public virtual void Initialize(UserDTO user, int requestId = 0)
         {
@@ -78,6 +137,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.TopDown,
                 Padding = new Padding(24, 24, 24, 24),
+                Tag = RuntimeGeneratedViewTag,
                 WrapContents = false
             };
 

@@ -1,4 +1,4 @@
-﻿namespace ClinicManagementSystem.Winforms.UserControls.Technician
+namespace ClinicManagementSystem.Winforms.UserControls.Technician
 {
     partial class ucSeederTool
     {
@@ -15,123 +15,189 @@
 
         private void InitializeComponent()
         {
-            this.viewHostPanel = new System.Windows.Forms.Panel();
-            this.designPreviewPanel = new System.Windows.Forms.Panel();
-            this.lblDesignTitle = new System.Windows.Forms.Label();
-            this.lblDesignSubtitle = new System.Windows.Forms.Label();
-            this.lblDesignBlock1 = new System.Windows.Forms.Label();
-            this.lblDesignBlock2 = new System.Windows.Forms.Label();
-            this.lblDesignBlock3 = new System.Windows.Forms.Label();
-            this.viewHostPanel = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.viewHostPanel.SuspendLayout();
-            this.designPreviewPanel.SuspendLayout();
-            this.SuspendLayout();
+            viewHostPanel = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            pnlContainer = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            txtSeederLog = new TextBox();
+            lblLogTitle = new Label();
+            btnSyncApi = new Button();
+            btnTestPayOS = new Button();
+            btnRunSeed = new Button();
+            lblDescription = new Label();
+            lblSubtitle = new Label();
+            lblTitle = new Label();
+            viewHostPanel.SuspendLayout();
+            pnlContainer.SuspendLayout();
+            SuspendLayout();
             // 
             // viewHostPanel
             // 
-            this.viewHostPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.viewHostPanel.Controls.Add(this.designPreviewPanel);
-            this.viewHostPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.viewHostPanel.Location = new System.Drawing.Point(0, 0);
-            this.viewHostPanel.Name = "viewHostPanel";
-            this.viewHostPanel.Size = new System.Drawing.Size(1244, 744);
-            this.viewHostPanel.TabIndex = 0;
+            viewHostPanel.BackColor = Color.FromArgb(247, 249, 252);
+            viewHostPanel.BorderColor = Color.FromArgb(247, 249, 252);
+            viewHostPanel.BorderWidth = 1;
+            viewHostPanel.Controls.Add(pnlContainer);
+            viewHostPanel.Controls.Add(lblSubtitle);
+            viewHostPanel.Controls.Add(lblTitle);
+            viewHostPanel.CornerRadius = 8;
+            viewHostPanel.Dock = DockStyle.Fill;
+            viewHostPanel.FillColor = Color.FromArgb(247, 249, 252);
+            viewHostPanel.Location = new Point(0, 0);
+            viewHostPanel.Margin = new Padding(3, 4, 3, 4);
+            viewHostPanel.Name = "viewHostPanel";
+            viewHostPanel.Size = new Size(1422, 992);
+            viewHostPanel.TabIndex = 0;
             // 
-            // designPreviewPanel
+            // pnlContainer
             // 
-            this.designPreviewPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.designPreviewPanel.Controls.Add(this.lblDesignBlock3);
-            this.designPreviewPanel.Controls.Add(this.lblDesignBlock2);
-            this.designPreviewPanel.Controls.Add(this.lblDesignBlock1);
-            this.designPreviewPanel.Controls.Add(this.lblDesignSubtitle);
-            this.designPreviewPanel.Controls.Add(this.lblDesignTitle);
-            this.designPreviewPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.designPreviewPanel.Location = new System.Drawing.Point(0, 0);
-            this.designPreviewPanel.Name = "designPreviewPanel";
-            this.designPreviewPanel.Padding = new System.Windows.Forms.Padding(32);
-            this.designPreviewPanel.Size = new System.Drawing.Size(1244, 744);
-            this.designPreviewPanel.TabIndex = 0;
+            pnlContainer.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            pnlContainer.BackColor = Color.White;
+            pnlContainer.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlContainer.BorderWidth = 1;
+            pnlContainer.Controls.Add(txtSeederLog);
+            pnlContainer.Controls.Add(lblLogTitle);
+            pnlContainer.Controls.Add(btnSyncApi);
+            pnlContainer.Controls.Add(btnTestPayOS);
+            pnlContainer.Controls.Add(btnRunSeed);
+            pnlContainer.Controls.Add(lblDescription);
+            pnlContainer.CornerRadius = 8;
+            pnlContainer.FillColor = Color.White;
+            pnlContainer.Location = new Point(27, 128);
+            pnlContainer.Margin = new Padding(3, 4, 3, 4);
+            pnlContainer.Name = "pnlContainer";
+            pnlContainer.Size = new Size(1367, 827);
+            pnlContainer.TabIndex = 2;
             // 
-            // lblDesignTitle
+            // txtSeederLog
             // 
-            this.lblDesignTitle.AutoSize = false;
-            this.lblDesignTitle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblDesignTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblDesignTitle.Location = new System.Drawing.Point(32, 32);
-            this.lblDesignTitle.Name = "lblDesignTitle";
-            this.lblDesignTitle.Size = new System.Drawing.Size(760, 44);
-            this.lblDesignTitle.TabIndex = 0;
-            this.lblDesignTitle.Text = "Seeder Tool";
+            txtSeederLog.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtSeederLog.BackColor = Color.FromArgb(17, 24, 39);
+            txtSeederLog.BorderStyle = BorderStyle.FixedSingle;
+            txtSeederLog.Font = new Font("Consolas", 10F);
+            txtSeederLog.ForeColor = Color.FromArgb(34, 197, 94);
+            txtSeederLog.Location = new Point(27, 291);
+            txtSeederLog.Margin = new Padding(3, 4, 3, 4);
+            txtSeederLog.Multiline = true;
+            txtSeederLog.Name = "txtSeederLog";
+            txtSeederLog.ReadOnly = true;
+            txtSeederLog.ScrollBars = ScrollBars.Vertical;
+            txtSeederLog.Size = new Size(1298, 503);
+            txtSeederLog.TabIndex = 5;
             // 
-            // lblDesignSubtitle
+            // lblLogTitle
             // 
-            this.lblDesignSubtitle.AutoSize = false;
-            this.lblDesignSubtitle.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblDesignSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDesignSubtitle.Location = new System.Drawing.Point(34, 78);
-            this.lblDesignSubtitle.Name = "lblDesignSubtitle";
-            this.lblDesignSubtitle.Size = new System.Drawing.Size(900, 28);
-            this.lblDesignSubtitle.TabIndex = 1;
-            this.lblDesignSubtitle.Text = "Công cụ tạo dữ liệu mẫu cho SQL Server";
+            lblLogTitle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblLogTitle.ForeColor = Color.FromArgb(17, 24, 39);
+            lblLogTitle.Location = new Point(27, 253);
+            lblLogTitle.Name = "lblLogTitle";
+            lblLogTitle.Size = new Size(343, 29);
+            lblLogTitle.TabIndex = 4;
+            lblLogTitle.Text = "Log bảng điều khiển Seeder:";
             // 
-            // lblDesignBlock1
+            // btnSyncApi
             // 
-            this.lblDesignBlock1.BackColor = System.Drawing.Color.White;
-            this.lblDesignBlock1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblDesignBlock1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblDesignBlock1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this.lblDesignBlock1.Location = new System.Drawing.Point(32, 150);
-            this.lblDesignBlock1.Name = "lblDesignBlock1";
-            this.lblDesignBlock1.Size = new System.Drawing.Size(360, 72);
-            this.lblDesignBlock1.TabIndex = 3;
-            this.lblDesignBlock1.Text = "Nhật ký seed dữ liệu";
-            this.lblDesignBlock1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;            // 
-            // lblDesignBlock2
+            btnSyncApi.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnSyncApi.BackColor = Color.FromArgb(16, 185, 129);
+            btnSyncApi.Cursor = Cursors.Hand;
+            btnSyncApi.FlatAppearance.BorderSize = 0;
+            btnSyncApi.FlatStyle = FlatStyle.Flat;
+            btnSyncApi.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnSyncApi.ForeColor = Color.White;
+            btnSyncApi.Location = new Point(27, 165);
+            btnSyncApi.Margin = new Padding(3, 4, 3, 4);
+            btnSyncApi.Name = "btnSyncApi";
+            btnSyncApi.Size = new Size(1298, 64);
+            btnSyncApi.TabIndex = 3;
+            btnSyncApi.Text = "ĐỒNG BỘ API SHEETDB / SUPABASE";
+            btnSyncApi.UseVisualStyleBackColor = false;
             // 
-            this.lblDesignBlock2.BackColor = System.Drawing.Color.White;
-            this.lblDesignBlock2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblDesignBlock2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblDesignBlock2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this.lblDesignBlock2.Location = new System.Drawing.Point(32, 242);
-            this.lblDesignBlock2.Name = "lblDesignBlock2";
-            this.lblDesignBlock2.Size = new System.Drawing.Size(360, 72);
-            this.lblDesignBlock2.TabIndex = 4;
-            this.lblDesignBlock2.Text = "Nút chạy seed";
-            this.lblDesignBlock2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;            // 
-            // lblDesignBlock3
+            // btnTestPayOS
             // 
-            this.lblDesignBlock3.BackColor = System.Drawing.Color.White;
-            this.lblDesignBlock3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblDesignBlock3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblDesignBlock3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this.lblDesignBlock3.Location = new System.Drawing.Point(32, 334);
-            this.lblDesignBlock3.Name = "lblDesignBlock3";
-            this.lblDesignBlock3.Size = new System.Drawing.Size(360, 72);
-            this.lblDesignBlock3.TabIndex = 5;
-            this.lblDesignBlock3.Text = "Trạng thái thực thi";
-            this.lblDesignBlock3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;            // 
+            btnTestPayOS.BackColor = Color.FromArgb(59, 130, 246);
+            btnTestPayOS.Cursor = Cursors.Hand;
+            btnTestPayOS.FlatAppearance.BorderSize = 0;
+            btnTestPayOS.FlatStyle = FlatStyle.Flat;
+            btnTestPayOS.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnTestPayOS.ForeColor = Color.White;
+            btnTestPayOS.Location = new Point(686, 80);
+            btnTestPayOS.Margin = new Padding(3, 4, 3, 4);
+            btnTestPayOS.Name = "btnTestPayOS";
+            btnTestPayOS.Size = new Size(639, 64);
+            btnTestPayOS.TabIndex = 2;
+            btnTestPayOS.Text = "KIỂM TRA CỔNG THANH TOÁN (PAYOS)";
+            btnTestPayOS.UseVisualStyleBackColor = false;
+            // 
+            // btnRunSeed
+            // 
+            btnRunSeed.BackColor = Color.FromArgb(239, 68, 68);
+            btnRunSeed.Cursor = Cursors.Hand;
+            btnRunSeed.FlatAppearance.BorderSize = 0;
+            btnRunSeed.FlatStyle = FlatStyle.Flat;
+            btnRunSeed.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnRunSeed.ForeColor = Color.White;
+            btnRunSeed.Location = new Point(27, 80);
+            btnRunSeed.Margin = new Padding(3, 4, 3, 4);
+            btnRunSeed.Name = "btnRunSeed";
+            btnRunSeed.Size = new Size(640, 64);
+            btnRunSeed.TabIndex = 1;
+            btnRunSeed.Text = "KHỞI TẠO LẠI DỮ LIỆU MẪU (SEED DATABASE)";
+            btnRunSeed.UseVisualStyleBackColor = false;
+            // 
+            // lblDescription
+            // 
+            lblDescription.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            lblDescription.Font = new Font("Segoe UI", 10F);
+            lblDescription.ForeColor = Color.FromArgb(17, 24, 39);
+            lblDescription.Location = new Point(27, 32);
+            lblDescription.Name = "lblDescription";
+            lblDescription.Size = new Size(1312, 32);
+            lblDescription.TabIndex = 0;
+            lblDescription.Text = "Bấm nút bên dưới để dọn sạch bảng và tạo dữ liệu mẫu bệnh nhân, bác sĩ, lịch trực & yêu cầu mới:";
+            // 
+            // lblSubtitle
+            // 
+            lblSubtitle.Font = new Font("Segoe UI", 10F);
+            lblSubtitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblSubtitle.Location = new Point(27, 75);
+            lblSubtitle.Name = "lblSubtitle";
+            lblSubtitle.Size = new Size(1029, 37);
+            lblSubtitle.TabIndex = 1;
+            lblSubtitle.Text = "Hệ thống mock dữ liệu mẫu giúp chạy demo nhanh cho đồ án 3 lớp";
+            // 
+            // lblTitle
+            // 
+            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.FromArgb(17, 24, 39);
+            lblTitle.Location = new Point(27, 32);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(869, 43);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Công cụ Khởi tạo Cơ sở dữ liệu";
+            // 
             // ucSeederTool
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.Controls.Add(this.viewHostPanel);
-            this.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.Name = "ucSeederTool";
-            this.Size = new System.Drawing.Size(1244, 744);
-            this.Load += new System.EventHandler(this.ucSeederTool_Load);
-            this.Resize += new System.EventHandler(this.ucSeederTool_Resize);
-            this.viewHostPanel.ResumeLayout(false);
-            this.designPreviewPanel.ResumeLayout(false);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(247, 249, 252);
+            Controls.Add(viewHostPanel);
+            Margin = new Padding(3, 4, 3, 4);
+            Name = "ucSeederTool";
+            Size = new Size(1422, 992);
+            Load += ucSeederTool_Load;
+            Resize += ucSeederTool_Resize;
+            viewHostPanel.ResumeLayout(false);
+            pnlContainer.ResumeLayout(false);
+            pnlContainer.PerformLayout();
+            ResumeLayout(false);
         }
 
-        private System.Windows.Forms.Panel viewHostPanel;
-        private System.Windows.Forms.Panel designPreviewPanel;
-        private System.Windows.Forms.Label lblDesignTitle;
-        private System.Windows.Forms.Label lblDesignSubtitle;
-        private System.Windows.Forms.Label lblDesignBlock1;
-        private System.Windows.Forms.Label lblDesignBlock2;
-        private System.Windows.Forms.Label lblDesignBlock3;
+        private ClinicManagementSystem.Winforms.Forms.RoundedPanel viewHostPanel;
+        private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.Label lblSubtitle;
+        private ClinicManagementSystem.Winforms.Forms.RoundedPanel pnlContainer;
+        private System.Windows.Forms.Label lblDescription;
+        private System.Windows.Forms.Button btnRunSeed;
+        private System.Windows.Forms.Button btnTestPayOS;
+        private System.Windows.Forms.Button btnSyncApi;
+        private System.Windows.Forms.Label lblLogTitle;
+        private System.Windows.Forms.TextBox txtSeederLog;
     }
 }
