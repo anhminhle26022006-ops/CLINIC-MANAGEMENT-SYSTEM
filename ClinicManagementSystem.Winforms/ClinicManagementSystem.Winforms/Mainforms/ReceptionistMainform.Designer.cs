@@ -37,12 +37,13 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             panel10 = new Panel();
             btnLogout = new Button();
             panel9 = new Panel();
-            panel8 = new Panel();
-            btnQueue = new Button();
-            panel7 = new Panel();
-            btnToday = new Button();
-            panel6 = new Panel();
             btnNavShifts = new Button();
+            panel8 = new Panel();
+            btnReminder = new Button();
+            panel7 = new Panel();
+            btnQueue = new Button();
+            panel6 = new Panel();
+            btnToday = new Button();
             panel5 = new Panel();
             btnPayment = new Button();
             panel4 = new Panel();
@@ -69,10 +70,9 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             lblUserName = new Label();
             lblUserEmail = new Label();
             contentPanel = new Panel();
-            btnReminder = new Button();
+            panel14 = new Panel();
             panelSidebar.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
-            panel10.SuspendLayout();
             panel9.SuspendLayout();
             panel8.SuspendLayout();
             panel7.SuspendLayout();
@@ -87,6 +87,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             panel11.SuspendLayout();
             panel12.SuspendLayout();
             panel13.SuspendLayout();
+            panel14.SuspendLayout();
             SuspendLayout();
             // 
             // panelSidebar
@@ -98,7 +99,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             panelSidebar.Location = new Point(0, 0);
             panelSidebar.Margin = new Padding(3, 4, 3, 4);
             panelSidebar.Name = "panelSidebar";
-            panelSidebar.Size = new Size(290, 1046);
+            panelSidebar.Size = new Size(290, 999);
             panelSidebar.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -115,45 +116,46 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             tableLayoutPanel1.Controls.Add(panel3, 0, 2);
             tableLayoutPanel1.Controls.Add(panel2, 0, 1);
             tableLayoutPanel1.Controls.Add(panel1, 0, 0);
+            tableLayoutPanel1.Controls.Add(panel14, 0, 10);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 10;
+            tableLayoutPanel1.RowCount = 11;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 101F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1111107F));
-            tableLayoutPanel1.Size = new Size(288, 1044);
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.Size = new Size(288, 997);
             tableLayoutPanel1.TabIndex = 9;
             // 
             // panel10
             // 
-            panel10.Controls.Add(btnLogout);
             panel10.Dock = DockStyle.Fill;
-            panel10.Location = new Point(3, 936);
+            panel10.Location = new Point(3, 816);
             panel10.Name = "panel10";
-            panel10.Size = new Size(282, 105);
+            panel10.Size = new Size(282, 83);
             panel10.TabIndex = 9;
             // 
             // btnLogout
             // 
-            btnLogout.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             btnLogout.BackColor = Color.White;
             btnLogout.Cursor = Cursors.Hand;
+            btnLogout.Dock = DockStyle.Fill;
             btnLogout.FlatAppearance.BorderSize = 0;
             btnLogout.FlatStyle = FlatStyle.Flat;
             btnLogout.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnLogout.ForeColor = Color.FromArgb(220, 38, 38);
-            btnLogout.Location = new Point(17, 25);
+            btnLogout.Location = new Point(0, 0);
             btnLogout.Margin = new Padding(3, 4, 3, 4);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(245, 56);
+            btnLogout.Size = new Size(282, 89);
             btnLogout.TabIndex = 8;
             btnLogout.Text = "Đăng xuất";
             btnLogout.UseVisualStyleBackColor = false;
@@ -162,19 +164,66 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             // 
             panel9.Controls.Add(btnNavShifts);
             panel9.Dock = DockStyle.Fill;
-            panel9.Location = new Point(3, 832);
+            panel9.Location = new Point(3, 727);
             panel9.Name = "panel9";
-            panel9.Size = new Size(282, 98);
+            panel9.Size = new Size(282, 83);
             panel9.TabIndex = 8;
+            // 
+            // btnNavShifts
+            // 
+            btnNavShifts.BackColor = Color.White;
+            btnNavShifts.Cursor = Cursors.Hand;
+            btnNavShifts.Dock = DockStyle.Fill;
+            btnNavShifts.FlatAppearance.BorderSize = 0;
+            btnNavShifts.FlatStyle = FlatStyle.Flat;
+            btnNavShifts.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnNavShifts.ForeColor = Color.FromArgb(55, 65, 81);
+            btnNavShifts.Location = new Point(0, 0);
+            btnNavShifts.Margin = new Padding(3, 4, 3, 4);
+            btnNavShifts.Name = "btnNavShifts";
+            btnNavShifts.Padding = new Padding(18, 0, 0, 0);
+            btnNavShifts.Size = new Size(282, 83);
+            btnNavShifts.TabIndex = 6;
+            btnNavShifts.Text = "Ca làm việc";
+            btnNavShifts.TextAlign = ContentAlignment.MiddleLeft;
+            btnNavShifts.UseVisualStyleBackColor = false;
             // 
             // panel8
             // 
             panel8.Controls.Add(btnReminder);
             panel8.Dock = DockStyle.Fill;
-            panel8.Location = new Point(3, 728);
+            panel8.Location = new Point(3, 638);
             panel8.Name = "panel8";
-            panel8.Size = new Size(282, 98);
+            panel8.Size = new Size(282, 83);
             panel8.TabIndex = 7;
+            // 
+            // btnReminder
+            // 
+            btnReminder.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnReminder.BackColor = Color.White;
+            btnReminder.Cursor = Cursors.Hand;
+            btnReminder.FlatAppearance.BorderSize = 0;
+            btnReminder.FlatStyle = FlatStyle.Flat;
+            btnReminder.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnReminder.ForeColor = Color.FromArgb(55, 65, 81);
+            btnReminder.Location = new Point(17, 12);
+            btnReminder.Margin = new Padding(3, 4, 3, 4);
+            btnReminder.Name = "btnReminder";
+            btnReminder.Padding = new Padding(18, 0, 0, 0);
+            btnReminder.Size = new Size(245, 59);
+            btnReminder.TabIndex = 8;
+            btnReminder.Text = "Nhắc lịch tái khám";
+            btnReminder.TextAlign = ContentAlignment.MiddleLeft;
+            btnReminder.UseVisualStyleBackColor = false;
+            // 
+            // panel7
+            // 
+            panel7.Controls.Add(btnQueue);
+            panel7.Dock = DockStyle.Fill;
+            panel7.Location = new Point(3, 549);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(282, 83);
+            panel7.TabIndex = 6;
             // 
             // btnQueue
             // 
@@ -185,148 +234,126 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnQueue.FlatStyle = FlatStyle.Flat;
             btnQueue.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnQueue.ForeColor = Color.FromArgb(55, 65, 81);
-            btnQueue.Location = new Point(17, 21);
+            btnQueue.Location = new Point(17, 13);
             btnQueue.Margin = new Padding(3, 4, 3, 4);
             btnQueue.Name = "btnQueue";
             btnQueue.Padding = new Padding(18, 0, 0, 0);
             btnQueue.Size = new Size(245, 59);
             btnQueue.TabIndex = 8;
             btnQueue.Text = "Hàng chờ khám";
+            btnQueue.TextAlign = ContentAlignment.MiddleLeft;
             btnQueue.UseVisualStyleBackColor = false;
-            // 
-            // panel7
-            // 
-            panel7.Controls.Add(btnQueue);
-            panel7.Dock = DockStyle.Fill;
-            panel7.Location = new Point(3, 624);
-            panel7.Name = "panel7";
-            panel7.Size = new Size(282, 98);
-            panel7.TabIndex = 6;
-            // 
-            // btnToday
-            // 
-            btnToday.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnToday.BackColor = Color.White;
-            btnToday.Cursor = Cursors.Hand;
-            btnToday.FlatAppearance.BorderSize = 0;
-            btnToday.FlatStyle = FlatStyle.Flat;
-            btnToday.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnToday.ForeColor = Color.FromArgb(55, 65, 81);
-            btnToday.Location = new Point(17, 21);
-            btnToday.Margin = new Padding(3, 4, 3, 4);
-            btnToday.Name = "btnToday";
-            btnToday.Padding = new Padding(18, 0, 0, 0);
-            btnToday.Size = new Size(245, 59);
-            btnToday.TabIndex = 8;
-            btnToday.Text = "Lịch khám hôm nay";
-            btnToday.UseVisualStyleBackColor = false;
             // 
             // panel6
             // 
             panel6.Controls.Add(btnToday);
             panel6.Dock = DockStyle.Fill;
-            panel6.Location = new Point(3, 520);
+            panel6.Location = new Point(3, 460);
             panel6.Name = "panel6";
-            panel6.Size = new Size(282, 98);
+            panel6.Size = new Size(282, 83);
             panel6.TabIndex = 5;
             // 
-            // btnNavShifts
+            // btnToday
             // 
-            btnNavShifts.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnNavShifts.BackColor = Color.White;
-            btnNavShifts.Cursor = Cursors.Hand;
-            btnNavShifts.FlatAppearance.BorderSize = 0;
-            btnNavShifts.FlatStyle = FlatStyle.Flat;
-            btnNavShifts.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnNavShifts.ForeColor = Color.FromArgb(55, 65, 81);
-            btnNavShifts.Location = new Point(17, 16);
-            btnNavShifts.Margin = new Padding(3, 4, 3, 4);
-            btnNavShifts.Name = "btnNavShifts";
-            btnNavShifts.Padding = new Padding(18, 0, 0, 0);
-            btnNavShifts.Size = new Size(245, 59);
-            btnNavShifts.TabIndex = 6;
-            btnNavShifts.Text = "Ca làm việc";
-            btnNavShifts.UseVisualStyleBackColor = false;
+            btnToday.BackColor = Color.White;
+            btnToday.Cursor = Cursors.Hand;
+            btnToday.Dock = DockStyle.Fill;
+            btnToday.FlatAppearance.BorderSize = 0;
+            btnToday.FlatStyle = FlatStyle.Flat;
+            btnToday.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnToday.ForeColor = Color.FromArgb(55, 65, 81);
+            btnToday.Location = new Point(0, 0);
+            btnToday.Margin = new Padding(3, 4, 3, 4);
+            btnToday.Name = "btnToday";
+            btnToday.Padding = new Padding(18, 0, 0, 0);
+            btnToday.Size = new Size(282, 83);
+            btnToday.TabIndex = 8;
+            btnToday.Text = "Lịch khám hôm nay";
+            btnToday.TextAlign = ContentAlignment.MiddleLeft;
+            btnToday.UseVisualStyleBackColor = false;
             // 
             // panel5
             // 
             panel5.Controls.Add(btnPayment);
             panel5.Dock = DockStyle.Fill;
-            panel5.Location = new Point(3, 416);
+            panel5.Location = new Point(3, 371);
             panel5.Name = "panel5";
-            panel5.Size = new Size(282, 98);
+            panel5.Size = new Size(282, 83);
             panel5.TabIndex = 4;
             // 
             // btnPayment
             // 
-            btnPayment.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             btnPayment.BackColor = Color.White;
             btnPayment.Cursor = Cursors.Hand;
+            btnPayment.Dock = DockStyle.Fill;
             btnPayment.FlatAppearance.BorderSize = 0;
             btnPayment.FlatStyle = FlatStyle.Flat;
             btnPayment.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnPayment.ForeColor = Color.FromArgb(55, 65, 81);
-            btnPayment.Location = new Point(17, 20);
+            btnPayment.Location = new Point(0, 0);
             btnPayment.Margin = new Padding(3, 4, 3, 4);
             btnPayment.Name = "btnPayment";
             btnPayment.Padding = new Padding(18, 0, 0, 0);
-            btnPayment.Size = new Size(245, 59);
+            btnPayment.Size = new Size(282, 83);
             btnPayment.TabIndex = 8;
             btnPayment.Text = "Thanh toán";
+            btnPayment.TextAlign = ContentAlignment.MiddleLeft;
             btnPayment.UseVisualStyleBackColor = false;
             // 
             // panel4
             // 
             panel4.Controls.Add(btnAppointment);
             panel4.Dock = DockStyle.Fill;
-            panel4.Location = new Point(3, 312);
+            panel4.Location = new Point(3, 282);
             panel4.Name = "panel4";
-            panel4.Size = new Size(282, 98);
+            panel4.Size = new Size(282, 83);
             panel4.TabIndex = 3;
             // 
             // btnAppointment
             // 
-            btnAppointment.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             btnAppointment.BackColor = Color.White;
             btnAppointment.Cursor = Cursors.Hand;
+            btnAppointment.Dock = DockStyle.Fill;
             btnAppointment.FlatAppearance.BorderSize = 0;
             btnAppointment.FlatStyle = FlatStyle.Flat;
             btnAppointment.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnAppointment.ForeColor = Color.FromArgb(55, 65, 81);
-            btnAppointment.Location = new Point(17, 20);
+            btnAppointment.Location = new Point(0, 0);
             btnAppointment.Margin = new Padding(3, 4, 3, 4);
             btnAppointment.Name = "btnAppointment";
             btnAppointment.Padding = new Padding(18, 0, 0, 0);
-            btnAppointment.Size = new Size(245, 59);
+            btnAppointment.Size = new Size(282, 83);
             btnAppointment.TabIndex = 7;
             btnAppointment.Text = "Đặt lịch khám";
+            btnAppointment.TextAlign = ContentAlignment.MiddleLeft;
             btnAppointment.UseVisualStyleBackColor = false;
             // 
             // panel3
             // 
             panel3.Controls.Add(btnPatientManagement);
             panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(3, 208);
+            panel3.Location = new Point(3, 193);
             panel3.Name = "panel3";
-            panel3.Size = new Size(282, 98);
+            panel3.Size = new Size(282, 83);
             panel3.TabIndex = 2;
             // 
             // btnPatientManagement
             // 
-            btnPatientManagement.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             btnPatientManagement.BackColor = Color.White;
             btnPatientManagement.Cursor = Cursors.Hand;
+            btnPatientManagement.Dock = DockStyle.Fill;
             btnPatientManagement.FlatAppearance.BorderSize = 0;
             btnPatientManagement.FlatStyle = FlatStyle.Flat;
             btnPatientManagement.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnPatientManagement.ForeColor = Color.FromArgb(55, 65, 81);
-            btnPatientManagement.Location = new Point(17, 20);
+            btnPatientManagement.Location = new Point(0, 0);
             btnPatientManagement.Margin = new Padding(3, 4, 3, 4);
             btnPatientManagement.Name = "btnPatientManagement";
             btnPatientManagement.Padding = new Padding(18, 0, 0, 0);
-            btnPatientManagement.Size = new Size(245, 59);
+            btnPatientManagement.Size = new Size(282, 83);
             btnPatientManagement.TabIndex = 5;
             btnPatientManagement.Text = "Quản lý bệnh nhân";
+            btnPatientManagement.TextAlign = ContentAlignment.MiddleLeft;
             btnPatientManagement.UseVisualStyleBackColor = false;
             // 
             // panel2
@@ -335,25 +362,26 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(3, 104);
             panel2.Name = "panel2";
-            panel2.Size = new Size(282, 98);
+            panel2.Size = new Size(282, 83);
             panel2.TabIndex = 1;
             // 
             // btnNavOverview
             // 
-            btnNavOverview.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             btnNavOverview.BackColor = Color.Transparent;
             btnNavOverview.Cursor = Cursors.Hand;
+            btnNavOverview.Dock = DockStyle.Fill;
             btnNavOverview.FlatAppearance.BorderSize = 0;
             btnNavOverview.FlatStyle = FlatStyle.Flat;
             btnNavOverview.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnNavOverview.ForeColor = Color.FromArgb(55, 65, 81);
-            btnNavOverview.Location = new Point(17, 21);
+            btnNavOverview.Location = new Point(0, 0);
             btnNavOverview.Margin = new Padding(3, 4, 3, 4);
             btnNavOverview.Name = "btnNavOverview";
             btnNavOverview.Padding = new Padding(18, 0, 0, 0);
-            btnNavOverview.Size = new Size(245, 59);
+            btnNavOverview.Size = new Size(282, 83);
             btnNavOverview.TabIndex = 4;
             btnNavOverview.Text = "Tổng quan";
+            btnNavOverview.TextAlign = ContentAlignment.MiddleLeft;
             btnNavOverview.UseVisualStyleBackColor = false;
             // 
             // panel1
@@ -426,7 +454,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             panelTopbar.Location = new Point(290, 0);
             panelTopbar.Margin = new Padding(3, 4, 3, 4);
             panelTopbar.Name = "panelTopbar";
-            panelTopbar.Size = new Size(1388, 101);
+            panelTopbar.Size = new Size(1370, 101);
             panelTopbar.TabIndex = 1;
             // 
             // tableLayoutPanel2
@@ -443,7 +471,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel2.Size = new Size(1386, 99);
+            tableLayoutPanel2.Size = new Size(1368, 99);
             tableLayoutPanel2.TabIndex = 0;
             // 
             // panel11
@@ -518,7 +546,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             panel13.Controls.Add(lblUserEmail);
             panel13.Location = new Point(1112, 3);
             panel13.Name = "panel13";
-            panel13.Size = new Size(271, 93);
+            panel13.Size = new Size(253, 93);
             panel13.TabIndex = 2;
             // 
             // lblAvatar
@@ -527,7 +555,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             lblAvatar.BackColor = Color.FromArgb(47, 94, 240);
             lblAvatar.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblAvatar.ForeColor = Color.White;
-            lblAvatar.Location = new Point(219, 17);
+            lblAvatar.Location = new Point(201, 17);
             lblAvatar.Name = "lblAvatar";
             lblAvatar.Size = new Size(43, 51);
             lblAvatar.TabIndex = 7;
@@ -539,7 +567,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             lblUserName.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblUserName.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             lblUserName.ForeColor = Color.FromArgb(17, 24, 39);
-            lblUserName.Location = new Point(18, 13);
+            lblUserName.Location = new Point(0, 13);
             lblUserName.Name = "lblUserName";
             lblUserName.Size = new Size(135, 27);
             lblUserName.TabIndex = 5;
@@ -551,7 +579,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             lblUserEmail.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblUserEmail.Font = new Font("Segoe UI", 8.5F);
             lblUserEmail.ForeColor = Color.FromArgb(107, 114, 128);
-            lblUserEmail.Location = new Point(18, 52);
+            lblUserEmail.Location = new Point(0, 52);
             lblUserEmail.Name = "lblUserEmail";
             lblUserEmail.Size = new Size(195, 24);
             lblUserEmail.TabIndex = 6;
@@ -565,44 +593,34 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             contentPanel.Location = new Point(290, 101);
             contentPanel.Margin = new Padding(3, 4, 3, 4);
             contentPanel.Name = "contentPanel";
-            contentPanel.Size = new Size(1388, 945);
+            contentPanel.Size = new Size(1370, 898);
             contentPanel.TabIndex = 2;
             contentPanel.Resize += contentPanel_Resize;
             // 
-            // btnReminder
+            // panel14
             // 
-            btnReminder.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnReminder.BackColor = Color.White;
-            btnReminder.Cursor = Cursors.Hand;
-            btnReminder.FlatAppearance.BorderSize = 0;
-            btnReminder.FlatStyle = FlatStyle.Flat;
-            btnReminder.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnReminder.ForeColor = Color.FromArgb(55, 65, 81);
-            btnReminder.Location = new Point(17, 20);
-            btnReminder.Margin = new Padding(3, 4, 3, 4);
-            btnReminder.Name = "btnReminder";
-            btnReminder.Padding = new Padding(18, 0, 0, 0);
-            btnReminder.Size = new Size(245, 59);
-            btnReminder.TabIndex = 8;
-            btnReminder.Text = "Nhắc lịch tái khám";
-            btnReminder.UseVisualStyleBackColor = false;
+            panel14.Controls.Add(btnLogout);
+            panel14.Dock = DockStyle.Fill;
+            panel14.Location = new Point(3, 905);
+            panel14.Name = "panel14";
+            panel14.Size = new Size(282, 89);
+            panel14.TabIndex = 10;
             // 
             // ReceptionistMainform
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(247, 249, 252);
+            ClientSize = new Size(1660, 999);
             Controls.Add(contentPanel);
             Controls.Add(panelTopbar);
             Controls.Add(panelSidebar);
             Font = new Font("Segoe UI", 9F);
             Margin = new Padding(3, 4, 3, 4);
             Name = "ReceptionistMainform";
-            Size = new Size(1678, 1046);
             Load += ReceptionistMainform_Load;
             panelSidebar.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
-            panel10.ResumeLayout(false);
             panel9.ResumeLayout(false);
             panel8.ResumeLayout(false);
             panel7.ResumeLayout(false);
@@ -619,6 +637,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             panel11.PerformLayout();
             panel12.ResumeLayout(false);
             panel13.ResumeLayout(false);
+            panel14.ResumeLayout(false);
             ResumeLayout(false);
 
         }
@@ -663,6 +682,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private Button btnPayment;
         private Button btnQueue;
         private Button btnReminder;
+        private Panel panel14;
     }
 }
 
