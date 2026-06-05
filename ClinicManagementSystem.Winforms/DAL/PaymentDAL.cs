@@ -5,10 +5,10 @@ namespace DAL
     public class PaymentDAL
     {
         private string connectionString =
-            "YOUR_CONNECTION_STRING";
+            "Data Source=DESKTOP-KF6OV10;Integrated Security=True;Trust Server Certificate=True";
 
         public bool UpdatePaymentStatus(
-            Guid prescriptionId,
+            Guid invoiceId,
             string status,
             string method)
         {
@@ -16,26 +16,37 @@ namespace DAL
                 new SqlConnection(connectionString))
             {
                 string query = @"
-                UPDATE Prescriptions
-                SET PaymentStatus = @Status,
-                    PaymentMethod = @Method
-                WHERE PrescriptionID =
-                    @PrescriptionID";
+                INSERT INTO Payments
+                (
+                    PaymentID,
+                    InvoiceID,
+                    Method,
+                    Status,
+                    PaidAt
+                )
+                VALUES
+                (
+                    NEWID(),
+                    @InvoiceID,
+                    @Method,
+                    @Status,
+                    GETDATE()
+                )";
 
                 SqlCommand cmd =
                     new SqlCommand(query, conn);
 
                 cmd.Parameters.AddWithValue(
-                    "@Status",
-                    status);
+                    "@InvoiceID",
+                    invoiceId);
 
                 cmd.Parameters.AddWithValue(
                     "@Method",
                     method);
 
                 cmd.Parameters.AddWithValue(
-                    "@PrescriptionID",
-                    prescriptionId);
+                    "@Status",
+                    status);
 
                 conn.Open();
 

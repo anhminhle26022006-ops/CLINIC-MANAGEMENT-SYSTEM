@@ -4,9 +4,9 @@ namespace DTO
 {
     public class VitalSignsDTO
     {
-        public Guid VitalSignID { get; set; }
+        public Guid VitalID { get; set; }
 
-        public Guid AppointmentID { get; set; }
+        public Guid EncounterID { get; set; }
 
         public double Temperature { get; set; }
 
@@ -18,14 +18,8 @@ namespace DTO
 
         public double Weight { get; set; }
 
-        public double Height { get; set; }
-
         public string Notes { get; set; }
 
-        public Guid CreatedBy { get; set; }
-
         public DateTime CreatedAt { get; set; }
-
-        public bool IsArchived { get; set; }
     }
 }

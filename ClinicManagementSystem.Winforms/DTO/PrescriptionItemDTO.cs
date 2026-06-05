@@ -4,7 +4,7 @@ namespace DTO
 {
     public class PrescriptionItemDTO
     {
-        public Guid PrescriptionItemID { get; set; }
+        public Guid DetailID { get; set; }
 
         public Guid PrescriptionID { get; set; }
 
@@ -13,7 +13,5 @@ namespace DTO
         public int Quantity { get; set; }
 
         public string Dosage { get; set; }
-
-        public string Instructions { get; set; }
     }
 }

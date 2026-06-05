@@ -6,18 +6,16 @@ namespace DTO
     {
         public Guid MedicineID { get; set; }
 
-        public string MedicineName { get; set; }
+        public string Name { get; set; }
 
         public string Unit { get; set; }
 
         public decimal Price { get; set; }
 
-        public int StockQuantity { get; set; }
-
-        public DateTime ExpiredDate { get; set; }
+        public int Stock { get; set; }
 
         public string BatchNumber { get; set; }
 
-        public bool IsArchived { get; set; }
+        public DateTime ExpiryDate { get; set; }
     }
 }

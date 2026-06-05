@@ -6,7 +6,7 @@ namespace DAL
     public class PrescriptionDAL
     {
         private string connectionString =
-            "YOUR_CONNECTION_STRING";
+            "Data Source=DESKTOP-KF6OV10;Integrated Security=True;Trust Server Certificate=True";
 
         public List<PrescriptionDTO>
             GetPendingPrescriptions()
@@ -40,8 +40,23 @@ namespace DAL
                             reader["PrescriptionID"]
                             .ToString());
 
+                    dto.EncounterID =
+                        Guid.Parse(
+                            reader["EncounterID"]
+                            .ToString());
+
+                    dto.DoctorID =
+                        Guid.Parse(
+                            reader["DoctorID"]
+                            .ToString());
+
                     dto.Status =
-                        reader["Status"].ToString();
+                        reader["Status"]
+                        .ToString();
+
+                    dto.CreatedAt =
+                        Convert.ToDateTime(
+                            reader["CreatedAt"]);
 
                     list.Add(dto);
                 }

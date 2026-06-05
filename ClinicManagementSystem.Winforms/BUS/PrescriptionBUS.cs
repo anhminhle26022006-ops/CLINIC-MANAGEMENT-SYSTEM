@@ -11,35 +11,39 @@ namespace BUS
         private MedicineDAL medicineDAL =
             new MedicineDAL();
 
-        public List<PrescriptionDTO> GetPendingPrescriptions()
+        public List<PrescriptionDTO>
+            GetPendingPrescriptions()
         {
-            return prescriptionDAL.GetPendingPrescriptions();
+            return prescriptionDAL
+                .GetPendingPrescriptions();
         }
 
         public bool DispenseMedicine(
             Guid medicineId,
-            int qtyDispensed
-        )
+            int qtyDispensed)
         {
-            int stock = medicineDAL.GetStock(medicineId);
+            int stock =
+                medicineDAL.GetStock(
+                    medicineId);
 
             if (qtyDispensed > stock)
             {
-                throw new Exception("Out of stock.");
+                throw new Exception(
+                    "Out of stock.");
             }
 
             return medicineDAL.UpdateStock(
                 medicineId,
-                qtyDispensed
-            );
+                qtyDispensed);
         }
 
-        public bool CompletePrescription(Guid prescriptionId)
+        public bool CompletePrescription(
+            Guid prescriptionId)
         {
-            return prescriptionDAL.UpdatePrescriptionStatus(
-                prescriptionId,
-                "Completed"
-            );
+            return prescriptionDAL
+                .UpdatePrescriptionStatus(
+                    prescriptionId,
+                    "Completed");
         }
     }
 }

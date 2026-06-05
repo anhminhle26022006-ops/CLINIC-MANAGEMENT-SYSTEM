@@ -6,7 +6,68 @@ namespace DAL
     public class MedicineDAL
     {
         private string connectionString =
-            "YOUR_CONNECTION_STRING";
+            "Data Source=DESKTOP-KF6OV10;Integrated Security=True;Trust Server Certificate=True";
+
+        public List<MedicineDTO> GetAllMedicines()
+        {
+            List<MedicineDTO> list =
+                new List<MedicineDTO>();
+
+            using (SqlConnection conn =
+                new SqlConnection(connectionString))
+            {
+                string query = @"
+                SELECT *
+                FROM Medicines";
+
+                SqlCommand cmd =
+                    new SqlCommand(query, conn);
+
+                conn.Open();
+
+                SqlDataReader reader =
+                    cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    MedicineDTO medicine =
+                        new MedicineDTO();
+
+                    medicine.MedicineID =
+                        Guid.Parse(
+                            reader["MedicineID"]
+                            .ToString());
+
+                    medicine.Name =
+                        reader["Name"]
+                        .ToString();
+
+                    medicine.Unit =
+                        reader["Unit"]
+                        .ToString();
+
+                    medicine.Price =
+                        Convert.ToDecimal(
+                            reader["Price"]);
+
+                    medicine.Stock =
+                        Convert.ToInt32(
+                            reader["Stock"]);
+
+                    medicine.BatchNumber =
+                        reader["BatchNumber"]
+                        .ToString();
+
+                    medicine.ExpiryDate =
+                        Convert.ToDateTime(
+                            reader["ExpiryDate"]);
+
+                    list.Add(medicine);
+                }
+            }
+
+            return list;
+        }
 
         public bool InsertMedicine(
             MedicineDTO medicine)
@@ -17,29 +78,29 @@ namespace DAL
                 string query = @"
                 INSERT INTO Medicines
                 (
-                    MedicineName,
+                    Name,
                     Unit,
                     Price,
-                    StockQuantity,
-                    ExpiredDate,
-                    BatchNumber
+                    Stock,
+                    BatchNumber,
+                    ExpiryDate
                 )
                 VALUES
                 (
-                    @MedicineName,
+                    @Name,
                     @Unit,
                     @Price,
-                    @StockQuantity,
-                    @ExpiredDate,
-                    @BatchNumber
+                    @Stock,
+                    @BatchNumber,
+                    @ExpiryDate
                 )";
 
                 SqlCommand cmd =
                     new SqlCommand(query, conn);
 
                 cmd.Parameters.AddWithValue(
-                    "@MedicineName",
-                    medicine.MedicineName);
+                    "@Name",
+                    medicine.Name);
 
                 cmd.Parameters.AddWithValue(
                     "@Unit",
@@ -50,16 +111,16 @@ namespace DAL
                     medicine.Price);
 
                 cmd.Parameters.AddWithValue(
-                    "@StockQuantity",
-                    medicine.StockQuantity);
-
-                cmd.Parameters.AddWithValue(
-                    "@ExpiredDate",
-                    medicine.ExpiredDate);
+                    "@Stock",
+                    medicine.Stock);
 
                 cmd.Parameters.AddWithValue(
                     "@BatchNumber",
                     medicine.BatchNumber);
+
+                cmd.Parameters.AddWithValue(
+                    "@ExpiryDate",
+                    medicine.ExpiryDate);
 
                 conn.Open();
 
@@ -76,9 +137,9 @@ namespace DAL
             {
                 string query = @"
                 UPDATE Medicines
-                SET StockQuantity =
-                    StockQuantity - @Qty
-                WHERE MedicineID = @MedicineID";
+                SET Stock = Stock - @Qty
+                WHERE MedicineID =
+                    @MedicineID";
 
                 SqlCommand cmd =
                     new SqlCommand(query, conn);
@@ -103,9 +164,10 @@ namespace DAL
                 new SqlConnection(connectionString))
             {
                 string query = @"
-                SELECT StockQuantity
+                SELECT Stock
                 FROM Medicines
-                WHERE MedicineID = @MedicineID";
+                WHERE MedicineID =
+                    @MedicineID";
 
                 SqlCommand cmd =
                     new SqlCommand(query, conn);
@@ -118,30 +180,6 @@ namespace DAL
 
                 return Convert.ToInt32(
                     cmd.ExecuteScalar());
-            }
-        }
-
-        public bool SoftDeleteMedicine(
-            Guid medicineId)
-        {
-            using (SqlConnection conn =
-                new SqlConnection(connectionString))
-            {
-                string query = @"
-                UPDATE Medicines
-                SET IsArchived = 1
-                WHERE MedicineID = @MedicineID";
-
-                SqlCommand cmd =
-                    new SqlCommand(query, conn);
-
-                cmd.Parameters.AddWithValue(
-                    "@MedicineID",
-                    medicineId);
-
-                conn.Open();
-
-                return cmd.ExecuteNonQuery() > 0;
             }
         }
     }

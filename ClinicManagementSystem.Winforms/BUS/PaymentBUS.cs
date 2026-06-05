@@ -4,33 +4,35 @@ namespace BUS
 {
     public class PaymentBUS
     {
-        private PaymentDAL paymentDAL = new PaymentDAL();
+        private PaymentDAL paymentDAL =
+            new PaymentDAL();
 
-        public bool ProcessCOD(Guid prescriptionId)
+        public bool ProcessCOD(
+            Guid invoiceId)
         {
-            return paymentDAL.UpdatePaymentStatus(
-                prescriptionId,
-                "Paid",
-                "COD"
-            );
+            return paymentDAL
+                .UpdatePaymentStatus(
+                    invoiceId,
+                    "Paid",
+                    "COD");
         }
 
-        public bool ProcessMoMo(Guid prescriptionId)
+        public bool ProcessMoMo(
+            Guid invoiceId)
         {
-            // mock payment success
-
             bool paymentSuccess = true;
 
             if (!paymentSuccess)
             {
-                throw new Exception("MoMo payment failed.");
+                throw new Exception(
+                    "MoMo payment failed.");
             }
 
-            return paymentDAL.UpdatePaymentStatus(
-                prescriptionId,
-                "Paid",
-                "MoMo"
-            );
+            return paymentDAL
+                .UpdatePaymentStatus(
+                    invoiceId,
+                    "Paid",
+                    "MoMo");
         }
     }
 }

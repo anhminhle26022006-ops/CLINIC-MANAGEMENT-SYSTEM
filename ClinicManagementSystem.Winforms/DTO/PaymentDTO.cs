@@ -6,13 +6,13 @@ namespace DTO
     {
         public Guid PaymentID { get; set; }
 
-        public Guid PrescriptionID { get; set; }
+        public Guid InvoiceID { get; set; }
 
         public decimal Amount { get; set; }
 
-        public string PaymentMethod { get; set; }
+        public string Method { get; set; }
 
-        public string PaymentStatus { get; set; }
+        public string Status { get; set; }
 
         public DateTime PaidAt { get; set; }
     }

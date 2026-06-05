@@ -1,36 +1,51 @@
-﻿using System;
+﻿using DTO;
+using DAL;
 
-public class VitalSignsBUS
+namespace BUS
 {
-    private VitalSignsDAL dal = new VitalSignsDAL();
-
-    public bool SaveVitalSigns(VitalSignDTO dto)
+    public class VitalSignsBUS
     {
-        Validate(dto);
+        private VitalSignsDAL vitalDAL =
+            new VitalSignsDAL();
 
-        return dal.InsertVitalSigns(dto);
-    }
-
-    private void Validate(VitalSignDTO dto)
-    {
-        if (dto.Temperature < 35 || dto.Temperature > 42)
+        public bool SaveVitalSigns(
+            VitalSignsDTO dto)
         {
-            throw new Exception("Temperature invalid");
+            ValidateVitalSigns(dto);
+
+            return vitalDAL.InsertVitalSigns(
+                dto);
         }
 
-        if (dto.SPO2 < 0 || dto.SPO2 > 100)
+        private void ValidateVitalSigns(
+            VitalSignsDTO dto)
         {
-            throw new Exception("SPO2 invalid");
-        }
+            if (dto.Temperature < 35 ||
+                dto.Temperature > 42)
+            {
+                throw new Exception(
+                    "Temperature invalid.");
+            }
 
-        if (dto.HeartRate < 30 || dto.HeartRate > 220)
-        {
-            throw new Exception("Heart rate invalid");
-        }
+            if (dto.SPO2 < 0 ||
+                dto.SPO2 > 100)
+            {
+                throw new Exception(
+                    "SPO2 invalid.");
+            }
 
-        if (dto.Weight <= 0)
-        {
-            throw new Exception("Weight invalid");
+            if (dto.HeartRate < 30 ||
+                dto.HeartRate > 220)
+            {
+                throw new Exception(
+                    "Heart rate invalid.");
+            }
+
+            if (dto.Weight <= 0)
+            {
+                throw new Exception(
+                    "Weight invalid.");
+            }
         }
     }
 }

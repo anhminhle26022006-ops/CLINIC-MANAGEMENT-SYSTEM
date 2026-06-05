@@ -6,7 +6,7 @@ namespace DAL
     public class ShiftDAL
     {
         private string connectionString =
-            "YOUR_CONNECTION_STRING";
+            "Data Source=DESKTOP-KF6OV10;Integrated Security=True;Trust Server Certificate=True";
 
         public List<ShiftDTO> GetAllShifts()
         {

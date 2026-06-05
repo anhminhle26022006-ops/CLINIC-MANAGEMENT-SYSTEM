@@ -6,10 +6,10 @@ namespace DAL
     public class VitalSignsDAL
     {
         private string connectionString =
-            "YOUR_CONNECTION_STRING";
+            "Data Source=DESKTOP-KF6OV10;Integrated Security=True;Trust Server Certificate=True";
 
         public bool InsertVitalSigns(
-            VitalSignDTO vital)
+            VitalSignsDTO vital)
         {
             using (SqlConnection conn =
                 new SqlConnection(connectionString))
@@ -17,35 +17,31 @@ namespace DAL
                 string query = @"
                 INSERT INTO VitalSigns
                 (
-                    AppointmentID,
+                    EncounterID,
                     Temperature,
                     BloodPressure,
                     HeartRate,
                     SPO2,
                     Weight,
-                    Height,
-                    Notes,
-                    CreatedBy
+                    Notes
                 )
                 VALUES
                 (
-                    @AppointmentID,
+                    @EncounterID,
                     @Temperature,
                     @BloodPressure,
                     @HeartRate,
                     @SPO2,
                     @Weight,
-                    @Height,
-                    @Notes,
-                    @CreatedBy
+                    @Notes
                 )";
 
                 SqlCommand cmd =
                     new SqlCommand(query, conn);
 
                 cmd.Parameters.AddWithValue(
-                    "@AppointmentID",
-                    vital.AppointmentID);
+                    "@EncounterID",
+                    vital.EncounterID);
 
                 cmd.Parameters.AddWithValue(
                     "@Temperature",
@@ -68,16 +64,8 @@ namespace DAL
                     vital.Weight);
 
                 cmd.Parameters.AddWithValue(
-                    "@Height",
-                    vital.Height);
-
-                cmd.Parameters.AddWithValue(
                     "@Notes",
                     vital.Notes);
-
-                cmd.Parameters.AddWithValue(
-                    "@CreatedBy",
-                    vital.CreatedBy);
 
                 conn.Open();
 
