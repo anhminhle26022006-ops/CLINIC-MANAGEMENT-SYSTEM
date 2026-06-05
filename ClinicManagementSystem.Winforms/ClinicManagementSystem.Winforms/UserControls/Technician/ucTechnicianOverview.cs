@@ -63,7 +63,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void LoadOverviewData()
         {
-            List<RequestDTO> requests = new List<RequestDTO>();
+            List<TechnicianRequestDTO> requests = new List<TechnicianRequestDTO>();
             int pendingLab = 0;
             int pendingScan = 0;
             int completedToday = 0;
@@ -72,12 +72,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             try
             {
                 requests = requestBUS.GetList();
-                pendingLab = requests.Count(r => r.Status == "Chờ xử lý" && (r.ServiceType.Contains("Xét nghiệm") || r.ServiceType.Contains("ECG") || r.ServiceType.Contains("Điện tâm đồ")));
-                pendingScan = requests.Count(r => r.Status == "Chờ xử lý" && (r.ServiceType.Contains("MRI") || r.ServiceType.Contains("X-quang") || r.ServiceType.Contains("Siêu âm")));
+                pendingLab = requests.Count(r => r.Status == "Chờ xử lý" && CMS.Core.Utils.ServiceTypeHelper.IsLabOrEcgService(r.ServiceType));
+                pendingScan = requests.Count(r => r.Status == "Chờ xử lý" && CMS.Core.Utils.ServiceTypeHelper.IsImagingService(r.ServiceType));
                 completedToday = requests.Count(r => r.Status == "Hoàn thành" && r.RequestDate.Date == DateTime.Today);
                 processing = requests.Count(r => r.Status == "Đang xử lý");
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error loading overview requests: " + ex);
+            }
 
             // Update stats labels
             lblStatLabNum.Text = pendingLab.ToString();
@@ -99,7 +102,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     dept = todayShift.Department;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error loading overview shifts: " + ex);
+            }
 
             lblShiftName.Text = shiftName;
             lblShiftRoom.Text = room;
@@ -107,7 +113,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
             // Load pending lists (taking up to 2 items)
             flpLabPending.Controls.Clear();
-            var pendingLabList = requests.Where(r => r.Status == "Chờ xử lý" && (r.ServiceType.Contains("Xét nghiệm") || r.ServiceType.Contains("ECG"))).Take(2).ToList();
+            var pendingLabList = requests.Where(r => r.Status == "Chờ xử lý" && CMS.Core.Utils.ServiceTypeHelper.IsLabOrEcgService(r.ServiceType)).Take(2).ToList();
             foreach (var req in pendingLabList)
             {
                 var patientRow = CreateSmallPatient(req.PatientName, req.ServiceType, "BS: " + req.DoctorName, req.Priority, Color.FromArgb(254, 226, 226), Color.FromArgb(185, 28, 28), 0);
@@ -117,7 +123,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             }
 
             flpScanPending.Controls.Clear();
-            var pendingScanList = requests.Where(r => r.Status == "Chờ xử lý" && (r.ServiceType.Contains("MRI") || r.ServiceType.Contains("X-quang") || r.ServiceType.Contains("Siêu âm"))).Take(2).ToList();
+            var pendingScanList = requests.Where(r => r.Status == "Chờ xử lý" && CMS.Core.Utils.ServiceTypeHelper.IsImagingService(r.ServiceType)).Take(2).ToList();
             foreach (var req in pendingScanList)
             {
                 var patientRow = CreateSmallPatient(req.PatientName, req.ServiceType, "BS: " + req.DoctorName, "Chờ chụp", Color.FromArgb(254, 249, 195), Color.FromArgb(161, 98, 7), 0);

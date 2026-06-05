@@ -3,6 +3,8 @@ using System.Windows.Forms;
 using DTO;
 using ClinicManagementSystem.Winforms.Mainforms;
 using ClinicManagementSystem.Winforms.UserControls;
+using CMS.Core.Identity;
+using CMS.Core.Session;
 
 namespace ClinicManagementSystem.Winforms.Forms
 {
@@ -22,42 +24,17 @@ namespace ClinicManagementSystem.Winforms.Forms
 
         private void TechnicianDashboardForm_Load(object sender, EventArgs e)
         {
-            Form dashboard = null;
-
-            if (currentUser != null && !string.IsNullOrEmpty(currentUser.Role))
-            {
-                string role = currentUser.Role.Trim();
-                if (role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
-                {
-                    dashboard = new AdminMainform(currentUser);
-                }
-                else if (role.Equals("Doctor", StringComparison.OrdinalIgnoreCase))
-                {
-                    dashboard = new DoctorMainform(currentUser);
-                }
-                else if (role.Equals("Nurse", StringComparison.OrdinalIgnoreCase))
-                {
-                    dashboard = new NurseMainform(currentUser);
-                }
-                else if (role.Equals("Pharmacist", StringComparison.OrdinalIgnoreCase))
-                {
-                    dashboard = new PharmacyMainform(currentUser);
-                }
-                else if (role.Equals("Receptionist", StringComparison.OrdinalIgnoreCase))
-                {
-                    dashboard = new ReceptionistMainform(currentUser);
-                }
-                else if (role.Equals("Technician", StringComparison.OrdinalIgnoreCase))
-                {
-                    dashboard = new TechnicianMainform(currentUser);
-                }
-            }
+            Form dashboard = CreateDashboardForCurrentUser();
 
             if (dashboard == null)
             {
-                dashboard = currentUser == null
-                    ? new TechnicianMainform()
-                    : new TechnicianMainform(currentUser);
+                MessageBox.Show(
+                    "Tài khoản chưa có vai trò hợp lệ để mở màn hình làm việc.",
+                    "Không thể mở dashboard",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                Close();
+                return;
             }
 
             dashboard.Dock = DockStyle.Fill;
@@ -93,8 +70,36 @@ namespace ClinicManagementSystem.Winforms.Forms
             dashboard.Show();
         }
 
+        private Form CreateDashboardForCurrentUser()
+        {
+            if (currentUser == null)
+            {
+                return null;
+            }
+
+            string role = RoleNormalizer.Normalize(currentUser.Role);
+            switch (role)
+            {
+                case Role.Admin:
+                    return new AdminMainform(currentUser);
+                case Role.Doctor:
+                    return new DoctorMainform(currentUser);
+                case Role.Nurse:
+                    return new NurseMainform(currentUser);
+                case Role.Pharmacist:
+                    return new PharmacyMainform(currentUser);
+                case Role.Receptionist:
+                    return new ReceptionistMainform(currentUser);
+                case Role.Technician:
+                    return new TechnicianMainform(currentUser);
+                default:
+                    return null;
+            }
+        }
+
         private void Dashboard_LogoutRequested(object sender, EventArgs e)
         {
+            UserSession.Logout();
             Hide();
             using (LoginForm login = new LoginForm())
             {

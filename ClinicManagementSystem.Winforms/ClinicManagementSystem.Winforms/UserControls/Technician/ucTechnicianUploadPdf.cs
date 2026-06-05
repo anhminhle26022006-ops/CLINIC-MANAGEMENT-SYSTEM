@@ -33,12 +33,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         private void LoadRequests()
         {
             cboPDFRequests.Items.Clear();
-            List<RequestDTO> list = new List<RequestDTO>();
+            List<TechnicianRequestDTO> list = new List<TechnicianRequestDTO>();
             try
             {
-                list = requestBUS.GetList().Where(r => r.Status != "Hoàn thành" && (r.ServiceType.Contains("Xét nghiệm máu tổng quát") || r.ServiceType.ToLower().Contains("pdf"))).ToList();
+                list = requestBUS.GetList().Where(r => r.Status != "Hoàn thành" && CMS.Core.Utils.ServiceTypeHelper.IsPdfUploadService(r.ServiceType)).ToList();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error loading PDF requests: " + ex);
+            }
 
             foreach (var req in list)
             {
@@ -58,7 +61,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                         cboPDFRequests.Enabled = false;
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error loading active PDF request: " + ex);
+                }
             }
             else if (cboPDFRequests.Items.Count > 0)
             {
@@ -111,7 +117,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("Error submitting PDF result: " + ex);
+                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

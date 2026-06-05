@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -23,8 +23,8 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
         private readonly PatientBUS patientBUS = new PatientBUS();
-        private readonly RequestBUS requestBUS = new RequestBUS();
-        private readonly ShiftBUS shiftBUS = new ShiftBUS();
+        private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
+        private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
         private UserDTO currentUser;
         private bool layoutReady;
 
@@ -133,12 +133,12 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
             LoadContentView(new ucTechnicianShifts());
         }
 
-        private void ShowRecords()
+        private void ShowRecords(int preselectedRequestId = 0)
         {
             lblPageTitle.Text = "Hồ sơ bệnh án";
             lblPageSubtitle.Text = "Tìm kiếm hồ sơ bệnh nhân và lịch sử kết quả xét nghiệm";
             SetActiveNav(btnNavRecords);
-            LoadContentView(new ucPatientRecords());
+            LoadContentView(new ucPatientRecords(), preselectedRequestId);
         }
 
         private void ShowSeederTool()
@@ -182,7 +182,7 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
                     ShowShifts();
                     break;
                 case TechnicianViewTarget.Records:
-                    ShowRecords();
+                    ShowRecords(e.RequestId);
                     break;
                 case TechnicianViewTarget.SeederTool:
                     ShowSeederTool();

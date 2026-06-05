@@ -108,6 +108,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             btnSyncApi.TabIndex = 3;
             btnSyncApi.Text = "ĐỒNG BỘ API SHEETDB / SUPABASE";
             btnSyncApi.UseVisualStyleBackColor = false;
+            btnSyncApi.Click += btnSyncApi_Click;
             // 
             // btnTestPayOS
             // 

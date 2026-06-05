@@ -7,7 +7,7 @@ namespace ClinicManagementSystem.Winforms.Forms
 {
     public partial class RegisterShiftForm : Form
     {
-        private readonly ShiftBUS shiftBUS = new ShiftBUS();
+        private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
         private readonly string technicianName;
 
         public RegisterShiftForm(string name)
@@ -28,7 +28,7 @@ namespace ClinicManagementSystem.Winforms.Forms
         {
             try
             {
-                ShiftDTO shift = new ShiftDTO
+                TechnicianShiftDTO shift = new TechnicianShiftDTO
                 {
                     ShiftDate = dtpDate.Value.Date,
                     ShiftName = cboShift.SelectedItem.ToString(),
@@ -63,4 +63,3 @@ namespace ClinicManagementSystem.Winforms.Forms
         }
     }
 }
-
