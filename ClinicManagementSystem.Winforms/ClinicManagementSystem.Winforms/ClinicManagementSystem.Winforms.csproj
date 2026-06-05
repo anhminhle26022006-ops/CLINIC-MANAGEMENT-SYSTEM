@@ -41,11 +41,11 @@
     <Compile Update="UserControls\Technician\ucSeederTool.Designer.cs">
       <DependentUpon>ucSeederTool.cs</DependentUpon>
     </Compile>
-    <Compile Update="Mainforms\ucTechnicianDashboard.cs">
+    <Compile Update="Mainforms\TechnicianMainform.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Mainforms\ucTechnicianDashboard.Designer.cs">
-      <DependentUpon>ucTechnicianDashboard.cs</DependentUpon>
+    <Compile Update="Mainforms\TechnicianMainform.Designer.cs">
+      <DependentUpon>TechnicianMainform.cs</DependentUpon>
     </Compile>
     <Compile Update="UserControls\Technician\ucTechnicianLabResult.cs">
       <SubType>UserControl</SubType>
@@ -96,8 +96,8 @@
     <EmbeddedResource Update="UserControls\Technician\ucSeederTool.resx">
       <DependentUpon>ucSeederTool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Mainforms\ucTechnicianDashboard.resx">
-      <DependentUpon>ucTechnicianDashboard.cs</DependentUpon>
+    <EmbeddedResource Update="Mainforms\TechnicianMainform.resx">
+      <DependentUpon>TechnicianMainform.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="UserControls\Technician\ucTechnicianLabResult.resx">
       <DependentUpon>ucTechnicianLabResult.cs</DependentUpon>

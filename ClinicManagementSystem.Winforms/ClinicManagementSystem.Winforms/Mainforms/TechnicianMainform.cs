@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace ClinicManagementSystem.Winforms.UserControls
 {
-    public partial class ucTechnicianDashboard : Form
+    public partial class TechnicianMainform : Form
     {
 private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;
@@ -36,13 +36,13 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
         public event EventHandler LogoutRequested;
         public event EventHandler CloseRequested;
 
-        public ucTechnicianDashboard()
+        public TechnicianMainform()
         {
             InitializeComponent();
             layoutReady = true;
         }
 
-        public ucTechnicianDashboard(UserDTO user) : this()
+        public TechnicianMainform(UserDTO user) : this()
         {
             this.currentUser = user;
             lblUserName.Text = user.Name;
