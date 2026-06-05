@@ -1,6 +1,6 @@
 namespace ClinicManagementSystem.Winforms.UserControls
 {
-    partial class ucTechnicianDashboard
+    partial class TechnicianMainform
     {
         /// <summary>
         /// Required designer variable.

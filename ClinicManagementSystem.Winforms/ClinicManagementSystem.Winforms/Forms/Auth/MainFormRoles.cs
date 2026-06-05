@@ -49,15 +49,15 @@ namespace ClinicManagementSystem.Winforms.Forms
                 }
                 else if (role.Equals("Technician", StringComparison.OrdinalIgnoreCase))
                 {
-                    dashboard = new ucTechnicianDashboard(currentUser);
+                    dashboard = new TechnicianMainform(currentUser);
                 }
             }
 
             if (dashboard == null)
             {
                 dashboard = currentUser == null
-                    ? new ucTechnicianDashboard()
-                    : new ucTechnicianDashboard(currentUser);
+                    ? new TechnicianMainform()
+                    : new TechnicianMainform(currentUser);
             }
 
             dashboard.Dock = DockStyle.Fill;

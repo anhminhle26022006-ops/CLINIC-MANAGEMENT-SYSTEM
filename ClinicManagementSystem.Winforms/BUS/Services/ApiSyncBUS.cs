@@ -28,6 +28,7 @@ namespace BUS.Services
             var supabaseEmployees = supabaseEmployeesRaw
                 .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode))
                 .Where(e => !string.IsNullOrWhiteSpace(e.FullName))
+                .Where(e => !e.SyncCode.StartsWith("BN", StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             var sheetPatients = sheetPatientsRaw
@@ -38,7 +39,11 @@ namespace BUS.Services
             var sheetEmployees = sheetEmployeesRaw
                 .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode))
                 .Where(e => !string.IsNullOrWhiteSpace(e.FullName))
+                .Where(e => !e.SyncCode.StartsWith("BN", StringComparison.OrdinalIgnoreCase))
                 .ToList();
+
+            EnrichEmployeeFields(supabaseEmployees);
+            EnrichEmployeeFields(sheetEmployees);
 
             result.SkippedPatientRows = sheetPatientsRaw.Count - sheetPatients.Count;
             result.SkippedEmployeeRows = sheetEmployeesRaw.Count - sheetEmployees.Count;
@@ -63,6 +68,15 @@ namespace BUS.Services
                 .GroupBy(p => p.SyncUuid.HasValue ? "UUID:" + p.SyncUuid.Value : "CODE:" + NormalizeCode(p.PatientCode))
                 .Select(g => g.First())
                 .OrderBy(p => p.PatientCode)
+                .ToList();
+
+            result.MergedEmployees = supabaseEmployees
+                .Concat(sheetEmployees)
+                .Where(e => !string.IsNullOrWhiteSpace(e.SyncCode))
+                .Where(e => !string.IsNullOrWhiteSpace(e.FullName))
+                .GroupBy(e => e.SyncUuid.HasValue ? "UUID:" + e.SyncUuid.Value : "CODE:" + NormalizeCode(e.SyncCode))
+                .Select(g => g.First())
+                .OrderBy(e => e.SyncCode)
                 .ToList();
 
             return result;
@@ -423,7 +437,9 @@ namespace BUS.Services
             var reqs = await repository.GetSupabaseImagingRequestsFlatAsync();
             var encs = await repository.GetSupabaseEncountersFlatAsync();
             var pats = await repository.GetSupabasePatientsAsync();
-            var emps = await repository.GetSupabaseEmployeesAsync();
+            var empsRaw = await repository.GetSupabaseEmployeesAsync();
+            var emps = empsRaw.Where(e => e.SyncCode != null && !e.SyncCode.StartsWith("BN", StringComparison.OrdinalIgnoreCase)).ToList();
+            EnrichEmployeeFields(emps);
             var svcs = await repository.GetSupabaseServicesFlatAsync();
             var resList = await repository.GetSupabaseImagingResultsFlatAsync();
 
@@ -568,7 +584,13 @@ namespace BUS.Services
                 string pdfUrl = res?.FileUrl;
                 string status = MapRequestStatus(lab.Status);
 
-                await repository.UpsertLocalRequestAsync(code, patId.Value, docId.Value, serviceType, null, "Thường", status, null, pdfUrl, labValues);
+                DateTime? reqDate = null;
+                if (!string.IsNullOrEmpty(enc.StartTime) && DateTime.TryParse(enc.StartTime, out DateTime parsedDate))
+                {
+                    reqDate = parsedDate;
+                }
+
+                await repository.UpsertLocalRequestAsync(code, patId.Value, docId.Value, serviceType, null, "Thường", status, null, pdfUrl, labValues, reqDate);
                 labCount++;
             }
 
@@ -582,6 +604,43 @@ namespace BUS.Services
             if (s.Contains("hoàn thành") || s.Contains("completed") || s.Contains("done")) return "Hoàn thành";
             if (s.Contains("đang xử lý") || s.Contains("processing") || s.Contains("inprogress")) return "Đang xử lý";
             return "Chờ xử lý";
+        }
+
+        private static void EnrichEmployeeFields(List<ApiEmployeeDTO> employees)
+        {
+            var deptMap = new Dictionary<int, string>
+            {
+                { 1, "Khoa Nội tổng hợp" },
+                { 2, "Khoa Ngoại tổng hợp" },
+                { 3, "Khoa Chẩn đoán hình ảnh" },
+                { 4, "Khoa Xét nghiệm" },
+                { 7, "Khoa Tim mạch" }
+            };
+
+            foreach (var emp in employees)
+            {
+                if (string.IsNullOrWhiteSpace(emp.DepartmentName) && emp.DepartmentID.HasValue)
+                {
+                    if (deptMap.TryGetValue(emp.DepartmentID.Value, out string deptName))
+                    {
+                        emp.DepartmentName = deptName;
+                    }
+                    else
+                    {
+                        emp.DepartmentName = $"Khoa {emp.DepartmentID.Value}";
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(emp.RoleName) && emp.SyncCode != null && emp.SyncCode.StartsWith("BS", StringComparison.OrdinalIgnoreCase))
+                {
+                    emp.RoleName = "Bác sĩ";
+                }
+
+                if (string.IsNullOrWhiteSpace(emp.Status))
+                {
+                    emp.Status = "Đang làm việc";
+                }
+            }
         }
     }
 }
