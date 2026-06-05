@@ -52,9 +52,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private void ucTechnicianDashboard_Load(object sender, EventArgs e)
         {
 
-            // Re-arrange default sidebar buttons
-            btnNavOverview.Location = new Point(12, 78);
-            btnEmployeeManagement.Location = new Point(12, 124);
+
 
 
             // Set Log Out click handler
@@ -65,10 +63,16 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
             // Close button click handler
             btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
-
+            btnUserManagement.Click += (s, e) => LoadPage(new UserControls.Admin.ucUserManagement(), "Quản lý tài khoản");
 
         }
-
+        private void LoadPage(UserControl uc, string title)
+        {
+            contentPanel.Controls.Clear();
+            uc.Dock = DockStyle.Fill;
+            contentPanel.Controls.Add(uc);
+            lblPageTitle.Text = title;
+        }
         private Button CreateSidebarButton(string text, Point location, EventHandler onClick)
         {
             Button btn = new Button
@@ -97,9 +101,15 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             if (!layoutReady || contentPanel.Width < 400) return;
         }
 
+        private void panel12_Paint(object sender, PaintEventArgs e)
+        {
 
+        }
 
+        private void btnDepartmentManagement_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }
 
