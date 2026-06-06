@@ -4,12 +4,13 @@ namespace DTO
 {
     public class ShiftDTO
     {
-        public Guid ID { get; set; }
-
-        public Guid EmployeeID { get; set; }
-
-        public Guid ShiftID { get; set; }
-
-        public DateTime WorkDate { get; set; }
+        public int ShiftID { get; set; }
+        public DateTime ShiftDate { get; set; }
+        public string ShiftName { get; set; } // Sáng, Chiều
+        public string Room { get; set; }
+        public string Department { get; set; }
+        public string Status { get; set; } // Đã đăng ký, Chờ xác nhận
+        public string TechnicianName { get; set; }
     }
 }
+
