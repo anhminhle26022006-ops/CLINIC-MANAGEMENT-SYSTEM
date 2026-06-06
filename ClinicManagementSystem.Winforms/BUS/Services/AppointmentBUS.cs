@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.Repositories;
+﻿using DAL.Repositories;
 using DTO;
 
 namespace BUS.Services
@@ -11,6 +6,11 @@ namespace BUS.Services
     public class AppointmentBUS
     {
         private readonly AppointmentDAL dal = new();
+
+        public bool Create(AppointmentDTO appointment)
+        {
+            return dal.Create(appointment);
+        }
 
         public int CountNewPatients()
         {
@@ -25,6 +25,18 @@ namespace BUS.Services
         public int CountUpcomingAppointments()
         {
             return dal.CountUpcomingAppointments();
+        }
+
+        public int CountAppointmentsToday()
+        {
+            return dal.CountAppointmentsToday();
+        }
+
+        public int CountAppointmentsByDoctor(
+    int doctorId)
+        {
+            return dal.CountAppointmentsByDoctor(
+                doctorId);
         }
     }
 }

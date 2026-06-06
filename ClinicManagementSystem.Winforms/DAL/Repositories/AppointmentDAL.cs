@@ -1,5 +1,7 @@
 ﻿using System;
 using DAL.DataContext;
+using DTO;
+using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
@@ -61,6 +63,65 @@ namespace DAL.Repositories
 
             return Convert.ToInt32(
                 DatabaseHelper.ExecuteScalar(query));
+        }
+
+        public bool Create(AppointmentDTO appointment)
+        {
+            string query = @"
+    INSERT INTO Appointments
+    (
+        PatientID,
+        DoctorID,
+        DepartmentID,
+        RoomID,
+        AppointmentDate,
+        Status
+    )
+    VALUES
+    (
+        @PatientID,
+        @DoctorID,
+        @DepartmentID,
+        @RoomID,
+        @AppointmentDate,
+        @Status
+    )";
+
+            SqlParameter[] parameters =
+            {
+        new SqlParameter("@PatientID", appointment.PatientID),
+        new SqlParameter("@DoctorID", appointment.DoctorID),
+        new SqlParameter("@DepartmentID", appointment.DepartmentID),
+        new SqlParameter("@RoomID", appointment.RoomID),
+        new SqlParameter("@AppointmentDate", appointment.AppointmentDate),
+        new SqlParameter("@Status", appointment.Status)
+    };
+
+            return DatabaseHelper.ExecuteNonQuery(
+                query,
+                parameters) > 0;
+        }
+
+        public int CountAppointmentsByDoctor(
+    int doctorId)
+        {
+            string query = @"
+        SELECT COUNT(*)
+        FROM Appointments
+        WHERE DoctorID = @DoctorID
+        AND CAST(AppointmentDate AS DATE)
+            = CAST(GETDATE() AS DATE)
+        AND Status <> 'Cancelled'";
+
+            SqlParameter[] parameters =
+            {
+        new("@DoctorID", doctorId)
+    };
+
+            return Convert.ToInt32(
+                DatabaseHelper.ExecuteScalar(
+                    query,
+                    parameters));
         }
     }
 }

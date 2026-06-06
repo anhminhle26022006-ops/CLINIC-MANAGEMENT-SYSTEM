@@ -132,7 +132,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void btnAppointment_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new CreateAppointment());
             LoadContent(new CreateAppointment());
         }
 
@@ -143,19 +142,16 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void btnToday_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new ScheduleToday());
             LoadContent(new ScheduleToday());
         }
 
         private void btnQueue_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new WaitingList());
             LoadContent(new WaitingList());
         }
 
         private void btnReminder_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new RemindingList());
             LoadContent(new RemindingList());
         }
 
