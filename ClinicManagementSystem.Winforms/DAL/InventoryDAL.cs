@@ -1,5 +1,5 @@
 ﻿using DTO;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace DAL
 {
@@ -38,10 +38,10 @@ namespace DAL
                         Guid.Parse(
                             reader["MedicineID"].ToString());
 
-                    medicine.MedicineName =
+                    medicine.Name =
                         reader["MedicineName"].ToString();
 
-                    medicine.StockQuantity =
+                    medicine.Stock =
                         Convert.ToInt32(
                             reader["StockQuantity"]);
 

@@ -1,12 +1,12 @@
 ﻿using DTO;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace DAL
 {
     public class ShiftDAL
     {
         private string connectionString =
-            "Data Source=DESKTOP-KF6OV10;Integrated Security=True;Trust Server Certificate=True";
+            "Data Source=DESKTOP-KF6OV10;Database=CMS;Integrated Security=True;Trust Server Certificate=True";
 
         public List<ShiftDTO> GetAllShifts()
         {
@@ -32,10 +32,9 @@ namespace DAL
                         new ShiftDTO();
 
                     dto.ShiftID =
-                        Guid.Parse(
-                            reader["ShiftID"].ToString());
+                    Convert.ToInt32(reader["ShiftID"]);
 
-                    dto.ShiftType =
+                    dto.ShiftName =
                         reader["ShiftType"].ToString();
 
                     dto.Status =
@@ -82,7 +81,7 @@ namespace DAL
 
                 cmd.Parameters.AddWithValue(
                     "@ShiftType",
-                    shift.ShiftType);
+                    shift.ShiftName);
 
                 cmd.Parameters.AddWithValue(
                     "@Status",
@@ -94,9 +93,7 @@ namespace DAL
             }
         }
 
-        public bool RequestSwap(
-            Guid shiftId,
-            Guid employeeId)
+        public bool RequestSwap(int shiftId, int employeeId)
         {
             using (SqlConnection conn =
                 new SqlConnection(connectionString))

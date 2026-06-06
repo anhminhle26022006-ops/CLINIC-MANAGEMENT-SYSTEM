@@ -20,8 +20,8 @@ namespace BUS
         }
 
         public bool SwapShift(
-            Guid shiftId,
-            Guid employeeId
+            int shiftId,
+            int employeeId
         )
         {
             return shiftDAL.RequestSwap(
@@ -39,7 +39,7 @@ namespace BUS
                 );
             }
 
-            if (string.IsNullOrWhiteSpace(shift.ShiftType))
+            if (string.IsNullOrWhiteSpace(shift.ShiftName))
             {
                 throw new Exception(
                     "Shift type is required."

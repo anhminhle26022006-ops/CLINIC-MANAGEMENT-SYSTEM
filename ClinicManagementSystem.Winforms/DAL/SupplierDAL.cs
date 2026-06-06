@@ -1,5 +1,5 @@
 ﻿using DTO;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace DAL
 {
@@ -94,6 +94,68 @@ namespace DAL
                 cmd.Parameters.AddWithValue(
                     "@Address",
                     supplier.Address);
+
+                conn.Open();
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+        public bool UpdateSupplier(SupplierDTO supplier)
+        {
+            using (SqlConnection conn =
+                new SqlConnection(connectionString))
+            {
+                string query = @"
+        UPDATE Suppliers
+        SET SupplierName = @SupplierName,
+            Phone = @Phone,
+            Email = @Email,
+            Address = @Address
+        WHERE SupplierID = @SupplierID";
+
+                SqlCommand cmd =
+                    new SqlCommand(query, conn);
+
+                cmd.Parameters.AddWithValue(
+                    "@SupplierID",
+                    supplier.SupplierID);
+
+                cmd.Parameters.AddWithValue(
+                    "@SupplierName",
+                    supplier.SupplierName);
+
+                cmd.Parameters.AddWithValue(
+                    "@Phone",
+                    supplier.Phone);
+
+                cmd.Parameters.AddWithValue(
+                    "@Email",
+                    supplier.Email);
+
+                cmd.Parameters.AddWithValue(
+                    "@Address",
+                    supplier.Address);
+
+                conn.Open();
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        public bool DeleteSupplier(Guid supplierId)
+        {
+            using (SqlConnection conn =
+                new SqlConnection(connectionString))
+            {
+                string query =
+                    "DELETE FROM Suppliers WHERE SupplierID = @SupplierID";
+
+                SqlCommand cmd =
+                    new SqlCommand(query, conn);
+
+                cmd.Parameters.AddWithValue(
+                    "@SupplierID",
+                    supplierId);
 
                 conn.Open();
 
