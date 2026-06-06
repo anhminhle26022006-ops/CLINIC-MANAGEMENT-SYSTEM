@@ -1,4 +1,5 @@
-﻿using BUS.Services;
+﻿using System.Data;
+using BUS.Services;
 using DTO;
 
 namespace ClinicManagementSystem.Winforms.Controllers
@@ -51,7 +52,7 @@ namespace ClinicManagementSystem.Winforms.Controllers
                     DepartmentID = departmentId,
                     RoomID = roomId.Value,
                     AppointmentDate = appointmentDate,
-                    Status = "Scheduled"
+                    Status = "Waiting"
                 };
 
             return appointmentBUS.Create(
@@ -110,21 +111,31 @@ namespace ClinicManagementSystem.Winforms.Controllers
                         selectedTime < schedule.EndTime;
 
                     currentPatients =
+    appointmentBUS
+        .CountAppointmentsByDoctorAndDate(
+            doctor.EmployeeID,
+            selectedDate);
+
+                    DateTime slotDateTime =
+    selectedDate.Date + selectedTime;
+
+                    bool hasAppointment =
                         appointmentBUS
-                            .CountAppointmentsByDoctor(
-                                doctor.EmployeeID);
+                            .ExistsAppointment(
+                                doctor.EmployeeID,
+                                slotDateTime);
 
                     if (!working)
                     {
                         status = "Ngoài ca";
                     }
-                    else if (currentPatients >= maxPatients)
+                    else if (hasAppointment)
                     {
-                        status = "Đã đầy";
+                        status = "Đã có lịch";
                     }
                     else
                     {
-                        status = "Đang trực";
+                        status = "Đang trống";
                     }
                 }
 
@@ -148,5 +159,7 @@ namespace ClinicManagementSystem.Winforms.Controllers
 
             return result;
         }
+
+        
     }
 }

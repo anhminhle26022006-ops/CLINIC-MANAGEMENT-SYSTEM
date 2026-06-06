@@ -55,14 +55,14 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private async void ReceptionistMainform_Load(object sender, EventArgs e)
         {
-           /* try
+            try
             {
                 await apiSyncBUS.SyncAsync();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            } */
+            }
 
             btnLogout.Click += (s, ev) =>
             {
@@ -126,7 +126,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void btnPatientManagement_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new PatientManagement());
             LoadContent(new PatientManagement());
         }
 

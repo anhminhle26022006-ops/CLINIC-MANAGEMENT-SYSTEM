@@ -131,15 +131,25 @@ WHERE FullName LIKE @Term
             return new PatientDTO
             {
                 PatientID = Convert.ToInt32(row["PatientID"]),
-                PatientCode = row["PatientCode"].ToString(),
-                Name = row["Name"].ToString(),
-                BirthDate = Convert.ToDateTime(row["BirthDate"]),
-                Gender = row["Gender"].ToString(),
+
+                PatientCode = row["PatientCode"]?.ToString() ?? "",
+
+                Name = row["Name"]?.ToString() ?? "",
+
+                BirthDate = row["BirthDate"] != DBNull.Value
+        ? Convert.ToDateTime(row["BirthDate"])
+        : DateTime.MinValue,
+
+                Gender = row["Gender"]?.ToString() ?? "",
+
                 Phone = row["Phone"] != DBNull.Value
-            ? row["Phone"].ToString()
-            : "",
+        ? row["Phone"].ToString()
+        : "",
+
                 Address = row["Address"]?.ToString() ?? "",
+
                 BloodType = row["BloodType"]?.ToString() ?? "",
+
                 Allergy = row["Allergy"]?.ToString() ?? ""
             };
         }

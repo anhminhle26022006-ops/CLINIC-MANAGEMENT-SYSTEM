@@ -1,4 +1,6 @@
-﻿namespace ClinicManagementSystem.Winforms.UserControls.reception
+﻿using ClinicManagementSystem.Winforms.Forms;
+
+namespace ClinicManagementSystem.Winforms.UserControls.reception
 {
     partial class ScheduleToday
     {
@@ -38,6 +40,11 @@
             lbDate = new Label();
             panel3 = new Panel();
             tableLayoutPanel4 = new TableLayoutPanel();
+            panel12 = new Panel();
+            panel13 = new Panel();
+            tableLayoutPanel9 = new TableLayoutPanel();
+            lbDone = new Label();
+            label12 = new Label();
             panel10 = new Panel();
             panel11 = new Panel();
             tableLayoutPanel8 = new TableLayoutPanel();
@@ -58,19 +65,14 @@
             tableLayoutPanel5 = new TableLayoutPanel();
             lbTotal = new Label();
             label4 = new Label();
-            panel12 = new Panel();
-            panel13 = new Panel();
-            tableLayoutPanel9 = new TableLayoutPanel();
-            lbDone = new Label();
-            label12 = new Label();
             panel14 = new Panel();
             tableLayoutPanel10 = new TableLayoutPanel();
-            panel15 = new Panel();
-            panel16 = new Panel();
             panel17 = new Panel();
-            textBox1 = new TextBox();
-            cbDepartment = new ComboBox();
             cbStatus = new ComboBox();
+            panel16 = new Panel();
+            cbDepartment = new ComboBox();
+            panel15 = new Panel();
+            textBox1 = new TextBox();
             panel18 = new Panel();
             dgvAppointment = new DataGridView();
             panel1.SuspendLayout();
@@ -80,6 +82,9 @@
             panel2.SuspendLayout();
             panel3.SuspendLayout();
             tableLayoutPanel4.SuspendLayout();
+            panel12.SuspendLayout();
+            panel13.SuspendLayout();
+            tableLayoutPanel9.SuspendLayout();
             panel10.SuspendLayout();
             panel11.SuspendLayout();
             tableLayoutPanel8.SuspendLayout();
@@ -92,14 +97,11 @@
             panel4.SuspendLayout();
             panel5.SuspendLayout();
             tableLayoutPanel5.SuspendLayout();
-            panel12.SuspendLayout();
-            panel13.SuspendLayout();
-            tableLayoutPanel9.SuspendLayout();
             panel14.SuspendLayout();
             tableLayoutPanel10.SuspendLayout();
-            panel15.SuspendLayout();
-            panel16.SuspendLayout();
             panel17.SuspendLayout();
+            panel16.SuspendLayout();
+            panel15.SuspendLayout();
             panel18.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvAppointment).BeginInit();
             SuspendLayout();
@@ -239,6 +241,66 @@
             tableLayoutPanel4.Size = new Size(826, 114);
             tableLayoutPanel4.TabIndex = 0;
             // 
+            // panel12
+            // 
+            panel12.BackColor = SystemColors.Control;
+            panel12.Controls.Add(panel13);
+            panel12.Dock = DockStyle.Fill;
+            panel12.Location = new Point(663, 3);
+            panel12.Name = "panel12";
+            panel12.Padding = new Padding(10);
+            panel12.Size = new Size(160, 108);
+            panel12.TabIndex = 4;
+            // 
+            // panel13
+            // 
+            panel13.BackColor = Color.White;
+            panel13.Controls.Add(tableLayoutPanel9);
+            panel13.Dock = DockStyle.Fill;
+            panel13.Location = new Point(10, 10);
+            panel13.Name = "panel13";
+            panel13.Size = new Size(140, 88);
+            panel13.TabIndex = 0;
+            // 
+            // tableLayoutPanel9
+            // 
+            tableLayoutPanel9.ColumnCount = 1;
+            tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel9.Controls.Add(lbDone, 0, 0);
+            tableLayoutPanel9.Controls.Add(label12, 0, 1);
+            tableLayoutPanel9.Dock = DockStyle.Fill;
+            tableLayoutPanel9.Location = new Point(0, 0);
+            tableLayoutPanel9.Name = "tableLayoutPanel9";
+            tableLayoutPanel9.RowCount = 2;
+            tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Percent, 50.8771935F));
+            tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Percent, 49.1228065F));
+            tableLayoutPanel9.Size = new Size(140, 88);
+            tableLayoutPanel9.TabIndex = 0;
+            // 
+            // lbDone
+            // 
+            lbDone.AutoSize = true;
+            lbDone.Dock = DockStyle.Fill;
+            lbDone.Font = new Font("Times New Roman", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lbDone.Location = new Point(3, 0);
+            lbDone.Name = "lbDone";
+            lbDone.Size = new Size(134, 44);
+            lbDone.TabIndex = 0;
+            lbDone.Text = "label11";
+            lbDone.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Dock = DockStyle.Fill;
+            label12.Location = new Point(3, 44);
+            label12.Name = "label12";
+            label12.Size = new Size(134, 44);
+            label12.TabIndex = 1;
+            label12.Text = "Hoàn thành";
+            label12.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // panel10
             // 
             panel10.BackColor = SystemColors.Control;
@@ -302,6 +364,7 @@
             // 
             // panel8
             // 
+            panel8.BackColor = SystemColors.Control;
             panel8.Controls.Add(panel9);
             panel8.Dock = DockStyle.Fill;
             panel8.Location = new Point(333, 3);
@@ -362,6 +425,7 @@
             // 
             // panel6
             // 
+            panel6.BackColor = SystemColors.Control;
             panel6.Controls.Add(panel7);
             panel6.Dock = DockStyle.Fill;
             panel6.Location = new Point(168, 3);
@@ -422,6 +486,7 @@
             // 
             // panel4
             // 
+            panel4.BackColor = SystemColors.Control;
             panel4.Controls.Add(panel5);
             panel4.Dock = DockStyle.Fill;
             panel4.Location = new Point(3, 3);
@@ -480,65 +545,6 @@
             label4.Text = "Tổng lịch";
             label4.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // panel12
-            // 
-            panel12.Controls.Add(panel13);
-            panel12.Dock = DockStyle.Fill;
-            panel12.Location = new Point(663, 3);
-            panel12.Name = "panel12";
-            panel12.Padding = new Padding(10);
-            panel12.Size = new Size(160, 108);
-            panel12.TabIndex = 4;
-            // 
-            // panel13
-            // 
-            panel13.BackColor = Color.White;
-            panel13.Controls.Add(tableLayoutPanel9);
-            panel13.Dock = DockStyle.Fill;
-            panel13.Location = new Point(10, 10);
-            panel13.Name = "panel13";
-            panel13.Size = new Size(140, 88);
-            panel13.TabIndex = 0;
-            // 
-            // tableLayoutPanel9
-            // 
-            tableLayoutPanel9.ColumnCount = 1;
-            tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel9.Controls.Add(lbDone, 0, 0);
-            tableLayoutPanel9.Controls.Add(label12, 0, 1);
-            tableLayoutPanel9.Dock = DockStyle.Fill;
-            tableLayoutPanel9.Location = new Point(0, 0);
-            tableLayoutPanel9.Name = "tableLayoutPanel9";
-            tableLayoutPanel9.RowCount = 2;
-            tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Percent, 50.8771935F));
-            tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Percent, 49.1228065F));
-            tableLayoutPanel9.Size = new Size(140, 88);
-            tableLayoutPanel9.TabIndex = 0;
-            // 
-            // lbDone
-            // 
-            lbDone.AutoSize = true;
-            lbDone.Dock = DockStyle.Fill;
-            lbDone.Font = new Font("Times New Roman", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lbDone.Location = new Point(3, 0);
-            lbDone.Name = "lbDone";
-            lbDone.Size = new Size(134, 44);
-            lbDone.TabIndex = 0;
-            lbDone.Text = "label11";
-            lbDone.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // label12
-            // 
-            label12.AutoSize = true;
-            label12.Dock = DockStyle.Fill;
-            label12.Location = new Point(3, 44);
-            label12.Name = "label12";
-            label12.Size = new Size(134, 44);
-            label12.TabIndex = 1;
-            label12.Text = "Hoàn thành";
-            label12.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // panel14
             // 
             panel14.BackColor = Color.White;
@@ -569,14 +575,23 @@
             tableLayoutPanel10.Size = new Size(836, 54);
             tableLayoutPanel10.TabIndex = 0;
             // 
-            // panel15
+            // panel17
             // 
-            panel15.Controls.Add(textBox1);
-            panel15.Dock = DockStyle.Fill;
-            panel15.Location = new Point(3, 3);
-            panel15.Name = "panel15";
-            panel15.Size = new Size(412, 48);
-            panel15.TabIndex = 0;
+            panel17.Controls.Add(cbStatus);
+            panel17.Dock = DockStyle.Fill;
+            panel17.Location = new Point(630, 3);
+            panel17.Name = "panel17";
+            panel17.Size = new Size(203, 48);
+            panel17.TabIndex = 2;
+            // 
+            // cbStatus
+            // 
+            cbStatus.FormattingEnabled = true;
+            cbStatus.Location = new Point(11, 12);
+            cbStatus.Name = "cbStatus";
+            cbStatus.Size = new Size(177, 28);
+            cbStatus.TabIndex = 0;
+            cbStatus.SelectedIndexChanged += cbStatus_SelectedIndexChanged;
             // 
             // panel16
             // 
@@ -587,14 +602,23 @@
             panel16.Size = new Size(203, 48);
             panel16.TabIndex = 1;
             // 
-            // panel17
+            // cbDepartment
             // 
-            panel17.Controls.Add(cbStatus);
-            panel17.Dock = DockStyle.Fill;
-            panel17.Location = new Point(630, 3);
-            panel17.Name = "panel17";
-            panel17.Size = new Size(203, 48);
-            panel17.TabIndex = 2;
+            cbDepartment.FormattingEnabled = true;
+            cbDepartment.Location = new Point(15, 11);
+            cbDepartment.Name = "cbDepartment";
+            cbDepartment.Size = new Size(174, 28);
+            cbDepartment.TabIndex = 0;
+            cbDepartment.SelectedIndexChanged += cbDepartment_SelectedIndexChanged;
+            // 
+            // panel15
+            // 
+            panel15.Controls.Add(textBox1);
+            panel15.Dock = DockStyle.Fill;
+            panel15.Location = new Point(3, 3);
+            panel15.Name = "panel15";
+            panel15.Size = new Size(412, 48);
+            panel15.TabIndex = 0;
             // 
             // textBox1
             // 
@@ -604,22 +628,7 @@
             textBox1.PlaceholderText = "Tìm bệnh nhân theo tên, mã hoặc số điện thoại";
             textBox1.Size = new Size(390, 30);
             textBox1.TabIndex = 0;
-            // 
-            // cbDepartment
-            // 
-            cbDepartment.FormattingEnabled = true;
-            cbDepartment.Location = new Point(15, 11);
-            cbDepartment.Name = "cbDepartment";
-            cbDepartment.Size = new Size(174, 28);
-            cbDepartment.TabIndex = 0;
-            // 
-            // cbStatus
-            // 
-            cbStatus.FormattingEnabled = true;
-            cbStatus.Location = new Point(11, 12);
-            cbStatus.Name = "cbStatus";
-            cbStatus.Size = new Size(177, 28);
-            cbStatus.TabIndex = 0;
+            textBox1.TextChanged += textBox1_TextChanged;
             // 
             // panel18
             // 
@@ -642,6 +651,8 @@
             dgvAppointment.RowHeadersWidth = 51;
             dgvAppointment.Size = new Size(826, 487);
             dgvAppointment.TabIndex = 0;
+            dgvAppointment.CellContentClick += dgvAppointment_CellContentClick;
+            dgvAppointment.CellFormatting += dgvAppointment_CellFormatting;
             // 
             // ScheduleToday
             // 
@@ -650,6 +661,7 @@
             Controls.Add(panel1);
             Name = "ScheduleToday";
             Size = new Size(892, 862);
+            Load += ScheduleToday_Load;
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel2.ResumeLayout(false);
@@ -658,6 +670,10 @@
             panel2.ResumeLayout(false);
             panel3.ResumeLayout(false);
             tableLayoutPanel4.ResumeLayout(false);
+            panel12.ResumeLayout(false);
+            panel13.ResumeLayout(false);
+            tableLayoutPanel9.ResumeLayout(false);
+            tableLayoutPanel9.PerformLayout();
             panel10.ResumeLayout(false);
             panel11.ResumeLayout(false);
             tableLayoutPanel8.ResumeLayout(false);
@@ -674,16 +690,12 @@
             panel5.ResumeLayout(false);
             tableLayoutPanel5.ResumeLayout(false);
             tableLayoutPanel5.PerformLayout();
-            panel12.ResumeLayout(false);
-            panel13.ResumeLayout(false);
-            tableLayoutPanel9.ResumeLayout(false);
-            tableLayoutPanel9.PerformLayout();
             panel14.ResumeLayout(false);
             tableLayoutPanel10.ResumeLayout(false);
+            panel17.ResumeLayout(false);
+            panel16.ResumeLayout(false);
             panel15.ResumeLayout(false);
             panel15.PerformLayout();
-            panel16.ResumeLayout(false);
-            panel17.ResumeLayout(false);
             panel18.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvAppointment).EndInit();
             ResumeLayout(false);

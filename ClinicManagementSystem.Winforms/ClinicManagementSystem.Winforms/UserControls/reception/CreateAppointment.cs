@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClinicManagementSystem.Winforms.Controllers;
 using ClinicManagementSystem.Winforms.Forms;
+using ClinicManagementSystem.Winforms.Forms.reception;
 using DTO;
 
 namespace ClinicManagementSystem.Winforms.UserControls.reception
@@ -22,6 +23,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
         private int selectedDoctorId = -1;
 
         private TimeSpan? selectedTime = null;
+        private DateTime selectedDate;
+        private DoctorCardDTO selectedDoctor;
 
         public CreateAppointment()
         {
@@ -32,6 +35,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
     object sender,
     EventArgs e)
         {
+            panelInf.Visible = false;
             LoadPatients();
 
             LoadDepartments();
@@ -102,6 +106,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
                     selectedDepartmentId,
                     dtpDate.Value.Date,
                     selectedTime.Value);
+                UpdateAppointmentInfo();
             }
         }
 
@@ -116,6 +121,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
                     selectedDepartmentId,
                     dtpDate.Value.Date,
                     selectedTime.Value);
+                UpdateAppointmentInfo();
             }
         }
 
@@ -164,6 +170,29 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
                 "Chẩn đoán hình ảnh" => "📷",
                 _ => "🏥"
             };
+        }
+
+        private void UpdateAppointmentInfo()
+        {
+            if (selectedDoctor == null)
+            {
+                panelInf.Visible = false;
+                return;
+            }
+
+            if (selectedTime == TimeSpan.Zero)
+            {
+                panelInf.Visible = false;
+                return;
+            }
+
+            panelInf.Visible = true;
+
+            lbInf.Text =
+                $"📅 Lịch khám: " +
+                $"{selectedDate:dd/MM/yyyy} " +
+                $"lúc {selectedTime:hh\\:mm} " +
+                $"- Phòng {selectedDoctor.RoomCode}";
         }
 
         private Control CreateDepartmentCard(
@@ -573,16 +602,107 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
 
             selectedDoctorId =
                 doctor.DoctorID;
+            UpdateAppointmentInfo();
+        }
+
+        private void ClearForm()
+        {
+            cbPatient.SelectedIndex = -1;
+
+            txtReason.Clear();
+
+            selectedDepartmentId = -1;
+
+            selectedDoctorId = -1;
+
+            selectedTime = null;
+
+            flpDoctors.Controls.Clear();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            if (cbPatient.SelectedIndex < 0)
+            {
+                MessageBox.Show(
+                    "Vui lòng chọn bệnh nhân");
+                return;
+            }
+
+            if (selectedDepartmentId <= 0)
+            {
+                MessageBox.Show(
+                    "Vui lòng chọn khoa");
+                return;
+            }
+
+            if (!selectedTime.HasValue)
+            {
+                MessageBox.Show(
+                    "Vui lòng chọn giờ khám");
+                return;
+            }
+
+            if (selectedDoctorId <= 0)
+            {
+                MessageBox.Show(
+                    "Vui lòng chọn bác sĩ");
+                return;
+            }
+
+            int patientId =
+                (int)cbPatient.SelectedValue;
+
+            DateTime appointmentDate =
+                dtpDate.Value.Date
+                + selectedTime.Value;
+
+            bool success =
+                controller.CreateAppointment(
+                    patientId,
+                    selectedDepartmentId,
+                    selectedDoctorId,
+                    appointmentDate);
+
+            if (success)
+            {
+                PatientDTO patient =
+                    (PatientDTO)cbPatient.SelectedItem;
+
+                DepartmentDTO department =
+                    controller.GetDepartments()
+                        .First(x =>
+                            x.DepartmentID
+                            == selectedDepartmentId);
+
+                DoctorCardDTO doctor =
+                    controller.GetDoctorCards(
+                        selectedDepartmentId,
+                        dtpDate.Value.Date,
+                        selectedTime.Value)
+                    .First(x =>
+                        x.DoctorID
+                        == selectedDoctorId);
+
+                ConfirmAppointment frm =
+                    new ConfirmAppointment(
+                        patient.Name,
+                        department.DepartmentName,
+                        doctor.DoctorName,
+                        doctor.RoomCode,
+                        $"{dtpDate.Value:dd/MM/yyyy} - {selectedTime.Value:hh\\:mm}");
+
+                frm.ShowDialog();
+
+                ClearForm();
+            }
+            else
+            {
+                MessageBox.Show(
+                    "Đặt lịch thất bại");
+            }
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            
-        }
     }
 }

@@ -74,8 +74,9 @@
             txtReason = new TextBox();
             cbPatient = new ComboBox();
             tableLayoutPanel6 = new TableLayoutPanel();
-            button1 = new Button();
             button2 = new Button();
+            panelInf = new Panel();
+            lbInf = new Label();
             panel6 = new Panel();
             panel7 = new Panel();
             tableLayoutPanel5 = new TableLayoutPanel();
@@ -99,6 +100,7 @@
             tableLayoutPanel2.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
             tableLayoutPanel6.SuspendLayout();
+            panelInf.SuspendLayout();
             panel6.SuspendLayout();
             panel7.SuspendLayout();
             tableLayoutPanel5.SuspendLayout();
@@ -694,11 +696,11 @@
             // tableLayoutPanel6
             // 
             tableLayoutPanel6.ColumnCount = 3;
-            tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 14.92109F));
-            tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 85.07891F));
+            tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60.7751923F));
+            tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 39.2248077F));
             tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 181F));
-            tableLayoutPanel6.Controls.Add(button1, 0, 0);
             tableLayoutPanel6.Controls.Add(button2, 2, 0);
+            tableLayoutPanel6.Controls.Add(panelInf, 0, 0);
             tableLayoutPanel6.Dock = DockStyle.Fill;
             tableLayoutPanel6.Location = new Point(3, 958);
             tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -706,17 +708,6 @@
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel6.Size = new Size(827, 50);
             tableLayoutPanel6.TabIndex = 5;
-            // 
-            // button1
-            // 
-            button1.Dock = DockStyle.Fill;
-            button1.Location = new Point(3, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(90, 44);
-            button1.TabIndex = 0;
-            button1.Text = "Quay lại";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
             // 
             // button2
             // 
@@ -731,6 +722,28 @@
             button2.Text = "Xác nhận đặt lịch";
             button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
+            // 
+            // panelInf
+            // 
+            panelInf.BackColor = Color.PaleGreen;
+            panelInf.Controls.Add(lbInf);
+            panelInf.Dock = DockStyle.Fill;
+            panelInf.Location = new Point(3, 3);
+            panelInf.Name = "panelInf";
+            panelInf.Size = new Size(386, 44);
+            panelInf.TabIndex = 2;
+            // 
+            // lbInf
+            // 
+            lbInf.AutoSize = true;
+            lbInf.Dock = DockStyle.Fill;
+            lbInf.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lbInf.Location = new Point(0, 0);
+            lbInf.Name = "lbInf";
+            lbInf.Size = new Size(69, 22);
+            lbInf.TabIndex = 0;
+            lbInf.Text = "label11";
+            lbInf.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // panel6
             // 
@@ -830,6 +843,8 @@
             tableLayoutPanel3.ResumeLayout(false);
             tableLayoutPanel3.PerformLayout();
             tableLayoutPanel6.ResumeLayout(false);
+            panelInf.ResumeLayout(false);
+            panelInf.PerformLayout();
             panel6.ResumeLayout(false);
             panel7.ResumeLayout(false);
             tableLayoutPanel5.ResumeLayout(false);
@@ -864,7 +879,6 @@
         private TableLayoutPanel tableLayoutPanel4;
         private Label label6;
         private TableLayoutPanel tableLayoutPanel6;
-        private Button button1;
         private Button button2;
         private Panel panel9;
         private Panel panel10;
@@ -894,5 +908,7 @@
         private Button btn0930;
         private Button btn0900;
         private Button btn0830;
+        private Panel panelInf;
+        private Label lbInf;
     }
 }
