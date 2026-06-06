@@ -22,8 +22,8 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
         private readonly PatientBUS patientBUS = new PatientBUS();
-        private readonly RequestBUS requestBUS = new RequestBUS();
-        private readonly ShiftBUS shiftBUS = new ShiftBUS();
+        private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
+        private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
         private UserDTO currentUser;
         private bool layoutReady;
 
@@ -61,17 +61,11 @@ namespace ClinicManagementSystem.Winforms.Mainforms
                 LogoutRequested?.Invoke(this, EventArgs.Empty);
             };
 
-            // Close button click handler
             btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
             btnUserManagement.Click += (s, e) => LoadPage(new UserControls.Admin.ucUserManagement(), "Quản lý tài khoản");
 
-        }
-        private void LoadPage(UserControl uc, string title)
-        {
-            contentPanel.Controls.Clear();
-            uc.Dock = DockStyle.Fill;
-            contentPanel.Controls.Add(uc);
-            lblPageTitle.Text = title;
+
+            ShowOverview();
         }
         private Button CreateSidebarButton(string text, Point location, EventHandler onClick)
         {
@@ -101,10 +95,82 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             if (!layoutReady || contentPanel.Width < 400) return;
         }
 
-        private void panel12_Paint(object sender, PaintEventArgs e)
+        private void ShowOverview()
         {
-
+            ShowSection(
+                "Tổng quan",
+                "Xin chào, " + (currentUser != null ? currentUser.Name : "Quản trị viên"),
+                btnNavOverview,
+                "Nhân viên hoạt động: đang cập nhật",
+                "Lịch hẹn hôm nay: đang cập nhật",
+                "Yêu cầu cần xử lý: đang cập nhật");
         }
+
+        private void ShowSection(string title, string subtitle, Button activeButton, params string[] lines)
+        {
+            lblPageTitle.Text = title;
+            lblPageSubtitle.Text = subtitle;
+            SetActiveNav(activeButton);
+
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+
+            Panel container = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = pageBack,
+                Padding = new Padding(28)
+            };
+
+            Label titleLabel = CreateLabel(title, 20F, FontStyle.Bold, textMain, DockStyle.Top, 44);
+            Label subtitleLabel = CreateLabel(subtitle, 10.5F, FontStyle.Regular, textMuted, DockStyle.Top, 34);
+
+            Panel body = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 190,
+                BackColor = surface,
+                Padding = new Padding(24),
+                Margin = new Padding(0, 16, 0, 0)
+            };
+
+            int top = 18;
+            foreach (string line in lines)
+            {
+                Label item = new Label
+                {
+                    AutoSize = false,
+                    Text = "- " + line,
+                    Font = new Font("Segoe UI", 10F),
+                    ForeColor = textMain,
+                    Location = new Point(24, top),
+                    Size = new Size(Math.Max(300, contentPanel.Width - 120), 28)
+                };
+                body.Controls.Add(item);
+                top += 36;
+            }
+
+            container.Controls.Add(body);
+            container.Controls.Add(subtitleLabel);
+            container.Controls.Add(titleLabel);
+            contentPanel.Controls.Add(container);
+            contentPanel.ResumeLayout();
+        }
+
+        private Label CreateLabel(string text, float size, FontStyle style, Color color, DockStyle dock, int height)
+        {
+            return new Label
+            {
+                Text = text,
+                Font = new Font("Segoe UI", size, style),
+                ForeColor = color,
+                Dock = dock,
+                Height = height,
+                AutoEllipsis = true
+            };
+        }
+
+
 
         private void btnDepartmentManagement_Click(object sender, EventArgs e)
         {
