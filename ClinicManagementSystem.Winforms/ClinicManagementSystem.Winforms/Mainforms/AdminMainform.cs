@@ -52,7 +52,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private void ucTechnicianDashboard_Load(object sender, EventArgs e)
         {
 
-
+            btnEmployeeManagement.Click += (s, e) => LoadPage(new UserControls.Admin.ucEmployeeManagement(), "Quản lý nhân viên");
 
 
             // Set Log Out click handler

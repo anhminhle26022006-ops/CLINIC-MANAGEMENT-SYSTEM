@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Admin
 {
-    partial class ucUserManagement
+    partial class ucEmployeeManagement
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -20,13 +20,13 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             panelHeader = new Panel();
             lblTitle = new Label();
             lblSubtitle = new Label();
-            btnAddUser = new Button();
+            btnAddEmployee = new Button();
             panelKPI = new Panel();
             panelFilter = new Panel();
             txtSearch = new TextBox();
-            cboRole = new ComboBox();
+            cboChucVu = new ComboBox();
             cardGrid = new Panel();
-            dgvUsers = new DataGridView();
+            dgvEmployees = new DataGridView();
             panelPaging = new Panel();
             lblPaging = new Label();
             sp1 = new Panel();
@@ -34,7 +34,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             panelHeader.SuspendLayout();
             panelFilter.SuspendLayout();
             cardGrid.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvUsers).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvEmployees).BeginInit();
             panelPaging.SuspendLayout();
             SuspendLayout();
             // 
@@ -43,12 +43,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             panelHeader.BackColor = Color.Transparent;
             panelHeader.Controls.Add(lblTitle);
             panelHeader.Controls.Add(lblSubtitle);
-            panelHeader.Controls.Add(btnAddUser);
+            panelHeader.Controls.Add(btnAddEmployee);
             panelHeader.Dock = DockStyle.Top;
             panelHeader.Location = new Point(30, 25);
             panelHeader.Margin = new Padding(4, 4, 4, 4);
             panelHeader.Name = "panelHeader";
-            panelHeader.Size = new Size(1362, 88);
+            panelHeader.Size = new Size(1221, 88);
             panelHeader.TabIndex = 5;
             panelHeader.Resize += panelHeader_Resize;
             // 
@@ -60,9 +60,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             lblTitle.Location = new Point(0, 5);
             lblTitle.Margin = new Padding(4, 0, 4, 0);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(321, 48);
+            lblTitle.Size = new Size(331, 48);
             lblTitle.TabIndex = 0;
-            lblTitle.Text = "Quản lý Tài khoản";
+            lblTitle.Text = "Quản lý Nhân viên";
             // 
             // lblSubtitle
             // 
@@ -72,27 +72,27 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             lblSubtitle.Location = new Point(0, 50);
             lblSubtitle.Margin = new Padding(4, 0, 4, 0);
             lblSubtitle.Name = "lblSubtitle";
-            lblSubtitle.Size = new Size(390, 28);
+            lblSubtitle.Size = new Size(358, 28);
             lblSubtitle.TabIndex = 1;
-            lblSubtitle.Text = "Quản lý tài khoản đăng nhập cho nhân viên";
+            lblSubtitle.Text = "Quản lý toàn bộ nhân viên phòng khám";
             // 
-            // btnAddUser
+            // btnAddEmployee
             // 
-            btnAddUser.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnAddUser.BackColor = Color.FromArgb(47, 94, 240);
-            btnAddUser.Cursor = Cursors.Hand;
-            btnAddUser.FlatAppearance.BorderSize = 0;
-            btnAddUser.FlatStyle = FlatStyle.Flat;
-            btnAddUser.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnAddUser.ForeColor = Color.White;
-            btnAddUser.Location = new Point(1112, 19);
-            btnAddUser.Margin = new Padding(4, 4, 4, 4);
-            btnAddUser.Name = "btnAddUser";
-            btnAddUser.Size = new Size(200, 50);
-            btnAddUser.TabIndex = 2;
-            btnAddUser.Text = "+ Thêm tài khoản";
-            btnAddUser.UseVisualStyleBackColor = false;
-            btnAddUser.Click += btnAddUser_Click;
+            btnAddEmployee.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnAddEmployee.BackColor = Color.FromArgb(47, 94, 240);
+            btnAddEmployee.Cursor = Cursors.Hand;
+            btnAddEmployee.FlatAppearance.BorderSize = 0;
+            btnAddEmployee.FlatStyle = FlatStyle.Flat;
+            btnAddEmployee.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnAddEmployee.ForeColor = Color.White;
+            btnAddEmployee.Location = new Point(971, 19);
+            btnAddEmployee.Margin = new Padding(4, 4, 4, 4);
+            btnAddEmployee.Name = "btnAddEmployee";
+            btnAddEmployee.Size = new Size(200, 50);
+            btnAddEmployee.TabIndex = 2;
+            btnAddEmployee.Text = "+ Thêm nhân viên";
+            btnAddEmployee.UseVisualStyleBackColor = false;
+            btnAddEmployee.Click += btnAddEmployee_Click;
             // 
             // panelKPI
             // 
@@ -101,20 +101,31 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             panelKPI.Location = new Point(30, 113);
             panelKPI.Margin = new Padding(4, 4, 4, 4);
             panelKPI.Name = "panelKPI";
-            panelKPI.Size = new Size(1362, 138);
+            panelKPI.Size = new Size(1221, 138);
             panelKPI.TabIndex = 4;
             panelKPI.Resize += panelKPI_Resize;
+            cardBacSi = MakeKpiCard("Bác sĩ", "0", Color.FromArgb(37, 99, 235), Color.FromArgb(219, 234, 254));
+            cardYTa = MakeKpiCard("Y tá", "0", Color.FromArgb(5, 150, 105), Color.FromArgb(209, 250, 229));
+            cardDuocSi = MakeKpiCard("Dược sĩ", "0", Color.FromArgb(124, 58, 237), Color.FromArgb(237, 233, 254));
+            cardKyThuat = MakeKpiCard("Kỹ thuật viên", "0", Color.FromArgb(234, 88, 12), Color.FromArgb(254, 215, 170));
+            cardLeTan = MakeKpiCard("Lễ tân", "0", Color.FromArgb(219, 39, 119), Color.FromArgb(252, 231, 243));
+            panelKPI.Controls.Add(cardBacSi);
+            panelKPI.Controls.Add(cardYTa);
+            panelKPI.Controls.Add(cardDuocSi);
+            panelKPI.Controls.Add(cardKyThuat);
+            panelKPI.Controls.Add(cardLeTan);
             // 
             // panelFilter
             // 
             panelFilter.BackColor = Color.White;
             panelFilter.Controls.Add(txtSearch);
-            panelFilter.Controls.Add(cboRole);
+            panelFilter.Controls.Add(cboChucVu);
+
             panelFilter.Dock = DockStyle.Top;
             panelFilter.Location = new Point(30, 266);
             panelFilter.Margin = new Padding(4, 4, 4, 4);
             panelFilter.Name = "panelFilter";
-            panelFilter.Size = new Size(1362, 75);
+            panelFilter.Size = new Size(1221, 75);
             panelFilter.TabIndex = 2;
             panelFilter.Paint += PanelRoundedBorder;
             // 
@@ -125,43 +136,45 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             txtSearch.Location = new Point(20, 22);
             txtSearch.Margin = new Padding(4, 4, 4, 4);
             txtSearch.Name = "txtSearch";
-            txtSearch.PlaceholderText = "  Tìm kiếm theo tên, username, email...";
+            txtSearch.PlaceholderText = "  Tìm nhân viên theo tên hoặc mã...";
             txtSearch.Size = new Size(475, 27);
             txtSearch.TabIndex = 0;
             txtSearch.TextChanged += txtSearch_TextChanged;
             // 
-            // cboRole
+            // cboChucVu
             // 
-            cboRole.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboRole.Font = new Font("Segoe UI", 10F);
-            cboRole.Items.AddRange(new object[] { "Tất cả vai trò", "Admin", "Receptionist", "Doctor", "Nurse", "Pharmacist", "Technician" });
-            cboRole.Location = new Point(525, 20);
-            cboRole.Margin = new Padding(4, 4, 4, 4);
-            cboRole.Name = "cboRole";
-            cboRole.Size = new Size(249, 36);
-            cboRole.TabIndex = 1;
-            cboRole.SelectedIndexChanged += cboRole_SelectedIndexChanged;
+            cboChucVu.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboChucVu.Font = new Font("Segoe UI", 10F);
+            cboChucVu.Items.AddRange(new object[] { "Tất cả chức vụ", "Doctor", "Nurse", "Pharmacist", "Technician", "Receptionist" });
+            cboChucVu.SelectedIndex = 0;
+            cboChucVu.Location = new Point(525, 20);
+            cboChucVu.Margin = new Padding(4, 4, 4, 4);
+            cboChucVu.Name = "cboChucVu";
+            cboChucVu.Size = new Size(249, 36);
+            cboChucVu.TabIndex = 1;
+            cboChucVu.SelectedIndexChanged += cboChucVu_SelectedIndexChanged;
+
             // 
             // cardGrid
             // 
             cardGrid.BackColor = Color.White;
-            cardGrid.Controls.Add(dgvUsers);
+            cardGrid.Controls.Add(dgvEmployees);
             cardGrid.Controls.Add(panelPaging);
             cardGrid.Dock = DockStyle.Fill;
             cardGrid.Location = new Point(30, 356);
             cardGrid.Margin = new Padding(4, 4, 4, 4);
             cardGrid.Name = "cardGrid";
-            cardGrid.Size = new Size(1362, 703);
+            cardGrid.Size = new Size(1221, 703);
             cardGrid.TabIndex = 0;
             // 
-            // dgvUsers
+            // dgvEmployees
             // 
-            dgvUsers.AllowUserToAddRows = false;
-            dgvUsers.AllowUserToDeleteRows = false;
-            dgvUsers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvUsers.BackgroundColor = Color.White;
-            dgvUsers.BorderStyle = BorderStyle.None;
-            dgvUsers.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvEmployees.AllowUserToAddRows = false;
+            dgvEmployees.AllowUserToDeleteRows = false;
+            dgvEmployees.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvEmployees.BackgroundColor = Color.White;
+            dgvEmployees.BorderStyle = BorderStyle.None;
+            dgvEmployees.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = Color.FromArgb(249, 250, 251);
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
@@ -169,9 +182,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvUsers.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dgvUsers.ColumnHeadersHeight = 44;
-            dgvUsers.Cursor = Cursors.Hand;
+            dgvEmployees.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvEmployees.ColumnHeadersHeight = 44;
+            dgvEmployees.Cursor = Cursors.Hand;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 9.5F);
@@ -179,24 +192,34 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(239, 246, 255);
             dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(17, 24, 39);
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvUsers.DefaultCellStyle = dataGridViewCellStyle2;
-            dgvUsers.Dock = DockStyle.Fill;
-            dgvUsers.EnableHeadersVisualStyles = false;
-            dgvUsers.Font = new Font("Segoe UI", 9.5F);
-            dgvUsers.GridColor = Color.FromArgb(229, 231, 235);
-            dgvUsers.Location = new Point(0, 0);
-            dgvUsers.Margin = new Padding(4, 4, 4, 4);
-            dgvUsers.Name = "dgvUsers";
-            dgvUsers.ReadOnly = true;
-            dgvUsers.RowHeadersVisible = false;
-            dgvUsers.RowHeadersWidth = 62;
-            dgvUsers.RowTemplate.Height = 52;
-            dgvUsers.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUsers.Size = new Size(1362, 658);
-            dgvUsers.TabIndex = 0;
-            dgvUsers.CellClick += dgvUsers_CellClick;
-            dgvUsers.CellFormatting += dgvUsers_CellFormatting;
-            dgvUsers.CellPainting += dgvUsers_CellPainting;
+            dgvEmployees.DefaultCellStyle = dataGridViewCellStyle2;
+            dgvEmployees.Dock = DockStyle.Fill;
+            dgvEmployees.EnableHeadersVisualStyles = false;
+            dgvEmployees.Font = new Font("Segoe UI", 9.5F);
+            dgvEmployees.GridColor = Color.FromArgb(229, 231, 235);
+            dgvEmployees.Location = new Point(0, 0);
+            dgvEmployees.Margin = new Padding(4, 4, 4, 4);
+            dgvEmployees.Name = "dgvEmployees";
+            dgvEmployees.ReadOnly = true;
+            dgvEmployees.RowHeadersVisible = false;
+            dgvEmployees.RowHeadersWidth = 62;
+            dgvEmployees.RowTemplate.Height = 56;
+            dgvEmployees.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvEmployees.Size = new Size(1221, 658);
+            dgvEmployees.TabIndex = 0;
+            dgvEmployees.CellClick += dgvEmployees_CellClick;
+            dgvEmployees.CellFormatting += dgvEmployees_CellFormatting;
+            dgvEmployees.CellPainting += dgvEmployees_CellPainting;
+            // Columns
+            dgvEmployees.Columns.Add(new DataGridViewTextBoxColumn { Name = "colCode", HeaderText = "MÃ NV", FillWeight = 9 });
+            dgvEmployees.Columns.Add(new DataGridViewTextBoxColumn { Name = "colName", HeaderText = "HỌ TÊN", FillWeight = 20 });
+            dgvEmployees.Columns.Add(new DataGridViewTextBoxColumn { Name = "colChucVu", HeaderText = "CHỨC VỤ", FillWeight = 12 });
+            dgvEmployees.Columns.Add(new DataGridViewTextBoxColumn { Name = "colKhoa", HeaderText = "CHUYÊN KHOA", FillWeight = 14 });
+            dgvEmployees.Columns.Add(new DataGridViewTextBoxColumn { Name = "colContact", HeaderText = "LIÊN HỆ", FillWeight = 18 });
+            dgvEmployees.Columns.Add(new DataGridViewTextBoxColumn { Name = "colStatus", HeaderText = "TRẠNG THÁI", FillWeight = 12 });
+            dgvEmployees.Columns.Add(new DataGridViewTextBoxColumn { Name = "colView", HeaderText = "", FillWeight = 5, ReadOnly = true });
+            dgvEmployees.Columns.Add(new DataGridViewTextBoxColumn { Name = "colEdit", HeaderText = "", FillWeight = 5, ReadOnly = true });
+            dgvEmployees.Columns.Add(new DataGridViewTextBoxColumn { Name = "colDelete", HeaderText = "THAO TÁC", FillWeight = 5, ReadOnly = true });
             // 
             // panelPaging
             // 
@@ -206,7 +229,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             panelPaging.Location = new Point(0, 658);
             panelPaging.Margin = new Padding(4, 4, 4, 4);
             panelPaging.Name = "panelPaging";
-            panelPaging.Size = new Size(1362, 45);
+            panelPaging.Size = new Size(1221, 45);
             panelPaging.TabIndex = 1;
             // 
             // lblPaging
@@ -227,7 +250,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             sp1.Location = new Point(30, 251);
             sp1.Margin = new Padding(4, 4, 4, 4);
             sp1.Name = "sp1";
-            sp1.Size = new Size(1362, 15);
+            sp1.Size = new Size(1221, 15);
             sp1.TabIndex = 3;
             // 
             // sp2
@@ -237,10 +260,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             sp2.Location = new Point(30, 341);
             sp2.Margin = new Padding(4, 4, 4, 4);
             sp2.Name = "sp2";
-            sp2.Size = new Size(1362, 15);
+            sp2.Size = new Size(1221, 15);
             sp2.TabIndex = 1;
             // 
-            // ucUserManagement
+            // ucEmployeeManagement
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -252,29 +275,29 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             Controls.Add(panelKPI);
             Controls.Add(panelHeader);
             Margin = new Padding(4, 4, 4, 4);
-            Name = "ucUserManagement";
+            Name = "ucEmployeeManagement";
             Padding = new Padding(30, 25, 30, 25);
-            Size = new Size(1422, 1084);
+            Size = new Size(1281, 1084);
             panelHeader.ResumeLayout(false);
             panelHeader.PerformLayout();
             panelFilter.ResumeLayout(false);
             panelFilter.PerformLayout();
             cardGrid.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvUsers).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvEmployees).EndInit();
             panelPaging.ResumeLayout(false);
             panelPaging.PerformLayout();
             ResumeLayout(false);
         }
 
-        private Panel MakeKpiCard(string title, string value, Color valueColor)
+        private Panel MakeKpiCard(string title, string value, Color valueColor, Color bgColor)
         {
-            var card = new Panel { BackColor = Color.White, Size = new Size(220, 90) };
+            var card = new Panel { BackColor = bgColor, Size = new Size(180, 90) };
             card.Paint += new PaintEventHandler(this.PanelRoundedBorder);
             card.Controls.Add(new Label
             {
                 Text = title,
                 Font = new Font("Segoe UI", 9F),
-                ForeColor = Color.FromArgb(107, 114, 128),
+                ForeColor = valueColor,
                 AutoSize = true,
                 Location = new Point(16, 14)
             });
@@ -292,14 +315,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private Panel panelHeader;
         private Label lblTitle, lblSubtitle;
-        private Button btnAddUser;
+        private Button btnAddEmployee;
         private Panel panelKPI;
-        private Panel cardTotal, cardActive, cardLocked, cardNew;
+        private Panel cardBacSi, cardYTa, cardDuocSi, cardKyThuat, cardLeTan;
         private Panel panelFilter;
         private TextBox txtSearch;
-        private ComboBox cboRole;
+        private ComboBox cboChucVu;
         private Panel cardGrid;
-        private DataGridView dgvUsers;
+        private DataGridView dgvEmployees;
         private Panel panelPaging;
         private Label lblPaging;
         private Panel sp1, sp2;
