@@ -1,6 +1,6 @@
 ﻿namespace ClinicManagementSystem.Winforms.UserControls.Nurse
 {
-    partial class ucRoomCard
+    partial class ucNurseShift
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,17 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
+            ucTechnicianShifts1 = new ClinicManagementSystem.Winforms.UserControls.Technician.ucTechnicianShifts();
             SuspendLayout();
             // 
-            // ucRoomCard
+            // ucTechnicianShifts1
+            // 
+            ucTechnicianShifts1.BackColor = Color.FromArgb(247, 249, 252);
+            ucTechnicianShifts1.Font = new Font("Segoe UI", 9F);
+            ucTechnicianShifts1.Location = new Point(0, 0);
+            ucTechnicianShifts1.Margin = new Padding(3, 4, 3, 4);
+            ucTechnicianShifts1.Name = "ucTechnicianShifts1";
+            ucTechnicianShifts1.Size = new Size(1372, 989);
+            ucTechnicianShifts1.TabIndex = 4;
+            ucTechnicianShifts1.Load += ucTechnicianShifts1_Load;
+            // 
+            // ucNurseShift
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Name = "ucRoomCard";
-            Size = new Size(1194, 790);
+            Controls.Add(ucTechnicianShifts1);
+            Name = "ucNurseShift";
+            Size = new Size(1374, 992);
             ResumeLayout(false);
         }
 
         #endregion
+
+        private Technician.ucTechnicianShifts ucTechnicianShifts1;
     }
 }

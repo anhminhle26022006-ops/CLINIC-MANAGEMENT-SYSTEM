@@ -36,5 +36,24 @@ namespace ClinicManagementSystem.Winforms.UserControls.Nurse
         {
 
         }
+
+        private void ucNurseOverview_Load(object sender, EventArgs e)
+        {
+            LoadStatistics();
+        }
+        private void LoadStatistics()
+        {
+            //lblWaitingVitalCount.Text =
+                //nurseService.GetWaitingVitalCount().ToString();
+
+            //lblCompletedCount.Text =
+                //nurseService.GetCompletedTodayCount().ToString();
+
+            //lblWaitingVitalCount.Text =
+               // nurseService.GetSupportingRoomCount().ToString();
+
+            //lblAlertCount.Text =
+                //nurseService.GetAbnormalVitalCount().ToString();
+        }
     }
 }
