@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DAL.DataContext
 {
-    public static class DatabaseHelper
+    public class DatabaseHelper
     {
         private static readonly string connString = ConfigurationManager.ConnectionStrings["DbConnection"]?.ConnectionString;
 

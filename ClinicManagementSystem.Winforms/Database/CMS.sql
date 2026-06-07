@@ -282,7 +282,7 @@ CREATE TABLE ImagingRequests (
    EncounterID INT,
    DoctorID INT,
    ImagingServiceID INT,
-   BodyPart NVARCHAR(100),
+   BodyPart NVARCHAR(500),
    CreatedAt DATETIME DEFAULT GETDATE(),
    Priority NVARCHAR(50),
    Status NVARCHAR(50),
@@ -685,6 +685,15 @@ ADD TransferUUID UNIQUEIDENTIFIER
 ALTER TABLE Transfers
 ADD CONSTRAINT UQ_Transfers_UUID
 UNIQUE (TransferUUID);
+
+ALTER TABLE VitalSigns
+ADD Height DECIMAL(5,2);
+
+ALTER TABLE PrescriptionDetails
+ADD Frequency NVARCHAR(100);
+
+ALTER TABLE PrescriptionDetails
+ADD Instruction NVARCHAR(500);
 
 INSERT INTO Departments(DepartmentName)
 VALUES
