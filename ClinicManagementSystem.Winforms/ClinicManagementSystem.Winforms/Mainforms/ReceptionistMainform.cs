@@ -136,7 +136,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void btnPayment_Click(object sender, EventArgs e)
         {
-
+            LoadContent(new Payment());
         }
 
         private void btnToday_Click(object sender, EventArgs e)

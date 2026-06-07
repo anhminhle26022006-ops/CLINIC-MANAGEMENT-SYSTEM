@@ -9,7 +9,7 @@ using DTO;
 
 namespace DAL.Repositories
 {
-    public class DepartmentDAL
+    public class Department_RecepDAL
     {
         public List<DepartmentDTO> GetAll()
         {

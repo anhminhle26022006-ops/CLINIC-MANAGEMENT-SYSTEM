@@ -1,6 +1,6 @@
 ﻿namespace DTO
 {
-    public class EmployeeDTO
+    public class Employee_RecepDTO
     {
         public int EmployeeID { get; set; }
 

@@ -3,23 +3,23 @@ using DTO;
 
 namespace BUS.Services
 {
-    public class RoomBUS
+    public class Room_RecepBUS
     {
-        private readonly RoomDAL dal = new();
+        private readonly Room_RecepDAL dal = new();
 
         public int CountRooms()
         {
             return dal.CountRooms();
         }
 
-        public RoomDTO GetRoomByDepartment(
+        public Room_RecepDTO GetRoomByDepartment(
             int departmentId)
         {
             return dal.GetRoomByDepartment(
                 departmentId);
         }
 
-        public RoomDTO GetById(int roomId)
+        public Room_RecepDTO GetById(int roomId)
         {
             return dal.GetById(roomId);
         }

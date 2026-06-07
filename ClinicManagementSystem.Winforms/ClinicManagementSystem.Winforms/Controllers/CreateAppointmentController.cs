@@ -6,10 +6,10 @@ namespace ClinicManagementSystem.Winforms.Controllers
 {
     internal class CreateAppointmentController
     {
-        private readonly PatientBUS patientBUS = new();
-        private readonly DepartmentBUS departmentBUS = new();
-        private readonly EmployeeBUS employeeBUS = new();
-        private readonly RoomBUS roomBUS = new();
+        private readonly Patient_RecepBUS patientBUS = new();
+        private readonly Department_RecepBUS departmentBUS = new();
+        private readonly Employee_RecepBUS employeeBUS = new();
+        private readonly Room_RecepBUS roomBUS = new();
         private readonly AppointmentBUS appointmentBUS = new();
         private readonly DoctorScheduleBUS doctorScheduleBUS = new();
 
@@ -93,7 +93,7 @@ namespace ClinicManagementSystem.Winforms.Controllers
                 }
                 else
                 {
-                    RoomDTO room =
+                    Room_RecepDTO room =
                         roomBUS.GetById(
                             schedule.RoomID);
 

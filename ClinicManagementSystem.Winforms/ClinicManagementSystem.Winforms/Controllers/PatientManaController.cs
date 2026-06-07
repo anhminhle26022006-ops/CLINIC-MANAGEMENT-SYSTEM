@@ -6,7 +6,7 @@ namespace ClinicManagementSystem.Controllers
 {
     public class PatientManaController
     {
-        private readonly PatientBUS patientBUS = new();
+        private readonly Patient_RecepBUS patientBUS = new();
         private readonly AppointmentBUS appointmentBUS = new();
 
         public List<PatientDTO> GetPatients()

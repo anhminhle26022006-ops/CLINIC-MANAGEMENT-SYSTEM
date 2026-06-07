@@ -1,6 +1,6 @@
 ﻿namespace DTO
 {
-    public class DepartmentDTO
+    public class Department_RecepDTO
     {
         public int DepartmentID { get; set; }
 
