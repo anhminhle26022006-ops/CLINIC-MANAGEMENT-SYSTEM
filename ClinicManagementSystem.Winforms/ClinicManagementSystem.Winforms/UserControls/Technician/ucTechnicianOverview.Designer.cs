@@ -414,7 +414,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.pnlColumns.Name = "pnlColumns";
             this.pnlColumns.RowCount = 1;
             this.pnlColumns.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.pnlColumns.Size = new System.Drawing.Size(1196, 310);
+            this.pnlColumns.Size = new System.Drawing.Size(1196, 340);
             this.pnlColumns.TabIndex = 2;
             // 
             // pnlLabRequests
@@ -429,7 +429,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.pnlLabRequests.Location = new System.Drawing.Point(0, 0);
             this.pnlLabRequests.Margin = new System.Windows.Forms.Padding(0, 0, 14, 0);
             this.pnlLabRequests.Name = "pnlLabRequests";
-            this.pnlLabRequests.Size = new System.Drawing.Size(584, 310);
+            this.pnlLabRequests.Size = new System.Drawing.Size(584, 340);
             this.pnlLabRequests.TabIndex = 0;
             // 
             // lblLabTitle
@@ -451,7 +451,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.flpLabPending.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpLabPending.Location = new System.Drawing.Point(18, 64);
             this.flpLabPending.Name = "flpLabPending";
-            this.flpLabPending.Size = new System.Drawing.Size(548, 228);
+            this.flpLabPending.Size = new System.Drawing.Size(548, 258);
             this.flpLabPending.TabIndex = 1;
             this.flpLabPending.WrapContents = false;
             // 
@@ -467,7 +467,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.pnlImagingQueue.Location = new System.Drawing.Point(598, 0);
             this.pnlImagingQueue.Margin = new System.Windows.Forms.Padding(0);
             this.pnlImagingQueue.Name = "pnlImagingQueue";
-            this.pnlImagingQueue.Size = new System.Drawing.Size(598, 310);
+            this.pnlImagingQueue.Size = new System.Drawing.Size(598, 340);
             this.pnlImagingQueue.TabIndex = 1;
             // 
             // lblImagingTitle
@@ -489,7 +489,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.flpScanPending.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpScanPending.Location = new System.Drawing.Point(18, 64);
             this.flpScanPending.Name = "flpScanPending";
-            this.flpScanPending.Size = new System.Drawing.Size(562, 228);
+            this.flpScanPending.Size = new System.Drawing.Size(562, 258);
             this.flpScanPending.TabIndex = 1;
             this.flpScanPending.WrapContents = false;
             // 
@@ -503,7 +503,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.pnlQuickActions.Controls.Add(this.lblActionsTitle);
             this.pnlQuickActions.CornerRadius = 8;
             this.pnlQuickActions.FillColor = System.Drawing.Color.White;
-            this.pnlQuickActions.Location = new System.Drawing.Point(24, 794);
+            this.pnlQuickActions.Location = new System.Drawing.Point(24, 824);
             this.pnlQuickActions.Name = "pnlQuickActions";
             this.pnlQuickActions.Size = new System.Drawing.Size(1196, 180);
             this.pnlQuickActions.TabIndex = 3;
