@@ -56,8 +56,12 @@
             label15 = new Label();
             btnRequest = new Button();
             btnCancel = new Button();
+            panel3 = new Panel();
+            panel4 = new Panel();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
+            panel3.SuspendLayout();
+            panel4.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -243,12 +247,12 @@
             // 
             // button1
             // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button1.Anchor = AnchorStyles.None;
             button1.BackColor = Color.AliceBlue;
             button1.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button1.Image = Properties.Resources.Screenshot_2026_06_06_051524;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(23, 451);
+            button1.Location = new Point(0, 31);
             button1.Name = "button1";
             button1.Size = new Size(346, 91);
             button1.TabIndex = 17;
@@ -258,14 +262,14 @@
             // 
             // button2
             // 
-            button2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button2.Anchor = AnchorStyles.None;
             button2.BackColor = Color.White;
             button2.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button2.Image = Properties.Resources.Screenshot_2026_06_06_052113;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(403, 451);
+            button2.Location = new Point(380, 31);
             button2.Name = "button2";
-            button2.Size = new Size(345, 91);
+            button2.Size = new Size(342, 91);
             button2.TabIndex = 18;
             button2.Text = "             Nhận ca\r\n             Người khác nhận ca với bạn";
             button2.TextAlign = ContentAlignment.MiddleLeft;
@@ -275,7 +279,7 @@
             // 
             label13.AutoSize = true;
             label13.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label13.Location = new Point(23, 570);
+            label13.Location = new Point(0, 10);
             label13.Name = "label13";
             label13.Size = new Size(199, 28);
             label13.TabIndex = 19;
@@ -361,31 +365,51 @@
             btnCancel.Text = "Hủy";
             btnCancel.UseVisualStyleBackColor = true;
             // 
+            // panel3
+            // 
+            panel3.Controls.Add(label13);
+            panel3.Location = new Point(23, 570);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(725, 502);
+            panel3.TabIndex = 26;
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(button1);
+            panel4.Controls.Add(button2);
+            panel4.Location = new Point(23, 407);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(725, 141);
+            panel4.TabIndex = 27;
+            // 
             // ShiftRequestForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
             BackColor = Color.White;
-            ClientSize = new Size(789, 1087);
+            ClientSize = new Size(789, 1126);
             Controls.Add(btnCancel);
             Controls.Add(btnRequest);
             Controls.Add(panel2);
             Controls.Add(txtReason);
             Controls.Add(label14);
             Controls.Add(cbsamerolestaff);
-            Controls.Add(label13);
-            Controls.Add(button2);
-            Controls.Add(button1);
             Controls.Add(label12);
             Controls.Add(panel1);
             Controls.Add(label2);
             Controls.Add(label1);
+            Controls.Add(panel3);
+            Controls.Add(panel4);
             Name = "ShiftRequestForm";
             Text = "ShiftRequestForm";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
+            panel4.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -420,5 +444,7 @@
         private Label label15;
         private Button btnRequest;
         private Button btnCancel;
+        private Panel panel3;
+        private Panel panel4;
     }
 }

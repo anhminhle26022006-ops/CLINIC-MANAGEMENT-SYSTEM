@@ -30,35 +30,43 @@
         {
             tableLayoutPanel1 = new TableLayoutPanel();
             panel1 = new Panel();
-            label1 = new Label();
             label2 = new Label();
+            label1 = new Label();
             tableLayoutPanel2 = new TableLayoutPanel();
             cardTotalShift = new Panel();
-            cardPendingRequest = new Panel();
-            cardApprovedRequest = new Panel();
-            lblTitle1 = new Label();
-            lblCount1 = new Label();
             lblDescription1 = new Label();
+            lblCount1 = new Label();
+            lblTitle1 = new Label();
+            cardPendingRequest = new Panel();
             lblDescription2 = new Label();
             lblCount2 = new Label();
             lblTitle2 = new Label();
+            cardApprovedRequest = new Panel();
             lblDescription3 = new Label();
             lblCount3 = new Label();
             lblTitle3 = new Label();
             tableLayoutPanel3 = new TableLayoutPanel();
             tableLayoutPanel4 = new TableLayoutPanel();
             panel2 = new Panel();
-            panel3 = new Panel();
             btnSchedule = new Button();
+            panel3 = new Panel();
             btnHistory = new Button();
             tableLayoutPanel5 = new TableLayoutPanel();
             btnNext = new Button();
             btnPrev = new Button();
-            btnToday = new Button();
             btnDay = new Button();
             btnWeek = new Button();
             btnMonth = new Button();
             lblCurrentPeriod = new Label();
+            btnToday = new Button();
+            panel4 = new Panel();
+            label4 = new Label();
+            label3 = new Label();
+            pnlViewContainer = new Panel();
+            ucShiftHistory1 = new ClinicManagementSystem.Winforms.Shareforms.WorkingShifts.ucShiftHistory();
+            ucMonthView1 = new ClinicManagementSystem.Winforms.Shareforms.WorkingShifts.ucMonthView();
+            ucWeekView1 = new ClinicManagementSystem.Winforms.Shareforms.WorkingShifts.ucWeekView();
+            ucDayView1 = new ClinicManagementSystem.Winforms.Shareforms.WorkingShifts.ucDayView();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
@@ -70,6 +78,8 @@
             panel2.SuspendLayout();
             panel3.SuspendLayout();
             tableLayoutPanel5.SuspendLayout();
+            panel4.SuspendLayout();
+            pnlViewContainer.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -99,16 +109,6 @@
             panel1.Size = new Size(1492, 83);
             panel1.TabIndex = 0;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(17, 14);
-            label1.Name = "label1";
-            label1.Size = new Size(219, 31);
-            label1.TabIndex = 0;
-            label1.Text = "Quản lý ca làm việc";
-            // 
             // label2
             // 
             label2.AutoSize = true;
@@ -118,6 +118,16 @@
             label2.Size = new Size(289, 25);
             label2.TabIndex = 1;
             label2.Text = "Xem lịch làm việc và yêu cầu đổi ca";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(17, 14);
+            label1.Name = "label1";
+            label1.Size = new Size(219, 31);
+            label1.TabIndex = 0;
+            label1.Text = "Quản lý ca làm việc";
             // 
             // tableLayoutPanel2
             // 
@@ -148,6 +158,36 @@
             cardTotalShift.Size = new Size(491, 131);
             cardTotalShift.TabIndex = 0;
             // 
+            // lblDescription1
+            // 
+            lblDescription1.AutoSize = true;
+            lblDescription1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblDescription1.Location = new Point(179, 88);
+            lblDescription1.Name = "lblDescription1";
+            lblDescription1.Size = new Size(65, 28);
+            lblDescription1.TabIndex = 2;
+            lblDescription1.Text = "label5";
+            // 
+            // lblCount1
+            // 
+            lblCount1.AutoSize = true;
+            lblCount1.Font = new Font("Segoe UI Semibold", 20F, FontStyle.Bold);
+            lblCount1.Location = new Point(154, 42);
+            lblCount1.Name = "lblCount1";
+            lblCount1.Size = new Size(114, 46);
+            lblCount1.TabIndex = 1;
+            lblCount1.Text = "label4";
+            // 
+            // lblTitle1
+            // 
+            lblTitle1.AutoSize = true;
+            lblTitle1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitle1.Location = new Point(179, 15);
+            lblTitle1.Name = "lblTitle1";
+            lblTitle1.Size = new Size(65, 28);
+            lblTitle1.TabIndex = 0;
+            lblTitle1.Text = "label3";
+            // 
             // cardPendingRequest
             // 
             cardPendingRequest.BackColor = Color.LemonChiffon;
@@ -159,48 +199,6 @@
             cardPendingRequest.Name = "cardPendingRequest";
             cardPendingRequest.Size = new Size(491, 131);
             cardPendingRequest.TabIndex = 1;
-            // 
-            // cardApprovedRequest
-            // 
-            cardApprovedRequest.BackColor = Color.Honeydew;
-            cardApprovedRequest.Controls.Add(lblDescription3);
-            cardApprovedRequest.Controls.Add(lblCount3);
-            cardApprovedRequest.Controls.Add(lblTitle3);
-            cardApprovedRequest.Dock = DockStyle.Fill;
-            cardApprovedRequest.Location = new Point(997, 3);
-            cardApprovedRequest.Name = "cardApprovedRequest";
-            cardApprovedRequest.Size = new Size(492, 131);
-            cardApprovedRequest.TabIndex = 2;
-            // 
-            // lblTitle1
-            // 
-            lblTitle1.AutoSize = true;
-            lblTitle1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblTitle1.Location = new Point(214, 14);
-            lblTitle1.Name = "lblTitle1";
-            lblTitle1.Size = new Size(65, 28);
-            lblTitle1.TabIndex = 0;
-            lblTitle1.Text = "label3";
-            // 
-            // lblCount1
-            // 
-            lblCount1.AutoSize = true;
-            lblCount1.Font = new Font("Segoe UI Semibold", 20F, FontStyle.Bold);
-            lblCount1.Location = new Point(189, 42);
-            lblCount1.Name = "lblCount1";
-            lblCount1.Size = new Size(114, 46);
-            lblCount1.TabIndex = 1;
-            lblCount1.Text = "label4";
-            // 
-            // lblDescription1
-            // 
-            lblDescription1.AutoSize = true;
-            lblDescription1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblDescription1.Location = new Point(214, 87);
-            lblDescription1.Name = "lblDescription1";
-            lblDescription1.Size = new Size(65, 28);
-            lblDescription1.TabIndex = 2;
-            lblDescription1.Text = "label5";
             // 
             // lblDescription2
             // 
@@ -231,6 +229,18 @@
             lblTitle2.Size = new Size(65, 28);
             lblTitle2.TabIndex = 3;
             lblTitle2.Text = "label3";
+            // 
+            // cardApprovedRequest
+            // 
+            cardApprovedRequest.BackColor = Color.Honeydew;
+            cardApprovedRequest.Controls.Add(lblDescription3);
+            cardApprovedRequest.Controls.Add(lblCount3);
+            cardApprovedRequest.Controls.Add(lblTitle3);
+            cardApprovedRequest.Dock = DockStyle.Fill;
+            cardApprovedRequest.Location = new Point(997, 3);
+            cardApprovedRequest.Name = "cardApprovedRequest";
+            cardApprovedRequest.Size = new Size(492, 131);
+            cardApprovedRequest.TabIndex = 2;
             // 
             // lblDescription3
             // 
@@ -269,14 +279,16 @@
             tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel3.Controls.Add(tableLayoutPanel4, 0, 0);
             tableLayoutPanel3.Controls.Add(tableLayoutPanel5, 0, 1);
+            tableLayoutPanel3.Controls.Add(panel4, 0, 3);
+            tableLayoutPanel3.Controls.Add(pnlViewContainer, 0, 2);
             tableLayoutPanel3.Dock = DockStyle.Fill;
             tableLayoutPanel3.Location = new Point(3, 235);
             tableLayoutPanel3.Name = "tableLayoutPanel3";
             tableLayoutPanel3.RowCount = 4;
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 54F));
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 65F));
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 322F));
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 11F));
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 85F));
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 15F));
             tableLayoutPanel3.Size = new Size(1492, 489);
             tableLayoutPanel3.TabIndex = 2;
             // 
@@ -305,15 +317,6 @@
             panel2.Size = new Size(737, 42);
             panel2.TabIndex = 0;
             // 
-            // panel3
-            // 
-            panel3.Controls.Add(btnHistory);
-            panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(746, 3);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(737, 42);
-            panel3.TabIndex = 1;
-            // 
             // btnSchedule
             // 
             btnSchedule.Dock = DockStyle.Fill;
@@ -324,6 +327,15 @@
             btnSchedule.TabIndex = 0;
             btnSchedule.Text = "Lịch làm việc";
             btnSchedule.UseVisualStyleBackColor = true;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(btnHistory);
+            panel3.Dock = DockStyle.Fill;
+            panel3.Location = new Point(746, 3);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(737, 42);
+            panel3.TabIndex = 1;
             // 
             // btnHistory
             // 
@@ -339,13 +351,13 @@
             // tableLayoutPanel5
             // 
             tableLayoutPanel5.ColumnCount = 7;
-            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 60F));
-            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 450F));
-            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 60F));
-            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 603F));
-            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100F));
-            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100F));
-            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100F));
+            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 5F));
+            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
+            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 5F));
+            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15F));
+            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15F));
+            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15F));
+            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15F));
             tableLayoutPanel5.Controls.Add(btnNext, 2, 0);
             tableLayoutPanel5.Controls.Add(btnPrev, 0, 0);
             tableLayoutPanel5.Controls.Add(btnDay, 4, 0);
@@ -365,9 +377,9 @@
             // 
             btnNext.Dock = DockStyle.Fill;
             btnNext.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnNext.Location = new Point(513, 3);
+            btnNext.Location = new Point(522, 3);
             btnNext.Name = "btnNext";
-            btnNext.Size = new Size(54, 53);
+            btnNext.Size = new Size(68, 53);
             btnNext.TabIndex = 0;
             btnNext.Text = ">";
             btnNext.UseVisualStyleBackColor = true;
@@ -378,31 +390,18 @@
             btnPrev.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnPrev.Location = new Point(3, 3);
             btnPrev.Name = "btnPrev";
-            btnPrev.Size = new Size(54, 53);
+            btnPrev.Size = new Size(68, 53);
             btnPrev.TabIndex = 1;
             btnPrev.Text = "<";
             btnPrev.UseVisualStyleBackColor = true;
-            // 
-            // btnToday
-            // 
-            btnToday.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            btnToday.BackColor = Color.RoyalBlue;
-            btnToday.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnToday.ForeColor = Color.White;
-            btnToday.Location = new Point(573, 3);
-            btnToday.Name = "btnToday";
-            btnToday.Size = new Size(197, 53);
-            btnToday.TabIndex = 2;
-            btnToday.Text = "Hôm nay";
-            btnToday.UseVisualStyleBackColor = false;
             // 
             // btnDay
             // 
             btnDay.Dock = DockStyle.Fill;
             btnDay.Font = new Font("Segoe UI Semibold", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnDay.Location = new Point(1176, 3);
+            btnDay.Location = new Point(818, 3);
             btnDay.Name = "btnDay";
-            btnDay.Size = new Size(94, 53);
+            btnDay.Size = new Size(216, 53);
             btnDay.TabIndex = 3;
             btnDay.Text = "Ngày";
             btnDay.UseVisualStyleBackColor = true;
@@ -411,9 +410,9 @@
             // 
             btnWeek.Dock = DockStyle.Fill;
             btnWeek.Font = new Font("Segoe UI Semibold", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnWeek.Location = new Point(1276, 3);
+            btnWeek.Location = new Point(1040, 3);
             btnWeek.Name = "btnWeek";
-            btnWeek.Size = new Size(94, 53);
+            btnWeek.Size = new Size(216, 53);
             btnWeek.TabIndex = 4;
             btnWeek.Text = "Tuần ";
             btnWeek.UseVisualStyleBackColor = true;
@@ -422,9 +421,9 @@
             // 
             btnMonth.Dock = DockStyle.Fill;
             btnMonth.Font = new Font("Segoe UI Semibold", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnMonth.Location = new Point(1376, 3);
+            btnMonth.Location = new Point(1262, 3);
             btnMonth.Name = "btnMonth";
-            btnMonth.Size = new Size(107, 53);
+            btnMonth.Size = new Size(221, 53);
             btnMonth.TabIndex = 5;
             btnMonth.Text = "Tháng";
             btnMonth.UseVisualStyleBackColor = true;
@@ -434,12 +433,102 @@
             lblCurrentPeriod.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             lblCurrentPeriod.AutoSize = true;
             lblCurrentPeriod.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold);
-            lblCurrentPeriod.Location = new Point(63, 0);
+            lblCurrentPeriod.Location = new Point(77, 0);
             lblCurrentPeriod.Name = "lblCurrentPeriod";
             lblCurrentPeriod.Size = new Size(84, 59);
             lblCurrentPeriod.TabIndex = 6;
             lblCurrentPeriod.Text = "label3";
             lblCurrentPeriod.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // btnToday
+            // 
+            btnToday.BackColor = Color.RoyalBlue;
+            btnToday.Dock = DockStyle.Fill;
+            btnToday.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnToday.ForeColor = Color.White;
+            btnToday.Location = new Point(596, 3);
+            btnToday.Name = "btnToday";
+            btnToday.Size = new Size(216, 53);
+            btnToday.TabIndex = 2;
+            btnToday.Text = "Hôm nay";
+            btnToday.UseVisualStyleBackColor = false;
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(label4);
+            panel4.Controls.Add(label3);
+            panel4.Dock = DockStyle.Fill;
+            panel4.Location = new Point(3, 436);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(1486, 50);
+            panel4.TabIndex = 2;
+            // 
+            // label4
+            // 
+            label4.Image = Properties.Resources.Screenshot_2026_06_06_222737;
+            label4.Location = new Point(136, 2);
+            label4.Name = "label4";
+            label4.Size = new Size(634, 34);
+            label4.TabIndex = 4;
+            // 
+            // label3
+            // 
+            label3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label3.Location = new Point(28, 8);
+            label3.Name = "label3";
+            label3.Size = new Size(102, 28);
+            label3.TabIndex = 3;
+            label3.Text = "Trạng thái:";
+            label3.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // pnlViewContainer
+            // 
+            pnlViewContainer.Controls.Add(ucShiftHistory1);
+            pnlViewContainer.Controls.Add(ucMonthView1);
+            pnlViewContainer.Controls.Add(ucWeekView1);
+            pnlViewContainer.Controls.Add(ucDayView1);
+            pnlViewContainer.Dock = DockStyle.Fill;
+            pnlViewContainer.Location = new Point(3, 122);
+            pnlViewContainer.Name = "pnlViewContainer";
+            pnlViewContainer.Size = new Size(1486, 308);
+            pnlViewContainer.TabIndex = 3;
+            // 
+            // ucShiftHistory1
+            // 
+            ucShiftHistory1.BackColor = Color.White;
+            ucShiftHistory1.Dock = DockStyle.Fill;
+            ucShiftHistory1.Location = new Point(0, 0);
+            ucShiftHistory1.Name = "ucShiftHistory1";
+            ucShiftHistory1.Size = new Size(1486, 308);
+            ucShiftHistory1.TabIndex = 2;
+            // 
+            // ucMonthView1
+            // 
+            ucMonthView1.AutoScroll = true;
+            ucMonthView1.Dock = DockStyle.Fill;
+            ucMonthView1.Location = new Point(0, 0);
+            ucMonthView1.Name = "ucMonthView1";
+            ucMonthView1.Size = new Size(1486, 308);
+            ucMonthView1.TabIndex = 6;
+            // 
+            // ucWeekView1
+            // 
+            ucWeekView1.BackColor = Color.White;
+            ucWeekView1.Dock = DockStyle.Fill;
+            ucWeekView1.Location = new Point(0, 0);
+            ucWeekView1.Name = "ucWeekView1";
+            ucWeekView1.Size = new Size(1486, 308);
+            ucWeekView1.TabIndex = 1;
+            // 
+            // ucDayView1
+            // 
+            ucDayView1.Dock = DockStyle.Fill;
+            ucDayView1.Location = new Point(0, 0);
+            ucDayView1.Name = "ucDayView1";
+            ucDayView1.Size = new Size(1486, 308);
+            ucDayView1.TabIndex = 0;
             // 
             // Shift
             // 
@@ -464,6 +553,9 @@
             panel3.ResumeLayout(false);
             tableLayoutPanel5.ResumeLayout(false);
             tableLayoutPanel5.PerformLayout();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
+            pnlViewContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -500,5 +592,13 @@
         private Button btnWeek;
         private Button btnMonth;
         private Label lblCurrentPeriod;
+        private Panel panel4;
+        private Label label3;
+        private Label label4;
+        private Panel pnlViewContainer;
+        private WorkingShifts.ucMonthView ucMonthView1;
+        private WorkingShifts.ucWeekView ucWeekView1;
+        private WorkingShifts.ucDayView ucDayView1;
+        private WorkingShifts.ucShiftHistory ucShiftHistory1;
     }
 }

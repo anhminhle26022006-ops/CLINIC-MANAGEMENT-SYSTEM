@@ -199,6 +199,7 @@
             btnClose.TabIndex = 14;
             btnClose.Text = "Đóng";
             btnClose.UseVisualStyleBackColor = true;
+            btnClose.Click += BtnClose_Click;
             // 
             // btnChangeShiftRequest
             // 
@@ -211,6 +212,7 @@
             btnChangeShiftRequest.TabIndex = 15;
             btnChangeShiftRequest.Text = "Yêu cầu đổi ca";
             btnChangeShiftRequest.UseVisualStyleBackColor = false;
+            btnChangeShiftRequest.Click += BtnChangeShiftRequest_Click;
             // 
             // ShiftDetailForm
             // 
