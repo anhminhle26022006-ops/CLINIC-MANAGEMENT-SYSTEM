@@ -10,7 +10,7 @@ namespace DTO
 
         public string Name { get; set; }
 
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         public string Gender { get; set; }
 
@@ -26,9 +26,12 @@ namespace DTO
         {
             get
             {
-                int age = DateTime.Today.Year - BirthDate.Year;
+                if (!BirthDate.HasValue)
+                    return 0;
 
-                if (BirthDate.Date > DateTime.Today.AddYears(-age))
+                int age = DateTime.Today.Year - BirthDate.Value.Year;
+
+                if (BirthDate.Value.Date > DateTime.Today.AddYears(-age))
                 {
                     age--;
                 }
@@ -38,3 +41,5 @@ namespace DTO
         }
     }
 }
+
+
