@@ -7,6 +7,11 @@ namespace BUS.Services
     {
         private readonly RoomDAL dal = new();
 
+        public int CountRooms()
+        {
+            return dal.CountRooms();
+        }
+
         public RoomDTO GetRoomByDepartment(
             int departmentId)
         {

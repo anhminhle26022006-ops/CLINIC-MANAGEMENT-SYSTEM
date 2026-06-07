@@ -12,6 +12,17 @@ namespace DAL.Repositories
 {
     public class RoomDAL
     {
+        public int CountRooms()
+        {
+            string query =
+                "SELECT COUNT(*) FROM Rooms";
+
+            object result =
+                DatabaseHelper.ExecuteScalar(query);
+
+            return Convert.ToInt32(result);
+        }
+
         public RoomDTO GetRoomByDepartment(int departmentId)
         {
             string query = @"

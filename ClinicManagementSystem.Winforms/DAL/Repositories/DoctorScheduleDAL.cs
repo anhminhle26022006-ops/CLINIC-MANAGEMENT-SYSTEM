@@ -88,5 +88,72 @@ namespace DAL.Repositories
                         row["RoomID"])
             };
         }
+
+        public int CountActiveRoomsToday()
+        {
+            string query = @"
+        SELECT COUNT(DISTINCT RoomID)
+        FROM DoctorSchedules
+        WHERE WorkDate = CAST(GETDATE() AS DATE)";
+
+            object result = DatabaseHelper.ExecuteScalar(query);
+
+            return result == null
+                ? 0
+                : Convert.ToInt32(result);
+        }
+
+        public List<DoctorQueueDTO> GetDoctorQueues()
+        {
+            string query = @"
+    SELECT
+    e.EmployeeID,
+    e.FullName,
+    d.DepartmentName,
+    ISNULL(r.RoomCode, '-') AS RoomCode
+FROM Employees e
+INNER JOIN Departments d
+    ON d.DepartmentID = e.DepartmentID
+LEFT JOIN DoctorSchedules ds
+    ON ds.DoctorID = e.EmployeeID
+    AND CAST(ds.WorkDate AS DATE)
+        = CAST(GETDATE() AS DATE)
+LEFT JOIN Rooms r
+    ON r.RoomID = ds.RoomID
+WHERE e.RoleID =
+(
+    SELECT RoleID
+    FROM Roles
+    WHERE RoleName = 'Doctor'
+)";
+
+            DataTable dt =
+                DatabaseHelper.ExecuteQuery(query);
+
+            List<DoctorQueueDTO> list = new();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(new DoctorQueueDTO
+                {
+                    DoctorId =
+                        Convert.ToInt32(
+                            row["EmployeeID"]),
+
+                    DoctorName =
+                        row["FullName"].ToString(),
+
+                    DepartmentName =
+                        row["DepartmentName"].ToString(),
+
+                    RoomCode =
+                        row["RoomCode"].ToString(),
+
+                    Shift = "Cả ngày"
+                });
+            }
+
+            return list;
+        }
     }
 }

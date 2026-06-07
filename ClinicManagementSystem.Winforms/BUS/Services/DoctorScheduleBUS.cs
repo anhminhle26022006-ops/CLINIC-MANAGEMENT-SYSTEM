@@ -26,5 +26,15 @@ namespace BUS.Services
                 doctorId,
                 workDate);
         }
+
+        public int CountActiveRoomsToday()
+        {
+            return dal.CountActiveRoomsToday();
+        }
+
+        public List<DoctorQueueDTO> GetDoctorQueues()
+        {
+            return dal.GetDoctorQueues();
+        }
     }
 }

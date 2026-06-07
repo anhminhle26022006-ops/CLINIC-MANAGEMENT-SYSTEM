@@ -13,5 +13,12 @@ namespace BUS.Services
             return dal.GetDoctorsByDepartment(
                 departmentId);
         }
+
+        public EmployeeDTO GetById(
+    int employeeId)
+        {
+            return dal.GetById(
+                employeeId);
+        }
     }
 }

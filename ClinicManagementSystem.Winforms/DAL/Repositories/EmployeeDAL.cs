@@ -47,5 +47,42 @@ namespace DAL.Repositories
 
             return doctors;
         }
+
+        public EmployeeDTO GetById(int employeeId)
+        {
+            string query = @"
+SELECT EmployeeID,
+       FullName
+FROM Employees
+WHERE EmployeeID = @EmployeeID";
+
+            SqlParameter[] parameters =
+            {
+        new SqlParameter(
+            "@EmployeeID",
+            employeeId)
+    };
+
+            DataTable dt =
+                DatabaseHelper.ExecuteQuery(
+                    query,
+                    parameters);
+
+            if (dt.Rows.Count == 0)
+                return null;
+
+            DataRow row = dt.Rows[0];
+
+            return new EmployeeDTO
+            {
+                EmployeeID =
+                    Convert.ToInt32(
+                        row["EmployeeID"]),
+
+                FullName =
+                    row["FullName"]
+                    .ToString()
+            };
+        }
     }
 }

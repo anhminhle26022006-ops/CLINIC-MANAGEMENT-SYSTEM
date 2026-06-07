@@ -36,16 +36,18 @@
             label2 = new Label();
             panel2 = new Panel();
             panel3 = new Panel();
-            panel14 = new Panel();
             tableLayoutPanel4 = new TableLayoutPanel();
             btnProcessing = new Button();
             btnHistory = new Button();
+            panel14 = new Panel();
+            flowLayoutPanel1 = new FlowLayoutPanel();
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
             panel3.SuspendLayout();
             tableLayoutPanel4.SuspendLayout();
+            panel14.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -150,17 +152,6 @@
             panel3.Size = new Size(737, 54);
             panel3.TabIndex = 1;
             // 
-            // panel14
-            // 
-            panel14.BackColor = Color.White;
-            panel14.Dock = DockStyle.Fill;
-            panel14.ForeColor = Color.White;
-            panel14.Location = new Point(3, 142);
-            panel14.Name = "panel14";
-            panel14.Padding = new Padding(10);
-            panel14.Size = new Size(737, 328);
-            panel14.TabIndex = 2;
-            // 
             // tableLayoutPanel4
             // 
             tableLayoutPanel4.ColumnCount = 2;
@@ -187,6 +178,7 @@
             btnProcessing.TabIndex = 0;
             btnProcessing.Text = "Nhắc lịch đang xử lý";
             btnProcessing.UseVisualStyleBackColor = true;
+            btnProcessing.Click += btnProcessing_Click;
             // 
             // btnHistory
             // 
@@ -198,6 +190,28 @@
             btnHistory.TabIndex = 1;
             btnHistory.Text = "Lịch sử tái khám";
             btnHistory.UseVisualStyleBackColor = true;
+            btnHistory.Click += btnHistory_Click;
+            // 
+            // panel14
+            // 
+            panel14.BackColor = Color.White;
+            panel14.Controls.Add(flowLayoutPanel1);
+            panel14.Dock = DockStyle.Fill;
+            panel14.ForeColor = Color.White;
+            panel14.Location = new Point(3, 142);
+            panel14.Name = "panel14";
+            panel14.Padding = new Padding(10);
+            panel14.Size = new Size(737, 328);
+            panel14.TabIndex = 2;
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.AutoScroll = true;
+            flowLayoutPanel1.Dock = DockStyle.Fill;
+            flowLayoutPanel1.Location = new Point(10, 10);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(717, 308);
+            flowLayoutPanel1.TabIndex = 0;
             // 
             // RemindingList
             // 
@@ -206,6 +220,7 @@
             Controls.Add(panel1);
             Name = "RemindingList";
             Size = new Size(773, 503);
+            Resize += RemindingList_Resize;
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel2.ResumeLayout(false);
@@ -213,6 +228,7 @@
             tableLayoutPanel3.PerformLayout();
             panel3.ResumeLayout(false);
             tableLayoutPanel4.ResumeLayout(false);
+            panel14.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -230,5 +246,6 @@
         private Panel panel14;
         private Button btnProcessing;
         private Button btnHistory;
+        private FlowLayoutPanel flowLayoutPanel1;
     }
 }

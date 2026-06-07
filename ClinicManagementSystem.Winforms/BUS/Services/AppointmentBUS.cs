@@ -99,5 +99,48 @@ namespace BUS.Services
                 department,
                 status);
         }
+
+        public int CountAppointmentsByDoctorAndStatusToday(
+    int doctorId,
+    string status)
+        {
+            return dal
+                .CountAppointmentsByDoctorAndStatusToday(
+                    doctorId,
+                    status);
+        }
+
+        public string GetCurrentPatientByDoctor(
+            int doctorId)
+        {
+            return dal
+                .GetCurrentPatientByDoctor(
+                    doctorId);
+        }
+
+        public List<WaitingPatientDTO>
+GetWaitingPatientsByDoctor(
+    int doctorId)
+        {
+            return dal
+                .GetWaitingPatientsByDoctor(
+                    doctorId);
+        }
+
+        public int GetCurrentQueueNumber(
+    int doctorId)
+        {
+            return dal
+                .GetCurrentQueueNumber(
+                    doctorId);
+        }
+
+        public string GetCurrentPatientCodeByDoctor(
+    int doctorId)
+        {
+            return dal
+                .GetCurrentPatientCodeByDoctor(
+                    doctorId);
+        }
     }
 }
