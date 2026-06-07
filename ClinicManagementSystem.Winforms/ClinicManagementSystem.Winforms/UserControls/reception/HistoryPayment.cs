@@ -45,7 +45,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
 
         private void LoadHistory()
         {
-            List<PaymentDTO> payments =
+            List<Payment_RecepDTO> payments =
                 controller
                 .GetPaymentHistory();
 

@@ -11,6 +11,8 @@ namespace DTO
         public string Gender { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
+        public string BloodType { get; set; }
+        public string Allergy { get; set; }
 
         public int Age
         {

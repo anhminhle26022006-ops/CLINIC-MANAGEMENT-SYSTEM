@@ -54,14 +54,14 @@ namespace ClinicManagementSystem.Winforms.Controllers
                     encounterId);
         }
 
-        public List<PaymentDTO>
+        public List<Payment_RecepDTO>
             GetPaymentHistory()
         {
             return paymentBUS
                 .GetPaymentHistory();
         }
 
-        public List<PaymentDTO>
+        public List<Payment_RecepDTO>
     SearchPaymentHistory(
         string keyword)
         {

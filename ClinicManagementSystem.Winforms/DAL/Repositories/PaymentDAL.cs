@@ -223,10 +223,10 @@ namespace DAL.Repositories
             return list;
         }
 
-        public List<PaymentDTO>
+        public List<Payment_RecepDTO>
             GetPaymentHistory()
         {
-            List<PaymentDTO> list =
+            List<Payment_RecepDTO> list =
                 new();
 
             string query =
@@ -244,7 +244,7 @@ namespace DAL.Repositories
             foreach (DataRow row in dt.Rows)
             {
                 list.Add(
-                    new PaymentDTO
+                    new Payment_RecepDTO
                     {
                         PaymentID =
                             Convert.ToInt32(
@@ -281,11 +281,11 @@ namespace DAL.Repositories
             return list;
         }
 
-        public List<PaymentDTO>
+        public List<Payment_RecepDTO>
     SearchPaymentHistory(
         string keyword)
         {
-            List<PaymentDTO> list =
+            List<Payment_RecepDTO> list =
                 new();
 
             string query =
@@ -318,7 +318,7 @@ namespace DAL.Repositories
             foreach (DataRow row in dt.Rows)
             {
                 list.Add(
-                    new PaymentDTO
+                    new Payment_RecepDTO
                     {
                         PaymentID =
                             Convert.ToInt32(
