@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class Doctor : Person
+    public class Doctor : Employee
     {
-        public string DoctorCode { get; set; }
-
         public string DepartmentId { get; set; }
 
         public DateTime HireDate { get; set; }
