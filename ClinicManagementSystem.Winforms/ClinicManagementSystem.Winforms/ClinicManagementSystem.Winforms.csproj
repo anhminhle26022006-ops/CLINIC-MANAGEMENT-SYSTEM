@@ -16,9 +16,10 @@
     <ProjectReference Include="..\ServicesExternal\ServicesExternal.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+<ItemGroup>
     <Folder Include="Controllers\" />
-  </ItemGroup>
+    <Folder Include="UserControls\Doctor\" />
+</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />

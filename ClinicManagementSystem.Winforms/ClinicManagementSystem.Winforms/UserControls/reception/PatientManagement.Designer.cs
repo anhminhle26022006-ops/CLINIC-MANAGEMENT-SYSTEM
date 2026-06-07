@@ -33,8 +33,8 @@
             panel2 = new Panel();
             tableLayoutPanel9 = new TableLayoutPanel();
             cbGender = new ComboBox();
-            cbDepartment = new ComboBox();
-            textBox1 = new TextBox();
+            cbAge = new ComboBox();
+            txtSearch = new TextBox();
             panel3 = new Panel();
             tableLayoutPanel2 = new TableLayoutPanel();
             panel6 = new Panel();
@@ -108,8 +108,8 @@
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 4;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 71F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 83F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 92F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 46F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.Size = new Size(898, 764);
             tableLayoutPanel1.TabIndex = 0;
@@ -119,9 +119,9 @@
             panel2.BackColor = Color.White;
             panel2.Controls.Add(tableLayoutPanel9);
             panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(3, 157);
+            panel2.Location = new Point(3, 166);
             panel2.Name = "panel2";
-            panel2.Size = new Size(892, 38);
+            panel2.Size = new Size(892, 40);
             panel2.TabIndex = 0;
             // 
             // tableLayoutPanel9
@@ -131,8 +131,8 @@
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             tableLayoutPanel9.Controls.Add(cbGender, 1, 0);
-            tableLayoutPanel9.Controls.Add(cbDepartment, 2, 0);
-            tableLayoutPanel9.Controls.Add(textBox1, 0, 0);
+            tableLayoutPanel9.Controls.Add(cbAge, 2, 0);
+            tableLayoutPanel9.Controls.Add(txtSearch, 0, 0);
             tableLayoutPanel9.Dock = DockStyle.Fill;
             tableLayoutPanel9.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             tableLayoutPanel9.Location = new Point(0, 0);
@@ -140,7 +140,7 @@
             tableLayoutPanel9.RowCount = 1;
             tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel9.Size = new Size(892, 38);
+            tableLayoutPanel9.Size = new Size(892, 40);
             tableLayoutPanel9.TabIndex = 0;
             // 
             // cbGender
@@ -151,24 +151,27 @@
             cbGender.Name = "cbGender";
             cbGender.Size = new Size(217, 30);
             cbGender.TabIndex = 0;
+            cbGender.SelectedIndexChanged += FilterChanged;
             // 
-            // cbDepartment
+            // cbAge
             // 
-            cbDepartment.Dock = DockStyle.Fill;
-            cbDepartment.FormattingEnabled = true;
-            cbDepartment.Location = new Point(672, 3);
-            cbDepartment.Name = "cbDepartment";
-            cbDepartment.Size = new Size(217, 30);
-            cbDepartment.TabIndex = 1;
+            cbAge.Dock = DockStyle.Fill;
+            cbAge.FormattingEnabled = true;
+            cbAge.Location = new Point(672, 3);
+            cbAge.Name = "cbAge";
+            cbAge.Size = new Size(217, 30);
+            cbAge.TabIndex = 1;
+            cbAge.SelectedIndexChanged += FilterChanged;
             // 
-            // textBox1
+            // txtSearch
             // 
-            textBox1.Dock = DockStyle.Fill;
-            textBox1.Location = new Point(3, 3);
-            textBox1.Name = "textBox1";
-            textBox1.PlaceholderText = "Tìm bệnh nhân theo tên, mã, hoặc số điện thoại";
-            textBox1.Size = new Size(440, 30);
-            textBox1.TabIndex = 2;
+            txtSearch.Dock = DockStyle.Fill;
+            txtSearch.Location = new Point(3, 3);
+            txtSearch.Name = "txtSearch";
+            txtSearch.PlaceholderText = "Tìm bệnh nhân theo tên, mã, hoặc số điện thoại";
+            txtSearch.Size = new Size(440, 30);
+            txtSearch.TabIndex = 2;
+            txtSearch.TextChanged += txtSearch_TextChanged;
             // 
             // panel3
             // 
@@ -177,7 +180,7 @@
             panel3.Location = new Point(3, 74);
             panel3.Name = "panel3";
             panel3.Padding = new Padding(0, 0, 0, 10);
-            panel3.Size = new Size(892, 77);
+            panel3.Size = new Size(892, 86);
             panel3.TabIndex = 1;
             // 
             // tableLayoutPanel2
@@ -196,17 +199,18 @@
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel2.Size = new Size(892, 67);
+            tableLayoutPanel2.Size = new Size(892, 76);
             tableLayoutPanel2.TabIndex = 0;
             // 
             // panel6
             // 
             panel6.BackColor = Color.LightSteelBlue;
             panel6.Controls.Add(tableLayoutPanel5);
+            panel6.Dock = DockStyle.Fill;
             panel6.Location = new Point(3, 3);
             panel6.Name = "panel6";
             panel6.Padding = new Padding(5);
-            panel6.Size = new Size(217, 61);
+            panel6.Size = new Size(217, 70);
             panel6.TabIndex = 0;
             // 
             // tableLayoutPanel5
@@ -222,7 +226,7 @@
             tableLayoutPanel5.RowCount = 2;
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 60F));
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 40F));
-            tableLayoutPanel5.Size = new Size(207, 51);
+            tableLayoutPanel5.Size = new Size(207, 60);
             tableLayoutPanel5.TabIndex = 0;
             // 
             // label3
@@ -232,7 +236,7 @@
             label3.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label3.Location = new Point(3, 0);
             label3.Name = "label3";
-            label3.Size = new Size(201, 30);
+            label3.Size = new Size(201, 36);
             label3.TabIndex = 0;
             label3.Text = "Tổng bệnh nhân";
             label3.TextAlign = ContentAlignment.MiddleLeft;
@@ -243,9 +247,9 @@
             lbpatienttotal.Dock = DockStyle.Fill;
             lbpatienttotal.Font = new Font("Times New Roman", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lbpatienttotal.ForeColor = Color.Black;
-            lbpatienttotal.Location = new Point(3, 30);
+            lbpatienttotal.Location = new Point(3, 36);
             lbpatienttotal.Name = "lbpatienttotal";
-            lbpatienttotal.Size = new Size(201, 21);
+            lbpatienttotal.Size = new Size(201, 24);
             lbpatienttotal.TabIndex = 1;
             lbpatienttotal.Text = "label4";
             lbpatienttotal.TextAlign = ContentAlignment.MiddleLeft;
@@ -254,10 +258,11 @@
             // 
             panel7.BackColor = Color.LightGoldenrodYellow;
             panel7.Controls.Add(tableLayoutPanel6);
+            panel7.Dock = DockStyle.Fill;
             panel7.Location = new Point(226, 3);
             panel7.Name = "panel7";
             panel7.Padding = new Padding(5);
-            panel7.Size = new Size(217, 61);
+            panel7.Size = new Size(217, 70);
             panel7.TabIndex = 1;
             // 
             // tableLayoutPanel6
@@ -273,7 +278,7 @@
             tableLayoutPanel6.RowCount = 2;
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 60F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 40F));
-            tableLayoutPanel6.Size = new Size(207, 51);
+            tableLayoutPanel6.Size = new Size(207, 60);
             tableLayoutPanel6.TabIndex = 1;
             // 
             // label5
@@ -283,7 +288,7 @@
             label5.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label5.Location = new Point(3, 0);
             label5.Name = "label5";
-            label5.Size = new Size(201, 30);
+            label5.Size = new Size(201, 36);
             label5.TabIndex = 0;
             label5.Text = "Bệnh nhân mới";
             label5.TextAlign = ContentAlignment.MiddleLeft;
@@ -294,9 +299,9 @@
             lbnewpatient.Dock = DockStyle.Fill;
             lbnewpatient.Font = new Font("Times New Roman", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lbnewpatient.ForeColor = Color.Black;
-            lbnewpatient.Location = new Point(3, 30);
+            lbnewpatient.Location = new Point(3, 36);
             lbnewpatient.Name = "lbnewpatient";
-            lbnewpatient.Size = new Size(201, 21);
+            lbnewpatient.Size = new Size(201, 24);
             lbnewpatient.TabIndex = 1;
             lbnewpatient.Text = "label6";
             lbnewpatient.TextAlign = ContentAlignment.MiddleLeft;
@@ -305,10 +310,11 @@
             // 
             panel8.BackColor = Color.Thistle;
             panel8.Controls.Add(tableLayoutPanel7);
+            panel8.Dock = DockStyle.Fill;
             panel8.Location = new Point(449, 3);
             panel8.Name = "panel8";
             panel8.Padding = new Padding(5);
-            panel8.Size = new Size(217, 61);
+            panel8.Size = new Size(217, 70);
             panel8.TabIndex = 2;
             // 
             // tableLayoutPanel7
@@ -324,7 +330,7 @@
             tableLayoutPanel7.RowCount = 2;
             tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Percent, 60F));
             tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Percent, 40F));
-            tableLayoutPanel7.Size = new Size(207, 51);
+            tableLayoutPanel7.Size = new Size(207, 60);
             tableLayoutPanel7.TabIndex = 2;
             // 
             // label7
@@ -334,7 +340,7 @@
             label7.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label7.Location = new Point(3, 0);
             label7.Name = "label7";
-            label7.Size = new Size(201, 30);
+            label7.Size = new Size(201, 36);
             label7.TabIndex = 0;
             label7.Text = "Bệnh nhân tái khám";
             label7.TextAlign = ContentAlignment.MiddleLeft;
@@ -345,9 +351,9 @@
             lbrevisitpatient.Dock = DockStyle.Fill;
             lbrevisitpatient.Font = new Font("Times New Roman", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lbrevisitpatient.ForeColor = Color.Black;
-            lbrevisitpatient.Location = new Point(3, 30);
+            lbrevisitpatient.Location = new Point(3, 36);
             lbrevisitpatient.Name = "lbrevisitpatient";
-            lbrevisitpatient.Size = new Size(201, 21);
+            lbrevisitpatient.Size = new Size(201, 24);
             lbrevisitpatient.TabIndex = 1;
             lbrevisitpatient.Text = "label8";
             lbrevisitpatient.TextAlign = ContentAlignment.MiddleLeft;
@@ -356,10 +362,11 @@
             // 
             panel9.BackColor = Color.LightCyan;
             panel9.Controls.Add(tableLayoutPanel8);
+            panel9.Dock = DockStyle.Fill;
             panel9.Location = new Point(672, 3);
             panel9.Name = "panel9";
             panel9.Padding = new Padding(5);
-            panel9.Size = new Size(217, 61);
+            panel9.Size = new Size(217, 70);
             panel9.TabIndex = 3;
             // 
             // tableLayoutPanel8
@@ -375,7 +382,7 @@
             tableLayoutPanel8.RowCount = 2;
             tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Percent, 60F));
             tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Percent, 40F));
-            tableLayoutPanel8.Size = new Size(207, 51);
+            tableLayoutPanel8.Size = new Size(207, 60);
             tableLayoutPanel8.TabIndex = 2;
             // 
             // label9
@@ -385,7 +392,7 @@
             label9.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label9.Location = new Point(3, 0);
             label9.Name = "label9";
-            label9.Size = new Size(201, 30);
+            label9.Size = new Size(201, 36);
             label9.TabIndex = 0;
             label9.Text = "Có lịch hẹn sắp tới";
             label9.TextAlign = ContentAlignment.MiddleLeft;
@@ -396,9 +403,9 @@
             lbappointment.Dock = DockStyle.Fill;
             lbappointment.Font = new Font("Times New Roman", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lbappointment.ForeColor = Color.Black;
-            lbappointment.Location = new Point(3, 30);
+            lbappointment.Location = new Point(3, 36);
             lbappointment.Name = "lbappointment";
-            lbappointment.Size = new Size(201, 21);
+            lbappointment.Size = new Size(201, 24);
             lbappointment.TabIndex = 1;
             lbappointment.Text = "label10";
             lbappointment.TextAlign = ContentAlignment.MiddleLeft;
@@ -485,16 +492,17 @@
             button1.TabIndex = 0;
             button1.Text = "+ Thêm bệnh nhân";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // dgvPatientMana
             // 
             dgvPatientMana.BackgroundColor = Color.WhiteSmoke;
             dgvPatientMana.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvPatientMana.Dock = DockStyle.Fill;
-            dgvPatientMana.Location = new Point(3, 201);
+            dgvPatientMana.Location = new Point(3, 212);
             dgvPatientMana.Name = "dgvPatientMana";
             dgvPatientMana.RowHeadersWidth = 51;
-            dgvPatientMana.Size = new Size(892, 560);
+            dgvPatientMana.Size = new Size(892, 549);
             dgvPatientMana.TabIndex = 3;
             // 
             // PatientManagement
@@ -564,8 +572,8 @@
         private Label lbappointment;
         private TableLayoutPanel tableLayoutPanel9;
         private ComboBox cbGender;
-        private ComboBox cbDepartment;
-        private TextBox textBox1;
+        private ComboBox cbAge;
+        private TextBox txtSearch;
         private DataGridView dgvPatientMana;
     }
 }
