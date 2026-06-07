@@ -10,7 +10,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
-    public class RoomDAL
+    public class Room_RecepDAL
     {
         public int CountRooms()
         {
@@ -23,7 +23,7 @@ namespace DAL.Repositories
             return Convert.ToInt32(result);
         }
 
-        public RoomDTO GetRoomByDepartment(int departmentId)
+        public Room_RecepDTO GetRoomByDepartment(int departmentId)
         {
             string query = @"
     SELECT TOP 1 *
@@ -43,7 +43,7 @@ namespace DAL.Repositories
 
             DataRow row = dt.Rows[0];
 
-            return new RoomDTO
+            return new Room_RecepDTO
             {
                 RoomID = Convert.ToInt32(row["RoomID"]),
                 RoomCode = row["RoomCode"].ToString(),
@@ -52,7 +52,7 @@ namespace DAL.Repositories
             };
         }
 
-        public RoomDTO GetById(int roomId)
+        public Room_RecepDTO GetById(int roomId)
         {
             string query = @"
         SELECT *
@@ -74,7 +74,7 @@ namespace DAL.Repositories
 
             DataRow row = dt.Rows[0];
 
-            return new RoomDTO
+            return new Room_RecepDTO
             {
                 RoomID =
                     Convert.ToInt32(row["RoomID"]),

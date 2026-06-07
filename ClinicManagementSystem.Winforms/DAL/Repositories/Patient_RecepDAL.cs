@@ -8,7 +8,7 @@ using DAL.Interfaces;
 
 namespace DAL.Repositories
 {
-    public class PatientDAL : IPatientRepository
+    public class Patient_RecepDAL : IPatientRepository
     {
         private bool IsNewSchema()
         {

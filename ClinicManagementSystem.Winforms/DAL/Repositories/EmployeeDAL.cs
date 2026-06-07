@@ -10,7 +10,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
-    public class EmployeeDAL
+    public class Employee_RecepDAL
     {
         public List<EmployeeDTO> GetDoctorsByDepartment(int departmentId)
         {

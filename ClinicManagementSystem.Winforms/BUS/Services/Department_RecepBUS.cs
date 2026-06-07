@@ -3,7 +3,7 @@ using DTO;
 
 namespace BUS.Services
 {
-    public class DepartmentBUS
+    public class Department_RecepBUS
     {
         private readonly DepartmentDAL dal = new();
 

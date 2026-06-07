@@ -11,10 +11,10 @@ namespace ClinicManagementSystem.Winforms.Controllers
         private readonly EncounterBUS encounterBus =
             new();
 
-        private readonly PatientBUS patientBus =
+        private readonly Patient_RecepBUS patientBus =
             new();
 
-        private readonly EmployeeBUS employeeBus =
+        private readonly Employee_RecepBUS employeeBus =
             new();
 
         private readonly MedicalRecordBUS medicalRecordBus =

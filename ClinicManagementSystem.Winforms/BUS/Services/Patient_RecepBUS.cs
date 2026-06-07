@@ -6,9 +6,9 @@ using DTO;
 
 namespace BUS.Services
 {
-    public class PatientBUS
+    public class Patient_RecepBUS
     {
-        private readonly PatientDAL patientDAL = new();
+        private readonly Patient_RecepDAL patientDAL = new();
         private readonly InsuranceDAL insuranceDAL = new();
 
         public List<PatientDTO> GetList()

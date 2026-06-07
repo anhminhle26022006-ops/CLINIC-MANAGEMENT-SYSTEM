@@ -3,9 +3,9 @@ using DTO;
 
 namespace BUS.Services
 {
-    public class EmployeeBUS
+    public class Employee_RecepBUS
     {
-        private readonly EmployeeDAL dal = new();
+        private readonly Employee_RecepDAL dal = new();
 
         public List<EmployeeDTO> GetDoctorsByDepartment(
             int departmentId)
