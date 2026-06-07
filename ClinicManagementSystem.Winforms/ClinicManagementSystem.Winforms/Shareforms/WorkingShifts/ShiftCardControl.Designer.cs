@@ -36,8 +36,8 @@
             // lblCode
             // 
             lblCode.AutoSize = true;
-            lblCode.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblCode.Location = new Point(37, 17);
+            lblCode.Font = new Font("Segoe UI Semibold", 8, FontStyle.Bold);
+            lblCode.Location = new Point(5, 5);
             lblCode.Name = "lblCode";
             lblCode.Size = new Size(67, 28);
             lblCode.TabIndex = 0;
@@ -46,7 +46,8 @@
             // lblTime
             // 
             lblTime.AutoSize = true;
-            lblTime.Location = new Point(27, 61);
+            lblTime.Font = new Font("Segoe UI", 7);
+            lblTime.Location = new Point(5, 28);
             lblTime.Name = "lblTime";
             lblTime.Size = new Size(93, 20);
             lblTime.TabIndex = 1;
@@ -55,7 +56,8 @@
             // lblDepartment
             // 
             lblDepartment.AutoSize = true;
-            lblDepartment.Location = new Point(37, 103);
+            lblDepartment.Font = new Font("Segoe UI",7);
+            lblDepartment.Location = new Point(5, 48);
             lblDepartment.Name = "lblDepartment";
             lblDepartment.Size = new Size(71, 20);
             lblDepartment.TabIndex = 2;
@@ -70,7 +72,7 @@
             Controls.Add(lblTime);
             Controls.Add(lblCode);
             Name = "ShiftCardControl";
-            Size = new Size(152, 148);
+            Size = new Size(130, 65);
             ResumeLayout(false);
             PerformLayout();
         }

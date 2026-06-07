@@ -686,6 +686,15 @@ ALTER TABLE Transfers
 ADD CONSTRAINT UQ_Transfers_UUID
 UNIQUE (TransferUUID);
 
+ALTER TABLE VitalSigns
+ADD Height DECIMAL(5,2);
+
+ALTER TABLE PrescriptionDetails
+ADD Frequency NVARCHAR(100);
+
+ALTER TABLE PrescriptionDetails
+ADD Instruction NVARCHAR(500);
+
 INSERT INTO Departments(DepartmentName)
 VALUES
 (N'Tiếp nhận'),
