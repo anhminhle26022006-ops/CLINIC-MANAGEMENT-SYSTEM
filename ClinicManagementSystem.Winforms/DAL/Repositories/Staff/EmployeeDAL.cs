@@ -10,6 +10,35 @@ namespace DAL.Repositories
 {
     public class EmployeeDAL : IEmployeeDAL
     {
+        public Task<List<ApiEmployeeDTO>> GetAllAsync()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiEmployeeDTO> GetByCodeAsync(string code)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<int?> GetIdByCodeAsync(string code)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiEmployeeDTO> InsertAsync(ApiEmployeeDTO dto)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiEmployeeDTO> UpdateAsync(ApiEmployeeDTO dto)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task UpsertAsync(ApiEmployeeDTO dto)
+        {
+            throw new System.NotImplementedException();
+        }
         public List<EmployeeDTO> GetAll()
         {
             if (!SchemaHelper.TableExists("Employees"))

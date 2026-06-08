@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTO.Clinical.erm;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -29,6 +30,51 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
                 "20",
                 "Sau ăn");
         }
+        public void SetData(PrescriptionHistoryDto dto)
+        {
+            lblDate.Text = dto.CreatedAt.ToString("dd/MM/yyyy");
+            lblDoctor.Text = dto.DoctorName;
 
+            dgvMedicines.Rows.Clear();
+
+            if (dto.Medicines == null) return;
+
+            foreach (var m in dto.Medicines)
+            {
+                dgvMedicines.Rows.Add(
+                    m.MedicineName,
+                    m.Dosage,
+                    m.Frequency,
+                    m.Quantity,
+                    m.Instruction
+                );
+            }
+        }
+        public void Bind(PrescriptionHistoryDto dto)
+        {
+            if (dto == null) return;
+
+            // Header
+            lblDate.Text = dto.CreatedAt.ToString("dd/MM/yyyy");
+            lblDoctor.Text = dto.DoctorName;
+
+            // Clear grid
+            dgvMedicines.Rows.Clear();
+
+            // Fill medicines
+            if (dto.Medicines != null)
+            {
+                foreach (var m in dto.Medicines)
+                {
+                    dgvMedicines.Rows.Add(
+                        m.MedicineName,
+                        m.Dosage,
+                        m.Frequency,
+                        m.Quantity,
+                        m.Instruction
+                    );
+                }
+            }
+        }
     }
 }

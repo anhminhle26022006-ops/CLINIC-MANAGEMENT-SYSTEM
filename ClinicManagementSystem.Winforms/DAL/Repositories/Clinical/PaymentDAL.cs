@@ -172,15 +172,19 @@ namespace DAL.Repositories
             string query =
             @"
             SELECT
-                s.ServiceName AS Description,
-                es.Quantity,
-                es.UnitPrice,
-                es.Quantity * es.UnitPrice AS Amount
-            FROM EncounterServices es
-            INNER JOIN Services s
-                ON es.ServiceID = s.ServiceID
-            WHERE es.EncounterID =
-                @EncounterID
+    p.FullName AS PatientName,
+    s.ServiceName AS Description,
+    es.Quantity,
+    es.UnitPrice,
+    es.Quantity * es.UnitPrice AS Amount
+FROM EncounterServices es
+INNER JOIN Services s
+    ON es.ServiceID = s.ServiceID
+INNER JOIN Encounters e
+    ON es.EncounterID = e.EncounterID
+INNER JOIN Patients p
+    ON e.PatientID = p.PatientID
+WHERE es.EncounterID = @EncounterID
             ";
 
             SqlParameter[] parameters =
@@ -197,27 +201,32 @@ namespace DAL.Repositories
             foreach (DataRow row in dt.Rows)
             {
                 list.Add(
-                    new PaymentDetailDTO
-                    {
-                        ItemType = "Service",
+    new PaymentDetailDTO
+    {
+        ItemType = "Service",
 
-                        Description =
-                            row["Description"]
-                            .ToString()
-                            ?? string.Empty,
+        PatientName =
+            row["PatientName"]
+            .ToString()
+            ?? string.Empty,
 
-                        Quantity =
-                            Convert.ToInt32(
-                                row["Quantity"]),
+        Description =
+            row["Description"]
+            .ToString()
+            ?? string.Empty,
 
-                        UnitPrice =
-                            Convert.ToDecimal(
-                                row["UnitPrice"]),
+        Quantity =
+            Convert.ToInt32(
+                row["Quantity"]),
 
-                        Amount =
-                            Convert.ToDecimal(
-                                row["Amount"])
-                    });
+        UnitPrice =
+            Convert.ToDecimal(
+                row["UnitPrice"]),
+
+        Amount =
+            Convert.ToDecimal(
+                row["Amount"])
+    });
             }
 
             return list;
@@ -231,10 +240,20 @@ namespace DAL.Repositories
 
             string query =
             @"
-            SELECT *
-            FROM Payments
-            WHERE Status = 'Paid'
-            ORDER BY PaidAt DESC
+            SELECT
+    p.PaymentID,
+    p.EncounterID,
+    p.PatientID,
+    pa.FullName AS PatientName,
+    p.Amount,
+    p.Method,
+    p.Status,
+    p.PaidAt
+FROM Payments p
+INNER JOIN Patients pa
+    ON p.PatientID = pa.PatientID
+WHERE p.Status = 'Paid'
+ORDER BY p.PaidAt DESC
             ";
 
             DataTable dt =
@@ -257,6 +276,10 @@ namespace DAL.Repositories
                         PatientID =
                             Convert.ToInt32(
                                 row["PatientID"]),
+                        PatientName =
+    row["PatientName"]
+    .ToString()
+    ?? string.Empty,
 
                         Amount =
                             Convert.ToDecimal(
@@ -290,19 +313,26 @@ namespace DAL.Repositories
 
             string query =
             @"
-    SELECT *
-    FROM Payments
-    WHERE Status = 'Paid'
-      AND
-      (
-            CAST(PaymentID AS NVARCHAR)
-                LIKE '%' + @Keyword + '%'
-         OR CAST(EncounterID AS NVARCHAR)
-                LIKE '%' + @Keyword + '%'
-         OR CAST(PatientID AS NVARCHAR)
-                LIKE '%' + @Keyword + '%'
-      )
-    ORDER BY PaidAt DESC
+    SELECT
+    p.PaymentID,
+    p.EncounterID,
+    p.PatientID,
+    pa.FullName AS PatientName,
+    p.Amount,
+    p.Method,
+    p.Status,
+    p.PaidAt
+FROM Payments p
+INNER JOIN Patients pa
+    ON p.PatientID = pa.PatientID
+WHERE p.Status = 'Paid'
+  AND
+  (
+       pa.FullName LIKE '%' + @Keyword + '%'
+    OR CAST(p.PaymentID AS NVARCHAR) LIKE '%' + @Keyword + '%'
+    OR CAST(p.EncounterID AS NVARCHAR) LIKE '%' + @Keyword + '%'
+  )
+ORDER BY p.PaidAt DESC
     ";
 
             SqlParameter[] parameters =
