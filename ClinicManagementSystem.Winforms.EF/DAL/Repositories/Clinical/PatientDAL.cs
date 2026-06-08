@@ -38,9 +38,9 @@ namespace DAL.Repositories
             {
                 string pattern = "%" + term + "%";
                 query = query.Where(p =>
-                    EF.Functions.Like(p.FullName, pattern)
-                    || EF.Functions.Like(p.PatientCode, pattern)
-                    || EF.Functions.Like(p.Phone, pattern));
+                    p.FullName.ToLower().Contains(term.ToLower())
+                    || p.PatientCode.ToLower().Contains(term.ToLower())
+                    || p.Phone.Contains(term));
             }
 
             return query

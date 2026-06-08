@@ -1,0 +1,28 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{async}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{paymentStatusTimer\PYGZus{}Tick}\PYG{p}{(}\PYG{k+kt}{object}\PYG{+w}{ }\PYG{n}{sender}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{EventArgs}\PYG{+w}{ }\PYG{n}{e}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{paymentStatusTimer}\PYG{p}{.}\PYG{n}{Stop}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k}{try}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{PayOsApiResponse}\PYG{+w}{ }\PYG{n}{response}\PYG{+w}{ }\PYG{o}{=}
+\PYG{+w}{            }\PYG{k}{await}\PYG{+w}{ }\PYG{n+nf}{GetPaymentStatusAsync}\PYG{p}{(}\PYG{n}{currentOrderCode}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{CancellationToken}\PYG{p}{.}\PYG{n}{None}\PYG{p}{);}
+
+\PYG{+w}{        }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{status}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{response}\PYG{o}{?.}\PYG{n}{data}\PYG{o}{?.}\PYG{n}{status}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{lblStatus}\PYG{p}{.}\PYG{n}{Text}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Trang thai: \PYGZdq{}}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{status}\PYG{p}{;}
+
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{status}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}PAID\PYGZdq{}}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{DialogResult}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DialogResult}\PYG{p}{.}\PYG{n}{OK}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{Close}\PYG{p}{();}
+\PYG{+w}{            }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{n}{paymentStatusTimer}\PYG{p}{.}\PYG{n}{Start}\PYG{p}{();}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k}{catch}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{paymentStatusTimer}\PYG{p}{.}\PYG{n}{Start}\PYG{p}{();}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

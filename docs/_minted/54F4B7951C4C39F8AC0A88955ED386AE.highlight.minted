@@ -1,0 +1,24 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k}{partial}\PYG{+w}{ }\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{PatientManagement}\PYG{+w}{ }\PYG{p}{:}\PYG{+w}{ }\PYG{n}{UserControl}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{private}\PYG{+w}{ }\PYG{k}{readonly}\PYG{+w}{ }\PYG{n}{PatientBUS}\PYG{+w}{ }\PYG{n}{patientBUS}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{PatientBUS}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{n+nf}{PatientManagement}\PYG{p}{()}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{InitializeComponent}\PYG{p}{();}
+\PYG{+w}{        }\PYG{n}{LoadPatients}\PYG{p}{();}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{LoadPatients}\PYG{p}{()}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{dgvPatients}\PYG{p}{.}\PYG{n}{AutoGenerateColumns}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{dgvPatients}\PYG{p}{.}\PYG{n}{DataSource}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{patientBUS}\PYG{p}{.}\PYG{n}{GetAllPatients}\PYG{p}{();}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{btnSearch\PYGZus{}Click}\PYG{p}{(}\PYG{k+kt}{object}\PYG{+w}{ }\PYG{n}{sender}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{EventArgs}\PYG{+w}{ }\PYG{n}{e}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{keyword}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{txtSearch}\PYG{p}{.}\PYG{n}{Text}\PYG{p}{.}\PYG{n}{Trim}\PYG{p}{();}
+\PYG{+w}{        }\PYG{n}{dgvPatients}\PYG{p}{.}\PYG{n}{DataSource}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{patientBUS}\PYG{p}{.}\PYG{n}{SearchPatients}\PYG{p}{(}\PYG{n}{keyword}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

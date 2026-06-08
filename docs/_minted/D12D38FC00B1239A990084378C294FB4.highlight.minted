@@ -1,0 +1,13 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n+nf}{TryReadTemperature}\PYG{p}{(}\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{decimal}\PYG{+w}{ }\PYG{n}{temperature}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{!}\PYG{k+kt}{decimal}\PYG{p}{.}\PYG{n}{TryParse}\PYG{p}{(}\PYG{n}{txtTemperature}\PYG{p}{.}\PYG{n}{Text}\PYG{p}{.}\PYG{n}{Trim}\PYG{p}{(),}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{n}{temperature}\PYG{p}{))}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{MessageBox}\PYG{p}{.}\PYG{n}{Show}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Nhiet do phai la so\PYGZdq{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{txtTemperature}\PYG{p}{.}\PYG{n}{Focus}\PYG{p}{();}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{true}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

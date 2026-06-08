@@ -1,0 +1,46 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k}{async}\PYG{+w}{ }\PYG{n}{Task}\PYG{o}{\PYGZlt{}}\PYG{n}{ApiSyncResultDTO}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{SyncAsync}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{ApiSyncResultDTO}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{supabasePatientsRaw}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{await}\PYG{+w}{ }\PYG{n}{repository}\PYG{p}{.}\PYG{n}{GetSupabasePatientsAsync}\PYG{p}{();}
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{sheetPatientsRaw}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{await}\PYG{+w}{ }\PYG{n}{repository}\PYG{p}{.}\PYG{n}{GetSheetPatientsAsync}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{supabasePatients}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{supabasePatientsRaw}
+\PYG{+w}{        }\PYG{p}{.}\PYG{n}{Where}\PYG{p}{(}\PYG{n}{p}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{o}{!}\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{p}\PYG{p}{.}\PYG{n}{PatientCode}\PYG{p}{))}
+\PYG{+w}{        }\PYG{p}{.}\PYG{n}{Where}\PYG{p}{(}\PYG{n}{p}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{o}{!}\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{p}\PYG{p}{.}\PYG{n}{FullName}\PYG{p}{))}
+\PYG{+w}{        }\PYG{p}{.}\PYG{n}{ToList}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{sheetPatients}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{sheetPatientsRaw}
+\PYG{+w}{        }\PYG{p}{.}\PYG{n}{Where}\PYG{p}{(}\PYG{n}{p}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{o}{!}\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{p}\PYG{p}{.}\PYG{n}{PatientCode}\PYG{p}{))}
+\PYG{+w}{        }\PYG{p}{.}\PYG{n}{Where}\PYG{p}{(}\PYG{n}{p}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{o}{!}\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{p}\PYG{p}{.}\PYG{n}{FullName}\PYG{p}{))}
+\PYG{+w}{        }\PYG{p}{.}\PYG{n}{ToList}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k}{await}\PYG{+w}{ }\PYG{n+nf}{LinkMissingSheetPatientUuidsFromSupabaseAsync}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{sheetPatients}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{supabasePatients}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{result}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{await}\PYG{+w}{ }\PYG{n+nf}{SyncPatientsToLocalSqlServerAsync}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{sheetPatients}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{result}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{patchSheetWhenMissingUuid}\PYG{p}{:}\PYG{+w}{ }\PYG{k}{true}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{await}\PYG{+w}{ }\PYG{n+nf}{SyncPatientsToLocalSqlServerAsync}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{supabasePatients}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{result}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{patchSheetWhenMissingUuid}\PYG{p}{:}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{await}\PYG{+w}{ }\PYG{n+nf}{SyncPatientsSheetToSupabaseAsync}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{sheetPatients}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{supabasePatients}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{result}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{await}\PYG{+w}{ }\PYG{n+nf}{SyncPatientsSupabaseToSheetAsync}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{supabasePatients}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{sheetPatients}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{result}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{result}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

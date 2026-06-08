@@ -1,0 +1,12 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{BindMedicine}\PYG{p}{(}\PYG{n}{MedicineDTO}\PYG{+w}{ }\PYG{n}{medicine}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{lblMedicineName}\PYG{p}{.}\PYG{n}{Text}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{medicine}\PYG{p}{.}\PYG{n}{MedicineName}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{lblDosage}\PYG{p}{.}\PYG{n}{Text}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{medicine}\PYG{p}{.}\PYG{n}{Dosage}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{lblUnit}\PYG{p}{.}\PYG{n}{Text}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{medicine}\PYG{p}{.}\PYG{n}{Unit}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{lblStock}\PYG{p}{.}\PYG{n}{Text}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{medicine}\PYG{p}{.}\PYG{n}{StockQuantity}\PYG{p}{.}\PYG{n}{ToString}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{n}{btnEdit}\PYG{p}{.}\PYG{n}{Tag}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{medicine}\PYG{p}{.}\PYG{n}{MedicineID}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{btnEdit}\PYG{p}{.}\PYG{n}{Click}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{btnEdit\PYGZus{}Click}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

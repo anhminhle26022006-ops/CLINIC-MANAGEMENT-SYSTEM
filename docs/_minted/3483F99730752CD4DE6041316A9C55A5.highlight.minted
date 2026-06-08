@@ -1,0 +1,10 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{supabaseUrl}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ReadSetting}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}ApiSyncSupabaseUrl\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{p}{).}\PYG{n}{TrimEnd}\PYG{p}{(}\PYG{l+s+sc}{\PYGZsq{}/\PYGZsq{}}\PYG{p}{);}
+\PYG{n}{supabaseKey}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ReadSetting}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}ApiSyncSupabaseKey\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{p}{);}
+\PYG{n}{sheetDbPatientUrl}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{WithSheetName}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{ReadSetting}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}ApiSyncSheetDbPatientUrl\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{p}{),}
+\PYG{+w}{    }\PYG{n}{ReadSetting}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}ApiSyncSheetDbPatientSheet\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Patient\PYGZdq{}}\PYG{p}{));}
+\PYG{n}{sheetDbEmployeeUrl}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{WithSheetName}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{ReadSetting}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}ApiSyncSheetDbEmployeeUrl\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{p}{),}
+\PYG{+w}{    }\PYG{n}{ReadSetting}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}ApiSyncSheetDbEmployeeSheet\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Doctor\PYGZdq{}}\PYG{p}{));}
+\end{MintedVerbatim}

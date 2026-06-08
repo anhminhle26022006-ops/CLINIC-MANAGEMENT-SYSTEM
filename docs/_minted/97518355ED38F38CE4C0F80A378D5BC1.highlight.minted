@@ -1,0 +1,9 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{LoadContent}\PYG{p}{(}\PYG{n}{UserControl}\PYG{+w}{ }\PYG{n}{control}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{pnlContent}\PYG{p}{.}\PYG{n}{Controls}\PYG{p}{.}\PYG{n}{Clear}\PYG{p}{();}
+\PYG{+w}{    }\PYG{n}{control}\PYG{p}{.}\PYG{n}{Dock}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DockStyle}\PYG{p}{.}\PYG{n}{Fill}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{pnlContent}\PYG{p}{.}\PYG{n}{Controls}\PYG{p}{.}\PYG{n}{Add}\PYG{p}{(}\PYG{n}{control}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{control}\PYG{p}{.}\PYG{n}{BringToFront}\PYG{p}{();}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

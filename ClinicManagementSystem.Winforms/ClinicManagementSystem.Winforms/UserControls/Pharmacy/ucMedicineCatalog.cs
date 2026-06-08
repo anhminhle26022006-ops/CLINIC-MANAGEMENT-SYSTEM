@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using DTO;
 using DAL;
+using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 {
@@ -24,6 +25,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             txtMedicineSearch.TextChanged += (s, ev) => FilterMedicines();
             cboCategory.SelectedIndexChanged += (s, ev) => FilterMedicines();
             cboStatus.SelectedIndexChanged += (s, ev) => FilterMedicines();
+            btnAddMedicine.Click += btnAddMedicine_Click;
 
             LoadMedicines();
         }
@@ -117,6 +119,17 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             if (name.Contains("Vitamin")) return "Vitamin";
             if (name.Contains("Medrol")) return "Kháng viêm";
             return "Dạ dày";
+        }
+
+        private void btnAddMedicine_Click(object sender, EventArgs e)
+        {
+            using (var form = new AddMedicineForm())
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    LoadMedicines();
+                }
+            }
         }
     }
 }

@@ -1,0 +1,23 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n+nf}{ConfirmPayment}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{encounterId}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{method}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{InvoiceDTO}\PYG{+w}{ }\PYG{n}{invoice}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{invoiceDAL}\PYG{p}{.}\PYG{n}{GetByEncounter}\PYG{p}{(}\PYG{n}{encounterId}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{invoice}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{k}{null}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{n}{invoice}\PYG{p}{.}\PYG{n}{TotalAmount}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{updated}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{paymentDAL}\PYG{p}{.}\PYG{n}{UpdatePaymentStatus}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{encounterId}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{PaymentStatus}\PYG{p}{.}\PYG{n}{Paid}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{method}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{!}\PYG{n}{updated}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{invoiceDAL}\PYG{p}{.}\PYG{n}{MarkInvoiceAsPaid}\PYG{p}{(}\PYG{n}{invoice}\PYG{p}{.}\PYG{n}{InvoiceID}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{true}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

@@ -1,0 +1,3863 @@
+\documentclass[12pt,a4paper]{article}
+
+% ==================== FONT / ENCODING ====================
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{mathptmx}
+
+% ==================== TOÁN HỌC ====================
+\usepackage{amsmath,amssymb,amsfonts,yhmath}
+\numberwithin{figure}{subsection}
+\numberwithin{table}{subsection}
+\IfFileExists{placeins.sty}{\usepackage{placeins}}{}
+
+% ==================== LAYOUT ====================
+\usepackage[top=2cm, bottom=2cm, left=3cm, right=2cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{indentfirst}
+\setlength{\parindent}{1.1cm}
+
+% ==================== DANH SÁCH / BẢNG / HÌNH ====================
+\usepackage{enumitem}
+\usepackage[table]{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{makecell}
+\usepackage{tabularx}
+\usepackage{pdflscape}
+
+% ==================== TIKZ ====================
+\usepackage{tikz}
+\usetikzlibrary{
+    calc,
+    arrows.meta,
+    shadows,
+    decorations.pathreplacing,
+    shapes.geometric,
+    positioning
+}
+
+% ==================== MÀU SẮC ====================
+\definecolor{uehred}{RGB}{210, 50, 40}
+\definecolor{uehteal}{HTML}{2D5D66}
+\definecolor{uehorange}{HTML}{D96B42}
+\definecolor{uehblue}{HTML}{1A408B}
+\definecolor{LightGray}{gray}{0.9}
+\definecolor{layerBlue}{RGB}{225, 238, 255}
+\definecolor{layerGreen}{RGB}{228, 248, 235}
+\definecolor{layerOrange}{RGB}{255, 241, 229}
+\definecolor{layerPurple}{RGB}{242, 235, 255}
+
+% ==================== TITLE / SECTION ====================
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+
+% ==================== TCOLORBOX ====================
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable,skins}
+\usepackage{fontawesome5}
+% Không load ex_test.sty trong báo cáo này để tránh can thiệp môi trường theorem,
+% hyperref và tiêu đề tài liệu tham khảo.
+\usepackage{anyfontsize}
+
+% ==================== MINTED: CODE C# ====================
+\usepackage{minted}
+\setminted{
+    frame=lines,
+    framesep=1mm,
+    baselinestretch=1.0,
+    bgcolor=LightGray!40,
+    fontsize=\scriptsize,
+    linenos,
+    numbersep=6pt,
+    breaklines=true,
+    breakanywhere=true,
+    autogobble=true
+}
+
+\renewcommand{\theFancyVerbLine}{
+    \textcolor{gray!60!white}{\scriptsize\arabic{FancyVerbLine}}
+}
+
+\usepackage{algpseudocode}
+\usepackage{caption}
+
+% ==================== HYPERREF ====================
+\usepackage{hyperref}
+\hypersetup{
+    unicode,
+    hidelinks,
+    hypertexnames=false
+}
+
+\graphicspath{{resources/}}
+
+% ==================== MACRO PHỤ TRỢ ====================
+\newcommand{\sourcecodebox}[2]{%
+\begin{center}
+\begin{tcolorbox}[
+    enhanced,
+    breakable,
+    colback=uehblue!3,
+    colframe=uehblue!65!black,
+    boxrule=0.6pt,
+    arc=2mm,
+    left=2mm,
+    right=2mm,
+    top=1.5mm,
+    bottom=1.5mm,
+    title={\faCode\ Mã nguồn minh họa},
+    fonttitle=\bfseries
+]
+#1
+\par\medskip
+\centering
+\hyperref[#2]{%
+\tikz[baseline=(btn.base)]\node[
+    fill=uehblue,
+    rounded corners=3pt,
+    inner xsep=8pt,
+    inner ysep=4pt
+] (btn) {\textcolor{white}{\bfseries Nhấn vào đây để xem mã nguồn}};%
+}
+\end{tcolorbox}
+\end{center}
+}
+
+\newcounter{breakablealgocounter}
+\setlist[itemize,1]{
+    label=\(\circ\),
+    leftmargin=1.2cm,
+    itemsep=3pt,
+    topsep=4pt
+}
+\setlist[itemize,2]{
+    label=\(\circ\),
+    leftmargin=1cm,
+    itemsep=2pt,
+    topsep=2pt
+}
+\newenvironment{breakablealgorithm}[1]
+{
+    \refstepcounter{breakablealgocounter}
+    \addcontentsline{loa}{appendixentry}{\protect\numberline{Thuật toán \thebreakablealgocounter}#1}
+    \begin{tcolorbox}[
+        breakable,
+        enhanced,
+        colback=white,
+        colframe=black!55,
+        sharp corners,
+        boxrule=0.5pt,
+        left=2mm,
+        right=2mm,
+        top=1mm,
+        bottom=1mm,
+        title={Thuật toán \thebreakablealgocounter. #1},
+        fonttitle=\bfseries
+    ]
+}
+{
+    \end{tcolorbox}
+}
+
+% ==================== VIỆT HÓA ====================
+\renewcommand{\contentsname}{Mục lục}
+\renewcommand{\figurename}{Hình}
+\renewcommand{\tablename}{Bảng}
+\renewcommand{\refname}{Tài liệu tham khảo}
+\renewcommand{\listfigurename}{Danh mục hình ảnh}
+\renewcommand{\listtablename}{Danh mục bảng biểu}
+
+\renewcommand{\ge}{\geqslant}
+\renewcommand{\geq}{\geqslant}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\leq}{\leqslant}
+
+\newcommand{\safeincludegraphics}[2][]{%
+    \IfFileExists{#2}{%
+        \includegraphics[#1]{#2}%
+    }{%
+        \fbox{%
+            \parbox{0.72\textwidth}{%
+                \centering
+                \textit{Thiếu tệp hình:} \texttt{\detokenize{#2}}%
+            }%
+        }%
+    }%
+}
+
+\newcommand{\appendixnote}[1]{%
+    \par\smallskip
+    \noindent\textit{#1}
+    \par\medskip
+}
+
+\makeatletter
+\newcommand{\printappendixfigures}{\@starttoc{lof}}
+\newcommand{\printappendixtables}{\@starttoc{lot}}
+\newcommand{\printappendixalgorithms}{\@starttoc{loa}}
+\renewcommand*{\l@figure}[2]{%
+    \@dottedtocline{1}{0em}{6.2em}{\figurename~#1}{#2}%
+}
+\renewcommand*{\l@table}[2]{%
+    \@dottedtocline{1}{0em}{6.2em}{\tablename~#1}{#2}%
+}
+\newcommand*{\l@appendixentry}{\@dottedtocline{1}{0em}{7.2em}}
+\makeatother
+
+\newcounter{codecounter}
+\newenvironment{codeblock}[2]{%
+    \refstepcounter{codecounter}%
+    \phantomsection%
+    \label{#1}%
+    \par\smallskip
+}{%
+    \par\smallskip
+}
+
+\begin{document}
+\pagenumbering{gobble}
+
+% ==================== TRANG BÌA ====================
+\begin{titlepage}
+
+\begin{tikzpicture}[remember picture, overlay]
+    \node[inner sep=0pt] at (current page.center) {
+        \safeincludegraphics[width=1.1\paperwidth, height=1\paperheight]{resources/khung_pdf.pdf}
+    };
+\end{tikzpicture}
+
+\centering
+\vspace*{0.2cm}
+
+{\small BỘ GIÁO DỤC VÀ ĐÀO TẠO} \\[0.2cm]
+{\bfseries \large ĐẠI HỌC KINH TẾ TP HỒ CHÍ MINH (UEH)} \\[0.2cm]
+{\bfseries \small TRƯỜNG CÔNG NGHỆ VÀ THIẾT KẾ} \\
+\vspace{1cm}
+
+\safeincludegraphics[width=5cm]{resources/Logo_UEH_xanh.png} \\
+\vspace{1cm}
+
+{\bfseries \Large ĐỒ ÁN MÔN HỌC} \\[0.5cm]
+{\bfseries \large ĐỀ TÀI} \\[0.5cm]
+\textcolor{uehred}{\bfseries \Large XÂY DỰNG CHƯƠNG TRÌNH DESKTOP} \\[0.3cm]
+\textcolor{uehred}{\bfseries \Large QUẢN LÝ PHÒNG KHÁM ĐA VAI TRÒ} \\
+\vspace{0.8cm}
+
+\begin{flushleft}
+\hspace{3.5cm} \textbf{Học Phần:} DESKTOP \\[0.2cm]
+\hspace{3.5cm} \textbf{Danh Sách Nhóm}: \\[0.3cm]
+
+\noindent\hspace*{4.5cm}
+\renewcommand{\arraystretch}{1.28}
+\begin{tabular}{@{} c @{\hspace{0.5cm}} l @{\hspace{0.5cm}} l @{}}
+    1 & LÊ MINH ANH & -- 31241023293 \\
+    2 & NGUYỄN ĐINH THẢO NHI & -- 31241026988 \\
+    3 & TỪ TRƯƠNG THANH TRÚC & -- 31241023563 \\
+    4 & ĐINH THỊ ANH THƯ & -- 31241026994 \\
+    5 & LỮ VÕ HOÀNG PHÚC & -- 31241025389 \\
+\end{tabular}
+\end{flushleft}
+\vspace{0.5cm}
+
+\begin{flushleft}
+\hspace{3.5cm} \textbf{Chuyên Ngành:} \textcolor{uehred}{KỸ THUẬT PHẦN MỀM} \\[0.1cm]
+\hspace{3.5cm} \textbf{Khóa:} \textcolor{uehred}{K50} \\[0.8cm]
+\hspace{3.5cm} \textbf{Giảng Viên:} LÊ HỮU THANH TÙNG
+\end{flushleft}
+
+\vfill
+{\bfseries \small Tp. Hồ Chí Minh, Ngày 05 tháng 06 năm 2026}
+\end{titlepage}
+
+% ==================== MỤC LỤC ====================
+\newpage
+\tableofcontents
+\thispagestyle{empty}
+
+% ==================== TÓM TẮT ====================
+\newpage
+\thispagestyle{empty}
+
+\section*{TÓM TẮT}
+\phantomsection
+\addcontentsline{toc}{section}{TÓM TẮT}
+
+Đồ án xây dựng hệ thống quản lý phòng khám dưới dạng ứng dụng Desktop, triển khai bằng C\# WinForms và SQL Server. Hệ thống hướng đến mô hình phòng khám ngoại trú, nơi các nghiệp vụ tiếp nhận, khám bệnh, xét nghiệm, chẩn đoán hình ảnh, cấp phát thuốc, thanh toán và theo dõi hồ sơ bệnh án cần được xử lý liên tục bởi nhiều nhóm người dùng khác nhau. Mục tiêu nghiên cứu của đề tài là thiết kế và hiện thực một mô hình phần mềm có khả năng phân quyền theo vai trò, lưu trữ dữ liệu tập trung, giảm thao tác thủ công và mô phỏng quy trình vận hành thực tế trong môi trường phòng khám.
+
+Về phương pháp thực hiện, nhóm phân tích yêu cầu nghiệp vụ từ quy trình khám ngoại trú, thiết kế cơ sở dữ liệu quan hệ trên SQL Server, tổ chức mã nguồn theo kiến trúc nhiều lớp DTO--BUS--DAL và xây dựng giao diện WinForms theo từng vai trò người dùng. Mã nguồn hiện được chia thành các project \texttt{ClinicManagementSystem.Winforms}, \texttt{BUS}, \texttt{DAL}, \texttt{DTO}, \texttt{Models}, \texttt{Core} và \texttt{ServicesExternal}. Cách tổ chức này giúp tách biệt giao diện, xử lý nghiệp vụ, truy cập dữ liệu, mô hình dữ liệu, hằng số hệ thống và tích hợp dịch vụ ngoài.
+
+Kết quả đạt được là một hệ thống có các phân hệ chính: đăng nhập và điều hướng theo vai trò; quản lý bệnh nhân; quản lý lịch khám và hàng chờ; quản lý hồ sơ bệnh án điện tử; xử lý sinh hiệu, đơn thuốc, xét nghiệm và chẩn đoán hình ảnh; quản lý thanh toán; quản lý nhà thuốc; quản lý ca làm; và đồng bộ dữ liệu với nguồn ngoài. Bên cạnh đó, hệ thống có mô phỏng tích hợp PayOS và các lớp hỗ trợ chuyển đổi dữ liệu ảnh base64 phục vụ thanh toán hoặc lưu trữ tài nguyên y tế.
+
+\noindent\textbf{Từ khóa:}
+\href{https://www.google.com/search?q=Clinic+Management+System}{Clinic Management System},
+\href{https://www.google.com/search?q=Windows+Forms+C%23}{C\# WinForms},
+\href{https://www.google.com/search?q=SQL+Server}{SQL Server},
+\href{https://www.google.com/search?q=3-tier+architecture}{3-Tier Architecture},
+\href{https://www.google.com/search?q=ADO.NET}{ADO.NET},
+\href{https://www.google.com/search?q=Electronic+Medical+Record}{Electronic Medical Record},
+\href{https://www.google.com/search?q=role-based+access+control}{Role-Based Access Control}.
+
+\vspace{1.2cm}
+\newpage
+\section*{LỜI CẢM ƠN}
+\phantomsection
+\addcontentsline{toc}{section}{LỜI CẢM ƠN}
+
+Nhóm thực hiện xin gửi lời cảm ơn đến giảng viên hướng dẫn đã hỗ trợ định hướng đề tài, góp ý về phạm vi nghiệp vụ và yêu cầu kỹ thuật trong quá trình xây dựng ứng dụng Desktop quản lý phòng khám. Những góp ý này giúp nhóm tổ chức lại quy trình phân tích, thiết kế cơ sở dữ liệu, phân lớp mã nguồn và kiểm thử chức năng theo hướng có hệ thống hơn.
+
+Nhóm cũng cảm ơn các thành viên đã phối hợp trong quá trình tìm hiểu nghiệp vụ, thiết kế giao diện, xây dựng tầng xử lý dữ liệu, kiểm tra lỗi và hoàn thiện báo cáo. Do phạm vi đồ án bao gồm nhiều vai trò người dùng và nhiều phân hệ nghiệp vụ, việc phân chia công việc và tổng hợp kết quả là yếu tố quan trọng để hoàn thành sản phẩm.
+
+\begin{flushright}
+\textit{Nhóm thực hiện}
+\end{flushright}
+
+% ==================== THUẬT NGỮ ====================
+\newpage
+\thispagestyle{empty}
+\section*{DANH MỤC THUẬT NGỮ VÀ KÝ HIỆU}
+\phantomsection
+\addcontentsline{toc}{section}{DANH MỤC THUẬT NGỮ VÀ KÝ HIỆU}
+
+Phần này tổng hợp các thuật ngữ kỹ thuật và nghiệp vụ được sử dụng trong báo cáo.
+
+\subsection*{Thuật ngữ chuyên ngành}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|p{3.2cm}|p{10.8cm}|}
+\hline
+\textbf{Thuật ngữ} & \textbf{Diễn giải ngắn gọn} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Thuật ngữ} & \textbf{Diễn giải ngắn gọn} \\
+\hline
+\endhead
+CMS & \textit{Clinic Management System}: hệ thống quản lý phòng khám, bao gồm dữ liệu bệnh nhân, lịch khám, hồ sơ, thanh toán và nhân sự. \\
+\hline
+WinForms & Công nghệ xây dựng giao diện Desktop của .NET, được sử dụng để tạo các Form và UserControl trong đồ án. \\
+\hline
+DTO & \textit{Data Transfer Object}: đối tượng truyền dữ liệu giữa giao diện, tầng nghiệp vụ và tầng truy cập dữ liệu. \\
+\hline
+BUS & \textit{Business Logic Layer}: tầng xử lý nghiệp vụ, kiểm tra điều kiện hợp lệ và điều phối truy cập dữ liệu. \\
+\hline
+DAL & \textit{Data Access Layer}: tầng truy cập cơ sở dữ liệu, thực hiện truy vấn SQL và ánh xạ dữ liệu sang DTO. \\
+\hline
+Repository & Lớp chịu trách nhiệm thao tác dữ liệu cho một nhóm nghiệp vụ cụ thể, ví dụ bệnh nhân, lịch hẹn, thanh toán. \\
+\hline
+RBAC & \textit{Role-Based Access Control}: cơ chế phân quyền dựa trên vai trò người dùng như Admin, Receptionist, Doctor, Nurse, Pharmacist, Technician. \\
+\hline
+ERM/EMR & Hồ sơ bệnh án điện tử, lưu thông tin bệnh nhân, lịch sử khám, sinh hiệu, xét nghiệm, hình ảnh, đơn thuốc và hóa đơn. \\
+\hline
+Encounter & Một lượt khám hoặc lần tiếp xúc y tế giữa bệnh nhân và bác sĩ trong hệ thống. \\
+\hline
+Appointment & Lịch hẹn khám của bệnh nhân với bác sĩ, khoa và phòng khám cụ thể. \\
+\hline
+Patient Queue & Hàng chờ bệnh nhân, thể hiện trạng thái chờ khám, đang khám, hoàn tất hoặc hủy. \\
+\hline
+PayOS & Cổng thanh toán được hệ thống mô phỏng tích hợp để hỗ trợ nghiệp vụ thanh toán và QR. \\
+\hline
+Supabase/SheetDB & Nguồn dữ liệu ngoài được mô phỏng trong phân hệ đồng bộ API. \\
+\hline
+\end{longtable}
+
+\subsection*{Ký hiệu và quy ước viết tắt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|p{3.2cm}|p{10.8cm}|}
+\hline
+\textbf{Ký hiệu} & \textbf{Ý nghĩa} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Ký hiệu} & \textbf{Ý nghĩa} \\
+\hline
+\endhead
+$U$ & Tập người dùng trong hệ thống. \\
+\hline
+$R$ & Tập vai trò người dùng, gồm Admin, Receptionist, Doctor, Nurse, Pharmacist và Technician. \\
+\hline
+$P$ & Tập bệnh nhân được lưu trong bảng \texttt{Patients}. \\
+\hline
+$A$ & Tập lịch hẹn khám trong bảng \texttt{Appointments}. \\
+\hline
+$E$ & Tập lượt khám trong bảng \texttt{Encounters}. \\
+\hline
+$Q$ & Tập hàng chờ bệnh nhân trong bảng \texttt{PatientQueues}. \\
+\hline
+$S$ & Tập dịch vụ lâm sàng hoặc cận lâm sàng trong bảng \texttt{Services}. \\
+\hline
+$M$ & Tập thuốc trong bảng \texttt{Medicines}. \\
+\hline
+$I$ & Tập hóa đơn hoặc thanh toán trong nhóm bảng \texttt{Invoices}, \texttt{Payments}. \\
+\hline
+\end{longtable}
+
+% ==================== NỘI DUNG CHÍNH ====================
+\newpage
+\pagestyle{plain}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section{Mở đầu}
+
+\subsection{Lý do chọn đề tài}
+
+Trong bối cảnh tin học hóa hoạt động y tế, các phòng khám ngoại trú không chỉ cần lưu trữ hồ sơ bệnh nhân mà còn phải phối hợp nhiều nghiệp vụ liên tiếp như đặt lịch, tiếp nhận, phân phòng, khám bệnh, chỉ định xét nghiệm, trả kết quả, kê toa, cấp phát thuốc, thanh toán và theo dõi tái khám. Nếu các bước này được thực hiện bằng giấy tờ hoặc nhiều bảng tính rời rạc, dữ liệu dễ bị trùng lặp, thiếu thống nhất và khó truy vết khi cần xem lại lịch sử điều trị.
+
+Đề tài \textbf{``Xây dựng chương trình Desktop quản lý phòng khám đa vai trò''} được lựa chọn nhằm mô phỏng một hệ thống quản lý phòng khám có cấu trúc gần với thực tế. Hệ thống hướng đến môi trường triển khai nội bộ, nơi các máy tính nghiệp vụ được sử dụng bởi lễ tân, bác sĩ, điều dưỡng, kỹ thuật viên, dược sĩ và quản trị viên. Với đặc thù này, ứng dụng Desktop bằng WinForms là lựa chọn phù hợp vì dễ thao tác, phản hồi nhanh và thuận tiện triển khai trong mạng nội bộ.
+
+Về mặt kỹ thuật, đồ án cho phép vận dụng các kiến thức về lập trình hướng đối tượng, thiết kế cơ sở dữ liệu quan hệ, kiến trúc phân lớp, phân quyền người dùng, xử lý dữ liệu y tế và tích hợp API. Đây là bài toán có nhiều thực thể liên quan, nhiều trạng thái nghiệp vụ và nhiều luồng xử lý, do đó phù hợp để đánh giá khả năng phân tích, thiết kế và hiện thực phần mềm quản lý.
+
+\subsection{Mục tiêu nghiên cứu}
+
+Mục tiêu tổng quát của đồ án là xây dựng một ứng dụng Desktop hỗ trợ quản lý quy trình khám chữa bệnh ngoại trú trong phòng khám, đảm bảo dữ liệu được lưu trữ tập trung, người dùng được phân quyền theo vai trò và các nghiệp vụ chính được xử lý theo quy trình thống nhất.
+
+Các mục tiêu cụ thể gồm:
+
+\begin{itemize}
+    \item Xây dựng ứng dụng C\# WinForms sử dụng SQL Server làm cơ sở dữ liệu chính.
+    \item Thiết kế kiến trúc nhiều lớp gồm UI, Controller, BUS, DAL, DTO, Models, Core và ServicesExternal.
+    \item Xây dựng cơ chế đăng nhập, lưu phiên làm việc và điều hướng giao diện theo vai trò.
+    \item Triển khai các phân hệ quản lý bệnh nhân, lịch hẹn, hàng chờ, hồ sơ bệnh án, sinh hiệu, xét nghiệm, hình ảnh, đơn thuốc, thanh toán, nhà thuốc và ca làm.
+    \item Mô phỏng đồng bộ dữ liệu ngoài qua Supabase/SheetDB và tích hợp thanh toán PayOS.
+    \item Đánh giá mức độ đáp ứng chức năng, ưu điểm, hạn chế và hướng phát triển của phần mềm.
+\end{itemize}
+
+\subsection{Phạm vi đề tài}
+
+Phạm vi nghiệp vụ của hệ thống tập trung vào phòng khám ngoại trú. Hệ thống không triển khai đầy đủ mô hình bệnh viện nội trú, quản lý giường bệnh, bảo hiểm y tế chuyên sâu hoặc hệ thống PACS đạt chuẩn bệnh viện. Các chức năng cận lâm sàng như xét nghiệm, MRI/X-Ray và PDF kết quả được mô phỏng ở mức lưu trữ dữ liệu, upload tệp và hiển thị trong hồ sơ bệnh án điện tử.
+
+Phạm vi kỹ thuật dựa trên mã nguồn hiện có trong thư mục \texttt{ClinicManagementSystem.Winforms}. Solution chính gồm các project \texttt{ClinicManagementSystem.Winforms}, \texttt{BUS}, \texttt{DAL}, \texttt{DTO}, \texttt{Models}, \texttt{Core}, \texttt{ServicesExternal} và script cơ sở dữ liệu \texttt{Database/CMS.sql}. Một số thư mục EF tồn tại ngoài solution chính, nhưng trong project WinForms đang khảo sát, thao tác dữ liệu chủ yếu được triển khai theo hướng ADO.NET với \texttt{Microsoft.Data.SqlClient}.
+
+\subsection{Phương pháp thực hiện}
+
+Nhóm áp dụng phương pháp phát triển theo hướng phân tích yêu cầu trước, sau đó thiết kế cơ sở dữ liệu, thiết kế kiến trúc, hiện thực từng phân hệ và kiểm thử chức năng. Các bước chính:
+
+\begin{enumerate}
+    \item Khảo sát quy trình khám ngoại trú và xác định các vai trò người dùng.
+    \item Phân rã nghiệp vụ thành các module độc lập như tiếp nhận, khám bệnh, kỹ thuật viên, nhà thuốc và thanh toán.
+    \item Thiết kế schema SQL Server theo nhóm bảng người dùng, bệnh nhân, lịch hẹn, encounter, cận lâm sàng, dược, thanh toán và ca làm.
+    \item Hiện thực tầng DTO, BUS, DAL và giao diện WinForms theo từng module.
+    \item Kiểm thử luồng đăng nhập, tạo lịch hẹn, tiếp nhận, xử lý hàng chờ, xem ERM, thanh toán và cấp phát thuốc.
+\end{enumerate}
+
+\section{Cơ sở lý thuyết và Công nghệ sử dụng}
+
+\subsection{Nền tảng lập trình C\# và Windows Forms}
+
+C\# là ngôn ngữ lập trình hướng đối tượng trên nền tảng .NET, phù hợp để xây dựng ứng dụng quản lý có nhiều thực thể nghiệp vụ và yêu cầu bảo trì dài hạn. Trong hệ thống quản lý phòng khám, các khái niệm như bệnh nhân, nhân viên, lịch hẹn, phòng khám, ca làm, đơn thuốc và hóa đơn đều có thể được mô hình hóa bằng lớp dữ liệu hoặc DTO.
+
+Windows Forms là công nghệ xây dựng giao diện Desktop của .NET. Ứng dụng WinForms hoạt động theo mô hình sự kiện: người dùng nhấn nút, chọn dòng, nhập thông tin hoặc mở form, sau đó chương trình xử lý event tương ứng. Cách tiếp cận này phù hợp với quy trình vận hành phòng khám vì nhân viên thường thao tác qua các form nhập liệu, bảng danh sách, nút xác nhận và hộp thoại chi tiết.
+
+Trong project, giao diện được chia thành:
+
+\begin{itemize}
+    \item \texttt{Mainforms}: form chính theo vai trò như Admin, Receptionist, Doctor, Nurse, Pharmacy và Technician.
+    \item \texttt{UserControls}: màn hình chức năng được nạp vào panel nội dung của main form.
+    \item \texttt{Forms}: các popup, form đăng nhập hoặc workflow độc lập.
+    \item \texttt{Shareforms}: thành phần dùng chung như ERM và WorkingShifts.
+    \item \texttt{Controllers}: lớp điều phối giữa UI và BUS để giảm logic trong code-behind.
+\end{itemize}
+
+\subsection{Các kỹ thuật WinForms được áp dụng trong đồ án}
+
+Vì đây là đồ án môn thiết kế ứng dụng Desktop bằng WinForms, phần giao diện không chỉ dừng ở việc kéo thả control trên Designer. Project sử dụng nhiều kỹ thuật đặc trưng của WinForms để tạo một ứng dụng nhiều màn hình, có phân quyền, có điều hướng nội bộ và có khả năng xử lý dữ liệu nghiệp vụ liên tục. Các kỹ thuật quan trọng gồm lập trình hướng sự kiện, chia form bằng partial class, nạp động \texttt{UserControl}, sử dụng \texttt{Dock}/\texttt{Anchor}, tổ chức bố cục bằng \texttt{TableLayoutPanel}/\texttt{FlowLayoutPanel}, hiển thị dữ liệu bằng \texttt{DataGridView}, mở hộp thoại modal bằng \texttt{ShowDialog} và xử lý tác vụ bất đồng bộ với \texttt{async}/\texttt{await}.
+
+\subsubsection{Lập trình hướng sự kiện}
+
+WinForms vận hành theo mô hình event-driven. Mỗi hành động của người dùng tạo ra một sự kiện, sau đó form hoặc user control xử lý sự kiện đó trong code-behind. Trong project, mô hình này xuất hiện ở hầu hết các màn hình: nhấn nút đăng nhập, chọn khoa, chọn bác sĩ, chọn slot giờ, click dòng lịch hẹn, mở chi tiết thanh toán, tải file PDF/MRI, đăng ký ca làm hoặc kiểm tra trạng thái thanh toán.
+
+Ưu điểm của mô hình sự kiện là phù hợp với phần mềm Desktop vì người dùng không đi theo một luồng tuyến tính cố định như chương trình console. Một lễ tân có thể tìm bệnh nhân, mở lịch hôm nay, quay lại hàng chờ rồi chuyển sang thanh toán. Một kỹ thuật viên có thể từ danh sách request đi sang upload MRI hoặc nhập kết quả xét nghiệm. Do đó, mỗi nút chức năng cần được gắn event rõ ràng, sau đó event gọi đúng controller/BUS thay vì xử lý toàn bộ trong giao diện.
+
+\begin{codeblock}{code:winform-event}{Minh họa xử lý sự kiện trong WinForms}
+\begin{minted}{csharp}
+private void btnPayment_Click(object sender, EventArgs e)
+{
+    LoadContent(new Payment());
+}
+
+private void dgvAppointment_CellContentClick(
+    object sender,
+    DataGridViewCellEventArgs e)
+{
+    if (e.RowIndex < 0)
+    {
+        return;
+    }
+
+    int appointmentId = Convert.ToInt32(
+        dgvAppointment.Rows[e.RowIndex].Cells["AppointmentID"].Value);
+
+    OpenAppointmentDetail(appointmentId);
+}
+\end{minted}
+\end{codeblock}
+
+\subsubsection{Partial class và Designer}
+
+Mỗi form hoặc user control trong WinForms thường được tách thành hai phần: file \texttt{.cs} chứa logic xử lý và file \texttt{.Designer.cs} chứa mã sinh tự động bởi Visual Studio Designer. Đây là một kỹ thuật quan trọng vì nó giúp nhóm phát triển vừa sử dụng công cụ kéo thả giao diện, vừa viết logic nghiệp vụ thủ công mà không làm rối lẫn hai loại mã.
+
+Trong project, các màn hình như \texttt{ScheduleToday}, \texttt{WaitingList}, \texttt{RegisterShiftForm}, \texttt{PharmacyMainform} và \texttt{TechnicianMainform} đều có cấu trúc partial class. File Designer khai báo control, thiết lập vị trí, màu sắc, font, \texttt{Dock}, \texttt{Anchor}, gán event cơ bản. File code-behind chịu trách nhiệm gọi BUS, bind dữ liệu, xử lý click, điều hướng và hiển thị thông báo.
+
+Cách tổ chức này cần được tuân thủ nghiêm túc. Nếu chỉnh sửa trực tiếp phần Designer quá nhiều, Visual Studio có thể ghi đè khi mở lại giao diện. Vì vậy, báo cáo xem Designer là nơi mô tả cấu trúc hiển thị, còn code-behind và controller là nơi mô tả hành vi.
+
+\subsubsection{Form, UserControl và mô hình màn hình con}
+
+Một ứng dụng Desktop nhiều phân hệ nếu mở mỗi chức năng bằng một form độc lập sẽ nhanh chóng gây rối trải nghiệm người dùng: nhiều cửa sổ chồng lên nhau, khó quay lại màn hình chính và khó kiểm soát trạng thái đăng nhập. Project giải quyết bằng cách dùng form chính theo vai trò làm ``shell'', sau đó nạp các \texttt{UserControl} vào vùng nội dung trung tâm.
+
+Trong mô hình này:
+
+\begin{itemize}
+    \item \texttt{MainformRole} quyết định người dùng thuộc vai trò nào và mở main form tương ứng.
+    \item Các main form như \texttt{ReceptionistMainform}, \texttt{TechnicianMainform}, \texttt{PharmacyMainform} giữ thanh menu, thông tin người dùng và vùng nội dung.
+    \item Mỗi chức năng cụ thể được hiện thực thành \texttt{UserControl}: quản lý bệnh nhân, tạo lịch hẹn, lịch hôm nay, hàng chờ, cấp phát thuốc, upload kết quả, quản lý thuốc.
+    \item Các thao tác cần xác nhận hoặc nhập liệu ngắn được mở bằng form modal, ví dụ form đăng ký ca làm hoặc form thanh toán PayOS.
+\end{itemize}
+
+\begin{codeblock}{code:load-user-control}{Nạp UserControl vào vùng nội dung}
+\begin{minted}{csharp}
+private void LoadContent(UserControl control)
+{
+    contentPanel.Controls.Clear();
+    control.Dock = DockStyle.Fill;
+    contentPanel.Controls.Add(control);
+}
+\end{minted}
+\end{codeblock}
+
+Đây là kỹ thuật quan trọng trong project vì nó biến ứng dụng WinForms từ tập hợp nhiều cửa sổ rời rạc thành một dashboard thống nhất theo vai trò. Người dùng có cảm giác đang làm việc trong một phần mềm hoàn chỉnh, không phải mở từng form riêng biệt.
+
+\subsubsection{Dock, Anchor và bố cục co giãn}
+
+WinForms không có hệ thống layout hiện đại như web CSS, vì vậy việc dùng đúng \texttt{Dock}, \texttt{Anchor}, \texttt{TableLayoutPanel} và \texttt{FlowLayoutPanel} quyết định rất lớn đến chất lượng giao diện. Trong đồ án, các main form và nhiều user control dùng \texttt{DockStyle.Fill} để phần nội dung chiếm toàn bộ vùng còn lại. Các bảng như \texttt{DataGridView} cũng được dock fill để không bị trống hoặc lệch khi phóng to cửa sổ.
+
+\texttt{TableLayoutPanel} phù hợp với các màn hình cần chia vùng rõ ràng như header, bộ lọc, bảng dữ liệu và footer. \texttt{FlowLayoutPanel} phù hợp với các danh sách thẻ động như danh sách khoa, bác sĩ, time slot hoặc card thuốc vì số lượng phần tử có thể thay đổi theo dữ liệu. \texttt{Anchor} được dùng cho các nút, ô tìm kiếm hoặc nhóm thao tác cần giữ khoảng cách với cạnh trái/phải của form.
+
+\begin{longtable}{|p{3.2cm}|p{5cm}|p{5.5cm}|}
+\caption{Kỹ thuật layout WinForms sử dụng trong đồ án} \\
+\hline
+\textbf{Kỹ thuật} & \textbf{Cách dùng} & \textbf{Ý nghĩa trong project} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Kỹ thuật} & \textbf{Cách dùng} & \textbf{Ý nghĩa trong project} \\
+\hline
+\endhead
+\texttt{DockStyle.Fill} & Cho control lấp đầy vùng cha & Dùng cho content panel, bảng lịch hẹn, danh sách request, màn hình pharmacy/technician. \\
+\hline
+\texttt{Anchor} & Neo control vào một hoặc nhiều cạnh & Giữ ô tìm kiếm, nút thao tác và panel lọc không bị lệch khi resize. \\
+\hline
+\texttt{TableLayoutPanel} & Chia giao diện thành hàng/cột tỷ lệ & Tạo bố cục ổn định cho màn hình có header, filter, grid và action bar. \\
+\hline
+\texttt{FlowLayoutPanel} & Sắp xếp control theo dòng chảy & Hiển thị card khoa, card bác sĩ, danh sách thuốc hoặc danh sách lựa chọn động. \\
+\hline
+\texttt{Panel} & Tạo vùng chứa trung gian & Chia menu trái, header, content, footer và vùng thao tác phụ. \\
+\hline
+\end{longtable}
+
+\subsubsection{DataGridView và binding dữ liệu}
+
+\texttt{DataGridView} là control trung tâm của các ứng dụng quản lý Desktop. Trong hệ thống phòng khám, bảng dữ liệu xuất hiện ở lịch hẹn trong ngày, danh sách bệnh nhân, hàng chờ, danh sách request xét nghiệm, danh sách đơn thuốc, danh mục thuốc, tồn kho và thanh toán. Cách sử dụng phù hợp là tắt \texttt{AutoGenerateColumns} khi cần kiểm soát cột, đặt tên cột rõ ràng, bind danh sách DTO hoặc \texttt{DataTable}, sau đó xử lý event chọn dòng/click nút trong bảng.
+
+\begin{codeblock}{code:datagridview-binding}{Bind dữ liệu vào DataGridView}
+\begin{minted}{csharp}
+private void LoadAppointmentsToday()
+{
+    dgvAppointment.AutoGenerateColumns = false;
+    dgvAppointment.DataSource = scheduleTodayController.GetAppointmentsToday();
+}
+
+private void RefreshAfterCheckIn()
+{
+    LoadAppointmentsToday();
+    LoadWaitingListSummary();
+}
+\end{minted}
+\end{codeblock}
+
+Trong báo cáo này, \texttt{DataGridView} không được xem như một bảng hiển thị đơn giản mà là điểm giao tiếp nghiệp vụ. Người dùng chọn một dòng để mở chi tiết, chuyển trạng thái, tạo thanh toán hoặc điều hướng sang hồ sơ bệnh án. Vì vậy, các cột ID nội bộ thường cần giữ trong dữ liệu nhưng có thể ẩn khỏi giao diện; các cột trạng thái nên hiển thị bằng chữ dễ hiểu; các thao tác nguy hiểm cần xác nhận bằng \texttt{MessageBox}.
+
+\subsubsection{Form modal và hộp thoại nghiệp vụ}
+
+Ngoài dashboard chính, project vẫn sử dụng form modal cho các tình huống cần người dùng hoàn tất một thao tác nhỏ trước khi quay lại màn hình chính. Ví dụ: form đăng ký ca làm, form thanh toán PayOS, form xem ảnh/PDF, form xác nhận hoặc chỉnh sửa nhanh. Với modal, lời gọi \texttt{ShowDialog} khóa luồng thao tác ở form cha cho đến khi form con đóng lại, phù hợp với các nghiệp vụ cần kết quả rõ ràng.
+
+\begin{codeblock}{code:modal-dialog}{Mở form modal và nhận kết quả}
+\begin{minted}{csharp}
+using (var form = new RegisterShiftForm(currentUser.EmployeeID))
+{
+    DialogResult result = form.ShowDialog();
+    if (result == DialogResult.OK)
+    {
+        LoadShifts();
+    }
+}
+\end{minted}
+\end{codeblock}
+
+\subsubsection{Custom control và card nghiệp vụ}
+
+Một số màn hình không phù hợp để trình bày bằng bảng thuần túy, ví dụ danh sách thuốc trong nhà thuốc, danh sách khoa/bác sĩ khi tạo lịch hẹn hoặc các card thống kê tổng quan. Project sử dụng các user control dạng card để đóng gói giao diện và hành vi của một phần tử nghiệp vụ. Ví dụ, \texttt{ucPharmacyMedicineItemCard} đại diện một thuốc trong danh sách nhà thuốc; card có thể hiển thị tên thuốc, dạng bào chế, tồn kho, trạng thái và các nút thao tác.
+
+Lợi ích của custom control là tránh lặp lại code tạo giao diện ở nhiều nơi. Thay vì mỗi màn hình tự tạo label, button, màu sắc và event cho từng thuốc, project có thể tạo một control riêng rồi truyền dữ liệu vào. Khi cần đổi cách trình bày thuốc, chỉ cần sửa một control.
+
+\subsection{Mô hình điều hướng đa vai trò trong WinForms}
+
+Điều hướng trong project được thiết kế theo hai lớp. Lớp thứ nhất là điều hướng sau đăng nhập: hệ thống xác định role và mở main form tương ứng. Lớp thứ hai là điều hướng bên trong từng role: main form nhận lệnh từ menu hoặc từ sự kiện của user control con, sau đó thay màn hình nội dung.
+
+\begin{codeblock}{code:role-dashboard}{Tạo dashboard theo vai trò}
+\begin{minted}{csharp}
+private Form CreateDashboardForCurrentUser()
+{
+    string role = RoleNormalizer.Normalize(currentUser.Role);
+
+    switch (role)
+    {
+        case Role.Admin:
+            return new AdminMainform(currentUser);
+        case Role.Doctor:
+            return new DoctorMainform(currentUser);
+        case Role.Nurse:
+            return new NurseMainform(currentUser);
+        case Role.Pharmacist:
+            return new PharmacyMainform(currentUser);
+        case Role.Receptionist:
+            return new ReceptionistMainform(currentUser);
+        case Role.Technician:
+            return new TechnicianMainform(currentUser);
+        default:
+            return null;
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Ở nhóm kỹ thuật viên và dược sĩ, project còn dùng sự kiện điều hướng riêng giữa các user control. Đây là cách thiết kế tốt hơn việc để user control tự biết toàn bộ main form. User control chỉ phát sự kiện ``tôi muốn đi đến màn hình này'', còn main form quyết định nạp view nào. Nhờ đó quan hệ phụ thuộc được giữ một chiều: view con không cần phụ thuộc trực tiếp vào cấu trúc toàn bộ dashboard.
+
+\begin{codeblock}{code:navigation-event}{UserControl phát sự kiện điều hướng}
+\begin{minted}{csharp}
+public event EventHandler<PharmacyNavigationEventArgs> NavigateRequested;
+
+protected void NavigateTo(PharmacyViewTarget target, int id = 0)
+{
+    NavigateRequested?.Invoke(
+        this,
+        new PharmacyNavigationEventArgs(target, id));
+}
+\end{minted}
+\end{codeblock}
+
+\subsection{Thiết kế trải nghiệm Desktop theo từng vai trò}
+
+Khác với website giới thiệu, ứng dụng Desktop quản lý phòng khám là công cụ làm việc lặp lại hằng ngày. Vì vậy, giao diện cần ưu tiên tốc độ thao tác, khả năng quét thông tin và giảm nhầm lẫn. Cách chia dashboard theo vai trò giúp người dùng chỉ thấy đúng chức năng cần thiết. Báo cáo phân tích trải nghiệm theo từng vai trò như sau:
+
+\begin{itemize}
+    \item \textbf{Lễ tân:} cần truy cập nhanh bệnh nhân, tạo lịch, lịch hôm nay, hàng chờ và thanh toán. Các màn hình nên có ô tìm kiếm, bảng danh sách rõ trạng thái và nút thao tác trực tiếp.
+    \item \textbf{Bác sĩ:} cần xem bệnh nhân đang chờ, mở hồ sơ bệnh án, xem lịch sử khám, chỉ định xét nghiệm/hình ảnh, kê toa và hẹn tái khám. Giao diện cần ưu tiên thông tin y khoa và giảm thao tác chuyển màn hình.
+    \item \textbf{Điều dưỡng:} cần nhập sinh hiệu, hỗ trợ phòng khám và theo dõi hàng chờ. Các form nhập liệu cần ngắn, rõ đơn vị đo, hạn chế nhập sai.
+    \item \textbf{Kỹ thuật viên:} cần xem request, upload PDF/MRI, nhập kết quả xét nghiệm và xem hồ sơ liên quan. Giao diện cần thể hiện rõ trạng thái request để tránh xử lý trùng hoặc bỏ sót.
+    \item \textbf{Dược sĩ:} cần xem đơn chờ cấp phát, danh mục thuốc, tồn kho và ca làm. Giao diện dạng card kết hợp bảng giúp kiểm tra nhanh thuốc, số lượng và trạng thái.
+    \item \textbf{Quản trị viên:} cần quản lý tài khoản, nhân sự, cấu hình và dữ liệu nền. Giao diện nên tách nhóm rõ để tránh thao tác nhầm trên dữ liệu hệ thống.
+\end{itemize}
+
+\subsection{Mô hình kiến trúc nhiều lớp}
+
+Kiến trúc nhiều lớp giúp tách biệt trách nhiệm giữa giao diện, xử lý nghiệp vụ và truy cập dữ liệu. Trong đồ án, cách tổ chức chính là DTO--BUS--DAL, bổ sung thêm Core, Models, ServicesExternal và controller phía UI.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=0.65cm,
+    layer/.style={rectangle, rounded corners=2mm, draw=black!55, minimum width=10.5cm, minimum height=0.9cm, align=center, font=\bfseries},
+    arrow/.style={-{Latex[length=3mm]}, thick}
+]
+\node[layer, fill=layerBlue] (ui) {WinForms UI: Mainforms, Forms, UserControls};
+\node[layer, fill=layerPurple, below=of ui] (controller) {UI Controllers: CreateAppointment, Payment, WaitingList, ERM};
+\node[layer, fill=layerGreen, below=of controller] (bus) {BUS: xử lý nghiệp vụ và kiểm tra điều kiện};
+\node[layer, fill=layerOrange, below=of bus] (dal) {DAL: repository và DatabaseHelper};
+\node[layer, fill=white, below=of dal] (db) {SQL Server: CMS.sql};
+\draw[arrow] (ui) -- (controller);
+\draw[arrow] (controller) -- (bus);
+\draw[arrow] (bus) -- (dal);
+\draw[arrow] (dal) -- (db);
+\end{tikzpicture}
+\caption{Kiến trúc phân lớp của hệ thống quản lý phòng khám}
+\end{figure}
+
+Luồng xử lý tổng quát:
+
+\begin{codeblock}{code:general-flow}{Luồng xử lý tổng quát}
+\begin{minted}{csharp}
+private void btnSave_Click(object sender, EventArgs e)
+{
+    var dto = MapInputToDto();
+    var result = patientBus.Save(dto);
+
+    if (result.Success)
+    {
+        LoadPatients();
+        MessageBox.Show(result.Message, "Thong bao");
+    }
+    else
+    {
+        MessageBox.Show(result.Message, "Loi");
+    }
+}
+\end{minted}
+\end{codeblock}
+
+\subsection{Tầng DTO, BUS và DAL}
+
+DTO là lớp truyền dữ liệu, không chứa truy vấn SQL hoặc xử lý giao diện. BUS là tầng xử lý nghiệp vụ, nhận dữ liệu từ UI/controller, kiểm tra điều kiện hợp lệ và gọi DAL khi cần. DAL là tầng làm việc trực tiếp với SQL Server thông qua ADO.NET.
+
+\begin{longtable}{|p{3.3cm}|p{4.2cm}|p{6.2cm}|}
+\caption{Vai trò các tầng trong kiến trúc DTO--BUS--DAL} \\
+\hline
+\textbf{Tầng} & \textbf{Thư mục chính} & \textbf{Vai trò} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Tầng} & \textbf{Thư mục chính} & \textbf{Vai trò} \\
+\hline
+\endhead
+DTO & \texttt{DTO/Auth}, \texttt{DTO/Clinical}, \texttt{DTO/Facility}, \texttt{DTO/Scheduling} & Đóng gói dữ liệu truyền giữa UI, BUS và DAL. \\
+\hline
+BUS & \texttt{BUS/Services}, \texttt{BUS/Interfaces} & Kiểm tra nghiệp vụ, điều phối repository và trả kết quả cho UI. \\
+\hline
+DAL & \texttt{DAL/Repositories}, \texttt{DAL/DataContext} & Tạo truy vấn SQL, truyền tham số, đọc dữ liệu và map sang DTO. \\
+\hline
+Core & \texttt{Core/Identity}, \texttt{Core/Constants}, \texttt{Core/Session}, \texttt{Core/Utils} & Lưu vai trò, trạng thái, session và tiện ích dùng chung. \\
+\hline
+\end{longtable}
+
+\subsection{ADO.NET và SQL Server}
+
+ADO.NET là mô hình truy cập dữ liệu truyền thống của .NET, cho phép lập trình viên kiểm soát trực tiếp kết nối, câu lệnh SQL, tham số và kết quả trả về. Trong hệ thống hiện tại, lớp \texttt{DatabaseHelper} sử dụng \texttt{SqlConnection}, \texttt{SqlCommand}, \texttt{SqlDataAdapter} và \texttt{SqlParameter} để thực thi truy vấn.
+
+\begin{codeblock}{code:ado-model}{Mô hình truy vấn ADO.NET}
+\begin{minted}{csharp}
+public static DataTable ExecuteQuery(string query, SqlParameter[] parameters = null)
+{
+    using (SqlConnection conn = GetConnection())
+    using (SqlCommand cmd = new SqlCommand(query, conn))
+    {
+        if (parameters != null)
+        {
+            cmd.Parameters.AddRange(parameters);
+        }
+
+        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+        {
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+            return table;
+        }
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Ưu điểm của ADO.NET là rõ ràng, dễ tối ưu câu SQL và phù hợp với đồ án có nhiều truy vấn tùy biến. Nhược điểm là lập trình viên phải tự map dữ liệu từ \texttt{DataRow} sang DTO và phải cẩn thận với việc lặp lại câu truy vấn.
+
+\subsection{Entity Framework và định hướng ORM}
+
+Entity Framework là ORM cho phép ánh xạ bảng dữ liệu thành lớp entity và truy vấn bằng LINQ. Trong repository hiện tại có các thư mục liên quan đến EF ở ngoài solution WinForms chính, tuy nhiên mã nguồn WinForms đang khảo sát chủ yếu sử dụng ADO.NET. Vì vậy, báo cáo xem EF như một hướng so sánh và phát triển, không phải cơ chế truy cập dữ liệu chính của project hiện tại.
+
+So với ADO.NET, Entity Framework giúp giảm số lượng câu SQL thủ công và tăng tốc độ phát triển CRUD. Tuy nhiên, EF cần cấu hình model, migration và kiểm soát hiệu năng truy vấn khi dữ liệu lớn. Với đồ án phòng khám, EF phù hợp cho các bảng CRUD ổn định như khoa, phòng, thuốc, nhân viên; còn ADO.NET vẫn thuận lợi với các truy vấn tổng hợp phức tạp như hàng chờ, ERM và báo cáo thanh toán.
+
+\subsubsection{Định hướng thiết kế DAL bằng Entity Framework}
+
+Trong phiên bản hiện tại, tầng DAL chính của project đang dùng ADO.NET. Tuy nhiên, hướng phát triển tiếp theo là bổ sung thêm một nhánh DAL dùng Entity Framework Core để giảm số lượng câu SQL thủ công ở các nghiệp vụ CRUD chuẩn. Cách triển khai hợp lý không phải thay toàn bộ DAL ngay lập tức, mà thiết kế song song hai kiểu repository:
+
+\begin{itemize}
+    \item \textbf{ADO.NET Repository:} tiếp tục dùng cho các truy vấn tổng hợp phức tạp, báo cáo, ERM, hàng chờ và các truy vấn cần tối ưu SQL cụ thể.
+    \item \textbf{EF Repository:} dùng cho bảng danh mục và CRUD ổn định như \texttt{Departments}, \texttt{Rooms}, \texttt{Medicines}, \texttt{Suppliers}, \texttt{Shifts}, \texttt{Users}, \texttt{Roles}.
+    \item \textbf{Interface chung:} tầng BUS nên phụ thuộc vào interface thay vì phụ thuộc trực tiếp vào DAL cụ thể, nhờ đó có thể thay repository ADO.NET bằng EF theo từng module.
+\end{itemize}
+
+Mô hình EF dự kiến gồm các thành phần: entity class ánh xạ bảng, \texttt{ClinicDbContext} đại diện session làm việc với database, \texttt{DbSet<T>} đại diện tập bảng, configuration cho khóa chính/khóa ngoại, và repository dùng LINQ để truy vấn. Với WinForms, \texttt{DbContext} không nên giữ sống toàn bộ vòng đời ứng dụng; mỗi thao tác hoặc mỗi service call nên tạo context ngắn hạn để tránh dữ liệu stale và tránh giữ kết nối lâu.
+
+\begin{codeblock}{code:ef-dbcontext-plan}{Định hướng DbContext cho DAL Entity Framework}
+\begin{minted}{csharp}
+public class ClinicDbContext : DbContext
+{
+    public DbSet<PatientEntity> Patients { get; set; }
+    public DbSet<EmployeeEntity> Employees { get; set; }
+    public DbSet<MedicineEntity> Medicines { get; set; }
+    public DbSet<AppointmentEntity> Appointments { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    {
+        options.UseSqlServer(
+            ConfigurationManager.ConnectionStrings["ClinicDB"].ConnectionString);
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Khi chuyển một repository sang EF, cần chú ý không để entity EF đi thẳng lên giao diện. Giao diện vẫn nên nhận DTO để giữ ranh giới kiến trúc. Entity phản ánh cấu trúc bảng; DTO phản ánh dữ liệu cần cho màn hình. Hai loại này có mục đích khác nhau. Ví dụ màn hình nhà thuốc có thể cần \texttt{MedicineDTO} gồm tên thuốc, tồn kho, trạng thái hiển thị và nhãn cảnh báo; entity \texttt{MedicineEntity} chỉ nên phản ánh cột trong bảng \texttt{Medicines}.
+
+\begin{codeblock}{code:ef-repository-plan}{Repository EF dự kiến cho danh mục thuốc}
+\begin{minted}{csharp}
+public class MedicineEfRepository : IMedicineRepository
+{
+    public List<MedicineDTO> GetActiveMedicines()
+    {
+        using (var context = new ClinicDbContext())
+        {
+            return context.Medicines
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.MedicineName)
+                .Select(x => new MedicineDTO
+                {
+                    MedicineID = x.MedicineID,
+                    MedicineName = x.MedicineName,
+                    Unit = x.Unit,
+                    StockQuantity = x.StockQuantity
+                })
+                .ToList();
+        }
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Đối với đồ án môn Desktop, việc trình bày EF không chỉ là nêu khái niệm ORM. Điểm cần thể hiện là nhóm hiểu rõ cách tích hợp EF vào kiến trúc hiện có: WinForms không gọi \texttt{DbContext}; BUS không phụ thuộc cụ thể vào EF nếu đã có interface; DTO vẫn là dữ liệu đi lên UI; migration cần được kiểm soát để không phá schema \texttt{CMS.sql} hiện có.
+
+\subsection{API, Supabase, SheetDB và PayOS}
+
+Phân hệ tích hợp ngoài được tổ chức trong \texttt{BUS/Services/Integrations/ApiSync} và \texttt{DAL/Repositories/Integrations/ApiSync}. Repository đồng bộ có các phương thức đọc dữ liệu từ Supabase/SheetDB, upsert bệnh nhân, nhân viên, yêu cầu xét nghiệm, yêu cầu hình ảnh và kết quả vào SQL Server cục bộ. Form \texttt{MockApiSyncForm} dùng để mô phỏng thao tác đồng bộ và hiển thị lỗi khi dữ liệu API thiếu UUID hoặc JSON sai định dạng.
+
+Project \texttt{ServicesExternal} chứa các lớp PayOS như \texttt{PayOsCreatePaymentRequest}, \texttt{PayOsPaymentData}, \texttt{PayOsApiResponse} và \texttt{ImageHelper}. Những lớp này hỗ trợ mô phỏng tạo thanh toán, nhận QR code, trạng thái thanh toán và chuyển đổi ảnh sang base64.
+
+\subsubsection{Vai trò của ứng dụng trung gian trong tích hợp API}
+
+Trong đồ án, dữ liệu không chỉ nằm trong SQL Server local. Một phần dữ liệu được mô phỏng ở Supabase và Google Sheet thông qua SheetDB để thể hiện tình huống phòng khám cần lấy dữ liệu từ nguồn ngoài. Supabase đóng vai trò như backend dữ liệu online có REST API chuẩn; SheetDB đóng vai trò lớp API hóa Google Sheet để người dùng có thể nhập dữ liệu kiểm thử dạng bảng tính; SQL Server local là cơ sở dữ liệu chính của ứng dụng Desktop.
+
+Luồng này có ba môi trường dữ liệu:
+
+\begin{longtable}{|p{3.2cm}|p{4.6cm}|p{6cm}|}
+\caption{Vai trò các nguồn dữ liệu trong tích hợp ngoài} \\
+\hline
+\textbf{Nguồn} & \textbf{Công nghệ} & \textbf{Vai trò trong đồ án} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nguồn} & \textbf{Công nghệ} & \textbf{Vai trò trong đồ án} \\
+\hline
+\endhead
+SQL Server local & \texttt{CMS.sql}, ADO.NET & Nguồn dữ liệu chính mà WinForms đọc/ghi khi vận hành phòng khám. \\
+\hline
+Supabase & REST API, PostgreSQL online & Nguồn dữ liệu online mô phỏng backend hoặc dữ liệu đồng bộ từ hệ thống khác. \\
+\hline
+Google Sheet qua SheetDB & SheetDB REST API & Nguồn nhập liệu trung gian, phù hợp cho demo, import dữ liệu mẫu và chỉnh dữ liệu không cần mở SQL Server. \\
+\hline
+Backend PayOS & API backend triển khai ngoài Desktop & Trung gian bảo vệ key, nhận webhook, tạo payment link và kiểm tra trạng thái thanh toán. \\
+\hline
+\end{longtable}
+
+Ứng dụng Desktop đọc cấu hình từ \texttt{App.config}, gồm \texttt{ApiSyncSupabaseUrl}, \texttt{ApiSyncSupabaseKey}, \texttt{ApiSyncSheetDbPatientUrl}, \texttt{ApiSyncSheetDbPatientSheet}, \texttt{ApiSyncSheetDbEmployeeUrl}, \texttt{ApiSyncSheetDbEmployeeSheet}, \texttt{BackendBaseUrl}, \texttt{PayOSClientId}, \texttt{PayOSApiKey}, \texttt{PayOSChecksumKey}, \texttt{PayOSReturnUrl} và \texttt{PayOSCancelUrl}. Việc gom cấu hình vào \texttt{App.config} giúp tránh hard-code endpoint trong form, đồng thời dễ thay đổi môi trường demo.
+
+\subsubsection{Mô hình dữ liệu SheetDB và Supabase}
+
+SheetDB biến từng sheet thành một REST endpoint. Trong project, sheet bệnh nhân được cấu hình với tên sheet \texttt{Patient}; sheet nhân viên/bác sĩ được cấu hình với tên sheet \texttt{Doctor}. Các cột trong sheet cần trùng tên JSON mà DTO đang map bằng \texttt{JsonPropertyName}. Ví dụ, sheet bệnh nhân cần có các cột như \texttt{patientid}, \texttt{patientcode}, \texttt{fullname}, \texttt{gender}, \texttt{dob}, \texttt{phone}, \texttt{address}, \texttt{bloodtype}, \texttt{allergy}. Sheet nhân viên cần có \texttt{employeeid}, \texttt{employeecode}, \texttt{fullname}, \texttt{rolename}, \texttt{departmentid}, \texttt{departmentname}, \texttt{phone}, \texttt{status}.
+
+\begin{longtable}{|p{3.1cm}|p{3.2cm}|p{7.3cm}|}
+\caption{Ví dụ cấu trúc sheet bệnh nhân} \\
+\hline
+\textbf{Cột sheet} & \textbf{DTO nhận} & \textbf{Ý nghĩa} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Cột sheet} & \textbf{DTO nhận} & \textbf{Ý nghĩa} \\
+\hline
+\endhead
+\texttt{patientid} & \texttt{PatientId} & UUID đồng bộ. Nếu thiếu, hệ thống sinh ở local hoặc lấy từ Supabase rồi patch ngược về sheet. \\
+\hline
+\texttt{patientcode} & \texttt{PatientCode} & Mã bệnh nhân, dùng để đối chiếu khi chưa có UUID. \\
+\hline
+\texttt{fullname} & \texttt{FullName} & Họ tên bệnh nhân, là trường bắt buộc khi lọc dữ liệu hợp lệ. \\
+\hline
+\texttt{gender} & \texttt{Gender} & Giới tính. \\
+\hline
+\texttt{dob} & \texttt{DOB} & Ngày sinh dạng chuỗi, BUS chuẩn hóa về \texttt{yyyy-MM-dd} khi đẩy lên Supabase. \\
+\hline
+\texttt{phone} & \texttt{Phone} & Số điện thoại. \\
+\hline
+\texttt{bloodtype} & \texttt{BloodType} & Nhóm máu. \\
+\hline
+\texttt{allergy} & \texttt{Allergy} & Dị ứng; khi ghi về sheet có thể sinh thêm \texttt{allergy\_flag}. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:api-patient-dto-detail}{DTO trung gian cho bệnh nhân từ API}
+\begin{minted}{csharp}
+public class ApiPatientDTO
+{
+    [JsonPropertyName("patientid")]
+    public Guid? PatientId { get; set; }
+
+    [JsonPropertyName("patientuuid")]
+    public Guid? LegacyPatientUuid { get; set; }
+
+    [JsonPropertyName("patientcode")]
+    public string PatientCode { get; set; }
+
+    [JsonPropertyName("fullname")]
+    public string FullName { get; set; }
+
+    [JsonIgnore]
+    public Guid? SyncUuid
+    {
+        get => PatientId ?? LegacyPatientUuid;
+        set => PatientId = value;
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Điểm đáng chú ý là \texttt{SyncUuid} không map trực tiếp từ JSON, mà là thuộc tính tính toán để thống nhất hai kiểu dữ liệu cũ/mới: \texttt{patientid} và \texttt{patientuuid}. Đây là chi tiết quan trọng vì dữ liệu tích hợp thực tế thường không đồng nhất hoàn toàn. DTO trung gian giúp BUS không phải xử lý nhiều tên cột ở khắp nơi.
+
+\subsubsection{Luồng đồng bộ Supabase, SheetDB và SQL Server}
+
+Luồng \texttt{ApiSyncBUS.SyncAsync()} không chỉ đơn giản là gọi API rồi insert database. Nó là một quy trình hợp nhất dữ liệu nhiều nguồn:
+
+\begin{enumerate}
+    \item Gọi \texttt{GetSupabasePatientsAsync}, \texttt{GetSupabaseEmployeesAsync}, \texttt{GetSheetPatientsAsync}, \texttt{GetSheetEmployeesAsync}.
+    \item Lọc dòng không hợp lệ: bệnh nhân phải có \texttt{PatientCode} và \texttt{FullName}; nhân viên phải có \texttt{SyncCode}, \texttt{FullName} và không bị nhầm thành mã bệnh nhân bắt đầu bằng \texttt{BN}.
+    \item Bổ sung dữ liệu nhân viên bằng \texttt{EnrichEmployeeFields}: tự điền tên khoa, role bác sĩ theo mã, trạng thái đang làm việc nếu thiếu.
+    \item Nếu dòng sheet thiếu UUID nhưng Supabase đã có bản ghi cùng mã, hệ thống patch UUID từ Supabase ngược về SheetDB.
+    \item Upsert dữ liệu từ SheetDB vào SQL Server local; nếu local sinh UUID mới thì patch UUID đó ngược lại sheet.
+    \item Upsert dữ liệu từ Supabase vào SQL Server local.
+    \item Đồng bộ SheetDB sang Supabase: nếu sheet có dòng mới chưa có trên Supabase thì insert; nếu có mã trùng nhưng thiếu UUID thì patch.
+    \item Đồng bộ Supabase sang SheetDB: nếu Supabase có dòng mới chưa có trên sheet thì insert xuống sheet.
+    \item Trả về \texttt{ApiSyncResultDTO} gồm số lượng insert, patch, sinh UUID, dòng bị bỏ qua và danh sách dữ liệu đã merge.
+\end{enumerate}
+
+\begin{codeblock}{code:api-sync-real-flow}{Luồng tổng quát trong ApiSyncBUS}
+\begin{minted}{csharp}
+public async Task<ApiSyncResultDTO> SyncAsync()
+{
+    var supabasePatients = await repository.GetSupabasePatientsAsync();
+    var sheetPatients = await repository.GetSheetPatientsAsync();
+
+    await LinkMissingSheetPatientUuidsFromSupabaseAsync(
+        sheetPatients,
+        supabasePatients,
+        result);
+
+    await SyncPatientsToLocalSqlServerAsync(
+        sheetPatients,
+        result,
+        patchSheetWhenMissingUuid: true);
+
+    await SyncPatientsSheetToSupabaseAsync(
+        sheetPatients,
+        supabasePatients,
+        result);
+
+    await SyncPatientsSupabaseToSheetAsync(
+        supabasePatients,
+        sheetPatients,
+        result);
+
+    return result;
+}
+\end{minted}
+\end{codeblock}
+
+Về thiết kế, UUID là khóa đồng bộ bền vững giữa ba nguồn. Mã bệnh nhân hoặc mã nhân viên chỉ dùng làm khóa phụ khi dữ liệu cũ chưa có UUID. Khi hệ thống phát hiện bản ghi theo mã, nó liên kết lại bằng UUID để các lần đồng bộ sau không bị tạo trùng. Đây là một điểm có thể trình bày sâu trong báo cáo vì nó thể hiện tư duy xử lý dữ liệu không đồng nhất.
+
+\subsubsection{Đồng bộ request cận lâm sàng từ Supabase}
+
+Ngoài bệnh nhân và nhân viên, project còn có hàm \texttt{SyncRequestsFromSupabaseAsync()} phục vụ kỹ thuật viên. Luồng này kéo các request hình ảnh và xét nghiệm từ Supabase, sau đó chuyển thành request local để kỹ thuật viên xử lý trong WinForms.
+
+Quy trình xử lý request gồm:
+
+\begin{itemize}
+    \item Đồng bộ lõi bệnh nhân/nhân viên trước để đảm bảo có mã bệnh nhân và mã bác sĩ trong local.
+    \item Kéo danh sách imaging request, imaging detail, encounters, patients, employees, services và imaging results từ Supabase.
+    \item Tạo dictionary tra cứu nhanh theo \texttt{ImagingID}, \texttt{EncounterID}, \texttt{ServiceID}, \texttt{DetailID}.
+    \item Với mỗi detail, tìm request cha, encounter, bệnh nhân, bác sĩ và service.
+    \item Tìm local patient/doctor theo mã; nếu chưa có thì upsert từ dữ liệu Supabase.
+    \item Ghép mã request dạng \texttt{ImagingCode\_DetailID} hoặc \texttt{IM\_REQ\_DET\_DetailID}.
+    \item Map trạng thái ngoài về trạng thái local: \texttt{Chờ xử lý}, \texttt{Đang xử lý}, \texttt{Hoàn thành}.
+    \item Gọi \texttt{UpsertLocalRequestAsync} để lưu request local cùng image URL, PDF URL, ghi chú hoặc kết quả lab.
+\end{itemize}
+
+Điểm này cho thấy phân hệ kỹ thuật viên không chỉ upload file cục bộ mà còn có khả năng kéo chỉ định từ nguồn online. Đây là mô phỏng gần với thực tế: bác sĩ hoặc hệ thống khác tạo chỉ định ở backend, kỹ thuật viên dùng ứng dụng Desktop để tiếp nhận và cập nhật kết quả.
+
+\subsubsection{Luồng PayOS, VietQR, MoMo QR và webhook}
+
+Trong giao diện thanh toán, project dùng \texttt{PayOsPaymentForm} để mô phỏng thanh toán chuyển khoản qua PayOS/VietQR. Tên một số control vẫn còn dấu vết từ MoMo QR như \texttt{picQRMOMO}, nhưng luồng xử lý hiện tại là PayOS. PayOS tạo payment link, trả về checkout URL, QR code hoặc QR data URL theo chuẩn thanh toán ngân hàng/VietQR. Người dùng quét QR bằng ứng dụng ngân hàng hoặc ví hỗ trợ chuyển khoản.
+
+Luồng chuẩn được thiết kế như sau:
+
+\begin{enumerate}
+    \item Người dùng chọn phương thức chuyển khoản trong \texttt{PaymentDetail}.
+    \item WinForms mở \texttt{PayOsPaymentForm}.
+    \item Người dùng nhập số tiền, người mua, nội dung; form sinh \texttt{orderCode} nếu chưa có.
+    \item Form ưu tiên gọi backend tại \texttt{BackendBaseUrl}/\texttt{/api/payos/create-payment}.
+    \item Backend giữ \texttt{PayOSClientId}, \texttt{PayOSApiKey}, \texttt{PayOSChecksumKey}, tạo chữ ký và gọi PayOS.
+    \item PayOS trả \texttt{checkoutUrl}, \texttt{qrCode}, \texttt{qrDataURL}, \texttt{status}, \texttt{paymentLinkId}.
+    \item WinForms render QR vào \texttt{PictureBox}; đồng thời bật timer kiểm tra trạng thái 5 giây/lần.
+    \item Khi khách thanh toán, PayOS gọi webhook về backend. Backend xác thực chữ ký webhook và cập nhật trạng thái đơn.
+    \item WinForms kiểm tra trạng thái qua endpoint backend \texttt{/api/payos/payments/\{orderCode\}} hoặc nhận cơ chế realtime nếu backend triển khai SignalR/WebSocket trong tương lai.
+    \item Khi trạng thái là \texttt{PAID}, hệ thống dừng timer và người dùng xác nhận thanh toán trong \texttt{PaymentDetail}; \texttt{PaymentController} gọi \texttt{PaymentBUS.UpdatePaymentStatus}.
+\end{enumerate}
+
+\begin{codeblock}{code:payos-create-signature}{Tạo chữ ký PayOS khi fallback trực tiếp}
+\begin{minted}{csharp}
+private static string CreatePayOsPaymentSignature(
+    int amount,
+    string cancelUrl,
+    string description,
+    long orderCode,
+    string returnUrl,
+    string checksumKey)
+{
+    var data =
+        $"amount={amount}&cancelUrl={cancelUrl}" +
+        $"&description={description}&orderCode={orderCode}" +
+        $"&returnUrl={returnUrl}";
+
+    using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(checksumKey)))
+    {
+        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(data));
+        return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Trong cấu hình hiện tại, \texttt{AllowDirectPayOSFallback} đặt là \texttt{false}, nghĩa là flow đúng chuẩn yêu cầu Desktop gọi backend trước. Đây là thiết kế hợp lý vì ứng dụng Desktop không nên giữ bí mật thanh toán ở phía client nếu triển khai thật. Fallback gọi trực tiếp PayOS chỉ dùng cho demo kỹ thuật hoặc khi backend chưa sẵn sàng.
+
+\begin{codeblock}{code:payos-status-timer}{Kiểm tra trạng thái thanh toán định kỳ}
+\begin{minted}{csharp}
+paymentStatusTimer = new System.Windows.Forms.Timer
+{
+    Interval = 5000
+};
+
+paymentStatusTimer.Tick += async (s, args) =>
+    await CheckCurrentPaymentStatusAsync(false);
+\end{minted}
+\end{codeblock}
+
+Về realtime, PayOS không tự đẩy trực tiếp vào WinForms. Realtime cần đi qua backend: webhook PayOS cập nhật trạng thái payment trong database backend hoặc SQL Server; WinForms có thể polling định kỳ như hiện tại, hoặc backend phát SignalR event cho client Desktop. Trong báo cáo, cơ chế hiện tại được xem là polling 5 giây/lần; hướng phát triển là thay polling bằng SignalR để trạng thái thanh toán cập nhật tức thời hơn.
+
+\section{Phân tích và Thiết kế hệ thống}
+
+\subsection{Tác nhân sử dụng hệ thống}
+
+Hệ thống được thiết kế theo mô hình đa vai trò. Mỗi vai trò có phạm vi chức năng riêng, giúp giảm nhầm lẫn khi thao tác và hạn chế truy cập trái quyền.
+
+\begin{longtable}{|p{3.4cm}|p{10.4cm}|}
+\caption{Tác nhân và phạm vi chức năng} \\
+\hline
+\textbf{Tác nhân} & \textbf{Chức năng chính} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Tác nhân} & \textbf{Chức năng chính} \\
+\hline
+\endhead
+Quản trị viên & Quản lý tài khoản, nhân sự, cấu hình hệ thống, phòng ban và theo dõi dữ liệu quản trị. \\
+\hline
+Lễ tân & Quản lý bệnh nhân, tạo lịch hẹn, xác nhận lịch, tiếp nhận bệnh nhân, quản lý hàng chờ và thanh toán. \\
+\hline
+Bác sĩ & Xem bệnh nhân chờ khám, mở hồ sơ bệnh án, ghi nhận chẩn đoán, tạo chỉ định, kê toa và hẹn tái khám. \\
+\hline
+Điều dưỡng & Theo dõi hàng chờ, nhập dấu hiệu sinh tồn, hỗ trợ phòng khám và ca làm. \\
+\hline
+Kỹ thuật viên & Nhận yêu cầu xét nghiệm/chẩn đoán hình ảnh, cập nhật kết quả, upload PDF/MRI và xem hồ sơ liên quan. \\
+\hline
+Dược sĩ & Xem đơn thuốc, cấp phát thuốc, quản lý danh mục thuốc, tồn kho và ca làm. \\
+\hline
+\end{longtable}
+
+\subsection{Yêu cầu chức năng}
+
+Các yêu cầu chức năng chính được tổng hợp từ cấu trúc mã nguồn, schema \texttt{CMS.sql} và các màn hình WinForms.
+
+\begin{longtable}{|p{2.1cm}|p{4.2cm}|p{7.7cm}|}
+\caption{Danh sách yêu cầu chức năng chính} \\
+\hline
+\textbf{Mã} & \textbf{Chức năng} & \textbf{Mô tả} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Mã} & \textbf{Chức năng} & \textbf{Mô tả} \\
+\hline
+\endhead
+FR-01 & Đăng nhập và phân quyền & Kiểm tra tài khoản, lấy vai trò, lưu session và mở dashboard theo role. \\
+\hline
+FR-02 & Quản lý bệnh nhân & Thêm, sửa, tìm kiếm, xem thông tin bệnh nhân và bảo hiểm. \\
+\hline
+FR-03 & Quản lý lịch hẹn & Tạo lịch, xác nhận lịch, kiểm tra bác sĩ, khoa, phòng và ngày khám. \\
+\hline
+FR-04 & Tiếp nhận và hàng chờ & Check-in bệnh nhân, thống kê trạng thái chờ, đang khám, hoàn tất. \\
+\hline
+FR-05 & Hồ sơ bệnh án điện tử & Tổng hợp lịch sử khám, sinh hiệu, lab, imaging, đơn thuốc, hóa đơn, tái khám. \\
+\hline
+FR-06 & Xét nghiệm và hình ảnh & Tạo yêu cầu, kỹ thuật viên xử lý, upload kết quả PDF/MRI/X-Ray và cập nhật trạng thái. \\
+\hline
+FR-07 & Đơn thuốc và nhà thuốc & Quản lý thuốc, tồn kho, danh sách đơn chờ cấp phát và trạng thái cấp phát. \\
+\hline
+FR-08 & Thanh toán & Tạo payment pending, cập nhật số tiền, trạng thái, chi tiết thanh toán và lịch sử. \\
+\hline
+FR-09 & Ca làm & Đăng ký, xem ngày/tuần/tháng, lịch sử ca và trạng thái ca làm. \\
+\hline
+FR-10 & Đồng bộ API & Đồng bộ bệnh nhân, nhân viên, yêu cầu và kết quả từ Supabase/SheetDB về SQL Server. \\
+\hline
+\end{longtable}
+
+\subsection{Đặc tả use case chính}
+
+Phần này đặc tả chi tiết các use case quan trọng nhất của hệ thống. Mỗi use case được trình bày theo tác nhân, tiền điều kiện, luồng chính, ngoại lệ và kết quả sau xử lý. Đây là cơ sở để thiết kế giao diện WinForms và kiểm thử chức năng.
+
+\subsubsection{UC-01: Đăng nhập hệ thống}
+
+\begin{longtable}{|p{3.4cm}|p{10.4cm}|}
+\caption{Đặc tả use case đăng nhập} \\
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endhead
+Tác nhân & Tất cả người dùng có tài khoản trong hệ thống. \\
+\hline
+Tiền điều kiện & Người dùng đã có username/password và tài khoản đang hoạt động. Cơ sở dữ liệu SQL Server có bảng \texttt{Users}, \texttt{Roles}, \texttt{Employees}. \\
+\hline
+Luồng chính & Người dùng mở ứng dụng; \texttt{LoginForm} hiển thị; người dùng nhập username/password; form gọi \texttt{UserBUS.Login}; BUS gọi DAL xác thực; hệ thống lưu \texttt{UserSession}; \texttt{MainformRole} mở dashboard đúng vai trò. \\
+\hline
+Luồng ngoại lệ & Nếu bỏ trống username/password, form báo lỗi và focus lại ô nhập. Nếu sai thông tin, hệ thống không mở dashboard. Nếu role không hợp lệ, hệ thống báo lỗi phân quyền. \\
+\hline
+Kết quả & Người dùng vào đúng màn hình chính theo role: Admin, Receptionist, Doctor, Nurse, Pharmacist hoặc Technician. \\
+\hline
+\end{longtable}
+
+\subsubsection{UC-02: Tạo lịch hẹn khám}
+
+\begin{longtable}{|p{3.4cm}|p{10.4cm}|}
+\caption{Đặc tả use case tạo lịch hẹn} \\
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endhead
+Tác nhân & Lễ tân. \\
+\hline
+Tiền điều kiện & Lễ tân đã đăng nhập; bệnh nhân tồn tại hoặc được tạo mới; có dữ liệu khoa, bác sĩ, phòng và lịch làm. \\
+\hline
+Luồng chính & Lễ tân mở \texttt{CreateAppointment}; tìm hoặc chọn bệnh nhân; chọn khoa từ card trong \texttt{FlowLayoutPanel}; hệ thống tải danh sách bác sĩ; lễ tân chọn bác sĩ và khung giờ; hệ thống kiểm tra lịch làm; lễ tân xác nhận; BUS tạo bản ghi \texttt{Appointments}. \\
+\hline
+Luồng ngoại lệ & Nếu chưa chọn bệnh nhân/khoa/bác sĩ/giờ khám, form báo thiếu thông tin. Nếu bác sĩ không có lịch hoặc slot đã đầy, hệ thống không tạo lịch và yêu cầu chọn lại. \\
+\hline
+Kết quả & Lịch hẹn ở trạng thái chờ xác nhận hoặc chờ tiếp nhận, hiển thị trong màn hình lịch hôm nay khi đến ngày khám. \\
+\hline
+\end{longtable}
+
+\subsubsection{UC-03: Tiếp nhận bệnh nhân và đưa vào hàng chờ}
+
+\begin{longtable}{|p{3.4cm}|p{10.4cm}|}
+\caption{Đặc tả use case tiếp nhận bệnh nhân} \\
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endhead
+Tác nhân & Lễ tân hoặc điều dưỡng tùy phân quyền triển khai. \\
+\hline
+Tiền điều kiện & Bệnh nhân có lịch trong ngày; lịch chưa bị hủy; phòng khám và bác sĩ đã được xác định. \\
+\hline
+Luồng chính & Người dùng mở \texttt{ScheduleToday}; chọn lịch hẹn; bấm check-in; hệ thống cập nhật trạng thái appointment; tạo hoặc cập nhật \texttt{PatientQueues}; màn hình hàng chờ được reload. \\
+\hline
+Luồng ngoại lệ & Nếu lịch không thuộc ngày hiện tại hoặc đã hoàn tất, hệ thống không cho check-in. Nếu thiếu phòng/bác sĩ, hệ thống báo lỗi dữ liệu. \\
+\hline
+Kết quả & Bệnh nhân xuất hiện trong hàng chờ theo khoa/bác sĩ, sẵn sàng để điều dưỡng hoặc bác sĩ xử lý bước tiếp theo. \\
+\hline
+\end{longtable}
+
+\subsubsection{UC-04: Khám bệnh và cập nhật ERM}
+
+\begin{longtable}{|p{3.4cm}|p{10.4cm}|}
+\caption{Đặc tả use case khám bệnh} \\
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endhead
+Tác nhân & Bác sĩ, điều dưỡng. \\
+\hline
+Tiền điều kiện & Bệnh nhân đã check-in; có encounter hoặc lượt khám đang mở; bác sĩ có quyền xem hồ sơ. \\
+\hline
+Luồng chính & Bác sĩ mở danh sách chờ; chọn bệnh nhân; ERM tải tổng quan, lịch sử, sinh hiệu, lab, imaging, đơn thuốc và thanh toán; bác sĩ nhập triệu chứng/chẩn đoán; nếu cần thì tạo chỉ định xét nghiệm/hình ảnh; bác sĩ kê toa và lưu kết luận. \\
+\hline
+Luồng ngoại lệ & Nếu không lấy được hồ sơ theo UUID, ERM hiển thị thông báo lỗi. Nếu chưa có encounter, hệ thống tạo hoặc yêu cầu tiếp nhận lại tùy trạng thái. \\
+\hline
+Kết quả & Hồ sơ bệnh án được cập nhật; các chỉ định được chuyển sang phân hệ kỹ thuật viên; đơn thuốc chuyển sang nhà thuốc; thanh toán được tạo hoặc cập nhật. \\
+\hline
+\end{longtable}
+
+\subsubsection{UC-05: Xử lý yêu cầu xét nghiệm hoặc hình ảnh}
+
+\begin{longtable}{|p{3.4cm}|p{10.4cm}|}
+\caption{Đặc tả use case kỹ thuật viên xử lý yêu cầu} \\
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endhead
+Tác nhân & Kỹ thuật viên. \\
+\hline
+Tiền điều kiện & Bác sĩ đã tạo request; kỹ thuật viên đã đăng nhập; request có trạng thái chờ xử lý hoặc đang xử lý. \\
+\hline
+Luồng chính & Kỹ thuật viên mở \texttt{ucTechnicianRequests}; chọn request; hệ thống phát sự kiện điều hướng; kỹ thuật viên nhập kết quả lab hoặc chọn file PDF/MRI bằng \texttt{OpenFileDialog}; BUS/DAL lưu kết quả và cập nhật trạng thái. \\
+\hline
+Luồng ngoại lệ & Nếu request đã hoàn tất, hệ thống không cho upload lại nếu chưa có quyền sửa. Nếu file không đúng định dạng, form báo lỗi. Nếu mất kết nối API khi đồng bộ, hệ thống ghi nhận thông báo lỗi. \\
+\hline
+Kết quả & Kết quả xét nghiệm/hình ảnh được gắn với encounter và bác sĩ có thể xem lại trong ERM. \\
+\hline
+\end{longtable}
+
+\subsubsection{UC-06: Cấp phát thuốc và thanh toán}
+
+\begin{longtable}{|p{3.4cm}|p{10.4cm}|}
+\caption{Đặc tả use case cấp phát thuốc và thanh toán} \\
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Thành phần} & \textbf{Nội dung} \\
+\hline
+\endhead
+Tác nhân & Dược sĩ, lễ tân hoặc thu ngân. \\
+\hline
+Tiền điều kiện & Bác sĩ đã kê toa; thuốc có trong danh mục; payment đang ở trạng thái chờ hoặc chưa tạo. \\
+\hline
+Luồng chính & Dược sĩ mở danh sách đơn chờ; xem chi tiết đơn; kiểm tra thuốc và số lượng; xác nhận cấp phát; hệ thống cập nhật tồn kho/trạng thái đơn; lễ tân mở màn hình thanh toán; tạo hoặc xác nhận payment; nếu dùng PayOS thì mở form thanh toán và kiểm tra trạng thái. \\
+\hline
+Luồng ngoại lệ & Nếu thuốc không đủ tồn kho, hệ thống cảnh báo. Nếu payment chưa đủ dữ liệu chi tiết, hệ thống không cho xác nhận. Nếu PayOS chưa thanh toán, trạng thái vẫn giữ chờ thanh toán. \\
+\hline
+Kết quả & Đơn thuốc chuyển trạng thái đã cấp phát hoặc một phần; payment/invoice được cập nhật theo nghiệp vụ thanh toán. \\
+\hline
+\end{longtable}
+
+\subsection{Quy trình nghiệp vụ tổng quát}
+
+Quy trình khám ngoại trú trong đồ án có thể mô tả theo chuỗi bước sau:
+
+\begin{enumerate}
+    \item Lễ tân tạo hoặc tra cứu bệnh nhân, sau đó tạo lịch hẹn theo khoa, bác sĩ và thời gian.
+    \item Đến ngày khám, lễ tân check-in bệnh nhân và đưa vào hàng chờ.
+    \item Điều dưỡng có thể nhập sinh hiệu hoặc hỗ trợ phân luồng trước khi bác sĩ khám.
+    \item Bác sĩ mở ERM, xem lịch sử, khám bệnh, nhập chẩn đoán và tạo chỉ định nếu cần.
+    \item Kỹ thuật viên xử lý chỉ định xét nghiệm/hình ảnh, upload file hoặc nhập kết quả.
+    \item Bác sĩ xem kết quả, hoàn tất kết luận, kê toa và hẹn tái khám nếu cần.
+    \item Dược sĩ cấp phát thuốc theo toa; lễ tân hoặc thu ngân xác nhận thanh toán.
+    \item Hệ thống lưu lại hồ sơ, payment, invoice, audit log và dữ liệu phục vụ báo cáo.
+\end{enumerate}
+
+\subsection{Yêu cầu phi chức năng}
+
+\begin{itemize}
+    \item \textbf{Tính dễ sử dụng:} giao diện chia theo vai trò, mỗi vai trò chỉ nhìn thấy nhóm chức năng cần thiết.
+    \item \textbf{Tính toàn vẹn dữ liệu:} dữ liệu chính được lưu trong SQL Server với khóa chính, khóa ngoại và các trạng thái nghiệp vụ.
+    \item \textbf{Tính bảo trì:} mã nguồn chia project theo tầng và chia thư mục theo domain.
+    \item \textbf{Tính mở rộng:} có thể bổ sung phân hệ mới bằng cách thêm DTO, repository, BUS và UserControl tương ứng.
+    \item \textbf{Tính an toàn:} DAL sử dụng \texttt{SqlParameter} để hạn chế nguy cơ SQL injection trong các truy vấn có tham số.
+\end{itemize}
+
+\subsection{Thiết kế cơ sở dữ liệu}
+
+File \texttt{Database/CMS.sql} định nghĩa schema SQL Server cho toàn hệ thống. Các bảng được chia theo nhóm nghiệp vụ như người dùng, phòng ban, nhân viên, bệnh nhân, lịch hẹn, khám bệnh, xét nghiệm, hình ảnh, dược, thanh toán và ca làm.
+
+\begin{longtable}{|p{3.6cm}|p{10.2cm}|}
+\caption{Nhóm bảng dữ liệu chính} \\
+\hline
+\textbf{Nhóm dữ liệu} & \textbf{Bảng tiêu biểu} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm dữ liệu} & \textbf{Bảng tiêu biểu} \\
+\hline
+\endhead
+Phân quyền & \texttt{Roles}, \texttt{Users}, \texttt{Sessions}, \texttt{Notifications}. \\
+\hline
+Cơ sở vật chất & \texttt{Departments}, \texttt{Rooms}. \\
+\hline
+Nhân sự & \texttt{Employees}, \texttt{Shifts}, \texttt{EmployeeShifts}, \texttt{DoctorSchedules}. \\
+\hline
+Bệnh nhân & \texttt{Patients}, \texttt{PatientInsurance}, \texttt{PatientIdentifiers}. \\
+\hline
+Khám bệnh & \texttt{Appointments}, \texttt{Encounters}, \texttt{PatientQueues}, \texttt{QueueHistory}. \\
+\hline
+Hồ sơ y tế & \texttt{MedicalRecords}, \texttt{MedicalRecordFiles}, \texttt{VitalSigns}, \texttt{Files}. \\
+\hline
+Cận lâm sàng & \texttt{Services}, \texttt{EncounterServices}, \texttt{LabRequests}, \texttt{LabResults}, \texttt{ImagingRequests}, \texttt{ImagingResults}. \\
+\hline
+Dược & \texttt{Medicines}, \texttt{Prescriptions}, \texttt{PrescriptionDetails}, \texttt{Dispense}. \\
+\hline
+Thanh toán & \texttt{Payments}, \texttt{PaymentDetails}, \texttt{Invoices}, \texttt{InvoiceDetails}. \\
+\hline
+Quản trị & \texttt{AuditLogs}, \texttt{AuditLogDetails}. \\
+\hline
+\end{longtable}
+
+\subsection{Quan hệ dữ liệu}
+
+\begin{codeblock}{code:db-relations}{Quan hệ dữ liệu chính}
+\begin{minted}{text}
+Roles       -> Users
+Users       -> Employees
+Departments -> Rooms
+Departments -> Employees
+Patients    -> Appointments
+Appointments -> Encounters
+Encounters  -> MedicalRecords
+Encounters  -> EncounterServices
+Encounters  -> Prescriptions
+Encounters  -> Payments
+Prescriptions -> PrescriptionDetails -> Medicines
+Payments    -> PaymentDetails
+Invoices    -> InvoiceDetails
+Employees   -> DoctorSchedules
+Employees   -> EmployeeShifts
+\end{minted}
+\end{codeblock}
+
+\subsection{Thiết kế từ điển dữ liệu tiêu biểu}
+
+\begin{longtable}{|p{3.2cm}|p{2.8cm}|p{7.8cm}|}
+\caption{Từ điển dữ liệu rút gọn} \\
+\hline
+\textbf{Bảng} & \textbf{Khóa chính} & \textbf{Ý nghĩa} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Bảng} & \textbf{Khóa chính} & \textbf{Ý nghĩa} \\
+\hline
+\endhead
+\texttt{Users} & \texttt{UserID} & Lưu tài khoản, mật khẩu băm, email, role và trạng thái hoạt động. \\
+\hline
+\texttt{Employees} & \texttt{EmployeeID} & Lưu thông tin nhân viên, vai trò, khoa, tài khoản liên kết và mã định danh UUID. \\
+\hline
+\texttt{Patients} & \texttt{PatientID} & Lưu thông tin bệnh nhân, mã bệnh nhân, họ tên, ngày sinh, giới tính, liên hệ. \\
+\hline
+\texttt{Appointments} & \texttt{AppointmentID} & Lưu lịch hẹn giữa bệnh nhân, bác sĩ, khoa, phòng và trạng thái lịch. \\
+\hline
+\texttt{Encounters} & \texttt{EncounterID} & Lưu lượt khám, thời gian bắt đầu/kết thúc và trạng thái xử lý. \\
+\hline
+\texttt{LabRequests} & \texttt{LabID} & Lưu yêu cầu xét nghiệm do bác sĩ tạo. \\
+\hline
+\texttt{ImagingRequests} & \texttt{ImagingRequestID} & Lưu yêu cầu chẩn đoán hình ảnh, bộ phận chụp, mức ưu tiên và trạng thái. \\
+\hline
+\texttt{Prescriptions} & \texttt{PrescriptionID} & Lưu đơn thuốc theo encounter và bác sĩ kê toa. \\
+\hline
+\texttt{Payments} & \texttt{PaymentID} & Lưu thông tin thanh toán, số tiền, phương thức và trạng thái. \\
+\hline
+\end{longtable}
+
+\subsubsection{Nhóm bảng phân quyền và nhân sự}
+
+\begin{longtable}{|p{4.4cm}|p{2.4cm}|p{6.8cm}|}
+\caption{Từ điển dữ liệu nhóm phân quyền và nhân sự} \\
+\hline
+\textbf{Bảng/Cột} & \textbf{Kiểu dữ liệu} & \textbf{Diễn giải} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Bảng/Cột} & \textbf{Kiểu dữ liệu} & \textbf{Diễn giải} \\
+\hline
+\endhead
+\texttt{Users.UserID} & \texttt{int} & Khóa chính của tài khoản người dùng. \\
+\hline
+\texttt{Users.Username} & \texttt{nvarchar} & Tên đăng nhập dùng tại \texttt{LoginForm}. \\
+\hline
+\texttt{Users.PasswordHash} & \texttt{nvarchar} & Mật khẩu đã băm, không lưu mật khẩu gốc. \\
+\hline
+\texttt{Users.RoleID} & \texttt{int} & Khóa ngoại đến bảng vai trò, dùng để phân quyền dashboard. \\
+\hline
+\texttt{Users.IsActive} & \texttt{bit} & Trạng thái cho phép hoặc khóa đăng nhập. \\
+\hline
+\texttt{Employees.EmployeeID} & \texttt{int} & Khóa chính nhân viên, được lưu vào \texttt{UserSession}. \\
+\hline
+\texttt{Employees.FullName} & \texttt{nvarchar} & Họ tên nhân viên hiển thị trên dashboard. \\
+\hline
+\texttt{Employees.DepartmentID} & \texttt{int} & Khoa/phòng ban của nhân viên. \\
+\hline
+\texttt{Employees.UserID} & \texttt{int} & Tài khoản liên kết với nhân viên. \\
+\hline
+\texttt{EmployeeShifts.ShiftID} & \texttt{int} & Ca làm mà nhân viên đăng ký hoặc được phân công. \\
+\hline
+\texttt{DoctorSchedules.RoomID} & \texttt{int} & Phòng khám bác sĩ sử dụng trong lịch làm. \\
+\hline
+\end{longtable}
+
+\subsubsection{Nhóm bảng bệnh nhân, lịch hẹn và hàng chờ}
+
+\begin{longtable}{|p{4.4cm}|p{2.4cm}|p{6.8cm}|}
+\caption{Từ điển dữ liệu nhóm tiếp nhận} \\
+\hline
+\textbf{Bảng/Cột} & \textbf{Kiểu dữ liệu} & \textbf{Diễn giải} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Bảng/Cột} & \textbf{Kiểu dữ liệu} & \textbf{Diễn giải} \\
+\hline
+\endhead
+\texttt{Patients.PatientID} & \texttt{int} & Khóa chính bệnh nhân trong SQL Server. \\
+\hline
+\texttt{Patients.PatientCode} & \texttt{nvarchar} & Mã bệnh nhân dùng để tra cứu nhanh tại lễ tân. \\
+\hline
+\texttt{Patients.FullName} & \texttt{nvarchar} & Họ tên bệnh nhân. \\
+\hline
+\texttt{Patients.DOB} & \texttt{date} & Ngày sinh bệnh nhân. \\
+\hline
+\texttt{Patients.Gender} & \texttt{nvarchar} & Giới tính, hiển thị trong hồ sơ và lịch hẹn. \\
+\hline
+\texttt{Patients.Phone} & \texttt{nvarchar} & Số điện thoại dùng tìm kiếm và nhắc lịch. \\
+\hline
+\texttt{Appointments.AppointmentID} & \texttt{int} & Khóa chính lịch hẹn. \\
+\hline
+\texttt{Appointments.PatientID} & \texttt{int} & Bệnh nhân được đặt lịch. \\
+\hline
+\texttt{Appointments.DoctorID} & \texttt{int} & Bác sĩ phụ trách lịch khám. \\
+\hline
+\texttt{Appointments.RoomID} & \texttt{int} & Phòng khám dự kiến. \\
+\hline
+\texttt{Appointments.Status} & \texttt{nvarchar} & Trạng thái lịch: chờ, đã check-in, hủy, hoàn tất. \\
+\hline
+\texttt{PatientQueues.QueueID} & \texttt{int} & Khóa chính hàng chờ. \\
+\hline
+\texttt{PatientQueues.Status} & \texttt{nvarchar} & Trạng thái trong hàng chờ: waiting, in-progress, done. \\
+\hline
+\end{longtable}
+
+\subsubsection{Nhóm bảng khám bệnh, cận lâm sàng và hồ sơ}
+
+\begin{longtable}{|p{4.4cm}|p{2.4cm}|p{6.8cm}|}
+\caption{Từ điển dữ liệu nhóm lâm sàng} \\
+\hline
+\textbf{Bảng/Cột} & \textbf{Kiểu dữ liệu} & \textbf{Diễn giải} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Bảng/Cột} & \textbf{Kiểu dữ liệu} & \textbf{Diễn giải} \\
+\hline
+\endhead
+\texttt{Encounters.EncounterID} & \texttt{int} & Khóa chính của lượt khám. \\
+\hline
+\texttt{Encounters.PatientID} & \texttt{int} & Bệnh nhân của lượt khám. \\
+\hline
+\texttt{Encounters.DoctorID} & \texttt{int} & Bác sĩ phụ trách. \\
+\hline
+\texttt{MedicalRecords.RecordID} & \texttt{int} & Hồ sơ bệnh án gắn với encounter. \\
+\hline
+\texttt{VitalSigns.VitalID} & \texttt{int} & Bản ghi sinh hiệu do điều dưỡng nhập. \\
+\hline
+\texttt{VitalSigns.Temperature} & \texttt{decimal} & Nhiệt độ bệnh nhân. \\
+\hline
+\texttt{VitalSigns.BloodPressure} & \texttt{nvarchar} & Huyết áp, thường nhập dạng tâm thu/tâm trương. \\
+\hline
+\texttt{LabRequests.LabID} & \texttt{int} & Yêu cầu xét nghiệm. \\
+\hline
+\texttt{LabRequests.Status} & \texttt{nvarchar} & Trạng thái request xét nghiệm. \\
+\hline
+\texttt{LabResults.ResultID} & \texttt{int} & Kết quả xét nghiệm trả về. \\
+\hline
+\texttt{ImagingRequests.ImagingRequestID} & \texttt{int} & Yêu cầu chẩn đoán hình ảnh. \\
+\hline
+\texttt{ImagingResults.FileID} & \texttt{int} & File ảnh/PDF kết quả được lưu trong hệ thống. \\
+\hline
+\end{longtable}
+
+\subsubsection{Nhóm bảng dược và thanh toán}
+
+\begin{longtable}{|p{4.4cm}|p{2.4cm}|p{6.8cm}|}
+\caption{Từ điển dữ liệu nhóm dược và thanh toán} \\
+\hline
+\textbf{Bảng/Cột} & \textbf{Kiểu dữ liệu} & \textbf{Diễn giải} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Bảng/Cột} & \textbf{Kiểu dữ liệu} & \textbf{Diễn giải} \\
+\hline
+\endhead
+\texttt{Medicines.MedicineID} & \texttt{int} & Khóa chính thuốc. \\
+\hline
+\texttt{Medicines.MedicineName} & \texttt{nvarchar} & Tên thuốc hiển thị trong nhà thuốc. \\
+\hline
+\texttt{Medicines.Unit} & \texttt{nvarchar} & Đơn vị tính: viên, chai, hộp, ống. \\
+\hline
+\texttt{Medicines.StockQuantity} & \texttt{int} & Số lượng tồn kho. \\
+\hline
+\texttt{Prescriptions.PrescriptionID} & \texttt{int} & Khóa chính đơn thuốc. \\
+\hline
+\texttt{PrescriptionDetails.Quantity} & \texttt{int} & Số lượng thuốc bác sĩ kê. \\
+\hline
+\texttt{PrescriptionDetails.Dosage} & \texttt{nvarchar} & Liều dùng hướng dẫn cho bệnh nhân. \\
+\hline
+\texttt{Payments.PaymentID} & \texttt{int} & Khóa chính thanh toán. \\
+\hline
+\texttt{Payments.Amount} & \texttt{decimal} & Tổng số tiền cần thanh toán. \\
+\hline
+\texttt{Payments.Method} & \texttt{nvarchar} & Phương thức thanh toán: tiền mặt, chuyển khoản, PayOS. \\
+\hline
+\texttt{Payments.Status} & \texttt{nvarchar} & Trạng thái: pending, paid, failed hoặc canceled. \\
+\hline
+\texttt{Invoices.InvoiceID} & \texttt{int} & Hóa đơn được tạo sau thanh toán. \\
+\hline
+\end{longtable}
+
+\section{Xây dựng và Cài đặt chương trình}
+
+\subsection{Tổ chức project và kiến trúc triển khai}
+
+\subsubsection{Tổ chức project trong Visual Studio}
+
+Solution \texttt{ClinicManagementSystem.Winforms.sln} gồm các project:
+
+\begin{longtable}{|p{4cm}|p{9.8cm}|}
+\caption{Tổ chức project trong solution} \\
+\hline
+\textbf{Project} & \textbf{Vai trò} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Project} & \textbf{Vai trò} \\
+\hline
+\endhead
+\texttt{ClinicManagementSystem.Winforms} & Project giao diện WinForms, chứa \texttt{Program.cs}, \texttt{Mainforms}, \texttt{Forms}, \texttt{UserControls}, \texttt{Controllers}. \\
+\hline
+\texttt{BUS} & Xử lý nghiệp vụ cho Auth, Clinical, Facility, Scheduling, Staff, Technician và Integrations. \\
+\hline
+\texttt{DAL} & Truy cập SQL Server, repository, interface và \texttt{DatabaseHelper}. \\
+\hline
+\texttt{DTO} & DTO truyền dữ liệu cho các domain Auth, Clinical, Facility, Staff, Scheduling, Integrations. \\
+\hline
+\texttt{Models} & Lớp model đại diện thực thể hệ thống. \\
+\hline
+\texttt{Core} & Hằng số, vai trò, phân quyền, session, tiện ích sinh mã và xử lý mật khẩu. \\
+\hline
+\texttt{ServicesExternal} & Lớp tích hợp PayOS và helper xử lý ảnh/base64. \\
+\hline
+\end{longtable}
+
+\subsubsection{Phân tích cấu trúc thư mục WinForms}
+
+Project \texttt{ClinicManagementSystem.Winforms} là phần thể hiện rõ nhất yêu cầu của môn học. Thay vì gom tất cả giao diện vào một thư mục duy nhất, mã nguồn được chia theo vai trò và theo loại thành phần giao diện. Cách chia này giúp người phát triển nhanh chóng xác định vị trí màn hình cần sửa và tránh làm phình to một form tổng.
+
+\begin{longtable}{|p{4cm}|p{4.4cm}|p{5.4cm}|}
+\caption{Cấu trúc thư mục giao diện WinForms} \\
+\hline
+\textbf{Thư mục} & \textbf{Thành phần tiêu biểu} & \textbf{Ý nghĩa thiết kế} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Thư mục} & \textbf{Thành phần tiêu biểu} & \textbf{Ý nghĩa thiết kế} \\
+\hline
+\endhead
+\texttt{Mainforms} & \texttt{AdminMainform}, \texttt{ReceptionistMainform}, \texttt{DoctorMainform}, \texttt{NurseMainform}, \texttt{PharmacyMainform}, \texttt{TechnicianMainform} & Đóng vai trò dashboard shell theo từng role, giữ menu, header và vùng content. \\
+\hline
+\texttt{Forms} & \texttt{LoginForm}, các form nhập liệu hoặc popup & Dùng cho màn hình độc lập hoặc thao tác cần modal. \\
+\hline
+\texttt{UserControls/Receptionist} & \texttt{PatientManagement}, \texttt{CreateAppointment}, \texttt{ScheduleToday}, \texttt{WaitingList}, \texttt{Payment} & Màn hình nghiệp vụ của lễ tân, nạp động vào \texttt{ReceptionistMainform}. \\
+\hline
+\texttt{UserControls/Nurse} & Tổng quan, sinh hiệu, hàng chờ, phòng, ca làm & Hỗ trợ nhập dữ liệu trước khám và theo dõi hàng chờ. \\
+\hline
+\texttt{UserControls/Technician} & \texttt{ucTechnicianRequests}, upload MRI/PDF, lab result, records, shifts & Màn hình xử lý request cận lâm sàng và đồng bộ dữ liệu kiểm thử. \\
+\hline
+\texttt{UserControls/Pharmacy} & \texttt{ucPharmacyOverview}, \texttt{ucPrescriptionDispense}, \texttt{ucMedicineCatalog}, \texttt{ucInventoryManagement} & Màn hình cấp phát thuốc, danh mục thuốc và quản lý tồn kho. \\
+\hline
+\texttt{Shareforms/ERM} & \texttt{ucOverview}, \texttt{ucHistory}, \texttt{ucLab}, \texttt{ucImaging}, \texttt{ucPrescription}, \texttt{frmPacsViewer} & Thành phần hồ sơ bệnh án dùng chung, phục vụ bác sĩ và các màn hình cần xem hồ sơ. \\
+\hline
+\texttt{Shareforms/WorkingShifts} & Form và user control đăng ký/xem ca làm & Tái sử dụng chức năng ca làm cho nhiều vai trò. \\
+\hline
+\texttt{Controllers} & Controller cho appointment, payment, waiting list, ERM & Giảm logic trong code-behind, gom thao tác gọi BUS và chuẩn bị dữ liệu cho UI. \\
+\hline
+\end{longtable}
+
+Việc tách thư mục theo vai trò phù hợp với mô hình phòng khám vì mỗi nhóm người dùng có nghiệp vụ riêng. Một lỗi ở màn hình nhà thuốc ít có khả năng ảnh hưởng trực tiếp đến màn hình kỹ thuật viên nếu code không bị trộn lẫn. Khi báo cáo đồ án, đây là một điểm quan trọng để chứng minh nhóm không chỉ kéo thả giao diện mà đã tổ chức project theo hướng có thể bảo trì.
+
+\subsubsection{Quy ước thiết kế form và control}
+
+Trong WinForms, chất lượng ứng dụng phụ thuộc nhiều vào sự nhất quán của form. Cùng một project nếu mỗi màn hình đặt màu, font, padding, bảng dữ liệu và nút bấm theo một kiểu khác nhau sẽ tạo cảm giác rời rạc. Dựa trên mã nguồn hiện có, báo cáo đề xuất và mô tả các quy ước sau để thống nhất giao diện:
+
+\begin{longtable}{|p{3.6cm}|p{5.2cm}|p{5cm}|}
+\caption{Quy ước thiết kế form/control trong đồ án} \\
+\hline
+\textbf{Nhóm quy ước} & \textbf{Cách áp dụng} & \textbf{Lợi ích} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm quy ước} & \textbf{Cách áp dụng} & \textbf{Lợi ích} \\
+\hline
+\endhead
+Đặt tên control & TextBox bắt đầu bằng \texttt{txt}, Button bằng \texttt{btn}, DataGridView bằng \texttt{dgv}, Label bằng \texttt{lbl}, Panel bằng \texttt{pnl} hoặc \texttt{panel}. & Dễ đọc code-behind và dễ xác định control khi xử lý event. \\
+\hline
+Điều hướng & Main form chỉ nạp user control vào content panel, không mở nhiều form con không cần thiết. & Trải nghiệm giống dashboard, giảm cửa sổ chồng lấn. \\
+\hline
+Bố cục & Dùng \texttt{DockStyle.Fill} cho màn hình con; dùng \texttt{TableLayoutPanel} cho bố cục hàng/cột; dùng \texttt{FlowLayoutPanel} cho danh sách card. & Giao diện co giãn tốt hơn khi resize. \\
+\hline
+Bảng dữ liệu & Tắt \texttt{AutoGenerateColumns} khi cần cột cố định; đặt \texttt{ReadOnly}; chọn cả dòng bằng \texttt{FullRowSelect}. & Tránh người dùng sửa trực tiếp sai cách và giúp thao tác trên bản ghi rõ ràng. \\
+\hline
+Thông báo & Dùng \texttt{MessageBox.Show} cho lỗi ngắn, xác nhận thao tác bằng \texttt{YesNo}. & Người dùng nhận phản hồi rõ ràng trước khi thay đổi dữ liệu. \\
+\hline
+Tải dữ liệu & Tách hàm \texttt{LoadData}, \texttt{RefreshData}, \texttt{BindData}. & Dễ reload sau khi thêm/sửa/xóa hoặc đóng modal. \\
+\hline
+Xử lý lỗi & Bắt lỗi ở tầng UI cho dữ liệu nhập sai; tầng BUS trả kết quả nghiệp vụ; tầng DAL chỉ báo lỗi truy cập dữ liệu. & Tránh để exception thô hiện trực tiếp với người dùng. \\
+\hline
+\end{longtable}
+
+\subsubsection{Luồng dữ liệu từ UI đến SQL Server}
+
+Một thao tác WinForms hoàn chỉnh trong project thường đi qua nhiều lớp. Ví dụ khi lễ tân tìm kiếm bệnh nhân, thao tác không đi thẳng từ \texttt{TextBox} xuống SQL Server. Form lấy keyword, controller hoặc BUS kiểm tra keyword, DAL tạo truy vấn có tham số, SQL Server trả kết quả, DAL map sang DTO, UI bind lại vào \texttt{DataGridView}.
+
+\begin{codeblock}{code:ui-to-sql-flow}{Luồng dữ liệu từ form đến database}
+\begin{minted}{csharp}
+private void btnSearch_Click(object sender, EventArgs e)
+{
+    string keyword = txtSearch.Text.Trim();
+    List<PatientDTO> patients = patientBUS.SearchPatients(keyword);
+    dgvPatients.DataSource = patients;
+}
+
+public List<PatientDTO> SearchPatients(string keyword)
+{
+    return patientDAL.Search(keyword);
+}
+\end{minted}
+\end{codeblock}
+
+Luồng này giúp báo cáo thể hiện rõ tư duy thiết kế phần mềm Desktop: giao diện là nơi nhận thao tác, nhưng không phải nơi chứa tất cả truy vấn và luật nghiệp vụ. Khi thay đổi giao diện từ \texttt{DataGridView} sang card hoặc thêm bộ lọc nâng cao, tầng DAL/BUS vẫn có thể được tái sử dụng.
+
+\subsubsection{Cài đặt vòng đời ứng dụng WinForms}
+
+Điểm khởi động của ứng dụng WinForms nằm trong \texttt{Program.cs}. Đây là nơi thiết lập visual style của Windows, cấu hình cách render text và mở form đầu tiên. Với phần mềm quản lý phòng khám, form đầu tiên phải là \texttt{LoginForm} vì mọi chức năng đều phụ thuộc vào tài khoản, vai trò và nhân viên đang đăng nhập.
+
+\begin{codeblock}{code:program-main}{Điểm khởi động ứng dụng WinForms}
+\begin{minted}{csharp}
+[STAThread]
+static void Main()
+{
+    Application.EnableVisualStyles();
+    Application.SetCompatibleTextRenderingDefault(false);
+    Application.Run(new LoginForm());
+}
+\end{minted}
+\end{codeblock}
+
+Thuộc tính \texttt{[STAThread]} là yêu cầu quen thuộc của ứng dụng Desktop Windows khi làm việc với các thành phần COM, clipboard, dialog hệ thống hoặc một số control giao diện. \texttt{Application.EnableVisualStyles()} giúp control sử dụng giao diện hiện đại theo theme của Windows thay vì kiểu cũ. \texttt{Application.Run(new LoginForm())} tạo message loop chính; khi form này đóng, ứng dụng kết thúc.
+
+Trong project, vòng đời đăng nhập được xử lý theo hướng: mở \texttt{LoginForm}, kiểm tra tài khoản qua BUS, ghi nhận session bằng \texttt{UserSession}, ẩn form đăng nhập, mở dashboard theo vai trò bằng \texttt{ShowDialog}, sau đó đóng form đăng nhập khi dashboard kết thúc. Cách làm này đảm bảo ứng dụng không còn giữ form đăng nhập phía sau sau khi người dùng đã vào hệ thống.
+
+\subsubsection{Cài đặt dashboard shell và vùng nội dung động}
+
+Các main form theo vai trò đóng vai trò như một shell: giữ layout tổng, menu trái, header, thông tin người dùng, nút đăng xuất và vùng nội dung chính. Khi người dùng chọn chức năng, shell không mở một cửa sổ mới mà thay thế nội dung bên trong panel trung tâm.
+
+\begin{codeblock}{code:dashboard-shell}{Nạp màn hình con trong dashboard}
+\begin{minted}{csharp}
+private void LoadContentView(UserControl view)
+{
+    contentPanel.SuspendLayout();
+    contentPanel.Controls.Clear();
+
+    view.Dock = DockStyle.Fill;
+    contentPanel.Controls.Add(view);
+
+    contentPanel.ResumeLayout();
+}
+\end{minted}
+\end{codeblock}
+
+Việc dùng \texttt{SuspendLayout} và \texttt{ResumeLayout} giúp hạn chế vẽ lại giao diện nhiều lần khi thay control. Đây là kỹ thuật nhỏ nhưng quan trọng trong WinForms, nhất là khi vùng nội dung có nhiều control con hoặc màn hình chứa \texttt{DataGridView}. Nếu không dùng hợp lý, giao diện có thể bị nhấp nháy hoặc chậm khi chuyển màn hình.
+
+Thiết kế shell còn giúp chuẩn hóa hành vi đăng xuất. Các form chính có thể phát sự kiện \texttt{LogoutRequested} hoặc \texttt{CloseRequested}; \texttt{MainformRole} nhận sự kiện này để đóng dashboard và quay về luồng đăng nhập nếu cần. Nhờ vậy, mỗi dashboard không cần tự xử lý toàn bộ logic đóng/mở ứng dụng.
+
+\subsubsection{Cài đặt UserControl theo phân hệ}
+
+\texttt{UserControl} là đơn vị giao diện chính của các phân hệ. Mỗi user control nên đảm nhiệm một màn hình nghiệp vụ cụ thể, ví dụ quản lý bệnh nhân, tạo lịch hẹn, lịch hôm nay, danh sách chờ, upload kết quả, danh sách đơn thuốc hoặc quản lý tồn kho. Việc chia nhỏ thành user control giúp mã nguồn dễ bảo trì hơn so với việc đưa mọi chức năng vào một form lớn.
+
+Một user control trong project thường có cấu trúc:
+
+\begin{itemize}
+    \item Constructor nhận tham số cần thiết như user hiện tại, mã nhân viên, mã request hoặc controller.
+    \item Hàm \texttt{LoadData} hoặc \texttt{RefreshData} gọi BUS/controller để lấy dữ liệu.
+    \item Các event handler xử lý click, chọn dòng, tìm kiếm, lọc dữ liệu hoặc mở form chi tiết.
+    \item Các hàm phụ để bind dữ liệu, đổi trạng thái button, hiển thị thông báo và reset input.
+\end{itemize}
+
+\begin{codeblock}{code:user-control-pattern}{Mẫu tổ chức UserControl nghiệp vụ}
+\begin{minted}{csharp}
+public partial class PatientManagement : UserControl
+{
+    private readonly PatientBUS patientBUS = new PatientBUS();
+
+    public PatientManagement()
+    {
+        InitializeComponent();
+        LoadPatients();
+    }
+
+    private void LoadPatients()
+    {
+        dgvPatients.AutoGenerateColumns = false;
+        dgvPatients.DataSource = patientBUS.GetAllPatients();
+    }
+
+    private void btnSearch_Click(object sender, EventArgs e)
+    {
+        string keyword = txtSearch.Text.Trim();
+        dgvPatients.DataSource = patientBUS.SearchPatients(keyword);
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Điểm cần chú ý là user control chỉ nên xử lý logic giao diện và gọi BUS/controller. Nếu viết SQL trực tiếp trong user control thì kiến trúc DTO--BUS--DAL bị phá vỡ, đồng thời việc kiểm thử và bảo trì sẽ khó hơn.
+
+\subsubsection{Cài đặt DataGridView cho nghiệp vụ quản lý}
+
+Trong WinForms, \texttt{DataGridView} là control mạnh nhưng dễ bị dùng sai nếu để tự sinh cột, bind trực tiếp dữ liệu thô và xử lý trạng thái không rõ ràng. Với project phòng khám, \texttt{DataGridView} được dùng nhiều nên cần thống nhất cách cài đặt.
+
+\begin{codeblock}{code:datagridview-config}{Cấu hình DataGridView cho bảng nghiệp vụ}
+\begin{minted}{csharp}
+private void ConfigureGrid()
+{
+    dgvRequests.AutoGenerateColumns = false;
+    dgvRequests.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+    dgvRequests.MultiSelect = false;
+    dgvRequests.ReadOnly = true;
+    dgvRequests.AllowUserToAddRows = false;
+    dgvRequests.AllowUserToDeleteRows = false;
+    dgvRequests.RowHeadersVisible = false;
+}
+\end{minted}
+\end{codeblock}
+
+Các màn hình danh sách nên dùng chế độ \texttt{FullRowSelect} để người dùng hiểu rằng họ đang thao tác trên một bản ghi hoàn chỉnh. Thuộc tính \texttt{ReadOnly} giúp tránh sửa trực tiếp trên grid nếu hệ thống chưa có cơ chế lưu từng ô. Các thao tác như check-in, thanh toán, upload kết quả, cấp phát thuốc nên được thực hiện qua nút chức năng hoặc cột button rõ ràng thay vì cho sửa trực tiếp vào bảng.
+
+\begin{longtable}{|p{3.4cm}|p{4.6cm}|p{5.8cm}|}
+\caption{Ứng dụng DataGridView trong các phân hệ} \\
+\hline
+\textbf{Phân hệ} & \textbf{Dữ liệu hiển thị} & \textbf{Thao tác chính} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Phân hệ} & \textbf{Dữ liệu hiển thị} & \textbf{Thao tác chính} \\
+\hline
+\endhead
+Lễ tân & Bệnh nhân, lịch hẹn, hàng chờ, thanh toán & Tìm kiếm, check-in, tạo lịch, mở thanh toán. \\
+\hline
+Bác sĩ & Bệnh nhân chờ khám, lịch sử khám, dịch vụ chỉ định & Mở ERM, ghi chẩn đoán, kê toa, chỉ định xét nghiệm. \\
+\hline
+Kỹ thuật viên & Request xét nghiệm/hình ảnh, kết quả, hồ sơ bệnh nhân & Nhận request, upload file, nhập kết quả, xem hồ sơ. \\
+\hline
+Dược sĩ & Đơn thuốc, danh mục thuốc, tồn kho & Cấp phát, xem chi tiết thuốc, cập nhật tồn kho. \\
+\hline
+Quản trị & Người dùng, nhân viên, phòng ban, cấu hình & Thêm, sửa, khóa tài khoản, phân quyền. \\
+\hline
+\end{longtable}
+
+\subsubsection{Cài đặt FlowLayoutPanel và card động}
+
+Không phải dữ liệu nào cũng nên đưa vào bảng. Khi người dùng cần chọn một đối tượng trực quan như khoa, bác sĩ, thuốc hoặc nhóm chức năng, card động trong \texttt{FlowLayoutPanel} cho trải nghiệm tốt hơn. Trong màn hình tạo lịch hẹn, danh sách khoa và bác sĩ có thể được tạo theo dữ liệu hiện có; mỗi card gắn event click để chọn đối tượng.
+
+\begin{codeblock}{code:dynamic-card}{Tạo card động trong FlowLayoutPanel}
+\begin{minted}{csharp}
+private void AddDepartmentCard(DepartmentDTO department)
+{
+    Panel card = new Panel
+    {
+        Width = 180,
+        Height = 90,
+        Margin = new Padding(8),
+        Cursor = Cursors.Hand,
+        Tag = department
+    };
+
+    Label lblName = new Label
+    {
+        Text = department.DepartmentName,
+        Dock = DockStyle.Fill,
+        TextAlign = ContentAlignment.MiddleCenter
+    };
+
+    card.Controls.Add(lblName);
+    card.Click += Department_Click;
+    lblName.Click += Department_Click;
+    flpDepartment.Controls.Add(card);
+}
+\end{minted}
+\end{codeblock}
+
+Khi tạo card động, cần gán \texttt{Tag} để lưu DTO hoặc ID nghiệp vụ. Event click có thể đọc lại \texttt{Tag} để biết người dùng chọn khoa/bác sĩ/thuốc nào. Đây là kỹ thuật phổ biến trong WinForms vì control động không có biến thiết kế cố định như control được kéo thả trên Designer.
+
+\subsubsection{Cài đặt form modal, OpenFileDialog và MessageBox}
+
+Ứng dụng Desktop thường cần tương tác với hệ thống file cục bộ. Trong phân hệ kỹ thuật viên, người dùng upload PDF hoặc hình ảnh MRI/X-Ray; trong thanh toán, người dùng có thể xem QR hoặc kiểm tra trạng thái. WinForms cung cấp các dialog hệ thống như \texttt{OpenFileDialog}, \texttt{SaveFileDialog}, \texttt{FolderBrowserDialog} và \texttt{MessageBox}.
+
+\begin{codeblock}{code:open-file-dialog}{Chọn file kết quả từ máy tính}
+\begin{minted}{csharp}
+private void btnChooseFile_Click(object sender, EventArgs e)
+{
+    using (OpenFileDialog dialog = new OpenFileDialog())
+    {
+        dialog.Filter = "PDF files (*.pdf)|*.pdf|Image files (*.png;*.jpg)|*.png;*.jpg";
+        dialog.Multiselect = false;
+
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+            txtFilePath.Text = dialog.FileName;
+        }
+    }
+}
+\end{minted}
+\end{codeblock}
+
+\texttt{MessageBox} được dùng cho các thông báo ngắn như đăng nhập sai, tạo lịch thành công, thiếu dữ liệu bắt buộc hoặc xác nhận thao tác. Với thao tác làm thay đổi dữ liệu như xóa, hủy lịch, xác nhận thanh toán hoặc cấp phát thuốc, cần dùng nút \texttt{YesNo} để người dùng xác nhận trước khi thực thi.
+
+\subsubsection{Cài đặt bất đồng bộ cho API và thanh toán}
+
+WinForms chạy trên UI thread. Nếu gọi API, đọc file lớn hoặc kiểm tra thanh toán trực tuyến trực tiếp trên UI thread, giao diện sẽ bị đứng. Vì vậy, các thao tác mạng trong project cần dùng \texttt{async}/\texttt{await}. Khi bắt đầu xử lý, form nên disable nút thao tác; khi hoàn tất hoặc lỗi, bật lại nút trong khối \texttt{finally}.
+
+\begin{codeblock}{code:async-winform}{Gọi tác vụ bất đồng bộ từ WinForms}
+\begin{minted}{csharp}
+private async void btnSync_Click(object sender, EventArgs e)
+{
+    btnSync.Enabled = false;
+    lblStatus.Text = "Dang dong bo du lieu...";
+
+    try
+    {
+        ApiSyncResultDTO result = await apiSyncBUS.SyncAsync();
+        lblStatus.Text = result.Success ? "Dong bo thanh cong" : result.Message;
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show(ex.Message, "Loi dong bo");
+    }
+    finally
+    {
+        btnSync.Enabled = true;
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Đây là điểm quan trọng với ứng dụng Desktop thực tế. Người dùng cần thấy phần mềm vẫn phản hồi trong lúc đồng bộ Supabase/SheetDB hoặc kiểm tra PayOS. Nếu không xử lý bất đồng bộ, Windows có thể đánh dấu form là \textit{Not Responding}, làm trải nghiệm rất kém.
+
+\subsubsection{Quản lý session và truyền ngữ cảnh người dùng}
+
+Sau khi đăng nhập, nhiều màn hình cần biết người dùng hiện tại là ai, thuộc vai trò nào, mã nhân viên nào và khoa/phòng ban nào. Project dùng \texttt{UserSession} trong \texttt{Core/Session} để lưu ngữ cảnh đăng nhập. Các dashboard cũng nhận \texttt{UserDTO currentUser} qua constructor để hiển thị tên người dùng và quyết định chức năng.
+
+\begin{codeblock}{code:user-session}{Lưu session sau đăng nhập}
+\begin{minted}{csharp}
+UserSession.Login(
+    user.UserID,
+    user.EmployeeID,
+    RoleNormalizer.Normalize(user.Role),
+    user.DepartmentName);
+\end{minted}
+\end{codeblock}
+
+Về thiết kế, session giúp tránh truyền lặp lại nhiều tham số qua tất cả constructor. Tuy nhiên, các màn hình quan trọng vẫn nên nhận rõ thông tin cần thiết, ví dụ \texttt{employeeId} khi đăng ký ca làm hoặc \texttt{requestId} khi upload kết quả, để code dễ đọc và giảm phụ thuộc toàn cục.
+
+\subsubsection{Cài đặt điểm khởi động và phân quyền}
+
+Ứng dụng bắt đầu từ \texttt{Program.cs}, bật visual style và mở \texttt{LoginForm}. Sau khi đăng nhập thành công, \texttt{LoginForm} gọi \texttt{UserSession.Login} để lưu thông tin người dùng và mở \texttt{MainformRole}. Lớp \texttt{MainformRole} chuẩn hóa vai trò, sau đó tạo dashboard tương ứng.
+
+\begin{codeblock}{code:login-flow}{Luồng đăng nhập và mở dashboard}
+\begin{minted}{csharp}
+private void btnLogin_Click(object sender, EventArgs e)
+{
+    string username = txtUsername.Text.Trim();
+    string password = txtPassword.Text;
+
+    UserDTO user = userBUS.Login(username, password);
+    if (user == null)
+    {
+        MessageBox.Show("Ten dang nhap hoac mat khau khong dung");
+        return;
+    }
+
+    UserSession.Login(
+        user.UserID,
+        user.EmployeeID,
+        RoleNormalizer.Normalize(user.Role),
+        user.DepartmentName);
+
+    using (var dashboard = new MainformRole(user))
+    {
+        Hide();
+        dashboard.ShowDialog();
+        Close();
+    }
+}
+\end{minted}
+\end{codeblock}
+
+\begin{longtable}{|p{3.4cm}|p{5cm}|p{5.1cm}|}
+\caption{Ánh xạ vai trò sang giao diện chính} \\
+\hline
+\textbf{Vai trò} & \textbf{Form chính} & \textbf{Ghi chú} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Vai trò} & \textbf{Form chính} & \textbf{Ghi chú} \\
+\hline
+\endhead
+Admin & \texttt{AdminMainform} & Quản trị hệ thống. \\
+\hline
+Receptionist & \texttt{ReceptionistMainform} & Tiếp nhận, lịch hẹn, bệnh nhân, thanh toán. \\
+\hline
+Doctor & \texttt{DoctorMainform} & Khám bệnh và hồ sơ bệnh án. \\
+\hline
+Nurse & \texttt{NurseMainform} & Điều dưỡng, sinh hiệu, hàng chờ. \\
+\hline
+Pharmacist & \texttt{PharmacyMainform} & Nhà thuốc và cấp phát thuốc. \\
+\hline
+Technician & \texttt{TechnicianMainform} & Xét nghiệm, hình ảnh và upload kết quả. \\
+\hline
+\end{longtable}
+
+\subsection{Cài đặt các tầng DTO, DAL, BUS và Core}
+
+\subsubsection{Cài đặt tầng DTO}
+
+Tầng DTO được chia theo domain, ví dụ \texttt{DTO/Auth/UserDTO.cs}, \texttt{DTO/Clinical/Patient/PatientDTO.cs}, \texttt{DTO/Clinical/Payments/PaymentWaitingDTO.cs}, \texttt{DTO/Scheduling/AppointmentDTO.cs}. DTO giúp giao diện không phụ thuộc trực tiếp vào \texttt{DataTable} hoặc entity database.
+
+DTO trong project không phải chỉ là vài class minh họa. Đây là lớp hợp đồng dữ liệu giữa UI, BUS, DAL và API. Khi một màn hình WinForms cần dữ liệu, nó không nên nhận \texttt{DataRow} hoặc \texttt{SqlDataReader}; thay vào đó DAL/BUS trả về DTO có tên thuộc tính rõ ràng. Điều này giúp code giao diện dễ đọc và giảm phụ thuộc vào tên cột SQL.
+
+\begin{longtable}{|p{3.8cm}|p{4.8cm}|p{5.2cm}|}
+\caption{Phân nhóm DTO trong project} \\
+\hline
+\textbf{Nhóm DTO} & \textbf{File tiêu biểu} & \textbf{Vai trò} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm DTO} & \textbf{File tiêu biểu} & \textbf{Vai trò} \\
+\hline
+\endhead
+Auth & \texttt{UserDTO} & Truyền dữ liệu tài khoản, nhân viên, vai trò sau đăng nhập. \\
+\hline
+Patient & \texttt{PatientDTO}, \texttt{PatientInsuranceDTO} & Thông tin hành chính bệnh nhân, bảo hiểm, dị ứng, nhóm máu. \\
+\hline
+Encounter & \texttt{EncounterDTO}, \texttt{VitalSignsDTO}, \texttt{FollowUpDTO} & Lượt khám, sinh hiệu, tái khám. \\
+\hline
+ERM & \texttt{PatientERMDto}, \texttt{EncounterHistoryDto}, \texttt{LabHistoryDto}, \texttt{ImagingHistoryDto}, \texttt{PrescriptionHistoryDto}, \texttt{InvoiceHistoryDto} & Dữ liệu tổng hợp cho hồ sơ bệnh án điện tử. \\
+\hline
+Payment & \texttt{PaymentWaitingDTO}, \texttt{PaymentDetailDTO}, \texttt{Payment\_RecepDTO} & Danh sách chờ thanh toán, chi tiết invoice, lịch sử thanh toán. \\
+\hline
+Prescription & \texttt{PrescriptionDTO}, \texttt{PrescriptionItemDTO}, \texttt{MedicineDTO} & Đơn thuốc, chi tiết thuốc, danh mục thuốc. \\
+\hline
+Queue & \texttt{WaitingPatientDTO}, \texttt{DoctorQueueDTO}, \texttt{DoctorCardDTO} & Hàng chờ theo khoa/bác sĩ và card bác sĩ. \\
+\hline
+Facility & \texttt{DepartmentDTO}, \texttt{RoomDTO}, \texttt{InventoryDTO}, \texttt{SupplierDTO} & Khoa, phòng, kho thuốc, nhà cung cấp. \\
+\hline
+Scheduling & \texttt{AppointmentDTO}, \texttt{DoctorScheduleDTO}, \texttt{EmployeeShiftDTO}, \texttt{WorkShiftDTO} & Lịch hẹn, lịch bác sĩ, ca làm. \\
+\hline
+Integrations & \texttt{ApiPatientDTO}, \texttt{ApiEmployeeDTO}, \texttt{ApiRequestDTO}, \texttt{ApiSyncResultDTO} & Dữ liệu trung gian khi đồng bộ Supabase/SheetDB. \\
+\hline
+\end{longtable}
+
+Thiết kế DTO có ba nguyên tắc chính:
+
+\begin{itemize}
+    \item \textbf{DTO theo màn hình:} những màn hình tổng hợp như ERM hoặc Payment không nên ép dùng lại DTO bảng gốc nếu dữ liệu cần hiển thị là kết quả join nhiều bảng.
+    \item \textbf{DTO theo tích hợp:} dữ liệu API ngoài cần DTO riêng vì tên trường, kiểu dữ liệu và logic UUID khác dữ liệu SQL Server local.
+    \item \textbf{DTO không chứa truy vấn:} DTO chỉ chứa thuộc tính, không chứa SQL, không gọi BUS/DAL, không xử lý UI.
+\end{itemize}
+
+\begin{codeblock}{code:dto-example}{Minh họa DTO bệnh nhân}
+\begin{minted}{csharp}
+public class PatientDTO
+{
+    public int PatientID { get; set; }
+    public string PatientCode { get; set; }
+    public string Name { get; set; }
+    public DateTime? BirthDate { get; set; }
+    public string Gender { get; set; }
+    public string Phone { get; set; }
+    public string Address { get; set; }
+    public string BloodType { get; set; }
+    public string Allergies { get; set; }
+}
+\end{minted}
+\end{codeblock}
+
+\begin{codeblock}{code:api-result-dto}{DTO kết quả đồng bộ API}
+\begin{minted}{csharp}
+public class ApiSyncResultDTO
+{
+    public int InsertedPatientsToLocal { get; set; }
+    public int InsertedEmployeesToLocal { get; set; }
+    public int PatchedPatientUuidToSheet { get; set; }
+    public int PatchedEmployeeUuidToSheet { get; set; }
+    public int SkippedPatientRows { get; set; }
+    public int SkippedEmployeeRows { get; set; }
+
+    public List<ApiPatientDTO> MergedPatients { get; set; }
+        = new List<ApiPatientDTO>();
+
+    public List<ApiEmployeeDTO> MergedEmployees { get; set; }
+        = new List<ApiEmployeeDTO>();
+}
+\end{minted}
+\end{codeblock}
+
+DTO kết quả đồng bộ không chỉ trả \texttt{true/false}. Nó ghi lại số dòng insert local, số UUID sinh mới, số UUID patch ngược về SheetDB, số dòng bị bỏ qua và danh sách bệnh nhân/nhân viên sau merge. Đây là cách thiết kế tốt hơn cho giao diện WinForms vì form có thể hiển thị thông báo chi tiết cho người dùng, thay vì chỉ báo ``đồng bộ thành công''.
+
+\subsubsection{Cài đặt tầng DAL bằng ADO.NET}
+
+DAL sử dụng \texttt{DatabaseHelper} để quản lý kết nối và thực thi truy vấn. Các repository tạo câu SQL, truyền \texttt{SqlParameter}, gọi helper và map kết quả sang DTO.
+
+Tầng DAL hiện tại được chia thành interface và repository theo domain. Ví dụ: \texttt{IUserDAL}/\texttt{UserDAL} cho đăng nhập, \texttt{IPatientRepository}/\texttt{Patient\_DAL} cho bệnh nhân, \texttt{IServiceRequestDAL}/\texttt{ServiceRequestDAL} cho chỉ định, \texttt{ITechnicianRequestDAL}/\texttt{TechnicianRequestDAL} cho kỹ thuật viên. Cách chia này làm rõ mỗi repository phụ trách một nhóm bảng và một nhóm truy vấn.
+
+\begin{longtable}{|p{4cm}|p{4.8cm}|p{5cm}|}
+\caption{Nhóm repository DAL và trách nhiệm} \\
+\hline
+\textbf{Nhóm DAL} & \textbf{Repository tiêu biểu} & \textbf{Trách nhiệm chính} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm DAL} & \textbf{Repository tiêu biểu} & \textbf{Trách nhiệm chính} \\
+\hline
+\endhead
+Auth & \texttt{UserDAL} & Lấy tài khoản, role, nhân viên và xác thực đăng nhập. \\
+\hline
+Clinical & \texttt{Patient\_DAL}, \texttt{EncounterDAL}, \texttt{ERMRepository}, \texttt{PaymentDAL}, \texttt{PrescriptionDAL}, \texttt{VitalSignsDAL} & Truy vấn dữ liệu khám bệnh, hồ sơ, thanh toán, đơn thuốc. \\
+\hline
+Facility & \texttt{DepartmentDAL}, \texttt{RoomDAL}, \texttt{InventoryDAL}, \texttt{SupplierDAL} & Khoa, phòng, tồn kho, nhà cung cấp. \\
+\hline
+Scheduling & \texttt{AppointmentDAL}, \texttt{DoctorScheduleDAL}, \texttt{EmployeeShiftDAL}, \texttt{WorkShiftDAL} & Lịch hẹn, lịch bác sĩ, ca làm. \\
+\hline
+Technician & \texttt{TechnicianRequestDAL}, \texttt{TechnicianShiftDAL} & Danh sách request, upload kết quả, ca kỹ thuật viên. \\
+\hline
+Integrations & \texttt{ApiSyncRepository} & Gọi Supabase/SheetDB, patch UUID, upsert local, kéo request ngoài. \\
+\hline
+\end{longtable}
+
+\texttt{DatabaseHelper} đóng vai trò cổng truy cập SQL Server dùng chung. Nó cung cấp ba nhóm thao tác: \texttt{ExecuteQuery} trả \texttt{DataTable} cho truy vấn SELECT; \texttt{ExecuteNonQuery} cho INSERT/UPDATE/DELETE; \texttt{ExecuteScalar} cho truy vấn trả một giá trị. Tất cả đều nhận \texttt{SqlParameter[]} để tránh nối chuỗi SQL trực tiếp.
+
+\begin{codeblock}{code:patient-search}{Minh họa tìm kiếm bệnh nhân}
+\begin{minted}{csharp}
+public List<PatientDTO> SearchPatients(string keyword)
+{
+    const string query = @"
+        SELECT PatientID, PatientCode, FullName AS Name, DOB AS BirthDate,
+               Gender, Phone, Address, BloodType, Allergies
+        FROM Patients
+        WHERE FullName LIKE @Term
+           OR PatientCode LIKE @Term
+           OR Phone LIKE @Term";
+
+    SqlParameter[] parameters =
+    {
+        new SqlParameter("@Term", "%" + keyword + "%")
+    };
+
+    DataTable table = DatabaseHelper.ExecuteQuery(query, parameters);
+    return table.AsEnumerable().Select(MapPatient).ToList();
+}
+\end{minted}
+\end{codeblock}
+
+Điểm quan trọng là các truy vấn có dữ liệu nhập từ người dùng đều nên dùng tham số, tránh nối chuỗi SQL trực tiếp.
+
+\begin{codeblock}{code:database-helper-real}{DatabaseHelper dùng ADO.NET}
+\begin{minted}{csharp}
+public static int ExecuteNonQuery(
+    string query,
+    SqlParameter[] parameters = null)
+{
+    using (SqlConnection conn = GetConnection())
+    using (SqlCommand cmd = new SqlCommand(query, conn))
+    {
+        if (parameters != null)
+        {
+            cmd.Parameters.AddRange(parameters);
+        }
+
+        conn.Open();
+        return cmd.ExecuteNonQuery();
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Đối với repository tích hợp API, DAL không chỉ truy cập SQL Server mà còn gọi HTTP API bằng \texttt{HttpClient}. Vì vậy, \texttt{ApiSyncRepository} có hai trách nhiệm dữ liệu: gọi nguồn ngoài và ghi về local. Các hàm như \texttt{GetSupabasePatientsAsync}, \texttt{GetSheetPatientsAsync}, \texttt{PatchPatientSheetUuidAsync}, \texttt{InsertSupabasePatientAsync}, \texttt{UpsertLocalPatientAsync} cho thấy repository này là cầu nối giữa ba hệ dữ liệu.
+
+\subsubsection{Cài đặt tầng DAL bằng Entity Framework theo hướng mở rộng}
+
+Bên cạnh ADO.NET, đồ án có định hướng bổ sung Entity Framework cho các phân hệ CRUD ổn định. Phần này chưa thay thế DAL hiện tại, nhưng cần được thiết kế ngay trong báo cáo để thể hiện hướng phát triển có kiểm soát. Nếu triển khai EF một cách vội vàng, hệ thống sẽ có nguy cơ trộn lẫn entity EF với DTO giao diện, làm mất ranh giới kiến trúc. Vì vậy, cách cài đặt đề xuất là thêm một nhánh repository EF song song với repository ADO.NET.
+
+\paragraph{Nguyên tắc tách ADO.NET và Entity Framework}
+
+ADO.NET và EF không nên được dùng lẫn trong cùng một phương thức nghiệp vụ nếu không có lý do rõ ràng. ADO.NET phù hợp với các truy vấn đã tối ưu bằng SQL, nhiều join, nhiều aggregate hoặc cần kiểm soát câu lệnh. EF phù hợp với CRUD chuẩn, danh mục ít phức tạp, truy vấn theo khóa chính và cập nhật entity đơn giản.
+
+\begin{longtable}{|p{3.5cm}|p{4.8cm}|p{5.5cm}|}
+\caption{Định hướng chọn ADO.NET hoặc Entity Framework trong DAL} \\
+\hline
+\textbf{Nhóm nghiệp vụ} & \textbf{Cách truy cập phù hợp} & \textbf{Lý do} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm nghiệp vụ} & \textbf{Cách truy cập phù hợp} & \textbf{Lý do} \\
+\hline
+\endhead
+Đăng nhập, phân quyền & ADO.NET & Cần truy vấn chính xác tài khoản, role, employee và kiểm soát dữ liệu trả về. \\
+\hline
+ERM, lịch sử khám & ADO.NET & Nhiều bảng join, dữ liệu tổng hợp, cần query tối ưu theo patient/encounter. \\
+\hline
+Danh mục thuốc & Entity Framework & CRUD ổn định, dễ map entity sang DTO và dễ lọc/sắp xếp bằng LINQ. \\
+\hline
+Khoa, phòng, nhà cung cấp & Entity Framework & Bảng danh mục ít nghiệp vụ phức tạp, thao tác thêm/sửa/xóa đơn giản. \\
+\hline
+Thanh toán, hóa đơn & ADO.NET trước mắt & Có nhiều trạng thái nghiệp vụ và cần kiểm soát transaction khi hoàn thiện. \\
+\hline
+Ca làm & Có thể dùng EF & Dữ liệu dạng lịch, CRUD và truy vấn theo ngày/nhân viên tương đối rõ. \\
+\hline
+Đồng bộ API & ADO.NET & Cần upsert, patch UUID và kiểm tra schema linh hoạt. \\
+\hline
+\end{longtable}
+
+\paragraph{Cấu trúc Entity và DbContext dự kiến}
+
+Khi thêm EF, project nên có thêm thư mục như \texttt{DAL/DataContext/Ef}, \texttt{DAL/Entities} và \texttt{DAL/RepositoriesEf}. \texttt{DbContext} chỉ biết entity và connection string; repository EF chịu trách nhiệm query; BUS vẫn chỉ nhận DTO.
+
+\begin{codeblock}{code:ef-context-implementation}{Cài đặt DbContext dự kiến}
+\begin{minted}{csharp}
+public class ClinicEfContext : DbContext
+{
+    public DbSet<MedicineEntity> Medicines { get; set; }
+    public DbSet<DepartmentEntity> Departments { get; set; }
+    public DbSet<RoomEntity> Rooms { get; set; }
+    public DbSet<SupplierEntity> Suppliers { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder builder)
+    {
+        string connection =
+            ConfigurationManager.ConnectionStrings["ClinicDB"].ConnectionString;
+
+        builder.UseSqlServer(connection);
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Entity không nên được thiết kế theo nhu cầu giao diện mà phải phản ánh bảng dữ liệu. Ví dụ \texttt{MedicineEntity} có thể chứa \texttt{MedicineID}, \texttt{MedicineCode}, \texttt{MedicineName}, \texttt{Unit}, \texttt{StockQuantity}, \texttt{Price}, \texttt{Status}. Trong khi đó, \texttt{MedicineDTO} có thể thêm các thuộc tính phục vụ hiển thị như nhãn tồn kho thấp, màu trạng thái hoặc tên nhóm thuốc.
+
+\begin{codeblock}{code:ef-entity-medicine}{Entity thuốc dự kiến}
+\begin{minted}{csharp}
+public class MedicineEntity
+{
+    public int MedicineID { get; set; }
+    public string MedicineCode { get; set; }
+    public string MedicineName { get; set; }
+    public string Unit { get; set; }
+    public int StockQuantity { get; set; }
+    public decimal Price { get; set; }
+    public string Status { get; set; }
+}
+\end{minted}
+\end{codeblock}
+
+\paragraph{Repository EF và mapping sang DTO}
+
+Repository EF không trả entity trực tiếp cho WinForms. Cách làm đúng là query entity rồi project sang DTO. Nhờ đó, nếu sau này đổi EF configuration hoặc đổi tên cột, giao diện không bị phụ thuộc vào entity.
+
+\begin{codeblock}{code:ef-medicine-repository-detail}{Repository EF cho danh mục thuốc}
+\begin{minted}{csharp}
+public class MedicineEfDAL
+{
+    public List<MedicineDTO> GetMedicines(string keyword)
+    {
+        using (var context = new ClinicEfContext())
+        {
+            var query = context.Medicines.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(x =>
+                    x.MedicineName.Contains(keyword) ||
+                    x.MedicineCode.Contains(keyword));
+            }
+
+            return query
+                .OrderBy(x => x.MedicineName)
+                .Select(x => new MedicineDTO
+                {
+                    MedicineID = x.MedicineID,
+                    MedicineCode = x.MedicineCode,
+                    MedicineName = x.MedicineName,
+                    Unit = x.Unit,
+                    StockQuantity = x.StockQuantity,
+                    Price = x.Price,
+                    Status = x.Status
+                })
+                .ToList();
+        }
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Trong WinForms, mỗi lần bấm tìm kiếm hoặc reload danh mục thuốc có thể tạo context mới, lấy dữ liệu, dispose context. Không nên giữ một \texttt{DbContext} sống trong form suốt phiên làm việc vì dữ liệu có thể stale và connection có thể bị giữ lâu.
+
+\subsubsection{Cài đặt tầng BUS}
+
+BUS nhận dữ liệu từ UI/controller, kiểm tra điều kiện nghiệp vụ và gọi repository. Ví dụ \texttt{UserBUS} kiểm tra username/password rỗng trước khi gọi \texttt{UserDAL.Authenticate}; \texttt{PatientBUS} điều phối bệnh nhân và bảo hiểm; \texttt{PaymentBUS} điều phối danh sách chờ thanh toán, tạo payment và cập nhật trạng thái.
+
+Tầng BUS là nơi thể hiện logic nghiệp vụ thật sự. Một lỗi thường gặp trong đồ án WinForms là để form tự quyết định mọi thứ: form kiểm tra dữ liệu, form viết SQL, form cập nhật trạng thái. Project này đã tách phần lớn logic sang BUS/controller, giúp báo cáo có thể trình bày rõ quy trình từng chức năng.
+
+\begin{longtable}{|p{4cm}|p{4.8cm}|p{5cm}|}
+\caption{Nhóm BUS và logic nghiệp vụ} \\
+\hline
+\textbf{Nhóm BUS} & \textbf{Lớp tiêu biểu} & \textbf{Logic xử lý} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm BUS} & \textbf{Lớp tiêu biểu} & \textbf{Logic xử lý} \\
+\hline
+\endhead
+Auth & \texttt{UserBUS} & Kiểm tra thông tin đăng nhập, gọi DAL, trả \texttt{UserDTO}. \\
+\hline
+Patient & \texttt{PatientBUS} & Thêm/sửa/tìm kiếm bệnh nhân, chuẩn hóa dữ liệu nhập. \\
+\hline
+Payment & \texttt{PaymentBUS} & Lấy danh sách chờ thanh toán, tạo pending payment, cập nhật số tiền/trạng thái. \\
+\hline
+Scheduling & \texttt{AppointmentBUS}, \texttt{DoctorScheduleBUS} & Kiểm tra lịch bác sĩ, tạo lịch hẹn, xử lý trạng thái lịch. \\
+\hline
+Technician & \texttt{TechnicianRequestBUS}, \texttt{TechnicianShiftBUS} & Lấy request, cập nhật kết quả, quản lý ca kỹ thuật viên. \\
+\hline
+Integrations & \texttt{ApiSyncBUS} & Hợp nhất dữ liệu Supabase/SheetDB/local, patch UUID, đồng bộ request. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:bus-create-appointment}{Minh họa tạo lịch hẹn}
+\begin{minted}{csharp}
+public bool CreateAppointment(AppointmentDTO appointment)
+{
+    if (appointment.PatientID <= 0 || appointment.DoctorID <= 0)
+    {
+        return false;
+    }
+
+    var schedule = scheduleDAL.GetDoctorSchedule(
+        appointment.DoctorID,
+        appointment.AppointmentDate);
+
+    if (schedule == null || schedule.RoomID <= 0)
+    {
+        return false;
+    }
+
+    appointment.RoomID = schedule.RoomID;
+    appointment.Status = AppointmentStatus.Pending;
+    return appointmentDAL.Insert(appointment);
+}
+\end{minted}
+\end{codeblock}
+
+Với \texttt{ApiSyncBUS}, logic nghiệp vụ còn phức tạp hơn CRUD thông thường. BUS phải biết dòng nào hợp lệ, dòng nào bị bỏ qua, khi nào dùng mã để liên kết dữ liệu cũ, khi nào sinh UUID mới, khi nào patch về sheet, khi nào insert Supabase. Nếu để logic này trong form đồng bộ, giao diện sẽ rất khó bảo trì. Do đó, form chỉ nên gọi \texttt{await apiSyncBUS.SyncAsync()} và hiển thị \texttt{result.ToUserMessage()}.
+
+\begin{codeblock}{code:api-sync-ui-call}{Form gọi BUS đồng bộ và hiển thị kết quả}
+\begin{minted}{csharp}
+private async void btnSync_Click(object sender, EventArgs e)
+{
+    btnSync.Enabled = false;
+
+    try
+    {
+        ApiSyncResultDTO result = await apiSyncBUS.SyncAsync();
+        MessageBox.Show(result.ToUserMessage(), "Dong bo");
+    }
+    finally
+    {
+        btnSync.Enabled = true;
+    }
+}
+\end{minted}
+\end{codeblock}
+
+\paragraph{Cài đặt BUS đăng nhập và phân quyền}
+
+Luồng đăng nhập không chỉ kiểm tra đúng sai tài khoản mà còn quyết định toàn bộ hướng đi của ứng dụng. Khi người dùng bấm đăng nhập, \texttt{LoginForm} chỉ kiểm tra dữ liệu rỗng và chuyển username/password xuống \texttt{UserBUS}. Tầng BUS gọi DAL để lấy thông tin người dùng, kiểm tra mật khẩu, kiểm tra trạng thái tài khoản, lấy vai trò tương ứng rồi tạo \texttt{UserSession}. Sau khi có session, \texttt{MainformRole} dùng role đã chuẩn hóa để nạp dashboard phù hợp.
+
+\begin{longtable}{|p{3.2cm}|p{4.6cm}|p{6cm}|}
+\caption{Luồng cài đặt đăng nhập và phân quyền} \\
+\hline
+\textbf{Bước} & \textbf{Thành phần} & \textbf{Xử lý cài đặt} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Bước} & \textbf{Thành phần} & \textbf{Xử lý cài đặt} \\
+\hline
+\endhead
+Nhập liệu & \texttt{LoginForm} & Đọc \texttt{txtUsername}, \texttt{txtPassword}; kiểm tra rỗng; hiển thị \texttt{MessageBox} nếu thiếu dữ liệu. \\
+\hline
+Xác thực & \texttt{UserBUS} & Gọi DAL lấy user, kiểm tra mật khẩu, kiểm tra trạng thái tài khoản và role. \\
+\hline
+Chuẩn hóa role & \texttt{RoleNormalizer} & Đưa các cách ghi khác nhau như \texttt{Bác sĩ}, \texttt{Doctor}, \texttt{Bac si} về cùng một hằng số. \\
+\hline
+Tạo phiên & \texttt{UserSession} & Lưu \texttt{UserID}, \texttt{EmployeeID}, \texttt{EmployeeUUID}, \texttt{RoleName}, \texttt{DepartmentID}. \\
+\hline
+Điều hướng & \texttt{MainformRole} & Tạo dashboard theo role và nhúng vào vùng nội dung bằng \texttt{DockStyle.Fill}. \\
+\hline
+\end{longtable}
+
+Điểm quan trọng trong thiết kế này là không để từng form tự kiểm tra quyền. Quyền được xác định một lần sau đăng nhập, sau đó truyền qua \texttt{UserSession}. Các màn hình con chỉ đọc ngữ cảnh hiện tại để lọc dữ liệu theo bác sĩ, kỹ thuật viên hoặc dược sĩ đang đăng nhập.
+
+\begin{codeblock}{code:auth-flow-bus}{Mô phỏng luồng xác thực ở tầng BUS}
+\begin{minted}{csharp}
+public LoginResult Login(string username, string password)
+{
+    if (string.IsNullOrWhiteSpace(username) ||
+        string.IsNullOrWhiteSpace(password))
+    {
+        return LoginResult.Fail("Thieu ten dang nhap hoac mat khau");
+    }
+
+    UserDTO user = userDAL.GetByUsername(username.Trim());
+    if (user == null || !PasswordHasher.Verify(password, user.PasswordHash))
+    {
+        return LoginResult.Fail("Thong tin dang nhap khong hop le");
+    }
+
+    string normalizedRole = RoleNormalizer.Normalize(user.RoleName);
+    UserSession.SetCurrent(user, normalizedRole);
+    return LoginResult.Success(user);
+}
+\end{minted}
+\end{codeblock}
+
+\paragraph{Cài đặt BUS lịch hẹn, tiếp nhận và hàng chờ}
+
+Nghiệp vụ lịch hẹn là một chuỗi xử lý liên tục chứ không phải một thao tác CRUD đơn lẻ. Khi lễ tân tạo lịch hẹn, hệ thống phải biết bệnh nhân nào được chọn, khoa nào được chọn, bác sĩ nào còn lịch, slot giờ nào hợp lệ và phòng khám nào tương ứng với lịch làm việc. Khi bệnh nhân đến phòng khám, lịch hẹn được chuyển trạng thái check-in và một dòng hàng chờ được tạo ra để bác sĩ hoặc điều dưỡng tiếp tục xử lý.
+
+\begin{longtable}{|p{3.4cm}|p{4.6cm}|p{5.8cm}|}
+\caption{Logic BUS cho lịch hẹn và hàng chờ} \\
+\hline
+\textbf{Nghiệp vụ} & \textbf{Lớp liên quan} & \textbf{Logic cần cài đặt} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nghiệp vụ} & \textbf{Lớp liên quan} & \textbf{Logic cần cài đặt} \\
+\hline
+\endhead
+Tạo lịch hẹn & \texttt{AppointmentBUS}, \texttt{DoctorScheduleBUS} & Kiểm tra bệnh nhân, bác sĩ, ngày khám, slot giờ; gán phòng theo lịch bác sĩ; lưu trạng thái ban đầu. \\
+\hline
+Xem lịch hôm nay & \texttt{AppointmentBUS} & Lọc theo ngày hiện tại, trạng thái, khoa hoặc bác sĩ; trả DTO cho \texttt{ScheduleToday}. \\
+\hline
+Check-in & \texttt{AppointmentBUS}, \texttt{QueueBUS} & Cập nhật trạng thái lịch, sinh số thứ tự hàng chờ, gắn phòng/khoa/bác sĩ. \\
+\hline
+Điều phối hàng chờ & \texttt{QueueBUS} & Lấy danh sách theo trạng thái \texttt{Waiting}, \texttt{InProgress}, \texttt{Completed}; cập nhật khi bác sĩ nhận bệnh. \\
+\hline
+Nhắc lịch & \texttt{AppointmentBUS} & Lọc lịch sắp tới, lịch tái khám hoặc lịch chưa xác nhận để lễ tân gọi nhắc. \\
+\hline
+\end{longtable}
+
+Ở phía WinForms, các thao tác này được chia ra nhiều màn hình để giảm độ phức tạp. \texttt{CreateAppointment} phụ trách chọn dữ liệu đầu vào; \texttt{ScheduleToday} phụ trách xác nhận bệnh nhân đã đến; \texttt{WaitingList} phụ trách theo dõi luồng sau check-in. Cách chia này đúng với quy trình làm việc thực tế: người tạo lịch chưa chắc là người xử lý hàng chờ, và danh sách trong ngày phải được cập nhật liên tục.
+
+\paragraph{Cài đặt BUS thanh toán và cấp phát}
+
+Thanh toán trong hệ thống liên quan đến nhiều nguồn chi phí: phí khám, phí dịch vụ cận lâm sàng, thuốc trong toa và các khoản phát sinh. Vì vậy, \texttt{PaymentBUS} không nên chỉ cập nhật một cột trạng thái. Nó cần gom chi tiết hóa đơn, tính tổng tiền, xác định phương thức thanh toán và ghi nhận lịch sử thanh toán.
+
+\begin{codeblock}{code:payment-business-flow}{Luồng xác nhận thanh toán trong BUS}
+\begin{minted}{csharp}
+public bool ConfirmPayment(int encounterId, string method)
+{
+    InvoiceDTO invoice = invoiceDAL.GetByEncounter(encounterId);
+    if (invoice == null || invoice.TotalAmount <= 0)
+    {
+        return false;
+    }
+
+    bool updated = paymentDAL.UpdatePaymentStatus(
+        encounterId,
+        PaymentStatus.Paid,
+        method);
+
+    if (!updated)
+    {
+        return false;
+    }
+
+    invoiceDAL.MarkInvoiceAsPaid(invoice.InvoiceID);
+    return true;
+}
+\end{minted}
+\end{codeblock}
+
+Khi thanh toán bằng chuyển khoản hoặc PayOS, WinForms không nên tự coi giao dịch đã hoàn tất ngay sau khi tạo QR. Form PayOS tạo giao dịch, hiển thị QR, sau đó polling hoặc nhận trạng thái qua backend/webhook. Chỉ khi trạng thái trả về là thành công thì \texttt{PaymentBUS} mới cập nhật hóa đơn thành \texttt{Paid}. Nếu người dùng đóng form hoặc giao dịch hết hạn, hóa đơn vẫn giữ trạng thái chờ thanh toán.
+
+\paragraph{Cài đặt BUS kỹ thuật viên và hồ sơ cận lâm sàng}
+
+Phân hệ kỹ thuật viên có logic đặc thù vì một request có thể là xét nghiệm, PDF hoặc hình ảnh MRI/X-Ray. \texttt{TechnicianRequestBUS} phải phân loại request theo \texttt{ServiceRequestType}, trả danh sách request đang chờ, cập nhật kết quả, cập nhật trạng thái và gắn tệp y tế vào đúng bệnh nhân/encounter.
+
+\begin{longtable}{|p{3.4cm}|p{4.8cm}|p{5.6cm}|}
+\caption{Logic BUS của phân hệ kỹ thuật viên} \\
+\hline
+\textbf{Luồng} & \textbf{Control/Form} & \textbf{Xử lý BUS/DAL} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Luồng} & \textbf{Control/Form} & \textbf{Xử lý BUS/DAL} \\
+\hline
+\endhead
+Danh sách request & \texttt{ucTechnicianRequests} & Lấy request theo trạng thái, nhóm theo bệnh nhân/encounter, trả dữ liệu cho card request. \\
+\hline
+Nhập kết quả lab & \texttt{ucTechnicianLabResult} & Kiểm tra nội dung kết quả, cập nhật bảng kết quả xét nghiệm, đổi trạng thái request. \\
+\hline
+Upload MRI/X-Ray & \texttt{ucTechnicianUploadMri} & Chọn file ảnh, kiểm tra đường dẫn, lưu metadata vào hồ sơ y tế, đổi trạng thái request. \\
+\hline
+Upload PDF & \texttt{ucTechnicianUploadPdf} & Chọn file PDF, gắn vào encounter/patient, phục vụ bác sĩ xem lại trong ERM. \\
+\hline
+Xem hồ sơ & \texttt{ucPatientRecords} & Lấy lịch sử bệnh nhân, kết quả lab, hình ảnh, file PDF và hiển thị theo timeline/card. \\
+\hline
+\end{longtable}
+
+Điểm cần nhấn mạnh trong báo cáo là request không chỉ là dữ liệu hiển thị. Nó là cầu nối giữa bác sĩ và kỹ thuật viên. Bác sĩ tạo chỉ định, request chuyển sang trạng thái chờ xử lý, kỹ thuật viên cập nhật kết quả, sau đó bác sĩ đọc lại kết quả trong ERM. Nếu trạng thái không được chuẩn hóa bằng \texttt{RequestStatus}, giao diện rất dễ hiển thị sai danh sách chờ.
+
+\subsubsection{Cài đặt tầng Core, Constants và Session}
+
+\texttt{Core} chứa các thành phần dùng chung không phụ thuộc trực tiếp vào giao diện hoặc cơ sở dữ liệu. Đây là tầng nhỏ nhưng rất quan trọng vì nó gom các hằng số trạng thái, vai trò, session và tiện ích dùng lại ở nhiều nơi.
+
+\begin{longtable}{|p{4cm}|p{4.8cm}|p{5cm}|}
+\caption{Thành phần trong project Core} \\
+\hline
+\textbf{Nhóm} & \textbf{File tiêu biểu} & \textbf{Vai trò} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm} & \textbf{File tiêu biểu} & \textbf{Vai trò} \\
+\hline
+\endhead
+Constants & \texttt{AppointmentStatus}, \texttt{PaymentStatus}, \texttt{QueueStatus}, \texttt{RequestStatus}, \texttt{DispenseStatus}, \texttt{ShiftStatus} & Chuẩn hóa chuỗi trạng thái dùng giữa UI, BUS, DAL và database. \\
+\hline
+Identity & \texttt{Role}, \texttt{RoleNormalizer}, \texttt{Permission}, \texttt{AuthManager} & Quản lý vai trò, chuẩn hóa tên role tiếng Việt/tiếng Anh và phân quyền. \\
+\hline
+Session & \texttt{UserSession} & Lưu thông tin người dùng hiện tại sau đăng nhập: UserID, EmployeeID, EmployeeUUID, DepartmentID, RoleName. \\
+\hline
+Utils & \texttt{PasswordHasher}, \texttt{IdGenerator}, \texttt{DateTimeHelper}, \texttt{Mapper}, \texttt{ServiceTypeHelper} & Các hàm tiện ích dùng chung. \\
+\hline
+\end{longtable}
+
+Việc đưa trạng thái vào constant giúp tránh lỗi gõ chuỗi. Ví dụ nếu nơi này ghi \texttt{CheckedIn}, nơi khác ghi \texttt{CheckIn}, câu truy vấn trạng thái có thể sai mà compiler không phát hiện. Khi dùng \texttt{AppointmentStatus.CheckedIn}, tất cả module dùng chung một giá trị.
+
+\begin{codeblock}{code:role-normalizer}{Chuẩn hóa vai trò người dùng}
+\begin{minted}{csharp}
+public static string Normalize(string role)
+{
+    if (string.IsNullOrWhiteSpace(role))
+    {
+        return string.Empty;
+    }
+
+    if (role.Equals("Bác sĩ", StringComparison.OrdinalIgnoreCase) ||
+        role.Equals("Bac si", StringComparison.OrdinalIgnoreCase))
+    {
+        return Role.Doctor;
+    }
+
+    return role.Trim();
+}
+\end{minted}
+\end{codeblock}
+
+Trong báo cáo, \texttt{UserSession} cần được mô tả như ngữ cảnh làm việc của ứng dụng Desktop. Sau khi đăng nhập, nhiều màn hình cần biết người dùng hiện tại là bác sĩ nào, thuộc khoa nào, role nào. Nếu mỗi màn hình tự truy vấn lại thông tin đăng nhập, code sẽ lặp và chậm. \texttt{UserSession} lưu ngữ cảnh đó ở một nơi thống nhất.
+
+\subsection{Thiết kế giao diện người dùng}
+
+Phần giao diện của đồ án là trọng tâm môn WinForms Desktop, vì vậy cần trình bày như một hệ thống giao diện có kiến trúc, không chỉ là danh sách màn hình. Project áp dụng mô hình: \texttt{Mainform} làm khung, \texttt{UserControl} làm màn hình con, \texttt{Controller} làm lớp điều phối UI, \texttt{BUS} xử lý nghiệp vụ và \texttt{DAL} truy cập dữ liệu. Cách thiết kế này giúp tránh tình trạng tất cả code nằm trong event click của form.
+
+\subsubsection{Vai trò của Controller trong WinForms}
+
+Trong WinForms thuần, nhiều project sinh viên thường để form gọi trực tiếp DAL. Project này có thêm nhóm \texttt{Controllers}, ví dụ \texttt{PaymentController}. Controller nhận yêu cầu từ user control, gọi BUS tương ứng và trả DTO về UI. Controller không phải tầng nghiệp vụ đầy đủ như BUS, mà là lớp điều phối phía giao diện.
+
+\begin{codeblock}{code:payment-controller-detail}{PaymentController điều phối UI và BUS}
+\begin{minted}{csharp}
+public class PaymentController
+{
+    private readonly PaymentBUS paymentBUS = new();
+
+    public List<PaymentWaitingDTO> GetWaitingPayments()
+    {
+        return paymentBUS.GetWaitingPayments();
+    }
+
+    public bool UpdatePaymentStatus(int encounterId, string method)
+    {
+        return paymentBUS.UpdatePaymentStatus(encounterId, method);
+    }
+
+    public List<PaymentDetailDTO> GetInvoiceDetails(int encounterId)
+    {
+        return paymentBUS.GetInvoiceDetails(encounterId);
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Lợi ích của controller là làm code-behind của user control ngắn hơn. Ví dụ \texttt{PaymentDetail} chỉ cần biết gọi \texttt{controller.GetInvoiceDetails(encounterId)} để bind dữ liệu, hoặc \texttt{controller.UpdatePaymentStatus(encounterId, paymentMethod)} khi xác nhận thanh toán. Nếu sau này thay đổi logic tính tiền ở BUS/DAL, giao diện ít bị ảnh hưởng.
+
+\subsubsection{Thiết kế DataGridView trong màn hình thanh toán}
+
+\texttt{PaymentDetail} là ví dụ rõ về một màn hình WinForms có cấu hình \texttt{DataGridView} chỉnh chu. Màn hình này thiết lập màu nền, bỏ row header, không cho thêm/xóa dòng trực tiếp, đặt \texttt{ReadOnly}, tự co cột, chọn cả dòng, đổi màu header và font. Đây là các chi tiết quan trọng để giao diện bảng dữ liệu trông chuyên nghiệp và tránh thao tác sai.
+
+\begin{codeblock}{code:payment-grid-setup}{Cấu hình DataGridView trong PaymentDetail}
+\begin{minted}{csharp}
+dataGridView1.AllowUserToAddRows = false;
+dataGridView1.AllowUserToDeleteRows = false;
+dataGridView1.ReadOnly = true;
+dataGridView1.AutoSizeColumnsMode =
+    DataGridViewAutoSizeColumnsMode.Fill;
+dataGridView1.SelectionMode =
+    DataGridViewSelectionMode.FullRowSelect;
+dataGridView1.EnableHeadersVisualStyles = false;
+dataGridView1.ColumnHeadersDefaultCellStyle.BackColor =
+    Color.RoyalBlue;
+\end{minted}
+\end{codeblock}
+
+Sau khi cấu hình, dữ liệu invoice được lấy từ controller và bind trực tiếp vào grid. Tổng tiền được tính từ danh sách \texttt{PaymentDetailDTO}, sau đó hiển thị ở label lớn. Đây là pattern thường dùng trong WinForms: lấy danh sách DTO, bind grid, tính toán tổng hợp phía UI nếu phép tính chỉ phục vụ hiển thị.
+
+\begin{codeblock}{code:payment-load-invoice}{Load chi tiết hóa đơn lên giao diện}
+\begin{minted}{csharp}
+private void LoadInvoice()
+{
+    List<PaymentDetailDTO> details =
+        controller.GetInvoiceDetails(encounterId);
+
+    dataGridView1.DataSource = details;
+
+    decimal total = details.Sum(x => x.Amount);
+    lblTotal.Text = total.ToString("N0") + " đ";
+    lblInvoiceID.Text = encounterId.ToString();
+}
+\end{minted}
+\end{codeblock}
+
+\subsubsection{Thiết kế FlowLayoutPanel cho danh sách động}
+
+Một số màn hình dùng \texttt{FlowLayoutPanel} thay vì \texttt{DataGridView}. Ví dụ danh sách payment chờ trong \texttt{PaymentContent} được hiển thị dạng card trong \texttt{flpPayment}; danh sách khoa/bác sĩ trong tạo lịch hẹn cũng phù hợp với card. Lý do là người dùng không chỉ đọc dữ liệu dạng bảng mà cần chọn nhanh một đối tượng.
+
+Khi dùng \texttt{FlowLayoutPanel}, quy trình cài đặt gồm:
+
+\begin{enumerate}
+    \item Xóa control cũ bằng \texttt{Controls.Clear()} khi reload.
+    \item Lấy danh sách DTO từ controller/BUS.
+    \item Với mỗi DTO, tạo card hoặc user control con.
+    \item Gán dữ liệu vào label/button của card.
+    \item Gán \texttt{Tag} hoặc field riêng để lưu ID nghiệp vụ.
+    \item Gắn event click để chọn card hoặc mở chi tiết.
+    \item Thêm card vào \texttt{FlowLayoutPanel}.
+\end{enumerate}
+
+So với \texttt{DataGridView}, card động cho trải nghiệm trực quan hơn nhưng cần quản lý event cẩn thận. Nếu reload nhiều lần mà không xóa control cũ, giao diện sẽ bị trùng card. Nếu không lưu ID vào \texttt{Tag}, event click không biết người dùng chọn bản ghi nào.
+
+\subsubsection{Thiết kế UserControl dùng chung và kế thừa view base}
+
+Phân hệ kỹ thuật viên và dược sĩ có các base view như \texttt{TechnicianDashboardViewBase} hoặc \texttt{PharmacyDashboardViewBase}. Ý tưởng là các màn hình con cùng phân hệ có chung cách phát sự kiện điều hướng, chung layout cơ bản hoặc chung helper tạo tiêu đề/nội dung. Thay vì mỗi user control tự gọi main form, view con phát \texttt{NavigateRequested}; main form nhận event và quyết định nạp màn hình mới.
+
+Mô hình này có hai lợi ích. Thứ nhất, user control con độc lập hơn, dễ test và dễ tái sử dụng. Thứ hai, main form giữ quyền kiểm soát điều hướng, tránh việc view con biết quá nhiều về cấu trúc dashboard. Đây là cách tiếp cận gần với pattern event aggregator đơn giản trong ứng dụng Desktop.
+
+\subsubsection{Thiết kế trạng thái nút và phản hồi người dùng}
+
+Ứng dụng Desktop cần phản hồi ngay khi người dùng thao tác. Các nút gọi API hoặc xử lý lâu cần disable trong lúc chạy để tránh bấm nhiều lần. Các thao tác như thanh toán, đồng bộ, upload file cần hiển thị trạng thái hiện tại. Trong PayOS form, khi tạo payment, nút tạo link bị disable, con trỏ đổi sang \texttt{WaitCursor}, label trạng thái đổi thành ``Đang tạo link thanh toán...''. Khi API trả về, trạng thái chuyển sang pending/paid/canceled.
+
+\begin{codeblock}{code:ui-long-task-state}{Quản lý trạng thái UI khi gọi API}
+\begin{minted}{csharp}
+button2.Enabled = false;
+Cursor = Cursors.WaitCursor;
+SetPaymentStatus("Dang tao link thanh toan...", Color.DimGray);
+
+try
+{
+    var result = await CreatePaymentAsync(
+        orderCode,
+        amount,
+        description,
+        buyerName,
+        cancellationToken);
+}
+finally
+{
+    Cursor = Cursors.Default;
+    button2.Enabled = true;
+}
+\end{minted}
+\end{codeblock}
+
+\subsubsection{Cài đặt main form shell theo vai trò}
+
+Các dashboard chính như \texttt{ReceptionistMainform}, \texttt{DoctorMainform}, \texttt{NurseMainform}, \texttt{TechnicianMainform} và \texttt{PharmacyMainform} được xem như shell của từng vai trò. Shell gồm menu trái, vùng tiêu đề và panel nội dung. Khi người dùng bấm menu, shell không mở thêm cửa sổ rời rạc mà thay user control trong panel nội dung. Đây là kỹ thuật WinForms quan trọng vì nó tạo cảm giác ứng dụng có một workspace thống nhất, tương tự các phần mềm Desktop quản lý chuyên nghiệp.
+
+\begin{codeblock}{code:load-content-pattern}{Mẫu nạp UserControl vào vùng nội dung}
+\begin{minted}{csharp}
+private void LoadContent(UserControl control)
+{
+    pnlContent.Controls.Clear();
+    control.Dock = DockStyle.Fill;
+    pnlContent.Controls.Add(control);
+    control.BringToFront();
+}
+\end{minted}
+\end{codeblock}
+
+Mẫu này được dùng lặp lại ở nhiều main form. Lợi ích là mỗi màn hình con được đóng gói thành một \texttt{UserControl}; shell chỉ chịu trách nhiệm điều hướng. Khi cần sửa giao diện thanh toán, lịch hôm nay hoặc danh mục thuốc, nhóm chỉ sửa đúng user control tương ứng mà không phải đụng vào toàn bộ dashboard.
+
+\subsubsection{Phân tách Designer và code-behind}
+
+Một điểm cần trình bày rõ trong báo cáo WinForms là mỗi form/control thường có hai file: file \texttt{.Designer.cs} và file \texttt{.cs}. File Designer chứa phần khai báo control, vị trí, kích thước, màu sắc, font, event wiring do Visual Studio sinh ra. File code-behind chứa logic của nhóm phát triển như load dữ liệu, xử lý click, gọi BUS, bind DTO vào bảng hoặc card.
+
+\begin{longtable}{|p{3.6cm}|p{5cm}|p{5.2cm}|}
+\caption{Nguyên tắc phân tách Designer và code-behind} \\
+\hline
+\textbf{Loại file} & \textbf{Nội dung nên đặt} & \textbf{Nội dung không nên đặt} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Loại file} & \textbf{Nội dung nên đặt} & \textbf{Nội dung không nên đặt} \\
+\hline
+\endhead
+\texttt{*.Designer.cs} & Khởi tạo control, layout, font, màu, kích thước, anchor/dock, khai báo event handler. & Truy vấn SQL, gọi API, xử lý nghiệp vụ, validate phức tạp. \\
+\hline
+\texttt{*.cs} & Constructor, sự kiện, gọi controller/BUS, bind dữ liệu, format bảng, mở modal. & Sửa thủ công khối \texttt{InitializeComponent} do Designer sinh. \\
+\hline
+DTO/BUS/DAL & Định nghĩa dữ liệu, nghiệp vụ, truy xuất database. & Thiết lập tọa độ control hoặc thao tác giao diện trực tiếp. \\
+\hline
+\end{longtable}
+
+Việc tuân thủ nguyên tắc này giúp tránh lỗi mất giao diện khi Visual Studio tự sinh lại Designer. Đối với đồ án có nhiều form như hệ thống quản lý phòng khám, đây là yếu tố quan trọng để các thành viên có thể làm song song mà không xung đột quá nhiều.
+
+\subsubsection{Giao diện đăng nhập}
+
+\texttt{LoginForm} tiếp nhận username và password, kiểm tra dữ liệu rỗng, gọi \texttt{UserBUS.Login}. Form cũng có cơ chế thử khởi tạo database khi phát hiện thiếu schema \texttt{CMS.sql}. Về lâu dài, phần khởi tạo này nên tách thành service riêng để giảm trách nhiệm cho form đăng nhập.
+
+Về mặt thiết kế Desktop, màn hình đăng nhập là điểm kiểm soát đầu tiên của toàn bộ ứng dụng. Form cần có hai ô nhập chính, nút đăng nhập, thông báo lỗi rõ ràng và không để người dùng đi vào dashboard khi chưa xác thực. Sau khi đăng nhập thành công, form không tự quyết định hiển thị chức năng nào bằng cách bật/tắt control rời rạc, mà chuyển quyền điều hướng cho \texttt{MainformRole}. Cách làm này giữ \texttt{LoginForm} đúng trách nhiệm: xác thực và tạo phiên làm việc.
+
+\begin{codeblock}{code:login-validation}{Kiểm tra dữ liệu đăng nhập trên form}
+\begin{minted}{csharp}
+private bool ValidateLoginInput()
+{
+    if (string.IsNullOrWhiteSpace(txtUsername.Text))
+    {
+        MessageBox.Show("Vui long nhap ten dang nhap");
+        txtUsername.Focus();
+        return false;
+    }
+
+    if (string.IsNullOrWhiteSpace(txtPassword.Text))
+    {
+        MessageBox.Show("Vui long nhap mat khau");
+        txtPassword.Focus();
+        return false;
+    }
+
+    return true;
+}
+\end{minted}
+\end{codeblock}
+
+\subsubsection{Giao diện lễ tân}
+
+\texttt{ReceptionistMainform} nạp các màn hình:
+
+\begin{itemize}
+    \item \texttt{PatientManagement}: quản lý bệnh nhân.
+    \item \texttt{CreateAppointment}: tạo lịch hẹn.
+    \item \texttt{Payment}: thanh toán.
+    \item \texttt{ScheduleToday}: lịch trong ngày.
+    \item \texttt{WaitingList}: danh sách chờ.
+    \item \texttt{RemindingList}: nhắc lịch.
+\end{itemize}
+
+Dashboard lễ tân được thiết kế theo kiểu thao tác nhanh. Đây là vai trò có tần suất sử dụng cao nhất ở đầu quy trình khám bệnh, vì vậy menu cần đưa các chức năng quan trọng ra ngoài thay vì ẩn sâu trong nhiều cấp. Vùng nội dung chính thay đổi theo chức năng được chọn. Khi người dùng vào \texttt{PatientManagement}, hệ thống ưu tiên ô tìm kiếm và bảng danh sách bệnh nhân; khi vào \texttt{ScheduleToday}, hệ thống ưu tiên trạng thái lịch trong ngày; khi vào \texttt{Payment}, hệ thống ưu tiên danh sách chờ thanh toán và nút xác nhận.
+
+\begin{longtable}{|p{3.4cm}|p{4.8cm}|p{5.6cm}|}
+\caption{Thiết kế giao diện phân hệ lễ tân} \\
+\hline
+\textbf{Màn hình} & \textbf{Control chính} & \textbf{Mục tiêu thao tác} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Màn hình} & \textbf{Control chính} & \textbf{Mục tiêu thao tác} \\
+\hline
+\endhead
+\texttt{PatientManagement} & TextBox tìm kiếm, DataGridView, Button thêm/sửa & Tra cứu nhanh bệnh nhân và cập nhật hồ sơ hành chính. \\
+\hline
+\texttt{CreateAppointment} & FlowLayoutPanel khoa/bác sĩ, Button slot giờ, Dialog xác nhận & Tạo lịch hẹn theo khoa, bác sĩ và thời gian khám. \\
+\hline
+\texttt{ScheduleToday} & DataGridView lịch hẹn, Button check-in & Theo dõi lịch trong ngày và chuyển bệnh nhân vào hàng chờ. \\
+\hline
+\texttt{WaitingList} & FlowLayoutPanel lọc khoa/bác sĩ, DataGridView hàng chờ & Biết bệnh nhân đang ở trạng thái nào trong quy trình khám. \\
+\hline
+\texttt{Payment} & DataGridView hóa đơn chờ, Button thanh toán, PayOS form & Tạo hoặc xác nhận thanh toán sau khi khám/cấp thuốc. \\
+\hline
+\end{longtable}
+
+Kỹ thuật WinForms nổi bật ở phân hệ này là tạo card động trong \texttt{FlowLayoutPanel}. Khi chọn khoa, danh sách bác sĩ được tải lại theo khoa đó. Khi chọn bác sĩ, các khung giờ khả dụng được cập nhật. Đây là luồng tương tác nhiều bước, đòi hỏi form lưu trạng thái lựa chọn hiện tại và reset các bước sau khi bước trước thay đổi.
+
+\begin{codeblock}{code:appointment-selection-state}{Lưu trạng thái chọn khoa, bác sĩ và slot giờ}
+\begin{minted}{csharp}
+private int selectedDepartmentId;
+private int selectedDoctorId;
+private DateTime selectedDate;
+private TimeSpan selectedStartTime;
+
+private void Department_Click(object sender, EventArgs e)
+{
+    selectedDepartmentId = (int)((Control)sender).Tag;
+    selectedDoctorId = 0;
+    flpDoctors.Controls.Clear();
+    flpTimeSlots.Controls.Clear();
+    LoadDoctorsByDepartment(selectedDepartmentId);
+}
+
+private void TimeSlot_Click(object sender, EventArgs e)
+{
+    selectedStartTime = (TimeSpan)((Control)sender).Tag;
+    btnConfirmAppointment.Enabled = selectedDoctorId > 0;
+}
+\end{minted}
+\end{codeblock}
+
+Trong \texttt{ScheduleToday}, \texttt{DataGridViewButtonColumn} được dùng để gắn hành động check-in trực tiếp vào từng dòng. Đây là cách cài đặt phù hợp với Desktop vì lễ tân không phải mở chi tiết nếu chỉ cần xác nhận bệnh nhân đã đến. Event \texttt{CellContentClick} đọc mã lịch hẹn ở dòng được bấm, gọi BUS cập nhật trạng thái và reload lại bảng.
+
+\subsubsection{Giao diện bác sĩ và ERM}
+
+Các thành phần ERM trong \texttt{Shareforms/ERM} gồm \texttt{ucOverview}, \texttt{ucHistory}, \texttt{ucLab}, \texttt{ucImaging}, \texttt{ucPrescription}, \texttt{ucBilling}, \texttt{ucFollowup} và \texttt{frmPacsViewer}. \texttt{ERMController} gọi \texttt{ERMBus} để lấy hồ sơ bệnh nhân theo UUID.
+
+Giao diện bác sĩ tập trung vào hồ sơ y tế thay vì thông tin hành chính. Khi bác sĩ mở một bệnh nhân, ERM cần cung cấp cái nhìn tổng quan: thông tin bệnh nhân, lịch sử khám, sinh hiệu, chỉ định xét nghiệm, hình ảnh, toa thuốc, thanh toán và tái khám. Vì dữ liệu y tế có nhiều nhóm thông tin, cách chia thành các user control con giúp màn hình không quá dài và dễ điều hướng.
+
+ERM cũng là ví dụ rõ nhất về việc dùng controller để giảm code-behind. \texttt{ERMController} chịu trách nhiệm gọi \texttt{ERMBus}, lấy dữ liệu theo patient UUID/encounter, sau đó trả về DTO cho các tab giao diện. Các user control như \texttt{ucLab} hoặc \texttt{ucPrescription} chỉ tập trung hiển thị dữ liệu và phát sự kiện khi người dùng cần thao tác thêm.
+
+\begin{codeblock}{code:erm-load}{Nạp hồ sơ bệnh án theo bệnh nhân}
+\begin{minted}{csharp}
+private void LoadMedicalRecord(string patientUuid)
+{
+    var overview = ermController.GetOverview(patientUuid);
+    ucOverview.BindData(overview);
+
+    var history = ermController.GetHistory(patientUuid);
+    ucHistory.BindData(history);
+
+    var prescriptions = ermController.GetPrescriptions(patientUuid);
+    ucPrescription.BindData(prescriptions);
+}
+\end{minted}
+\end{codeblock}
+
+Trong phần ERM, cần trình bày rõ lý do chia thành nhiều user control nhỏ. \texttt{ucOverview} hiển thị thông tin tổng quan và sinh hiệu; \texttt{ucHistory} hiển thị các lần khám trước; \texttt{ucLab} và \texttt{ucImaging} hiển thị kết quả cận lâm sàng; \texttt{ucPrescription} hiển thị toa thuốc; \texttt{ucBilling} hiển thị chi phí; \texttt{ucFollowup} hiển thị lịch tái khám. Cách chia này giúp bác sĩ đọc hồ sơ theo ngữ cảnh thay vì phải nhìn một form dài gồm quá nhiều bảng.
+
+\begin{longtable}{|p{3.4cm}|p{4.8cm}|p{5.6cm}|}
+\caption{Cấu trúc màn hình ERM của bác sĩ} \\
+\hline
+\textbf{UserControl} & \textbf{Dữ liệu hiển thị} & \textbf{Mục đích sử dụng} \\
+\hline
+\endfirsthead
+\hline
+\textbf{UserControl} & \textbf{Dữ liệu hiển thị} & \textbf{Mục đích sử dụng} \\
+\hline
+\endhead
+\texttt{ucOverview} & Thông tin bệnh nhân, sinh hiệu, chẩn đoán hiện tại. & Bác sĩ nắm nhanh tình trạng trước khi khám. \\
+\hline
+\texttt{ucHistory} & Lịch sử encounter và ghi chú các lần khám. & So sánh diễn tiến bệnh qua thời gian. \\
+\hline
+\texttt{ucLab} & Danh sách xét nghiệm và kết quả lab. & Đọc kết quả cận lâm sàng trước khi kết luận. \\
+\hline
+\texttt{ucImaging} & Hình ảnh MRI/X-Ray, mô tả và file liên quan. & Xem hình ảnh hoặc mở viewer phục vụ chẩn đoán. \\
+\hline
+\texttt{ucPrescription} & Toa thuốc, thuốc, liều dùng, số lượng. & Theo dõi thuốc đã kê và hỗ trợ dược sĩ cấp phát. \\
+\hline
+\texttt{ucFollowup} & Lịch tái khám, ghi chú nhắc lịch. & Tạo kế hoạch chăm sóc sau khám. \\
+\hline
+\end{longtable}
+
+\subsubsection{Giao diện điều dưỡng}
+
+Nhóm \texttt{UserControls/Nurse} có các màn hình tổng quan, ca làm, dấu hiệu sinh tồn, hàng chờ và phòng. Điều dưỡng hỗ trợ thu thập thông tin trước khi bác sĩ khám, đặc biệt là sinh hiệu và điều phối phòng khám.
+
+Giao diện điều dưỡng cần tối ưu cho nhập liệu nhanh và chính xác. Các chỉ số sinh hiệu như mạch, huyết áp, nhiệt độ, nhịp thở, chiều cao, cân nặng phải có nhãn rõ ràng và đơn vị đi kèm. Những trường có giá trị số nên kiểm tra định dạng trước khi lưu. Nếu nhập sai kiểu dữ liệu, hệ thống phải báo lỗi ngay trên form thay vì để lỗi phát sinh ở tầng DAL.
+
+Trong WinForms, kiểm tra dữ liệu có thể thực hiện tại event \texttt{Validating}, tại nút lưu hoặc thông qua controller. Với đồ án, cách thực dụng là kiểm tra trong nút lưu, sau đó chỉ gọi BUS khi dữ liệu đã hợp lệ.
+
+\begin{codeblock}{code:vital-validation}{Kiểm tra dữ liệu sinh hiệu}
+\begin{minted}{csharp}
+private bool TryReadTemperature(out decimal temperature)
+{
+    if (!decimal.TryParse(txtTemperature.Text.Trim(), out temperature))
+    {
+        MessageBox.Show("Nhiet do phai la so");
+        txtTemperature.Focus();
+        return false;
+    }
+
+    return true;
+}
+\end{minted}
+\end{codeblock}
+
+Màn hình điều dưỡng còn sử dụng các card phòng và card bệnh nhân để theo dõi trạng thái nhanh. Với dữ liệu hàng chờ, \texttt{FlowLayoutPanel} phù hợp hơn bảng nếu mỗi bệnh nhân cần hiển thị nhiều thông tin ngắn như số thứ tự, tên, phòng, trạng thái, thời gian chờ và nút chuyển trạng thái. Khi cần nhập sinh hiệu, hệ thống mở màn hình chi tiết hoặc user control nhập liệu để tránh làm bảng hàng chờ bị quá tải.
+
+\subsubsection{Giao diện kỹ thuật viên}
+
+\texttt{TechnicianMainform} điều hướng đến \texttt{ucTechnicianRequests}, \texttt{ucTechnicianUploadMri}, \texttt{ucTechnicianUploadPdf}, \texttt{ucTechnicianLabResult}, \texttt{ucPatientRecords}, \texttt{ucTechnicianShifts} và \texttt{ucSeederTool}. Các màn hình này kế thừa hoặc sử dụng \texttt{TechnicianDashboardViewBase} để phát sự kiện điều hướng.
+
+Phân hệ kỹ thuật viên thể hiện rõ mô hình điều hướng nội bộ bằng event. Từ màn hình request, kỹ thuật viên có thể chuyển sang upload MRI, upload PDF, nhập kết quả lab hoặc xem hồ sơ bệnh nhân. Mỗi hướng đi cần mang theo \texttt{requestId} hoặc \texttt{patientId}. Thay vì để màn hình request tự tạo form hoặc tự thao tác trực tiếp lên panel của main form, nó phát \texttt{NavigateRequested}; main form nhận event và nạp đúng user control.
+
+\begin{codeblock}{code:technician-nav}{Điều hướng kỹ thuật viên}
+\begin{minted}{csharp}
+private void ContentView_NavigateRequested(
+    object sender,
+    TechnicianNavigationEventArgs e)
+{
+    switch (e.Target)
+    {
+        case TechnicianViewTarget.Requests:
+            ShowRequests();
+            break;
+        case TechnicianViewTarget.UploadMRI:
+            ShowUploadMRI(e.RequestId);
+            break;
+        case TechnicianViewTarget.UploadPDF:
+            ShowUploadPDF(e.RequestId);
+            break;
+        case TechnicianViewTarget.LabResult:
+            ShowLabResult(e.RequestId);
+            break;
+        case TechnicianViewTarget.Records:
+            ShowRecords(e.PatientId);
+            break;
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Các màn hình kỹ thuật viên còn có điểm cài đặt quan trọng là upload file. Khi dùng \texttt{OpenFileDialog}, hệ thống cần giới hạn định dạng theo nghiệp vụ: PDF cho hồ sơ scan, ảnh cho MRI/X-Ray. Sau khi chọn file, form chỉ lưu đường dẫn hoặc metadata qua BUS/DAL, còn việc hiển thị lại file cho bác sĩ được thực hiện trong ERM. Điều này giúp tách trách nhiệm giữa bên tạo kết quả và bên đọc kết quả.
+
+\begin{codeblock}{code:technician-file-picker}{Chọn file kết quả cận lâm sàng}
+\begin{minted}{csharp}
+using (var dialog = new OpenFileDialog())
+{
+    dialog.Title = "Chon tep ket qua";
+    dialog.Filter = "PDF files (*.pdf)|*.pdf|Image files (*.png;*.jpg)|*.png;*.jpg";
+
+    if (dialog.ShowDialog() == DialogResult.OK)
+    {
+        txtFilePath.Text = dialog.FileName;
+        btnUpload.Enabled = true;
+    }
+}
+\end{minted}
+\end{codeblock}
+
+\subsubsection{Giao diện dược sĩ}
+
+\texttt{PharmacyMainform} điều hướng đến \texttt{ucPharmacyOverview}, \texttt{ucPrescriptionDispense}, \texttt{ucMedicineCatalog}, \texttt{ucInventoryManagement} và \texttt{ucPharmacyShifts}. Các view kế thừa \texttt{PharmacyDashboardViewBase}, giúp thống nhất sự kiện điều hướng.
+
+Giao diện dược sĩ có hai kiểu dữ liệu chính: đơn thuốc cần cấp phát và danh mục/tồn kho thuốc. Đơn thuốc phù hợp với \texttt{DataGridView} vì cần lọc theo trạng thái và mở chi tiết theo từng dòng. Danh mục thuốc lại phù hợp với card hoặc grid có hình thức dễ quét, vì dược sĩ cần nhận biết nhanh tên thuốc, hàm lượng, đơn vị tính và tồn kho.
+
+\texttt{ucPharmacyMedicineItemCard} là một ví dụ về custom user control trong WinForms. Control này giúp đóng gói cách hiển thị một thuốc, tránh việc màn hình danh mục phải tự tạo nhiều label/button lặp lại. Khi danh sách thuốc thay đổi, màn hình chỉ cần tạo nhiều card và đưa vào panel chứa.
+
+\begin{codeblock}{code:medicine-card-binding}{Gắn dữ liệu thuốc vào card}
+\begin{minted}{csharp}
+public void BindMedicine(MedicineDTO medicine)
+{
+    lblMedicineName.Text = medicine.MedicineName;
+    lblDosage.Text = medicine.Dosage;
+    lblUnit.Text = medicine.Unit;
+    lblStock.Text = medicine.StockQuantity.ToString();
+
+    btnEdit.Tag = medicine.MedicineID;
+    btnEdit.Click += btnEdit_Click;
+}
+\end{minted}
+\end{codeblock}
+
+\subsubsection{Cài đặt lịch làm việc dùng chung}
+
+Ngoài các phân hệ riêng, hệ thống có nhóm màn hình ca làm trong \texttt{Shareforms/WorkingShifts}. Các control như \texttt{ucWeekView}, \texttt{ucDayView}, \texttt{ucMonthView}, \texttt{ShiftCardControl}, \texttt{ShiftDetailForm} và \texttt{RegisterShiftForm} được dùng để mô phỏng lịch làm việc của nhân viên. Đây là phần nên trình bày trong chương cài đặt vì nó thể hiện kỹ thuật tái sử dụng user control giữa nhiều vai trò.
+
+\begin{longtable}{|p{3.8cm}|p{4.8cm}|p{5.2cm}|}
+\caption{Cài đặt nhóm màn hình ca làm việc} \\
+\hline
+\textbf{Thành phần} & \textbf{Kiểu WinForms} & \textbf{Vai trò trong hệ thống} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Thành phần} & \textbf{Kiểu WinForms} & \textbf{Vai trò trong hệ thống} \\
+\hline
+\endhead
+\texttt{ucWeekView} & \texttt{UserControl + FlowLayoutPanel} & Hiển thị ca làm theo từng ngày trong tuần. \\
+\hline
+\texttt{ucDayView} & \texttt{UserControl} & Hiển thị danh sách ca trong một ngày cụ thể. \\
+\hline
+\texttt{ShiftCardControl} & Custom \texttt{UserControl} & Đóng gói thông tin một ca làm: thời gian, trạng thái, người đăng ký. \\
+\hline
+\texttt{RegisterShiftForm} & Modal \texttt{Form} & Cho nhân viên đăng ký ca hoặc gửi yêu cầu thay đổi ca. \\
+\hline
+\texttt{ShiftDetailForm} & Modal \texttt{Form} & Xem chi tiết một ca làm và trạng thái xử lý. \\
+\hline
+\end{longtable}
+
+Về kỹ thuật, \texttt{ucWeekView} dùng nhiều \texttt{FlowLayoutPanel} đại diện cho các ngày trong tuần. Khi dữ liệu ca làm được tải lên, mỗi ca được bind thành một \texttt{ShiftCardControl} rồi thêm vào panel của ngày tương ứng. Cách làm này trực quan hơn \texttt{DataGridView} đối với lịch làm việc vì ca làm có tính thời gian và trạng thái, không chỉ là bảng dòng-cột.
+
+\subsection{Tích hợp tính năng phụ trợ}
+
+\subsubsection{Đồng bộ API Supabase và SheetDB}
+
+Phân hệ \texttt{ApiSyncBUS} và \texttt{ApiSyncRepository} hỗ trợ đồng bộ bệnh nhân, nhân viên, yêu cầu và kết quả cận lâm sàng từ nguồn ngoài. Repository có các phương thức đọc dữ liệu dạng JSON, xử lý UUID, cập nhật local database và trả về \texttt{ApiSyncResultDTO}.
+
+Ở mức cài đặt, \texttt{ApiSyncRepository} đọc endpoint từ \texttt{App.config}. Với Supabase, repository gọi REST endpoint dạng \texttt{/rest/v1/patients?select=*} hoặc \texttt{/rest/v1/employees?select=*} và thêm header xác thực. Với SheetDB, repository gọi URL của SheetDB đã được ghép tên sheet bằng hàm \texttt{WithSheetName}. Cả hai nguồn đều deserialize JSON về DTO bằng \texttt{System.Text.Json} với \texttt{PropertyNameCaseInsensitive = true} và \texttt{NumberHandling = AllowReadingFromString}, giúp đọc được số khi API trả về dạng chuỗi.
+
+\begin{codeblock}{code:api-repository-config}{Đọc cấu hình API trong ApiSyncRepository}
+\begin{minted}{csharp}
+supabaseUrl = ReadSetting("ApiSyncSupabaseUrl", "").TrimEnd('/');
+supabaseKey = ReadSetting("ApiSyncSupabaseKey", "");
+sheetDbPatientUrl = WithSheetName(
+    ReadSetting("ApiSyncSheetDbPatientUrl", ""),
+    ReadSetting("ApiSyncSheetDbPatientSheet", "Patient"));
+sheetDbEmployeeUrl = WithSheetName(
+    ReadSetting("ApiSyncSheetDbEmployeeUrl", ""),
+    ReadSetting("ApiSyncSheetDbEmployeeSheet", "Doctor"));
+\end{minted}
+\end{codeblock}
+
+Khi ghi về SQL Server local, repository không insert mù. Nó kiểm tra theo UUID trước, nếu không có UUID thì kiểm tra theo mã bệnh nhân hoặc mã nhân viên. Nếu bản ghi đã tồn tại thì update; nếu chưa tồn tại thì insert. Nếu dữ liệu ngoài thiếu UUID, local sinh \texttt{Guid.NewGuid()} rồi trả kết quả cho BUS để patch ngược về SheetDB. Đây là logic chống trùng dữ liệu quan trọng.
+
+\begin{longtable}{|p{3.4cm}|p{4.8cm}|p{5.6cm}|}
+\caption{Các bước xử lý dữ liệu API ở tầng DAL/BUS} \\
+\hline
+\textbf{Bước} & \textbf{Lớp thực hiện} & \textbf{Mô tả} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Bước} & \textbf{Lớp thực hiện} & \textbf{Mô tả} \\
+\hline
+\endhead
+Đọc API & \texttt{ApiSyncRepository} & Gọi Supabase/SheetDB, deserialize JSON về DTO. \\
+\hline
+Lọc dữ liệu & \texttt{ApiSyncBUS} & Bỏ dòng thiếu mã/tên, bỏ nhân viên bị nhầm với mã bệnh nhân. \\
+\hline
+Bù dữ liệu & \texttt{ApiSyncBUS} & Bổ sung khoa, role, trạng thái mặc định cho nhân viên. \\
+\hline
+Liên kết UUID & \texttt{ApiSyncBUS + Repository} & Dùng mã để tìm bản ghi cũ, patch UUID sang nguồn còn thiếu. \\
+\hline
+Upsert local & \texttt{ApiSyncRepository} & Insert/update SQL Server theo UUID hoặc code. \\
+\hline
+Đồng bộ hai chiều & \texttt{ApiSyncBUS} & SheetDB sang Supabase và Supabase sang SheetDB. \\
+\hline
+Thông báo kết quả & \texttt{ApiSyncResultDTO} & Tổng hợp số dòng insert/patch/bỏ qua để form hiển thị. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:api-sync}{Luồng đồng bộ API}
+\begin{minted}{csharp}
+public async Task<ApiSyncResultDTO> SyncAsync()
+{
+    var result = new ApiSyncResultDTO();
+
+    var supabasePatientsRaw = await repository.GetSupabasePatientsAsync();
+    var sheetPatientsRaw = await repository.GetSheetPatientsAsync();
+
+    var supabasePatients = supabasePatientsRaw
+        .Where(p => !string.IsNullOrWhiteSpace(p.PatientCode))
+        .Where(p => !string.IsNullOrWhiteSpace(p.FullName))
+        .ToList();
+
+    var sheetPatients = sheetPatientsRaw
+        .Where(p => !string.IsNullOrWhiteSpace(p.PatientCode))
+        .Where(p => !string.IsNullOrWhiteSpace(p.FullName))
+        .ToList();
+
+    await LinkMissingSheetPatientUuidsFromSupabaseAsync(
+        sheetPatients,
+        supabasePatients,
+        result);
+
+    await SyncPatientsToLocalSqlServerAsync(
+        sheetPatients,
+        result,
+        patchSheetWhenMissingUuid: true);
+
+    await SyncPatientsToLocalSqlServerAsync(
+        supabasePatients,
+        result,
+        patchSheetWhenMissingUuid: false);
+
+    await SyncPatientsSheetToSupabaseAsync(
+        sheetPatients,
+        supabasePatients,
+        result);
+
+    await SyncPatientsSupabaseToSheetAsync(
+        supabasePatients,
+        sheetPatients,
+        result);
+
+    return result;
+}
+\end{minted}
+\end{codeblock}
+
+\subsubsection{Kéo request xét nghiệm và hình ảnh về màn hình kỹ thuật viên}
+
+Phân hệ kỹ thuật viên có thêm thao tác đồng bộ request từ Supabase. Khác với đồng bộ bệnh nhân/nhân viên, request cận lâm sàng cần ghép nhiều bảng: encounter để biết bệnh nhân, employee để biết bác sĩ, services để biết loại dịch vụ, results để lấy kết quả/URL file. \texttt{ApiSyncBUS.SyncRequestsFromSupabaseAsync()} tạo các dictionary tra cứu để xử lý nhanh, sau đó gọi \texttt{UpsertLocalRequestAsync}.
+
+\begin{codeblock}{code:request-status-map}{Map trạng thái request ngoài về trạng thái local}
+\begin{minted}{csharp}
+private string MapRequestStatus(string status)
+{
+    if (string.IsNullOrWhiteSpace(status))
+    {
+        return "Chờ xử lý";
+    }
+
+    string s = status.Trim().ToLowerInvariant();
+    if (s.Contains("completed") || s.Contains("done"))
+    {
+        return "Hoàn thành";
+    }
+
+    if (s.Contains("processing") || s.Contains("inprogress"))
+    {
+        return "Đang xử lý";
+    }
+
+    return "Chờ xử lý";
+}
+\end{minted}
+\end{codeblock}
+
+Sau khi request được kéo về local, màn hình \texttt{ucTechnicianRequests} hiển thị cho kỹ thuật viên. Từ đây kỹ thuật viên có thể điều hướng sang upload MRI, upload PDF, nhập lab result hoặc xem hồ sơ bệnh nhân. Như vậy, tích hợp API không đứng riêng mà được gắn vào workflow WinForms thật.
+
+\subsubsection{Tích hợp thanh toán PayOS}
+
+Các lớp \texttt{PayOsCreatePaymentRequest}, \texttt{PayOsPaymentData} và \texttt{PayOsApiResponse} mô tả dữ liệu tạo thanh toán, dữ liệu phản hồi và trạng thái thanh toán. \texttt{PayOsPaymentForm} trong \texttt{Shareforms} phục vụ giao diện thanh toán.
+
+Ở mức cài đặt, \texttt{PaymentDetail} cho phép người dùng chọn tiền mặt hoặc chuyển khoản. Nếu chọn chuyển khoản, form mở \texttt{PayOsPaymentForm}. Form này tạo payment link, render QR và kiểm tra trạng thái. Sau khi người dùng xác nhận, \texttt{PaymentController.UpdatePaymentStatus} gọi \texttt{PaymentBUS.UpdatePaymentStatus} để cập nhật trạng thái thanh toán trong SQL Server.
+
+\begin{codeblock}{code:payment-method-flow}{Chọn phương thức thanh toán trong PaymentDetail}
+\begin{minted}{csharp}
+private void btnQR_Click(object sender, EventArgs e)
+{
+    paymentMethod = "Chuyển khoản";
+    lblPaymentMethod.Text =
+        "Phương thức thanh toán: Chuyển khoản";
+
+    PayOsPaymentForm frm = new();
+    frm.ShowDialog();
+}
+
+private void button2_Click(object sender, EventArgs e)
+{
+    bool result = controller.UpdatePaymentStatus(
+        encounterId,
+        paymentMethod);
+}
+\end{minted}
+\end{codeblock}
+
+\texttt{PayOsPaymentForm} có ba tầng xử lý. Tầng thứ nhất là UI: nhập số tiền, nội dung, người mua, hiển thị QR và trạng thái. Tầng thứ hai là API client: gọi backend hoặc PayOS bằng RestSharp. Tầng thứ ba là bảo mật/chữ ký: nếu fallback trực tiếp, form tạo chữ ký HMACSHA256 từ amount, cancelUrl, description, orderCode, returnUrl và checksumKey. Khi triển khai thật, phần tạo chữ ký nên nằm ở backend để không lộ khóa trong ứng dụng Desktop.
+
+\begin{longtable}{|p{3.5cm}|p{4.8cm}|p{5.5cm}|}
+\caption{Dữ liệu phản hồi PayOS dùng trong WinForms} \\
+\hline
+\textbf{Trường} & \textbf{DTO} & \textbf{Cách sử dụng} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Trường} & \textbf{DTO} & \textbf{Cách sử dụng} \\
+\hline
+\endhead
+\texttt{orderCode} & \texttt{PayOsPaymentData} & Mã đơn hàng dùng kiểm tra trạng thái. \\
+\hline
+\texttt{checkoutUrl} & \texttt{PayOsPaymentData} & Link thanh toán, có thể hiển thị hoặc tạo QR. \\
+\hline
+\texttt{qrCode} & \texttt{PayOsPaymentData} & Dữ liệu QR dạng chuỗi, render bằng dịch vụ tạo QR. \\
+\hline
+\texttt{qrDataURL} & \texttt{PayOsPaymentData} & Ảnh QR base64, chuyển thành \texttt{Image} bằng \texttt{ImageHelper}. \\
+\hline
+\texttt{status} & \texttt{PayOsPaymentData} & Trạng thái PENDING/PAID/CANCELED để cập nhật label và dừng timer. \\
+\hline
+\texttt{amountPaid} & \texttt{PayOsPaymentData} & Số tiền đã thanh toán, phục vụ kiểm tra nếu cần. \\
+\hline
+\end{longtable}
+
+Với webhook, backend là thành phần nhận callback từ PayOS. Desktop không trực tiếp nhận webhook vì ứng dụng chạy trong mạng nội bộ, không có public endpoint ổn định. Do đó, flow hợp lý là PayOS gọi backend; backend xác thực chữ ký webhook và cập nhật payment; Desktop kiểm tra trạng thái qua backend. Hiện tại form dùng \texttt{System.Windows.Forms.Timer} polling 5 giây/lần. Nếu phát triển realtime đúng nghĩa, backend có thể phát SignalR event để WinForms nhận trạng thái ngay khi webhook đến.
+
+\begin{longtable}{|p{3cm}|p{4.6cm}|p{6cm}|}
+\caption{Luồng triển khai PayOS trong ứng dụng Desktop} \\
+\hline
+\textbf{Bước} & \textbf{Thành phần} & \textbf{Mô tả cài đặt} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Bước} & \textbf{Thành phần} & \textbf{Mô tả cài đặt} \\
+\hline
+\endhead
+Tạo hóa đơn & \texttt{PaymentDetail}, \texttt{PaymentController} & Lấy chi tiết phí khám, dịch vụ, thuốc; tính tổng tiền cần thanh toán. \\
+\hline
+Tạo payment link & \texttt{PayOsPaymentForm} & Gửi \texttt{orderCode}, \texttt{amount}, \texttt{description}, \texttt{buyerName} lên backend. \\
+\hline
+Render QR & \texttt{PayOsPaymentForm} & Ưu tiên \texttt{qrDataURL}; nếu không có thì dùng \texttt{qrCode} hoặc \texttt{checkoutUrl} để tạo ảnh QR. \\
+\hline
+Webhook & Backend trung gian & Nhận callback từ PayOS, xác thực chữ ký và cập nhật trạng thái giao dịch. \\
+\hline
+Polling trạng thái & \texttt{System.Windows.Forms.Timer} & Desktop gọi API kiểm tra trạng thái 5 giây/lần để cập nhật UI. \\
+\hline
+Cập nhật local & \texttt{PaymentBUS}, \texttt{PaymentDAL} & Khi trạng thái thành công, cập nhật hóa đơn và payment trong SQL Server. \\
+\hline
+\end{longtable}
+
+\subsection{Tổng hợp luồng cài đặt theo nghiệp vụ}
+
+Để chương xây dựng không bị rời rạc, bảng sau tổng hợp các luồng chính từ giao diện đến cơ sở dữ liệu. Đây là cách nhìn theo chiều dọc của hệ thống: người dùng thao tác trên WinForms, form/user control gọi controller hoặc BUS, BUS xử lý nghiệp vụ, DAL truy cập SQL Server/API, sau đó DTO trả về để giao diện cập nhật.
+
+\begin{longtable}{|p{2.8cm}|p{3.8cm}|p{4.5cm}|p{4cm}|}
+\caption{Trace cài đặt end-to-end của các nghiệp vụ chính} \\
+\hline
+\textbf{Nghiệp vụ} & \textbf{UI WinForms} & \textbf{BUS/DAL chính} & \textbf{Kết quả dữ liệu} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nghiệp vụ} & \textbf{UI WinForms} & \textbf{BUS/DAL chính} & \textbf{Kết quả dữ liệu} \\
+\hline
+\endhead
+Đăng nhập & \texttt{LoginForm}, \texttt{MainformRole} & \texttt{UserBUS}, \texttt{UserDAL}, \texttt{RoleNormalizer}, \texttt{UserSession} & Session được tạo, dashboard đúng vai trò được mở. \\
+\hline
+Quản lý bệnh nhân & \texttt{PatientManagement}, \texttt{CreateNewPatient} & \texttt{PatientBUS}, \texttt{PatientDAL} & Bệnh nhân được thêm/sửa/tìm kiếm trong SQL Server. \\
+\hline
+Tạo lịch khám & \texttt{CreateAppointment}, \texttt{ConfirmAppointment} & \texttt{AppointmentBUS}, \texttt{DoctorScheduleBUS}, \texttt{AppointmentDAL} & Lịch hẹn có bác sĩ, phòng, ngày giờ và trạng thái ban đầu. \\
+\hline
+Check-in & \texttt{ScheduleToday} & \texttt{AppointmentBUS}, \texttt{QueueBUS} & Lịch hẹn chuyển trạng thái, hàng chờ được tạo. \\
+\hline
+Khám bệnh & \texttt{DoctorMainform}, \texttt{ERM}, các \texttt{ucERM} & \texttt{ERMBus}, \texttt{EncounterDAL}, \texttt{PrescriptionDAL} & Encounter, chẩn đoán, chỉ định, toa thuốc được lưu. \\
+\hline
+Nhập sinh hiệu & \texttt{ucNurseVitalSigns} & \texttt{VitalSignBUS}, \texttt{VitalSignDAL} & Sinh hiệu được gắn với lượt khám/bệnh nhân. \\
+\hline
+Xử lý request & \texttt{ucTechnicianRequests}, \texttt{ucTechnicianLabResult}, \texttt{ucTechnicianUploadMri} & \texttt{TechnicianRequestBUS}, \texttt{TechnicianRequestDAL} & Kết quả lab/file hình ảnh được cập nhật, request đổi trạng thái. \\
+\hline
+Cấp phát thuốc & \texttt{ucPrescriptionDispense}, \texttt{ucPharmacyMedicineItemCard} & \texttt{PharmacyBUS}, \texttt{MedicineDAL}, \texttt{InventoryDAL} & Đơn thuốc được cấp phát, tồn kho cập nhật. \\
+\hline
+Thanh toán & \texttt{Payment}, \texttt{PaymentDetail}, \texttt{PayOsPaymentForm} & \texttt{PaymentController}, \texttt{PaymentBUS}, \texttt{PaymentDAL} & Hóa đơn và lịch sử thanh toán được cập nhật. \\
+\hline
+Đồng bộ API & \texttt{MockApiSyncForm}, \texttt{ucSeederTool} & \texttt{ApiSyncBUS}, \texttt{ApiSyncRepository} & Dữ liệu Supabase/SheetDB được hợp nhất vào SQL Server local. \\
+\hline
+\end{longtable}
+
+\subsection{Phân rã chi tiết các luồng vận hành}
+
+Phần này mô tả sâu hơn cách các phân hệ chạy trong chương trình. Mục tiêu không chỉ liệt kê màn hình, mà làm rõ tại mỗi bước hệ thống nhận dữ liệu gì, kiểm tra gì, gọi lớp nào, cập nhật trạng thái nào và phản hồi lại giao diện ra sao. Đây là phần quan trọng đối với đồ án WinForms Desktop vì phần lớn lỗi thực tế không nằm ở việc tạo được form, mà nằm ở luồng form gọi nghiệp vụ không rõ, trạng thái dữ liệu không nhất quán hoặc giao diện không reload sau khi dữ liệu thay đổi.
+
+\subsubsection{Luồng đăng nhập và mở dashboard}
+
+Luồng đăng nhập được thiết kế như cổng vào duy nhất của hệ thống. Từ \texttt{Program.Main}, ứng dụng mở \texttt{LoginForm}; người dùng chưa đăng nhập không thể đi thẳng vào dashboard. Sau khi nhập username/password, form kiểm tra dữ liệu rỗng, gọi \texttt{UserBUS}, nhận kết quả xác thực, tạo \texttt{UserSession} rồi chuyển sang \texttt{MainformRole}. \texttt{MainformRole} không hiển thị nghiệp vụ trực tiếp mà tạo dashboard đúng vai trò và nhúng vào form cha.
+
+\begin{longtable}{|p{1.2cm}|p{3.8cm}|p{4.4cm}|p{5.2cm}|}
+\caption{Diễn giải chi tiết luồng đăng nhập} \\
+\hline
+\textbf{Bước} & \textbf{Thành phần} & \textbf{Dữ liệu vào/ra} & \textbf{Ý nghĩa cài đặt} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Bước} & \textbf{Thành phần} & \textbf{Dữ liệu vào/ra} & \textbf{Ý nghĩa cài đặt} \\
+\hline
+\endhead
+1 & \texttt{Program.Main} & Không có dữ liệu nghiệp vụ & Cấu hình WinForms, bật visual style và chạy \texttt{LoginForm}. \\
+\hline
+2 & \texttt{LoginForm} & Username, password & Kiểm tra rỗng để tránh gọi BUS/DAL khi dữ liệu chắc chắn không hợp lệ. \\
+\hline
+3 & \texttt{UserBUS} & Username/password đã trim & Kiểm tra tài khoản, mật khẩu, trạng thái user và role. \\
+\hline
+4 & \texttt{UserDAL} & Username & Truy vấn SQL Server để lấy user, employee, role liên quan. \\
+\hline
+5 & \texttt{RoleNormalizer} & Chuỗi role từ database & Chuẩn hóa role để tránh lệch do tiếng Việt có dấu, không dấu hoặc tên tiếng Anh. \\
+\hline
+6 & \texttt{UserSession} & \texttt{UserDTO}, role chuẩn hóa & Lưu ngữ cảnh dùng chung cho các dashboard và user control. \\
+\hline
+7 & \texttt{MainformRole} & Role hiện tại & Tạo \texttt{AdminMainform}, \texttt{DoctorMainform}, \texttt{ReceptionistMainform}, \texttt{NurseMainform}, \texttt{TechnicianMainform} hoặc \texttt{PharmacyMainform}. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:mainform-role-switch-detail}{Điều hướng dashboard theo role}
+\begin{minted}{csharp}
+private Form CreateDashboardForCurrentUser()
+{
+    string role = RoleNormalizer.Normalize(UserSession.RoleName);
+
+    switch (role)
+    {
+        case Role.Admin:
+            return new AdminMainform();
+        case Role.Doctor:
+            return new DoctorMainform();
+        case Role.Nurse:
+            return new NurseMainform();
+        case Role.Receptionist:
+            return new ReceptionistMainform();
+        case Role.Technician:
+            return new TechnicianMainform();
+        case Role.Pharmacy:
+            return new PharmacyMainform();
+        default:
+            throw new InvalidOperationException("Role khong hop le");
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Nhận xét cài đặt: cách dùng \texttt{MainformRole} giúp tách đăng nhập khỏi điều hướng. Nếu sau này thêm vai trò thu ngân hoặc quản lý kho, nhóm chỉ cần bổ sung role và dashboard mới ở một điểm trung tâm. Nếu để \texttt{LoginForm} tự mở từng form theo nhiều nhánh, form đăng nhập sẽ nhanh chóng phình to và khó kiểm soát.
+
+\subsubsection{Luồng tạo lịch hẹn}
+
+Tạo lịch hẹn là luồng có nhiều trạng thái tạm trên giao diện. Lễ tân phải chọn bệnh nhân, chọn khoa, chọn bác sĩ, chọn ngày, chọn slot giờ rồi xác nhận. Nếu bất kỳ bước nào thay đổi, các bước phía sau phải reset. Ví dụ đổi khoa thì danh sách bác sĩ cũ không còn đúng; đổi bác sĩ thì danh sách slot giờ cũ phải tải lại.
+
+\begin{longtable}{|p{3.2cm}|p{3.6cm}|p{3.6cm}|p{3.8cm}|}
+\caption{Trạng thái giao diện trong luồng tạo lịch hẹn} \\
+\hline
+\textbf{Trạng thái} & \textbf{Control liên quan} & \textbf{Dữ liệu được giữ} & \textbf{Hành động kế tiếp} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Trạng thái} & \textbf{Control liên quan} & \textbf{Dữ liệu được giữ} & \textbf{Hành động kế tiếp} \\
+\hline
+\endhead
+Chưa chọn bệnh nhân & Ô tìm kiếm, bảng bệnh nhân & Chưa có \texttt{PatientID} & Người dùng chọn hoặc tạo bệnh nhân mới. \\
+\hline
+Đã chọn bệnh nhân & Label thông tin bệnh nhân & \texttt{PatientID}, \texttt{PatientCode}, tên bệnh nhân & Cho phép chọn khoa khám. \\
+\hline
+Đã chọn khoa & Card khoa trong \texttt{FlowLayoutPanel} & \texttt{DepartmentID} & Tải danh sách bác sĩ thuộc khoa. \\
+\hline
+Đã chọn bác sĩ & Card bác sĩ & \texttt{DoctorID}, \texttt{EmployeeUUID} & Tải lịch làm việc và slot còn trống. \\
+\hline
+Đã chọn slot & Button giờ khám & Ngày, giờ bắt đầu, giờ kết thúc & Cho phép mở form xác nhận. \\
+\hline
+Đã xác nhận & \texttt{ConfirmAppointment} & \texttt{AppointmentDTO} & Gọi BUS lưu lịch hẹn xuống SQL Server. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:create-appointment-dto-build}{Tạo DTO lịch hẹn trước khi gọi BUS}
+\begin{minted}{csharp}
+private AppointmentDTO BuildAppointmentDto()
+{
+    return new AppointmentDTO
+    {
+        PatientID = selectedPatientId,
+        DoctorID = selectedDoctorId,
+        DepartmentID = selectedDepartmentId,
+        AppointmentDate = selectedDate.Date,
+        StartTime = selectedStartTime,
+        Status = AppointmentStatus.Pending,
+        CreatedBy = UserSession.UserID
+    };
+}
+
+private void btnConfirmAppointment_Click(object sender, EventArgs e)
+{
+    AppointmentDTO dto = BuildAppointmentDto();
+
+    if (!appointmentBUS.CreateAppointment(dto))
+    {
+        MessageBox.Show("Khong the tao lich hen");
+        return;
+    }
+
+    MessageBox.Show("Tao lich hen thanh cong");
+    ReloadTodayAppointments();
+}
+\end{minted}
+\end{codeblock}
+
+Nhận xét cài đặt: màn hình tạo lịch không nên tự viết SQL insert vào bảng \texttt{Appointments}. Form chỉ nên gom dữ liệu người dùng đã chọn thành \texttt{AppointmentDTO}. Việc kiểm tra bác sĩ có ca làm hay không, slot có bị trùng hay không, phòng khám có hợp lệ hay không phải đặt ở BUS/DAL. Cách này giúp logic tạo lịch không bị phụ thuộc vào layout của form.
+
+\subsubsection{Luồng check-in và đưa bệnh nhân vào hàng chờ}
+
+Khi bệnh nhân đến phòng khám, lễ tân mở \texttt{ScheduleToday}, tìm lịch hẹn trong ngày và bấm nút check-in. Đây là một thao tác nhỏ trên giao diện nhưng có tác động dữ liệu kép: lịch hẹn đổi trạng thái và hàng chờ được tạo. Nếu chỉ cập nhật lịch hẹn mà không tạo hàng chờ, bác sĩ sẽ không thấy bệnh nhân trong danh sách khám. Nếu tạo hàng chờ nhưng không đổi trạng thái lịch, lễ tân có thể check-in trùng.
+
+\begin{longtable}{|p{3cm}|p{5cm}|p{5.2cm}|}
+\caption{Điều kiện và kết quả của thao tác check-in} \\
+\hline
+\textbf{Nhóm} & \textbf{Điều kiện kiểm tra} & \textbf{Kết quả mong đợi} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm} & \textbf{Điều kiện kiểm tra} & \textbf{Kết quả mong đợi} \\
+\hline
+\endhead
+Lịch hẹn & Lịch tồn tại, thuộc ngày hiện tại, chưa hủy, chưa check-in. & Cho phép chuyển sang trạng thái đã đến. \\
+\hline
+Bệnh nhân & Có \texttt{PatientID} hợp lệ trong lịch hẹn. & Hàng chờ gắn đúng bệnh nhân. \\
+\hline
+Bác sĩ/phòng & Lịch có bác sĩ và phòng khám. & Hàng chờ gắn đúng phòng để điều phối. \\
+\hline
+Trạng thái hàng chờ & Chưa tồn tại queue active cho cùng appointment. & Tạo queue mới với trạng thái chờ khám. \\
+\hline
+Giao diện & Dòng vừa check-in không còn nút thao tác cũ. & Reload \texttt{DataGridView} và cập nhật màu/trạng thái. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:checkin-transaction-flow}{Mô phỏng thao tác check-in ở BUS}
+\begin{minted}{csharp}
+public bool CheckInAppointment(int appointmentId)
+{
+    AppointmentDTO appointment = appointmentDAL.GetById(appointmentId);
+    if (appointment == null ||
+        appointment.Status != AppointmentStatus.Confirmed)
+    {
+        return false;
+    }
+
+    bool statusUpdated = appointmentDAL.UpdateStatus(
+        appointmentId,
+        AppointmentStatus.CheckedIn);
+
+    if (!statusUpdated)
+    {
+        return false;
+    }
+
+    QueueDTO queue = new QueueDTO
+    {
+        AppointmentID = appointmentId,
+        PatientID = appointment.PatientID,
+        DoctorID = appointment.DoctorID,
+        RoomID = appointment.RoomID,
+        Status = QueueStatus.Waiting,
+        CreatedAt = DateTime.Now
+    };
+
+    return queueDAL.Insert(queue);
+}
+\end{minted}
+\end{codeblock}
+
+Trong phiên bản hoàn thiện hơn, thao tác này nên được đặt trong transaction ở tầng DAL hoặc stored procedure để đảm bảo hai cập nhật cùng thành công hoặc cùng rollback. Đây là nhận xét kỹ thuật quan trọng vì nó cho thấy nhóm hiểu rủi ro nhất quán dữ liệu, không chỉ viết được nút bấm trên WinForms.
+
+\subsubsection{Luồng bác sĩ mở ERM và xử lý hồ sơ}
+
+Khi bác sĩ nhận bệnh nhân từ hàng chờ, màn hình ERM được mở để xem toàn bộ dữ liệu y tế. ERM không nên tải mọi thứ bằng một câu truy vấn lớn vì dữ liệu bệnh án có nhiều nhóm: thông tin tổng quan, lịch sử khám, xét nghiệm, hình ảnh, toa thuốc, hóa đơn và tái khám. Cách cài đặt hợp lý là controller/BUS cung cấp từng nhóm DTO riêng, các user control con tự bind phần dữ liệu của mình.
+
+\begin{longtable}{|p{3.2cm}|p{4.8cm}|p{5.6cm}|}
+\caption{Luồng dữ liệu trong ERM} \\
+\hline
+\textbf{Nhóm dữ liệu} & \textbf{DTO/Control nhận dữ liệu} & \textbf{Cách hiển thị} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm dữ liệu} & \textbf{DTO/Control nhận dữ liệu} & \textbf{Cách hiển thị} \\
+\hline
+\endhead
+Tổng quan & \texttt{PatientOverviewDTO}, \texttt{ucOverview} & Label/card thông tin bệnh nhân, sinh hiệu, chẩn đoán gần nhất. \\
+\hline
+Lịch sử khám & Danh sách encounter, \texttt{ucHistory} & \texttt{FlowLayoutPanel} chứa card từng lần khám. \\
+\hline
+Xét nghiệm & Danh sách lab result, \texttt{ucLab} & Card kết quả hoặc bảng ngắn theo loại xét nghiệm. \\
+\hline
+Hình ảnh & Danh sách imaging, \texttt{ucImaging} & Card ảnh, nút mở \texttt{frmPacsViewer}. \\
+\hline
+Toa thuốc & Prescription và detail, \texttt{ucPrescription} & Card toa thuốc, \texttt{DataGridView} thuốc trong toa. \\
+\hline
+Thanh toán & Invoice, \texttt{ucBilling} & Card hóa đơn và trạng thái thanh toán. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:erm-bind-control-detail}{Nguyên tắc bind dữ liệu vào control ERM}
+\begin{minted}{csharp}
+public void BindLabResults(IEnumerable<LabResultDTO> results)
+{
+    flowLayoutPanel1.Controls.Clear();
+
+    foreach (LabResultDTO result in results)
+    {
+        var card = new ucLabCard();
+        card.Bind(result);
+        card.Dock = DockStyle.Top;
+        flowLayoutPanel1.Controls.Add(card);
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Nhận xét cài đặt: ERM là nơi nên ưu tiên \texttt{FlowLayoutPanel} và card vì bác sĩ cần đọc theo cụm thông tin. \texttt{DataGridView} chỉ nên dùng trong phần có cấu trúc bảng rõ ràng, ví dụ danh sách thuốc trong toa. Nếu mọi dữ liệu bệnh án đều đưa vào DataGridView, giao diện sẽ khô, khó đọc và không phản ánh đúng workflow khám bệnh.
+
+\subsubsection{Luồng tạo chỉ định và kỹ thuật viên xử lý request}
+
+Luồng cận lâm sàng nối vai trò bác sĩ và kỹ thuật viên. Bác sĩ tạo request trong ERM; request được lưu xuống database với trạng thái chờ xử lý; kỹ thuật viên mở dashboard để xem request; sau khi nhập kết quả hoặc upload file, request đổi trạng thái hoàn thành; bác sĩ mở lại ERM để đọc kết quả. Đây là luồng liên vai trò, vì vậy trạng thái phải nhất quán và tên trạng thái phải dùng constant.
+
+\begin{longtable}{|p{2.6cm}|p{3.6cm}|p{3.8cm}|p{4.2cm}|}
+\caption{Vòng đời request cận lâm sàng} \\
+\hline
+\textbf{Trạng thái} & \textbf{Người thao tác} & \textbf{Màn hình} & \textbf{Ý nghĩa} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Trạng thái} & \textbf{Người thao tác} & \textbf{Màn hình} & \textbf{Ý nghĩa} \\
+\hline
+\endhead
+\texttt{Pending} & Bác sĩ & ERM & Chỉ định vừa được tạo, kỹ thuật viên chưa xử lý. \\
+\hline
+\texttt{Processing} & Kỹ thuật viên & \texttt{ucTechnicianRequests} & Request đã được nhận xử lý hoặc đang nhập kết quả. \\
+\hline
+\texttt{Completed} & Kỹ thuật viên & Upload/Lab result form & Đã có kết quả hoặc file đính kèm. \\
+\hline
+\texttt{Viewed} & Bác sĩ & ERM & Bác sĩ đã mở và đọc kết quả. \\
+\hline
+\texttt{Canceled} & Bác sĩ/quản trị & ERM hoặc màn hình quản lý & Request bị hủy vì nhập sai hoặc không cần thực hiện. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:technician-complete-request}{Cập nhật request sau khi có kết quả}
+\begin{minted}{csharp}
+public bool CompleteLabRequest(int requestId, string resultText)
+{
+    if (requestId <= 0 || string.IsNullOrWhiteSpace(resultText))
+    {
+        return false;
+    }
+
+    TechnicianRequestDTO request = requestDAL.GetById(requestId);
+    if (request == null ||
+        request.Status == RequestStatus.Completed)
+    {
+        return false;
+    }
+
+    labResultDAL.Insert(new LabResultDTO
+    {
+        RequestID = requestId,
+        ResultText = resultText.Trim(),
+        PerformedBy = UserSession.EmployeeID,
+        ResultDate = DateTime.Now
+    });
+
+    return requestDAL.UpdateStatus(
+        requestId,
+        RequestStatus.Completed);
+}
+\end{minted}
+\end{codeblock}
+
+Nhận xét cài đặt: đối với request có file, hệ thống cần lưu metadata thay vì chỉ lưu chuỗi đường dẫn tùy tiện. Metadata tối thiểu nên có \texttt{PatientID}, \texttt{EncounterID}, \texttt{RequestID}, \texttt{FileName}, \texttt{FilePath}, \texttt{FileType}, \texttt{UploadedBy}, \texttt{UploadedAt}. Khi bác sĩ xem lại hồ sơ, ERM có thể lọc file theo patient/encounter thay vì dò theo tên file.
+
+\subsubsection{Luồng cấp phát thuốc và cập nhật tồn kho}
+
+Phân hệ dược sĩ không chỉ hiển thị danh mục thuốc. Luồng nghiệp vụ thật là dược sĩ nhận toa thuốc, kiểm tra trạng thái toa, kiểm tra từng thuốc trong toa, đối chiếu tồn kho, xác nhận cấp phát và cập nhật tồn kho. Nếu tồn kho không đủ, hệ thống phải cảnh báo thay vì trừ âm.
+
+\begin{longtable}{|p{3cm}|p{4.8cm}|p{5.4cm}|}
+\caption{Luồng cấp phát thuốc} \\
+\hline
+\textbf{Bước} & \textbf{Xử lý} & \textbf{Nhận xét cài đặt} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Bước} & \textbf{Xử lý} & \textbf{Nhận xét cài đặt} \\
+\hline
+\endhead
+1 & Lấy danh sách toa chờ cấp phát. & Lọc theo \texttt{DispenseStatus.Pending} để dược sĩ không xử lý nhầm toa đã cấp. \\
+\hline
+2 & Mở chi tiết toa. & Hiển thị thuốc, hàm lượng, số lượng, cách dùng, ghi chú bác sĩ. \\
+\hline
+3 & Kiểm tra tồn kho. & Gọi \texttt{MedicineDAL}/\texttt{InventoryDAL}; nếu thiếu thuốc thì báo lỗi rõ ràng. \\
+\hline
+4 & Xác nhận cấp phát. & Cập nhật trạng thái toa, giảm tồn kho, ghi nhận người cấp phát và thời gian. \\
+\hline
+5 & Reload dashboard. & Toa vừa cấp phát biến khỏi danh sách chờ hoặc chuyển sang nhóm hoàn thành. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:dispense-stock-check}{Kiểm tra tồn kho trước khi cấp phát}
+\begin{minted}{csharp}
+public bool CanDispensePrescription(int prescriptionId)
+{
+    List<PrescriptionDetailDTO> details =
+        prescriptionDAL.GetDetails(prescriptionId);
+
+    foreach (PrescriptionDetailDTO item in details)
+    {
+        MedicineDTO medicine = medicineDAL.GetById(item.MedicineID);
+        if (medicine == null ||
+            medicine.StockQuantity < item.Quantity)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+\end{minted}
+\end{codeblock}
+
+Nhận xét cài đặt: với nghiệp vụ dược, phần UI nên tách rõ danh sách toa và danh mục thuốc. Danh sách toa là công việc hằng ngày của dược sĩ, còn danh mục thuốc/tồn kho là dữ liệu quản trị. Nếu trộn hai phần vào một màn hình lớn, người dùng dễ thao tác nhầm giữa cấp phát thuốc và sửa thông tin thuốc.
+
+\subsubsection{Luồng đồng bộ Supabase, SheetDB và SQL Server}
+
+Đồng bộ API là phần dễ viết sơ sài trong báo cáo, nhưng thực tế đây là luồng có nhiều quyết định kỹ thuật. Dữ liệu từ SheetDB thường có dạng bảng giống Google Sheet, có thể thiếu UUID, có cột rỗng hoặc dữ liệu số dưới dạng chuỗi. Supabase lại có mô hình REST rõ hơn và thường có UUID. SQL Server local là nguồn phục vụ WinForms. Vì vậy, \texttt{ApiSyncBUS} đóng vai trò hợp nhất dữ liệu, không chỉ gọi API rồi insert.
+
+\begin{longtable}{|p{3.4cm}|p{4.6cm}|p{5.6cm}|}
+\caption{Chiến lược xử lý xung đột khi đồng bộ} \\
+\hline
+\textbf{Tình huống} & \textbf{Cách nhận biết} & \textbf{Cách xử lý} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Tình huống} & \textbf{Cách nhận biết} & \textbf{Cách xử lý} \\
+\hline
+\endhead
+Dòng thiếu mã & \texttt{PatientCode} hoặc \texttt{EmployeeCode} rỗng & Bỏ qua và ghi nhận vào kết quả sync để người dùng biết dữ liệu ngoài chưa đạt. \\
+\hline
+Dòng thiếu tên & \texttt{FullName} rỗng & Bỏ qua vì không đủ thông tin hiển thị và tra cứu. \\
+\hline
+Sheet thiếu UUID & Có mã bệnh nhân nhưng \texttt{uuid} rỗng & Tìm bản ghi tương ứng trên Supabase/local; nếu có thì patch UUID ngược về Sheet. \\
+\hline
+Local đã có bản ghi & Trùng UUID hoặc trùng code & Update thông tin thay vì insert để tránh trùng bệnh nhân/nhân viên. \\
+\hline
+Supabase thiếu dòng từ Sheet & Có ở Sheet, không có ở Supabase & Insert lên Supabase nếu dữ liệu hợp lệ. \\
+\hline
+Sheet thiếu dòng từ Supabase & Có ở Supabase, không có ở Sheet & Ghi ngược về Sheet để hai nguồn ngoài đồng bộ. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:api-sync-conflict-resolution}{Mẫu xử lý upsert bệnh nhân local}
+\begin{minted}{csharp}
+private async Task SyncPatientsToLocalSqlServerAsync(
+    List<ApiPatientDTO> patients,
+    ApiSyncResultDTO result,
+    bool patchSheetWhenMissingUuid)
+{
+    foreach (ApiPatientDTO patient in patients)
+    {
+        if (string.IsNullOrWhiteSpace(patient.PatientCode) ||
+            string.IsNullOrWhiteSpace(patient.FullName))
+        {
+            result.SkippedPatients++;
+            continue;
+        }
+
+        if (string.IsNullOrWhiteSpace(patient.PatientUuid))
+        {
+            patient.PatientUuid = Guid.NewGuid().ToString();
+
+            if (patchSheetWhenMissingUuid)
+            {
+                await repository.PatchPatientSheetUuidAsync(patient);
+            }
+        }
+
+        bool changed = repository.UpsertLocalPatient(patient);
+        if (changed)
+        {
+            result.LocalPatientsChanged++;
+        }
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Nhận xét cài đặt: không nên đặt logic này trong \texttt{MockApiSyncForm}. Form đồng bộ chỉ nên có nút sync, bảng preview bệnh nhân/nhân viên và vùng hiển thị kết quả. Nếu form tự xử lý UUID, lọc dữ liệu, gọi Supabase và ghi SQL Server, phần tích hợp sẽ rất khó kiểm thử và không thể tái sử dụng cho dashboard khác.
+
+\subsubsection{Luồng PayOS, VietQR và cập nhật realtime}
+
+Thanh toán QR trong ứng dụng Desktop có một đặc thù: WinForms chạy trên máy nội bộ, không phải server public. Vì vậy, Desktop không phải nơi phù hợp để nhận webhook trực tiếp từ PayOS. Luồng đúng là Desktop gọi backend để tạo payment link; PayOS gọi webhook về backend; Desktop kiểm tra trạng thái qua backend bằng polling hoặc nhận event realtime nếu backend hỗ trợ SignalR.
+
+\begin{longtable}{|p{3cm}|p{4.2cm}|p{5.8cm}|}
+\caption{Chi tiết luồng PayOS/VietQR} \\
+\hline
+\textbf{Giai đoạn} & \textbf{Thành phần} & \textbf{Logic vận hành} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Giai đoạn} & \textbf{Thành phần} & \textbf{Logic vận hành} \\
+\hline
+\endhead
+Chuẩn bị hóa đơn & \texttt{PaymentDetail} & Lấy \texttt{encounterId}, tổng tiền, tên người mua, nội dung thanh toán. \\
+\hline
+Tạo giao dịch & Backend PayOS & Nhận request từ Desktop, ký payload bằng checksum key, gọi PayOS. \\
+\hline
+Hiển thị QR & \texttt{PayOsPaymentForm} & Render \texttt{qrDataURL} hoặc tạo QR từ \texttt{qrCode}/\texttt{checkoutUrl}. \\
+\hline
+Người dùng thanh toán & Ứng dụng ngân hàng/MoMo QR/VietQR & Quét QR và chuyển tiền theo thông tin PayOS cung cấp. \\
+\hline
+Webhook & Backend & PayOS gửi callback; backend kiểm tra chữ ký và lưu trạng thái. \\
+\hline
+Realtime/polling & WinForms & Timer kiểm tra trạng thái; nếu thành công thì dừng timer và cập nhật UI. \\
+\hline
+Cập nhật hóa đơn & \texttt{PaymentBUS} & Chỉ đánh dấu \texttt{Paid} khi backend/PayOS xác nhận thành công. \\
+\hline
+\end{longtable}
+
+\begin{codeblock}{code:payos-polling-detail}{Polling trạng thái thanh toán trong WinForms}
+\begin{minted}{csharp}
+private async void paymentStatusTimer_Tick(object sender, EventArgs e)
+{
+    paymentStatusTimer.Stop();
+
+    try
+    {
+        PayOsApiResponse response =
+            await GetPaymentStatusAsync(currentOrderCode, CancellationToken.None);
+
+        string status = response?.data?.status;
+        lblStatus.Text = "Trang thai: " + status;
+
+        if (status == "PAID")
+        {
+            DialogResult = DialogResult.OK;
+            Close();
+            return;
+        }
+
+        paymentStatusTimer.Start();
+    }
+    catch
+    {
+        paymentStatusTimer.Start();
+    }
+}
+\end{minted}
+\end{codeblock}
+
+Nhận xét cài đặt: nếu người dùng bấm nút xác nhận thanh toán trước khi PayOS trả \texttt{PAID}, hệ thống có thể ghi sai doanh thu. Vì vậy, trong bản hoàn chỉnh nên khóa nút xác nhận hoặc chỉ cho phép cập nhật SQL Server khi form PayOS trả \texttt{DialogResult.OK}. Đây là điểm cần ghi rõ trong báo cáo vì nó thể hiện nhận thức về tính đúng đắn của nghiệp vụ tài chính.
+
+\subsection{Đánh giá kỹ thuật cài đặt trong chương xây dựng}
+
+Từ quá trình cài đặt, có thể rút ra một số điểm kỹ thuật quan trọng của đồ án. Thứ nhất, WinForms được dùng theo hướng nhiều \texttt{UserControl} thay vì nhiều form rời rạc, giúp dashboard giữ được trạng thái và trải nghiệm thống nhất. Thứ hai, \texttt{DataGridView} được dùng cho dữ liệu dạng bảng có thao tác theo dòng, còn \texttt{FlowLayoutPanel} và card được dùng cho dữ liệu cần nhìn nhanh theo nhóm. Thứ ba, tầng DTO--BUS--DAL giúp tách giao diện khỏi SQL Server, làm cho code dễ bảo trì hơn khi số lượng phân hệ tăng. Thứ tư, các tích hợp ngoài như Supabase, SheetDB và PayOS được đặt sau BUS/repository hoặc backend trung gian, tránh để form WinForms phải xử lý toàn bộ API.
+
+Trong giai đoạn hiện tại, DAL chính vẫn dựa trên ADO.NET vì phù hợp với project WinForms và dễ kiểm soát câu SQL. Tuy nhiên, báo cáo đã thiết kế hướng mở rộng Entity Framework để các phân hệ nhiều truy vấn như danh mục thuốc, lịch sử khám, hóa đơn và báo cáo có thể chuyển dần sang ORM. Cách chuyển dần này thực tế hơn việc thay toàn bộ DAL trong một lần, vì hệ thống đang có nhiều chức năng đã chạy ổn định bằng ADO.NET.
+
+\section{Kiểm thử và Giao diện kết quả}
+
+\subsection{Chiến lược kiểm thử}
+
+Do đồ án có nhiều vai trò, kiểm thử được tổ chức theo luồng nghiệp vụ thay vì chỉ kiểm tra từng form rời rạc. Mỗi kịch bản kiểm thử bắt đầu từ đăng nhập, mở dashboard theo role, thao tác nghiệp vụ và kiểm tra dữ liệu được cập nhật trong giao diện hoặc database.
+
+Đối với môn WinForms Desktop, kiểm thử không chỉ kiểm tra nghiệp vụ đúng hay sai mà còn phải kiểm tra phản ứng của giao diện. Một form có nghiệp vụ đúng nhưng layout vỡ, bảng không co giãn, nút bị che, event click không hoạt động hoặc UI đứng khi gọi API thì vẫn chưa đạt yêu cầu của phần mềm Desktop. Vì vậy, nhóm kiểm thử theo bốn nhóm:
+
+\begin{itemize}
+    \item \textbf{Kiểm thử luồng nghiệp vụ:} đăng nhập, tạo lịch, check-in, khám, xét nghiệm, thanh toán, cấp phát thuốc.
+    \item \textbf{Kiểm thử giao diện WinForms:} resize form, chuyển màn hình, mở modal, đóng modal, reload dữ liệu, focus ô nhập và thông báo lỗi.
+    \item \textbf{Kiểm thử dữ liệu:} kiểm tra dữ liệu lưu xuống SQL Server, khóa ngoại, trạng thái appointment/queue/payment/request.
+    \item \textbf{Kiểm thử tích hợp:} đồng bộ Supabase/SheetDB, upload file, kiểm tra trạng thái thanh toán PayOS ở mức mô phỏng.
+\end{itemize}
+
+\subsection{Kiểm thử giao diện WinForms}
+
+Bảng sau tập trung vào các lỗi thường gặp trong ứng dụng Desktop WinForms và cách kiểm tra trong đồ án.
+
+\begin{longtable}{|p{2.4cm}|p{4.6cm}|p{4.2cm}|p{2.6cm}|}
+\caption{Kiểm thử giao diện WinForms} \\
+\hline
+\textbf{Mã} & \textbf{Kịch bản UI} & \textbf{Kết quả mong đợi} & \textbf{Trạng thái} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Mã} & \textbf{Kịch bản UI} & \textbf{Kết quả mong đợi} & \textbf{Trạng thái} \\
+\hline
+\endhead
+UI-01 & Phóng to/thu nhỏ dashboard lễ tân & Menu giữ vị trí, content panel co giãn đúng & Đạt \\
+\hline
+UI-02 & Chuyển nhanh giữa Patient, Schedule, WaitingList, Payment & Panel cũ được xóa, panel mới dock fill, không chồng control & Đạt \\
+\hline
+UI-03 & Mở form modal đăng ký ca làm rồi đóng & Form cha nhận lại quyền thao tác, dữ liệu reload khi OK & Đạt \\
+\hline
+UI-04 & Click dòng trong DataGridView lịch hẹn & Hệ thống lấy đúng AppointmentID của dòng được chọn & Đạt \\
+\hline
+UI-05 & Nhập sai dữ liệu số ở sinh hiệu & Form báo lỗi và focus lại ô nhập sai & Đạt \\
+\hline
+UI-06 & Bấm đồng bộ API nhiều lần liên tục & Nút sync bị disable trong lúc xử lý, UI không bị đứng & Đạt mô phỏng \\
+\hline
+UI-07 & Chọn file PDF/MRI bằng OpenFileDialog & Đường dẫn file được hiển thị và dùng cho thao tác upload & Đạt mô phỏng \\
+\hline
+\end{longtable}
+
+\subsection{Kiểm thử chức năng}
+
+\begin{longtable}{|p{2cm}|p{4.6cm}|p{4.1cm}|p{3.2cm}|}
+\caption{Bảng kiểm thử chức năng tiêu biểu} \\
+\hline
+\textbf{Mã} & \textbf{Kịch bản} & \textbf{Kết quả mong đợi} & \textbf{Trạng thái} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Mã} & \textbf{Kịch bản} & \textbf{Kết quả mong đợi} & \textbf{Trạng thái} \\
+\hline
+\endhead
+TC-01 & Đăng nhập bằng tài khoản hợp lệ & Mở đúng main form theo vai trò & Đạt \\
+\hline
+TC-02 & Đăng nhập thiếu username hoặc password & Hiển thị thông báo lỗi & Đạt \\
+\hline
+TC-03 & Tìm kiếm bệnh nhân theo tên/mã/số điện thoại & Danh sách bệnh nhân được lọc đúng & Đạt \\
+\hline
+TC-04 & Tạo lịch hẹn với bác sĩ có lịch làm & Lịch hẹn được lưu và hiển thị & Đạt \\
+\hline
+TC-05 & Tiếp nhận bệnh nhân trong ngày & Trạng thái lịch/hàng chờ được cập nhật & Đạt \\
+\hline
+TC-06 & Kỹ thuật viên upload kết quả PDF/MRI & Kết quả được gắn vào request tương ứng & Đạt mô phỏng \\
+\hline
+TC-07 & Dược sĩ mở danh sách đơn chờ cấp phát & Danh sách đơn thuốc hiển thị đúng & Đạt \\
+\hline
+TC-08 & Tạo thanh toán và cập nhật trạng thái & Payment chuyển sang trạng thái đã thanh toán & Đạt mô phỏng \\
+\hline
+TC-09 & Đồng bộ dữ liệu API thiếu UUID & Hệ thống báo lỗi rõ nguyên nhân & Đạt \\
+\hline
+\end{longtable}
+
+\subsection{Đánh giá ưu điểm}
+
+\begin{itemize}
+    \item Kiến trúc project rõ ràng, tách biệt UI, BUS, DAL, DTO, Models và Core.
+    \item Cơ sở dữ liệu bao phủ nhiều nghiệp vụ phòng khám, có khóa chính và khóa ngoại tương đối đầy đủ.
+    \item Giao diện chia theo vai trò, phù hợp với cách vận hành thực tế.
+    \item Có các controller phía UI giúp giảm bớt logic trong code-behind.
+    \item Có tích hợp mô phỏng API và PayOS, làm tăng tính thực tế của đồ án.
+    \item Có nhóm Shareforms cho ERM và ca làm, tránh trùng lặp giao diện dùng chung.
+\end{itemize}
+
+\subsection{Hạn chế}
+
+\begin{itemize}
+    \item Một số namespace và cách đặt tên chưa hoàn toàn thống nhất, ví dụ có lớp dùng \texttt{BUS.Services}, có lớp dùng \texttt{BUS}.
+    \item Một số nghiệp vụ còn mô phỏng, chưa đạt mức sản phẩm triển khai thật như thanh toán realtime, PACS chuẩn y tế hoặc bảo hiểm y tế.
+    \item Kiểm thử hiện chủ yếu ở mức thủ công, chưa có bộ unit test tự động cho BUS và DAL.
+    \item Logic khởi tạo database còn nằm trong \texttt{LoginForm}; nên tách thành bootstrap/service riêng.
+    \item Quản lý mật khẩu cần rà soát để sử dụng \texttt{PasswordHasher} nhất quán thay vì so khớp chuỗi trực tiếp ở mọi nơi.
+\end{itemize}
+
+\section{Kết luận và Hướng phát triển}
+
+\subsection{Kết quả đạt được}
+
+Đồ án đã xây dựng được một hệ thống quản lý phòng khám Desktop có cấu trúc nhiều lớp và phạm vi nghiệp vụ tương đối đầy đủ. Hệ thống hỗ trợ đăng nhập theo vai trò, quản lý bệnh nhân, lịch hẹn, hàng chờ, hồ sơ bệnh án điện tử, xét nghiệm, chẩn đoán hình ảnh, đơn thuốc, thanh toán, nhà thuốc, ca làm và đồng bộ API. Mã nguồn được chia project theo chức năng, thuận tiện cho việc mở rộng và bảo trì.
+
+\subsection{Hạn chế của phần mềm}
+
+Hệ thống vẫn còn một số hạn chế về mức độ hoàn thiện nghiệp vụ và chất lượng kỹ thuật. Một số màn hình có thể mới ở mức mô phỏng, giao diện chưa đồng bộ tuyệt đối, một số truy vấn nghiệp vụ cần tối ưu thêm, và cơ chế bảo mật chưa đạt mức hệ thống y tế thực tế. Ngoài ra, phần kiểm thử tự động chưa được triển khai đầy đủ nên việc đánh giá hồi quy còn phụ thuộc vào kiểm thử thủ công.
+
+\subsection{Hướng phát triển trong tương lai}
+
+\begin{itemize}
+    \item Chuẩn hóa namespace, đặt tên lớp và cấu trúc thư mục theo domain.
+    \item Tách bootstrap database, cấu hình API và thanh toán thành service riêng.
+    \item Bổ sung unit test cho BUS và integration test cho DAL.
+    \item Hoàn thiện phân quyền theo permission chi tiết, không chỉ theo role.
+    \item Nâng cấp bảo mật mật khẩu, logging và audit trail cho thao tác y tế nhạy cảm.
+    \item Tối ưu ERM, thêm chức năng xuất PDF hồ sơ khám và hóa đơn.
+    \item Hoàn thiện thanh toán realtime và cấu hình triển khai cho môi trường phòng khám thật.
+\end{itemize}
+
+% ==================== TÀI LIỆU THAM KHẢO ====================
+\newpage
+\phantomsection
+\renewcommand{\refname}{Tài liệu tham khảo}
+\addcontentsline{toc}{section}{Tài liệu tham khảo}
+\begin{thebibliography}{9}
+
+\bibitem{microsoft-winforms}
+Microsoft. \textit{Windows Forms documentation}. Available: \url{https://learn.microsoft.com/dotnet/desktop/winforms/}
+
+\bibitem{microsoft-ado}
+Microsoft. \textit{ADO.NET Overview}. Available: \url{https://learn.microsoft.com/dotnet/framework/data/adonet/ado-net-overview}
+
+\bibitem{microsoft-sqlserver}
+Microsoft. \textit{SQL Server technical documentation}. Available: \url{https://learn.microsoft.com/sql/sql-server/}
+
+\bibitem{microsoft-ef}
+Microsoft. \textit{Entity Framework Core documentation}. Available: \url{https://learn.microsoft.com/ef/core/}
+
+\bibitem{payos}
+PayOS. \textit{PayOS payment gateway documentation}. Available: \url{https://payos.vn/}
+
+\bibitem{supabase}
+Supabase. \textit{Supabase documentation}. Available: \url{https://supabase.com/docs}
+
+\bibitem{sheetdb}
+SheetDB. \textit{SheetDB API documentation}. Available: \url{https://sheetdb.io/}
+
+\bibitem{cms-source}
+Nhóm phát triển. \textit{Mã nguồn ClinicManagementSystem.Winforms trong đồ án Desktop quản lý phòng khám}. 2026.
+
+\end{thebibliography}
+
+% ==================== PHỤ LỤC ====================
+\newpage
+\pagestyle{plain}
+
+\clearpage
+\section*{PHỤ LỤC A. HÌNH ẢNH}
+\phantomsection
+\addcontentsline{toc}{section}{Phụ lục A. Hình ảnh}
+\appendixnote{Phụ lục này tổng hợp tự động các hình ảnh xuất hiện trong phần nội dung chính.}
+\printappendixfigures
+
+\clearpage
+\section*{PHỤ LỤC B. CÁC THUẬT TOÁN}
+\phantomsection
+\addcontentsline{toc}{section}{Phụ lục B. Các thuật toán}
+\appendixnote{Phụ lục này tổng hợp tự động các thuật toán giả xuất hiện trong phần nội dung chính.}
+\printappendixalgorithms
+
+\clearpage
+\section*{PHỤ LỤC C. BẢNG, BIỂU}
+\phantomsection
+\addcontentsline{toc}{section}{Phụ lục C. Bảng, biểu}
+\appendixnote{Phụ lục này tổng hợp các bảng, biểu quan trọng của báo cáo.}
+\printappendixtables
+
+\newpage
+\section*{Bảng phân công nhiệm vụ}
+\phantomsection
+\addcontentsline{toc}{section}{Bảng phân công nhiệm vụ}
+
+Bảng phân công công việc của nhóm được nhóm lưu trữ trực tuyến để thuận tiện theo dõi và cập nhật:
+
+\begin{center}
+\textbf{\Large
+\href{https://docs.google.com/spreadsheets/d/1Cl20GJY18W7uuudsW8dAZPrxM_jM4kr6-J7OUN_MBeI/edit?gid=0}
+{XEM BẢNG PHÂN CÔNG CÔNG VIỆC}
+}
+\end{center}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=blue
+}
+
+\section*{Link đồ án}
+\phantomsection
+\addcontentsline{toc}{section}{Link đồ án}
+
+Mã nguồn của hệ thống được lưu trữ trên GitHub để thuận tiện cho việc theo dõi và phát triển:
+
+\begin{center}
+\textbf{\Large
+\href{https://github.com/anhminhle26022006-ops/CLINIC-MANAGEMENT-SYSTEM}
+{\faGithub\ XEM SOURCE CODE HỆ THỐNG}
+}
+\end{center}
+
+\end{document}

@@ -1,0 +1,28 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n+nf}{CompleteLabRequest}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{requestId}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{resultText}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{requestId}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{resultText}\PYG{p}{))}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{TechnicianRequestDTO}\PYG{+w}{ }\PYG{n}{request}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{requestDAL}\PYG{p}{.}\PYG{n}{GetById}\PYG{p}{(}\PYG{n}{requestId}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{request}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{k}{null}\PYG{+w}{ }\PYG{o}{||}
+\PYG{+w}{        }\PYG{n}{request}\PYG{p}{.}\PYG{n}{Status}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{RequestStatus}\PYG{p}{.}\PYG{n}{Completed}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{labResultDAL}\PYG{p}{.}\PYG{n}{Insert}\PYG{p}{(}\PYG{k}{new}\PYG{+w}{ }\PYG{n}{LabResultDTO}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{RequestID}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{requestId}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{ResultText}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{resultText}\PYG{p}{.}\PYG{n}{Trim}\PYG{p}{(),}
+\PYG{+w}{        }\PYG{n}{PerformedBy}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{UserSession}\PYG{p}{.}\PYG{n}{EmployeeID}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{ResultDate}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DateTime}\PYG{p}{.}\PYG{n}{Now}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{});}
+
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{requestDAL}\PYG{p}{.}\PYG{n}{UpdateStatus}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{requestId}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{RequestStatus}\PYG{p}{.}\PYG{n}{Completed}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

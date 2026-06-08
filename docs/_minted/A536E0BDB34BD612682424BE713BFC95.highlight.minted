@@ -1,0 +1,13 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{LoadAppointmentsToday}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{dgvAppointment}\PYG{p}{.}\PYG{n}{AutoGenerateColumns}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{dgvAppointment}\PYG{p}{.}\PYG{n}{DataSource}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{scheduleTodayController}\PYG{p}{.}\PYG{n}{GetAppointmentsToday}\PYG{p}{();}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{RefreshAfterCheckIn}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{LoadAppointmentsToday}\PYG{p}{();}
+\PYG{+w}{    }\PYG{n}{LoadWaitingListSummary}\PYG{p}{();}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

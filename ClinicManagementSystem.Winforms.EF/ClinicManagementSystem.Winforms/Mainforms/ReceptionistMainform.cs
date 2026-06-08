@@ -1,15 +1,17 @@
-﻿﻿using BUS.Services;
-using ClinicManagementSystem.Winforms;
-using DAL;
-using DTO;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+﻿using BUS.Services;
+using ClinicManagementSystem.Winforms;
+using ClinicManagementSystem.Winforms.UserControls;
+using ClinicManagementSystem.Winforms.UserControls.reception;
+using DAL;
+using DTO;
+using Newtonsoft.Json.Linq;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
@@ -26,6 +28,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
         private UserDTO currentUser;
         private bool layoutReady;
+        private readonly ApiSyncBUS apiSyncBUS = new ApiSyncBUS();
 
         // Custom Navigation Buttons
 
@@ -38,6 +41,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         {
             InitializeComponent();
             layoutReady = true;
+            
         }
 
         public ReceptionistMainform(UserDTO user) : this()
@@ -49,18 +53,26 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             lblPageSubtitle.Text = "Xin chào, " + user.Name;
         }
 
-        private void ReceptionistMainform_Load(object sender, EventArgs e)
+        private async void ReceptionistMainform_Load(object sender, EventArgs e)
         {
-            // Set Log Out click handler
+            try
+            {
+                await apiSyncBUS.SyncAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             btnLogout.Click += (s, ev) =>
             {
                 LogoutRequested?.Invoke(this, EventArgs.Empty);
             };
 
-            // Close button click handler
-            btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
-
-
+            btnClose.Click += (s, ev) =>
+            {
+                CloseRequested?.Invoke(this, EventArgs.Empty);
+            };
         }
 
         private Button CreateSidebarButton(string text, Point location, EventHandler onClick)
@@ -90,6 +102,62 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             if (!layoutReady || contentPanel.Width < 400) return;
         }
 
+        private void LoadUserControl(UserControl userControl)
+        {
+            contentPanel.Controls.Clear();
+            userControl.Dock = DockStyle.Fill;
+            contentPanel.Controls.Add(userControl);
+        }
+
+        private void LoadContent(UserControl control)
+        {
+            contentPanel.Controls.Clear();
+            control.Dock = DockStyle.Fill;
+            contentPanel.Controls.Add(control);
+
+            lblPageSubtitle.Text = control switch
+            {
+                PatientManagement => "Quản lý bệnh nhân",
+                CreateAppointment => "Tạo lịch hẹn",
+                ScheduleToday => "Lịch hẹn hôm nay",
+                _ => "Clinic Management System"
+            };
+        }
+
+        private void btnPatientManagement_Click(object sender, EventArgs e)
+        {
+            LoadContent(new PatientManagement());
+        }
+
+        private void btnAppointment_Click(object sender, EventArgs e)
+        {
+            LoadContent(new CreateAppointment());
+        }
+
+        private void btnPayment_Click(object sender, EventArgs e)
+        {
+            LoadContent(new Payment());
+        }
+
+        private void btnToday_Click(object sender, EventArgs e)
+        {
+            LoadContent(new ScheduleToday());
+        }
+
+        private void btnQueue_Click(object sender, EventArgs e)
+        {
+            LoadContent(new WaitingList());
+        }
+
+        private void btnReminder_Click(object sender, EventArgs e)
+        {
+            LoadContent(new RemindingList());
+        }
+
+        private void btnNavShifts_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 

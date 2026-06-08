@@ -1,0 +1,23 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{ApiPatientDTO}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n+na}{[JsonPropertyName(\PYGZdq{}patientid\PYGZdq{})]}
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{n}{Guid}\PYG{o}{?}\PYG{+w}{ }\PYG{n}{PatientId}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{k}{get}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{set}\PYG{p}{;}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n+na}{[JsonPropertyName(\PYGZdq{}patientuuid\PYGZdq{})]}
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{n}{Guid}\PYG{o}{?}\PYG{+w}{ }\PYG{n}{LegacyPatientUuid}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{k}{get}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{set}\PYG{p}{;}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n+na}{[JsonPropertyName(\PYGZdq{}patientcode\PYGZdq{})]}
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{PatientCode}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{k}{get}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{set}\PYG{p}{;}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n+na}{[JsonPropertyName(\PYGZdq{}fullname\PYGZdq{})]}
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{FullName}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{k}{get}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{set}\PYG{p}{;}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n+na}{[JsonIgnore]}
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{n}{Guid}\PYG{o}{?}\PYG{+w}{ }\PYG{n}{SyncUuid}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{get}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{PatientId}\PYG{+w}{ }\PYG{o}{??}\PYG{+w}{ }\PYG{n}{LegacyPatientUuid}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{set}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{PatientId}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{value}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

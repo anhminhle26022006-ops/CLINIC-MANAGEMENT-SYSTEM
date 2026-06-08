@@ -31,7 +31,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void ucTechnicianRequests_Resize(object sender, EventArgs e)
         {
-            // Anchored elements resize automatically.
+            ResizeRequestCards();
         }
 
         private void TxtRequestSearch_Enter(object sender, EventArgs e)
@@ -119,135 +119,72 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             }
         }
 
-        private RoundedPanel CreateGroupedRequestCard(List<TechnicianRequestDTO> requests)
+        private Control CreateGroupedRequestCard(List<TechnicianRequestDTO> requests)
         {
             var first = requests.First();
             bool allCompleted = requests.All(r => r.Status == "Hoàn thành");
             bool anyProcessing = requests.Any(r => r.Status == "Đang xử lý");
 
             var borderColor = allCompleted ? Color.FromArgb(187, 247, 208) : (anyProcessing ? primary : Color.FromArgb(252, 165, 165));
-            int cardHeight = 100 + (requests.Count * 56) + 16;
-
-            var card = new RoundedPanel
+            int cardWidth = RequestCardWidth();
+            var card = new ucTechnicianRequestGroupCard
             {
-                BorderColor = borderColor,
-                CornerRadius = 8,
-                FillColor = Color.White,
-                Size = new Size(flpRequests.Width - 32, cardHeight),
-                Margin = new Padding(0, 0, 0, 16)
+                Size = new Size(cardWidth, 198),
+                Margin = new Padding(0, 0, 0, 18)
             };
+            card.ConfigureHeader(first.PatientName, first.PatientCode, first.DoctorName, first.RequestDate, borderColor);
 
-            card.Controls.Add(CreateAvatar(first.PatientName.Substring(0, 1), 26, 26));
-            card.Controls.Add(CreateLabel(first.PatientName, 13F, FontStyle.Bold, textMain, 78, 20, 280, 28));
-            card.Controls.Add(CreateLabel($"Mã BN: {first.PatientCode} | Bác sĩ chỉ định: {first.DoctorName}", 9F, FontStyle.Regular, textMuted, 78, 48, 450, 22));
-            card.Controls.Add(CreateLabel(first.RequestDate.ToString("dd/MM/yyyy HH:mm"), 8.5F, FontStyle.Regular, textMuted, card.Width - 250, 24, 220, 22, ContentAlignment.MiddleRight));
-
-            // Details section containing the list of services in this order group
-            var detail = new RoundedPanel
+            foreach (var req in requests)
             {
-                BorderColor = Color.FromArgb(243, 244, 246),
-                CornerRadius = 8,
-                FillColor = Color.FromArgb(249, 250, 251),
-                Location = new Point(26, 88),
-                Size = new Size(card.Width - 52, requests.Count * 56)
-            };
-
-            for (int i = 0; i < requests.Count; i++)
-            {
-                var req = requests[i];
-                int y = i * 56;
-
-                if (i > 0)
+                var row = new ucTechnicianRequestServiceRow();
+                row.Configure(req.ServiceType, req.RequestNote, req.Priority, req.Status);
+                row.ViewClicked += (s, ev) => NavigateTo(TechnicianViewTarget.Records, req.RequestID);
+                row.ActionClicked += (s, ev) =>
                 {
-                    var line = new Panel
+                    try
                     {
-                        BackColor = Color.FromArgb(229, 231, 235),
-                        Location = new Point(16, y),
-                        Size = new Size(detail.Width - 32, 1)
-                    };
-                    detail.Controls.Add(line);
-                }
-
-                // Service Name
-                detail.Controls.Add(CreateLabel(req.ServiceType, 9.5F, FontStyle.Bold, primary, 16, y + 14, 240, 24));
-
-                // Notes / Comments
-                string noteText = string.IsNullOrEmpty(req.RequestNote) ? "Không có ghi chú" : req.RequestNote;
-                detail.Controls.Add(CreateLabel(noteText, 8.5F, FontStyle.Regular, textMuted, 260, y + 16, 150, 20));
-
-                // Priority Badge
-                string priorityText = req.Priority;
-                Color priorityBack = Color.FromArgb(254, 226, 226);
-                Color priorityFore = Color.FromArgb(185, 28, 28);
-                if (priorityText == "Thường")
-                {
-                    priorityBack = Color.FromArgb(243, 244, 246);
-                    priorityFore = Color.FromArgb(75, 85, 99);
-                }
-                detail.Controls.Add(CreateBadge(priorityText, priorityBack, priorityFore, detail.Width - 280, y + 14, 76, 26));
-
-                // Status Badge
-                Color statusBack = Color.FromArgb(254, 249, 195);
-                Color statusFore = Color.FromArgb(161, 98, 7);
-                if (req.Status == "Đang xử lý")
-                {
-                    statusBack = Color.FromArgb(239, 246, 255);
-                    statusFore = primary;
-                }
-                else if (req.Status == "Hoàn thành")
-                {
-                    statusBack = Color.FromArgb(220, 252, 231);
-                    statusFore = Color.FromArgb(34, 139, 74);
-                }
-                detail.Controls.Add(CreateBadge(req.Status, statusBack, statusFore, detail.Width - 190, y + 14, 86, 26));
-
-                // Action Button or Info
-                if (req.Status == "Hoàn thành")
-                {
-                    var btnView = CreateFlatButton("Xem", Color.FromArgb(34, 139, 74), Color.FromArgb(220, 252, 231), detail.Width - 90, y + 12, 76, 28);
-                    btnView.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-                    btnView.Click += (s, ev) => NavigateTo(TechnicianViewTarget.Records, req.RequestID);
-                    detail.Controls.Add(btnView);
-                }
-                else
-                {
-                    string actionText = req.Status == "Đang xử lý" ? "Xử lý" : "Tiến hành";
-                    var actionBtn = CreateFlatButton(actionText, Color.White, primary, detail.Width - 90, y + 12, 76, 28);
-                    actionBtn.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-                    actionBtn.Click += (s, ev) =>
+                        if (req.Status == "Chờ xử lý")
+                        {
+                            requestBUS.StartProcessing(req.RequestID);
+                            req.Status = "Đang xử lý";
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            if (req.Status == "Chờ xử lý")
-                            {
-                                requestBUS.StartProcessing(req.RequestID);
-                                req.Status = "Đang xử lý";
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine("Error StartProcessing: " + ex);
-                        }
+                        System.Diagnostics.Debug.WriteLine("Error StartProcessing: " + ex);
+                    }
 
-                        if (CMS.Core.Utils.ServiceTypeHelper.IsImagingService(req.ServiceType))
-                        {
-                            NavigateTo(TechnicianViewTarget.UploadMRI, req.RequestID);
-                        }
-                        else if (CMS.Core.Utils.ServiceTypeHelper.IsPdfUploadService(req.ServiceType))
-                        {
-                            NavigateTo(TechnicianViewTarget.UploadPDF, req.RequestID);
-                        }
-                        else
-                        {
-                            NavigateTo(TechnicianViewTarget.LabResult, req.RequestID);
-                        }
-                    };
-                    detail.Controls.Add(actionBtn);
-                }
+                    if (CMS.Core.Utils.ServiceTypeHelper.IsImagingService(req.ServiceType))
+                    {
+                        NavigateTo(TechnicianViewTarget.UploadMRI, req.RequestID);
+                    }
+                    else if (CMS.Core.Utils.ServiceTypeHelper.IsPdfUploadService(req.ServiceType))
+                    {
+                        NavigateTo(TechnicianViewTarget.UploadPDF, req.RequestID);
+                    }
+                    else
+                    {
+                        NavigateTo(TechnicianViewTarget.LabResult, req.RequestID);
+                    }
+                };
+                card.AddServiceRow(row);
             }
 
-            card.Controls.Add(detail);
             return card;
+        }
+
+        private int RequestCardWidth()
+        {
+            return Math.Max(720, flpRequests.ClientSize.Width - 12);
+        }
+
+        private void ResizeRequestCards()
+        {
+            int width = RequestCardWidth();
+            foreach (Control card in flpRequests.Controls)
+            {
+                card.Width = width;
+            }
         }
 
         private async void BtnSyncCloud_Click(object sender, EventArgs e)

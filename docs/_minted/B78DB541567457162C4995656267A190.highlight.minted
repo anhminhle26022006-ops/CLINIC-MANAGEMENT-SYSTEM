@@ -1,0 +1,20 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{button2}\PYG{p}{.}\PYG{n}{Enabled}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{n}{Cursor}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{Cursors}\PYG{p}{.}\PYG{n}{WaitCursor}\PYG{p}{;}
+\PYG{n}{SetPaymentStatus}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Dang tao link thanh toan...\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{Color}\PYG{p}{.}\PYG{n}{DimGray}\PYG{p}{);}
+
+\PYG{k}{try}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{await}\PYG{+w}{ }\PYG{n}{CreatePaymentAsync}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{orderCode}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{amount}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{description}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{buyerName}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{cancellationToken}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\PYG{k}{finally}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{Cursor}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{Cursors}\PYG{p}{.}\PYG{n}{Default}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{button2}\PYG{p}{.}\PYG{n}{Enabled}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{true}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

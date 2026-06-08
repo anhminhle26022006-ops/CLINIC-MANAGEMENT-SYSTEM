@@ -1,0 +1,21 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{selectedDepartmentId}\PYG{p}{;}
+\PYG{k}{private}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{selectedDoctorId}\PYG{p}{;}
+\PYG{k}{private}\PYG{+w}{ }\PYG{n}{DateTime}\PYG{+w}{ }\PYG{n}{selectedDate}\PYG{p}{;}
+\PYG{k}{private}\PYG{+w}{ }\PYG{n}{TimeSpan}\PYG{+w}{ }\PYG{n}{selectedStartTime}\PYG{p}{;}
+
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{Department\PYGZus{}Click}\PYG{p}{(}\PYG{k+kt}{object}\PYG{+w}{ }\PYG{n}{sender}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{EventArgs}\PYG{+w}{ }\PYG{n}{e}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{selectedDepartmentId}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{int}\PYG{p}{)((}\PYG{n}{Control}\PYG{p}{)}\PYG{n}{sender}\PYG{p}{).}\PYG{n}{Tag}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{selectedDoctorId}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{flpDoctors}\PYG{p}{.}\PYG{n}{Controls}\PYG{p}{.}\PYG{n}{Clear}\PYG{p}{();}
+\PYG{+w}{    }\PYG{n}{flpTimeSlots}\PYG{p}{.}\PYG{n}{Controls}\PYG{p}{.}\PYG{n}{Clear}\PYG{p}{();}
+\PYG{+w}{    }\PYG{n}{LoadDoctorsByDepartment}\PYG{p}{(}\PYG{n}{selectedDepartmentId}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{TimeSlot\PYGZus{}Click}\PYG{p}{(}\PYG{k+kt}{object}\PYG{+w}{ }\PYG{n}{sender}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{EventArgs}\PYG{+w}{ }\PYG{n}{e}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{selectedStartTime}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{TimeSpan}\PYG{p}{)((}\PYG{n}{Control}\PYG{p}{)}\PYG{n}{sender}\PYG{p}{).}\PYG{n}{Tag}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{btnConfirmAppointment}\PYG{p}{.}\PYG{n}{Enabled}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{selectedDoctorId}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

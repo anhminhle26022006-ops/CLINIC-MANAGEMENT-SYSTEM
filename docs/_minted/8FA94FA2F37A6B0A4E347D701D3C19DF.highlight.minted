@@ -1,0 +1,29 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{n}{AppointmentDTO}\PYG{+w}{ }\PYG{n+nf}{BuildAppointmentDto}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{AppointmentDTO}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{PatientID}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{selectedPatientId}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{DoctorID}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{selectedDoctorId}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{DepartmentID}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{selectedDepartmentId}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{AppointmentDate}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{selectedDate}\PYG{p}{.}\PYG{n}{Date}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{StartTime}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{selectedStartTime}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{Status}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{AppointmentStatus}\PYG{p}{.}\PYG{n}{Pending}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{CreatedBy}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{UserSession}\PYG{p}{.}\PYG{n}{UserID}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{};}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{btnConfirmAppointment\PYGZus{}Click}\PYG{p}{(}\PYG{k+kt}{object}\PYG{+w}{ }\PYG{n}{sender}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{EventArgs}\PYG{+w}{ }\PYG{n}{e}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{AppointmentDTO}\PYG{+w}{ }\PYG{n}{dto}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{BuildAppointmentDto}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{!}\PYG{n}{appointmentBUS}\PYG{p}{.}\PYG{n}{CreateAppointment}\PYG{p}{(}\PYG{n}{dto}\PYG{p}{))}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{MessageBox}\PYG{p}{.}\PYG{n}{Show}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Khong the tao lich hen\PYGZdq{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{MessageBox}\PYG{p}{.}\PYG{n}{Show}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Tao lich hen thanh cong\PYGZdq{}}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{ReloadTodayAppointments}\PYG{p}{();}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

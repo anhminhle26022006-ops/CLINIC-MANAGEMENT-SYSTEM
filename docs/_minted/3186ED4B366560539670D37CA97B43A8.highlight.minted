@@ -1,0 +1,20 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{n}{LoginResult}\PYG{+w}{ }\PYG{n+nf}{Login}\PYG{p}{(}\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{username}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{password}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{username}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{||}
+\PYG{+w}{        }\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{password}\PYG{p}{))}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{LoginResult}\PYG{p}{.}\PYG{n}{Fail}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Thieu ten dang nhap hoac mat khau\PYGZdq{}}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{UserDTO}\PYG{+w}{ }\PYG{n}{user}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{userDAL}\PYG{p}{.}\PYG{n}{GetByUsername}\PYG{p}{(}\PYG{n}{username}\PYG{p}{.}\PYG{n}{Trim}\PYG{p}{());}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{user}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{k}{null}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{o}{!}\PYG{n}{PasswordHasher}\PYG{p}{.}\PYG{n}{Verify}\PYG{p}{(}\PYG{n}{password}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{user}\PYG{p}{.}\PYG{n}{PasswordHash}\PYG{p}{))}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{LoginResult}\PYG{p}{.}\PYG{n}{Fail}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Thong tin dang nhap khong hop le\PYGZdq{}}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{normalizedRole}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RoleNormalizer}\PYG{p}{.}\PYG{n}{Normalize}\PYG{p}{(}\PYG{n}{user}\PYG{p}{.}\PYG{n}{RoleName}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{UserSession}\PYG{p}{.}\PYG{n}{SetCurrent}\PYG{p}{(}\PYG{n}{user}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{normalizedRole}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{LoginResult}\PYG{p}{.}\PYG{n}{Success}\PYG{p}{(}\PYG{n}{user}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

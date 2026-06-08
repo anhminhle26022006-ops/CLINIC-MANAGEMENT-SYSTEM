@@ -1,0 +1,12 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{LoadContentView}\PYG{p}{(}\PYG{n}{UserControl}\PYG{+w}{ }\PYG{n}{view}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{contentPanel}\PYG{p}{.}\PYG{n}{SuspendLayout}\PYG{p}{();}
+\PYG{+w}{    }\PYG{n}{contentPanel}\PYG{p}{.}\PYG{n}{Controls}\PYG{p}{.}\PYG{n}{Clear}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{n}{view}\PYG{p}{.}\PYG{n}{Dock}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DockStyle}\PYG{p}{.}\PYG{n}{Fill}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{contentPanel}\PYG{p}{.}\PYG{n}{Controls}\PYG{p}{.}\PYG{n}{Add}\PYG{p}{(}\PYG{n}{view}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{contentPanel}\PYG{p}{.}\PYG{n}{ResumeLayout}\PYG{p}{();}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

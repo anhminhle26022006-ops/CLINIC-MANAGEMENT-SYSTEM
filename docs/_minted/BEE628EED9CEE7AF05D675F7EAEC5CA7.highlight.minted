@@ -1,0 +1,7 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{UserSession}\PYG{p}{.}\PYG{n}{Login}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{user}\PYG{p}{.}\PYG{n}{UserID}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{user}\PYG{p}{.}\PYG{n}{EmployeeID}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{RoleNormalizer}\PYG{p}{.}\PYG{n}{Normalize}\PYG{p}{(}\PYG{n}{user}\PYG{p}{.}\PYG{n}{Role}\PYG{p}{),}
+\PYG{+w}{    }\PYG{n}{user}\PYG{p}{.}\PYG{n}{DepartmentName}\PYG{p}{);}
+\end{MintedVerbatim}

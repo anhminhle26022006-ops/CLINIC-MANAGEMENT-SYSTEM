@@ -1,0 +1,125 @@
+\babel@toc {vietnamese}{}\relax 
+\contentsline {section}{TÓM TẮT}{}{section*.1}%
+\contentsline {section}{LỜI CẢM ƠN}{}{section*.2}%
+\contentsline {section}{DANH MỤC THUẬT NGỮ VÀ KÝ HIỆU}{}{section*.3}%
+\contentsline {section}{\numberline {1}Mở đầu}{1}{section.4}%
+\contentsline {subsection}{\numberline {1.1}Lý do chọn đề tài}{1}{subsection.5}%
+\contentsline {subsection}{\numberline {1.2}Mục tiêu nghiên cứu}{1}{subsection.6}%
+\contentsline {subsection}{\numberline {1.3}Phạm vi đề tài}{2}{subsection.7}%
+\contentsline {subsection}{\numberline {1.4}Phương pháp thực hiện}{2}{subsection.8}%
+\contentsline {section}{\numberline {2}Cơ sở lý thuyết và Công nghệ sử dụng}{2}{section.14}%
+\contentsline {subsection}{\numberline {2.1}Nền tảng lập trình C\# và Windows Forms}{2}{subsection.15}%
+\contentsline {subsection}{\numberline {2.2}Các kỹ thuật WinForms được áp dụng trong đồ án}{3}{subsection.16}%
+\contentsline {subsubsection}{\numberline {2.2.1}Lập trình hướng sự kiện}{3}{subsubsection.17}%
+\contentsline {subsubsection}{\numberline {2.2.2}Partial class và Designer}{4}{subsubsection.20}%
+\contentsline {subsubsection}{\numberline {2.2.3}Form, UserControl và mô hình màn hình con}{4}{subsubsection.21}%
+\contentsline {subsubsection}{\numberline {2.2.4}Dock, Anchor và bố cục co giãn}{5}{subsubsection.24}%
+\contentsline {subsubsection}{\numberline {2.2.5}DataGridView và binding dữ liệu}{5}{subsubsection.25}%
+\contentsline {subsubsection}{\numberline {2.2.6}Form modal và hộp thoại nghiệp vụ}{6}{subsubsection.28}%
+\contentsline {subsubsection}{\numberline {2.2.7}Custom control và card nghiệp vụ}{6}{subsubsection.31}%
+\contentsline {subsection}{\numberline {2.3}Mô hình điều hướng đa vai trò trong WinForms}{7}{subsection.32}%
+\contentsline {subsection}{\numberline {2.4}Thiết kế trải nghiệm Desktop theo từng vai trò}{7}{subsection.37}%
+\contentsline {subsection}{\numberline {2.5}Mô hình kiến trúc nhiều lớp}{8}{subsection.38}%
+\contentsline {subsection}{\numberline {2.6}Tầng DTO, BUS và DAL}{9}{subsection.42}%
+\contentsline {subsection}{\numberline {2.7}ADO.NET và SQL Server}{9}{subsection.43}%
+\contentsline {subsection}{\numberline {2.8}Entity Framework và định hướng ORM}{10}{subsection.46}%
+\contentsline {subsubsection}{\numberline {2.8.1}Định hướng thiết kế DAL bằng Entity Framework}{10}{subsubsection.47}%
+\contentsline {subsection}{\numberline {2.9}API, Supabase, SheetDB và PayOS}{11}{subsection.52}%
+\contentsline {subsubsection}{\numberline {2.9.1}Vai trò của ứng dụng trung gian trong tích hợp API}{12}{subsubsection.53}%
+\contentsline {subsubsection}{\numberline {2.9.2}Mô hình dữ liệu SheetDB và Supabase}{12}{subsubsection.54}%
+\contentsline {subsubsection}{\numberline {2.9.3}Luồng đồng bộ Supabase, SheetDB và SQL Server}{13}{subsubsection.57}%
+\contentsline {subsubsection}{\numberline {2.9.4}Đồng bộ request cận lâm sàng từ Supabase}{15}{subsubsection.69}%
+\contentsline {subsubsection}{\numberline {2.9.5}Luồng PayOS, VietQR, MoMo QR và webhook}{15}{subsubsection.70}%
+\contentsline {section}{\numberline {3}Phân tích và Thiết kế hệ thống}{17}{section.85}%
+\contentsline {subsection}{\numberline {3.1}Tác nhân sử dụng hệ thống}{17}{subsection.86}%
+\contentsline {subsection}{\numberline {3.2}Yêu cầu chức năng}{17}{subsection.87}%
+\contentsline {subsection}{\numberline {3.3}Đặc tả use case chính}{18}{subsection.88}%
+\contentsline {subsubsection}{\numberline {3.3.1}UC-01: Đăng nhập hệ thống}{18}{subsubsection.89}%
+\contentsline {subsubsection}{\numberline {3.3.2}UC-02: Tạo lịch hẹn khám}{19}{subsubsection.90}%
+\contentsline {subsubsection}{\numberline {3.3.3}UC-03: Tiếp nhận bệnh nhân và đưa vào hàng chờ}{19}{subsubsection.91}%
+\contentsline {subsubsection}{\numberline {3.3.4}UC-04: Khám bệnh và cập nhật ERM}{20}{subsubsection.92}%
+\contentsline {subsubsection}{\numberline {3.3.5}UC-05: Xử lý yêu cầu xét nghiệm hoặc hình ảnh}{20}{subsubsection.93}%
+\contentsline {subsubsection}{\numberline {3.3.6}UC-06: Cấp phát thuốc và thanh toán}{21}{subsubsection.94}%
+\contentsline {subsection}{\numberline {3.4}Quy trình nghiệp vụ tổng quát}{21}{subsection.95}%
+\contentsline {subsection}{\numberline {3.5}Yêu cầu phi chức năng}{22}{subsection.104}%
+\contentsline {subsection}{\numberline {3.6}Thiết kế cơ sở dữ liệu}{22}{subsection.105}%
+\contentsline {subsection}{\numberline {3.7}Quan hệ dữ liệu}{23}{subsection.106}%
+\contentsline {subsection}{\numberline {3.8}Thiết kế từ điển dữ liệu tiêu biểu}{23}{subsection.109}%
+\contentsline {subsubsection}{\numberline {3.8.1}Nhóm bảng phân quyền và nhân sự}{24}{subsubsection.110}%
+\contentsline {subsubsection}{\numberline {3.8.2}Nhóm bảng bệnh nhân, lịch hẹn và hàng chờ}{24}{subsubsection.111}%
+\contentsline {subsubsection}{\numberline {3.8.3}Nhóm bảng khám bệnh, cận lâm sàng và hồ sơ}{25}{subsubsection.112}%
+\contentsline {subsubsection}{\numberline {3.8.4}Nhóm bảng dược và thanh toán}{26}{subsubsection.113}%
+\contentsline {section}{\numberline {4}Xây dựng và Cài đặt chương trình}{26}{section.114}%
+\contentsline {subsection}{\numberline {4.1}Tổ chức project và kiến trúc triển khai}{26}{subsection.115}%
+\contentsline {subsubsection}{\numberline {4.1.1}Tổ chức project trong Visual Studio}{26}{subsubsection.116}%
+\contentsline {subsubsection}{\numberline {4.1.2}Phân tích cấu trúc thư mục WinForms}{27}{subsubsection.117}%
+\contentsline {subsubsection}{\numberline {4.1.3}Quy ước thiết kế form và control}{28}{subsubsection.118}%
+\contentsline {subsubsection}{\numberline {4.1.4}Luồng dữ liệu từ UI đến SQL Server}{29}{subsubsection.119}%
+\contentsline {subsubsection}{\numberline {4.1.5}Cài đặt vòng đời ứng dụng WinForms}{30}{subsubsection.122}%
+\contentsline {subsubsection}{\numberline {4.1.6}Cài đặt dashboard shell và vùng nội dung động}{30}{subsubsection.125}%
+\contentsline {subsubsection}{\numberline {4.1.7}Cài đặt UserControl theo phân hệ}{31}{subsubsection.128}%
+\contentsline {subsubsection}{\numberline {4.1.8}Cài đặt DataGridView cho nghiệp vụ quản lý}{32}{subsubsection.131}%
+\contentsline {subsubsection}{\numberline {4.1.9}Cài đặt FlowLayoutPanel và card động}{33}{subsubsection.134}%
+\contentsline {subsubsection}{\numberline {4.1.10}Cài đặt form modal, OpenFileDialog và MessageBox}{33}{subsubsection.137}%
+\contentsline {subsubsection}{\numberline {4.1.11}Cài đặt bất đồng bộ cho API và thanh toán}{34}{subsubsection.140}%
+\contentsline {subsubsection}{\numberline {4.1.12}Quản lý session và truyền ngữ cảnh người dùng}{34}{subsubsection.143}%
+\contentsline {subsubsection}{\numberline {4.1.13}Cài đặt điểm khởi động và phân quyền}{34}{subsubsection.146}%
+\contentsline {subsection}{\numberline {4.2}Cài đặt các tầng DTO, DAL, BUS và Core}{35}{subsection.149}%
+\contentsline {subsubsection}{\numberline {4.2.1}Cài đặt tầng DTO}{35}{subsubsection.150}%
+\contentsline {subsubsection}{\numberline {4.2.2}Cài đặt tầng DAL bằng ADO.NET}{37}{subsubsection.155}%
+\contentsline {subsubsection}{\numberline {4.2.3}Cài đặt tầng DAL bằng Entity Framework theo hướng mở rộng}{39}{subsubsection.160}%
+\contentsline {paragraph}{Nguyên tắc tách ADO.NET và Entity Framework}{39}{paragraph*.161}%
+\contentsline {paragraph}{Cấu trúc Entity và DbContext dự kiến}{40}{paragraph*.162}%
+\contentsline {paragraph}{Repository EF và mapping sang DTO}{41}{paragraph*.167}%
+\contentsline {subsubsection}{\numberline {4.2.4}Cài đặt tầng BUS}{41}{subsubsection.170}%
+\contentsline {paragraph}{Cài đặt BUS đăng nhập và phân quyền}{43}{paragraph*.175}%
+\contentsline {paragraph}{Cài đặt BUS lịch hẹn, tiếp nhận và hàng chờ}{44}{paragraph*.178}%
+\contentsline {paragraph}{Cài đặt BUS thanh toán và cấp phát}{45}{paragraph*.179}%
+\contentsline {paragraph}{Cài đặt BUS kỹ thuật viên và hồ sơ cận lâm sàng}{45}{paragraph*.182}%
+\contentsline {subsubsection}{\numberline {4.2.5}Cài đặt tầng Core, Constants và Session}{46}{subsubsection.183}%
+\contentsline {subsection}{\numberline {4.3}Thiết kế giao diện người dùng}{47}{subsection.186}%
+\contentsline {subsubsection}{\numberline {4.3.1}Vai trò của Controller trong WinForms}{47}{subsubsection.187}%
+\contentsline {subsubsection}{\numberline {4.3.2}Thiết kế DataGridView trong màn hình thanh toán}{48}{subsubsection.190}%
+\contentsline {subsubsection}{\numberline {4.3.3}Thiết kế FlowLayoutPanel cho danh sách động}{49}{subsubsection.195}%
+\contentsline {subsubsection}{\numberline {4.3.4}Thiết kế UserControl dùng chung và kế thừa view base}{49}{subsubsection.203}%
+\contentsline {subsubsection}{\numberline {4.3.5}Thiết kế trạng thái nút và phản hồi người dùng}{50}{subsubsection.204}%
+\contentsline {subsubsection}{\numberline {4.3.6}Cài đặt main form shell theo vai trò}{50}{subsubsection.207}%
+\contentsline {subsubsection}{\numberline {4.3.7}Phân tách Designer và code-behind}{50}{subsubsection.210}%
+\contentsline {subsubsection}{\numberline {4.3.8}Giao diện đăng nhập}{51}{subsubsection.211}%
+\contentsline {subsubsection}{\numberline {4.3.9}Giao diện lễ tân}{52}{subsubsection.214}%
+\contentsline {subsubsection}{\numberline {4.3.10}Giao diện bác sĩ và ERM}{53}{subsubsection.217}%
+\contentsline {subsubsection}{\numberline {4.3.11}Giao diện điều dưỡng}{54}{subsubsection.220}%
+\contentsline {subsubsection}{\numberline {4.3.12}Giao diện kỹ thuật viên}{55}{subsubsection.223}%
+\contentsline {subsubsection}{\numberline {4.3.13}Giao diện dược sĩ}{56}{subsubsection.228}%
+\contentsline {subsubsection}{\numberline {4.3.14}Cài đặt lịch làm việc dùng chung}{56}{subsubsection.231}%
+\contentsline {subsection}{\numberline {4.4}Tích hợp tính năng phụ trợ}{57}{subsection.232}%
+\contentsline {subsubsection}{\numberline {4.4.1}Đồng bộ API Supabase và SheetDB}{57}{subsubsection.233}%
+\contentsline {subsubsection}{\numberline {4.4.2}Kéo request xét nghiệm và hình ảnh về màn hình kỹ thuật viên}{59}{subsubsection.238}%
+\contentsline {subsubsection}{\numberline {4.4.3}Tích hợp thanh toán PayOS}{59}{subsubsection.241}%
+\contentsline {subsection}{\numberline {4.5}Tổng hợp luồng cài đặt theo nghiệp vụ}{61}{subsection.244}%
+\contentsline {subsection}{\numberline {4.6}Phân rã chi tiết các luồng vận hành}{62}{subsection.245}%
+\contentsline {subsubsection}{\numberline {4.6.1}Luồng đăng nhập và mở dashboard}{62}{subsubsection.246}%
+\contentsline {subsubsection}{\numberline {4.6.2}Luồng tạo lịch hẹn}{64}{subsubsection.249}%
+\contentsline {subsubsection}{\numberline {4.6.3}Luồng check-in và đưa bệnh nhân vào hàng chờ}{65}{subsubsection.252}%
+\contentsline {subsubsection}{\numberline {4.6.4}Luồng bác sĩ mở ERM và xử lý hồ sơ}{66}{subsubsection.255}%
+\contentsline {subsubsection}{\numberline {4.6.5}Luồng tạo chỉ định và kỹ thuật viên xử lý request}{67}{subsubsection.258}%
+\contentsline {subsubsection}{\numberline {4.6.6}Luồng cấp phát thuốc và cập nhật tồn kho}{68}{subsubsection.261}%
+\contentsline {subsubsection}{\numberline {4.6.7}Luồng đồng bộ Supabase, SheetDB và SQL Server}{69}{subsubsection.264}%
+\contentsline {subsubsection}{\numberline {4.6.8}Luồng PayOS, VietQR và cập nhật realtime}{70}{subsubsection.267}%
+\contentsline {subsection}{\numberline {4.7}Đánh giá kỹ thuật cài đặt trong chương xây dựng}{72}{subsection.270}%
+\contentsline {section}{\numberline {5}Kiểm thử và Giao diện kết quả}{72}{section.271}%
+\contentsline {subsection}{\numberline {5.1}Chiến lược kiểm thử}{72}{subsection.272}%
+\contentsline {subsection}{\numberline {5.2}Kiểm thử giao diện WinForms}{72}{subsection.273}%
+\contentsline {subsection}{\numberline {5.3}Kiểm thử chức năng}{73}{subsection.274}%
+\contentsline {subsection}{\numberline {5.4}Đánh giá ưu điểm}{74}{subsection.275}%
+\contentsline {subsection}{\numberline {5.5}Hạn chế}{74}{subsection.276}%
+\contentsline {section}{\numberline {6}Kết luận và Hướng phát triển}{75}{section.277}%
+\contentsline {subsection}{\numberline {6.1}Kết quả đạt được}{75}{subsection.278}%
+\contentsline {subsection}{\numberline {6.2}Hạn chế của phần mềm}{75}{subsection.279}%
+\contentsline {subsection}{\numberline {6.3}Hướng phát triển trong tương lai}{75}{subsection.280}%
+\contentsline {section}{Tài liệu tham khảo}{76}{section*.281}%
+\contentsline {section}{Phụ lục A. Hình ảnh}{77}{section*.282}%
+\contentsline {section}{Phụ lục B. Các thuật toán}{78}{section*.283}%
+\contentsline {section}{Phụ lục C. Bảng, biểu}{79}{section*.284}%
+\contentsline {section}{Bảng phân công nhiệm vụ}{81}{section*.285}%
+\contentsline {section}{Link đồ án}{81}{section*.286}%

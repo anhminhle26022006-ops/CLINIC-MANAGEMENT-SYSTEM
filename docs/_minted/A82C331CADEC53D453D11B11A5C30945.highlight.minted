@@ -1,0 +1,15 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{ClinicDbContext}\PYG{+w}{ }\PYG{p}{:}\PYG{+w}{ }\PYG{n}{DbContext}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{n}{DbSet}\PYG{o}{\PYGZlt{}}\PYG{n}{PatientEntity}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{Patients}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{k}{get}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{set}\PYG{p}{;}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{n}{DbSet}\PYG{o}{\PYGZlt{}}\PYG{n}{EmployeeEntity}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{Employees}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{k}{get}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{set}\PYG{p}{;}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{n}{DbSet}\PYG{o}{\PYGZlt{}}\PYG{n}{MedicineEntity}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{Medicines}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{k}{get}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{set}\PYG{p}{;}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{n}{DbSet}\PYG{o}{\PYGZlt{}}\PYG{n}{AppointmentEntity}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{Appointments}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{k}{get}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{set}\PYG{p}{;}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k}{protected}\PYG{+w}{ }\PYG{k}{override}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{OnConfiguring}\PYG{p}{(}\PYG{n}{DbContextOptionsBuilder}\PYG{+w}{ }\PYG{n}{options}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{options}\PYG{p}{.}\PYG{n}{UseSqlServer}\PYG{p}{(}
+\PYG{+w}{            }\PYG{n}{ConfigurationManager}\PYG{p}{.}\PYG{n}{ConnectionStrings}\PYG{p}{[}\PYG{l+s}{\PYGZdq{}ClinicDB\PYGZdq{}}\PYG{p}{].}\PYG{n}{ConnectionString}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

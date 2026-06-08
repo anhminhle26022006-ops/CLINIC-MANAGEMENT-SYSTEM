@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -33,6 +33,12 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Forms\AddMedicineForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\AddMedicineForm.Designer.cs">
+      <DependentUpon>AddMedicineForm.cs</DependentUpon>
     </Compile>
     <Compile Update="Mainforms\PharmacyMainform.cs">
       <SubType>Form</SubType>

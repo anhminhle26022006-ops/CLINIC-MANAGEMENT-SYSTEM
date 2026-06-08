@@ -1,0 +1,17 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n+nf}{Normalize}\PYG{p}{(}\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{role}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{role}\PYG{p}{))}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{Empty}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{role}\PYG{p}{.}\PYG{n}{Equals}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Bác sĩ\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{StringComparison}\PYG{p}{.}\PYG{n}{OrdinalIgnoreCase}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{||}
+\PYG{+w}{        }\PYG{n}{role}\PYG{p}{.}\PYG{n}{Equals}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Bac si\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{StringComparison}\PYG{p}{.}\PYG{n}{OrdinalIgnoreCase}\PYG{p}{))}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Doctor}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{role}\PYG{p}{.}\PYG{n}{Trim}\PYG{p}{();}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

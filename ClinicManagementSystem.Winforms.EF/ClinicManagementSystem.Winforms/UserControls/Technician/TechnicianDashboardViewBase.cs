@@ -188,16 +188,19 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             FontStyle style = header ? FontStyle.Bold : FontStyle.Regular;
             if (header)
             {
-                var back = new Panel { BackColor = Color.FromArgb(249, 250, 251), Location = new Point(0, y - 12), Size = new Size(list.Width, 44) };
+                var back = new Panel { BackColor = Color.FromArgb(249, 250, 251), Location = new Point(0, y - 12), Size = new Size(list.Width, 52) };
+                back.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 list.Controls.Add(back);
             }
 
-            list.Controls.Add(CreateLabel(col1, 9F, style, fore, 18, y, 160, 24));
-            list.Controls.Add(CreateLabel(col2, 9F, style, fore, 200, y, 90, 24));
-            list.Controls.Add(CreateLabel(col3, 9F, style, fore, 310, y, 180, 24));
-            list.Controls.Add(CreateLabel(col4, 9F, style, fore, 510, y, 160, 24));
+            list.Controls.Add(CreateLabel(col1, 9F, style, fore, 18, y, 160, 30));
+            list.Controls.Add(CreateLabel(col2, 9F, style, fore, 200, y, 90, 30));
+            list.Controls.Add(CreateLabel(col3, 9F, style, fore, 310, y, 180, 30));
+            list.Controls.Add(CreateLabel(col4, 9F, style, fore, 510, y, 160, 30));
             bool waiting = col5.Contains("Chờ") || col5.Contains("Cho");
-            list.Controls.Add(CreateBadge(col5, waiting ? Color.FromArgb(254, 249, 195) : Color.FromArgb(220, 252, 231), waiting ? Color.FromArgb(161, 98, 7) : Color.FromArgb(34, 139, 74), list.Width - 140, y - 2, 110, 28));
+            var badge = CreateBadge(col5, waiting ? Color.FromArgb(254, 249, 195) : Color.FromArgb(220, 252, 231), waiting ? Color.FromArgb(161, 98, 7) : Color.FromArgb(34, 139, 74), list.Width - 158, y, 124, 30);
+            badge.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            list.Controls.Add(badge);
         }
 
         protected Label CreateLabel(string text, float size, FontStyle style, Color color, int x, int y, int width, int height, ContentAlignment align = ContentAlignment.MiddleLeft)
@@ -211,7 +214,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 Size = new Size(width, height),
                 Text = text,
                 TextAlign = align,
-                BackColor = Color.Transparent
+                BackColor = Color.Transparent,
+                AutoEllipsis = true
             };
         }
 
@@ -277,7 +281,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 Location = new Point(x, y),
                 Size = new Size(width, height),
                 Text = text,
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = ContentAlignment.MiddleCenter,
+                AutoEllipsis = true
             };
         }
 
@@ -378,20 +383,16 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             return card;
         }
 
-        protected RoundedPanel CreateSmallPatient(string name, string service, string doctor, string badge, Color badgeBack, Color badgeFore, int y)
+        protected Control CreateSmallPatient(string name, string service, string doctor, string badge, Color badgeBack, Color badgeFore, int y)
         {
-            var row = new RoundedPanel
+            var row = new ucTechnicianQueueRow
             {
-                BorderColor = Color.FromArgb(229, 231, 235),
-                CornerRadius = 8,
-                FillColor = Color.FromArgb(249, 250, 251),
                 Location = new Point(18, y),
-                Size = new Size(PageWidth() / 2 - 58, 98)
+                Margin = new Padding(0, 0, 0, 10),
+                MinimumSize = new Size(260, 112),
+                Width = PageWidth() / 2 - 58
             };
-            row.Controls.Add(CreateLabel(name, 10F, FontStyle.Bold, textMain, 14, 16, 220, 22));
-            row.Controls.Add(CreateLabel(service, 9F, FontStyle.Regular, textMuted, 14, 40, 220, 20));
-            row.Controls.Add(CreateLabel(doctor, 8.5F, FontStyle.Regular, textMuted, 14, 70, 240, 20));
-            row.Controls.Add(CreateBadge(badge, badgeBack, badgeFore, row.Width - 108, 34, 86, 28));
+            row.Configure(name, service, doctor, badge, badgeBack, badgeFore);
             return row;
         }
 

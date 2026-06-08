@@ -1,0 +1,14 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{BindLabResults}\PYG{p}{(}\PYG{n}{IEnumerable}\PYG{o}{\PYGZlt{}}\PYG{n}{LabResultDTO}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{results}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{flowLayoutPanel1}\PYG{p}{.}\PYG{n}{Controls}\PYG{p}{.}\PYG{n}{Clear}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k}{foreach}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{LabResultDTO}\PYG{+w}{ }\PYG{n}{result}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{n}{results}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{card}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{ucLabCard}\PYG{p}{();}
+\PYG{+w}{        }\PYG{n}{card}\PYG{p}{.}\PYG{n}{Bind}\PYG{p}{(}\PYG{n}{result}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{card}\PYG{p}{.}\PYG{n}{Dock}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DockStyle}\PYG{p}{.}\PYG{n}{Top}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{flowLayoutPanel1}\PYG{p}{.}\PYG{n}{Controls}\PYG{p}{.}\PYG{n}{Add}\PYG{p}{(}\PYG{n}{card}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}
