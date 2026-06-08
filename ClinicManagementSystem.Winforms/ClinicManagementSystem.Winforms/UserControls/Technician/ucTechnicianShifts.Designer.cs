@@ -15,859 +15,890 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void InitializeComponent()
         {
-            this.viewHostPanel = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblTitle = new System.Windows.Forms.Label();
-            this.lblSubtitle = new System.Windows.Forms.Label();
-            this.btnReg = new System.Windows.Forms.Button();
-            this.pnlStatsGrid = new System.Windows.Forms.TableLayoutPanel();
-            this.pnlStatTotal = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblStatTotalNum = new System.Windows.Forms.Label();
-            this.lblStatTotalTitle = new System.Windows.Forms.Label();
-            this.pnlStatActive = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblStatActiveNum = new System.Windows.Forms.Label();
-            this.lblStatActiveTitle = new System.Windows.Forms.Label();
-            this.pnlStatHours = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblStatHoursNum = new System.Windows.Forms.Label();
-            this.lblStatHoursTitle = new System.Windows.Forms.Label();
-            this.pnlCalendar = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblCalendarTitle = new System.Windows.Forms.Label();
-            this.pnlDaysContainer = new System.Windows.Forms.Panel();
-            this.pnlDay1 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblDayDate1 = new System.Windows.Forms.Label();
-            this.lblDayName1 = new System.Windows.Forms.Label();
-            this.btnShift1 = new System.Windows.Forms.Button();
-            this.lblRoom1 = new System.Windows.Forms.Label();
-            this.lblDept1 = new System.Windows.Forms.Label();
-            this.pnlDay2 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblDayDate2 = new System.Windows.Forms.Label();
-            this.lblDayName2 = new System.Windows.Forms.Label();
-            this.btnShift2 = new System.Windows.Forms.Button();
-            this.lblRoom2 = new System.Windows.Forms.Label();
-            this.lblDept2 = new System.Windows.Forms.Label();
-            this.pnlDay3 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblDayDate3 = new System.Windows.Forms.Label();
-            this.lblDayName3 = new System.Windows.Forms.Label();
-            this.btnShift3 = new System.Windows.Forms.Button();
-            this.lblRoom3 = new System.Windows.Forms.Label();
-            this.lblDept3 = new System.Windows.Forms.Label();
-            this.pnlDay4 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblDayDate4 = new System.Windows.Forms.Label();
-            this.lblDayName4 = new System.Windows.Forms.Label();
-            this.btnShift4 = new System.Windows.Forms.Button();
-            this.lblRoom4 = new System.Windows.Forms.Label();
-            this.lblDept4 = new System.Windows.Forms.Label();
-            this.pnlDay5 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblDayDate5 = new System.Windows.Forms.Label();
-            this.lblDayName5 = new System.Windows.Forms.Label();
-            this.btnShift5 = new System.Windows.Forms.Button();
-            this.lblRoom5 = new System.Windows.Forms.Label();
-            this.lblDept5 = new System.Windows.Forms.Label();
-            this.pnlDay6 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblDayDate6 = new System.Windows.Forms.Label();
-            this.lblDayName6 = new System.Windows.Forms.Label();
-            this.btnShift6 = new System.Windows.Forms.Button();
-            this.lblRoom6 = new System.Windows.Forms.Label();
-            this.lblDept6 = new System.Windows.Forms.Label();
-            this.pnlDay7 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblDayDate7 = new System.Windows.Forms.Label();
-            this.lblDayName7 = new System.Windows.Forms.Label();
-            this.btnShift7 = new System.Windows.Forms.Button();
-            this.lblRoom7 = new System.Windows.Forms.Label();
-            this.lblDept7 = new System.Windows.Forms.Label();
-            this.pnlListPanel = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
-            this.lblListTitle = new System.Windows.Forms.Label();
-            this.flpShiftsTable = new System.Windows.Forms.FlowLayoutPanel();
-            this.viewHostPanel.SuspendLayout();
-            this.pnlStatsGrid.SuspendLayout();
-            this.pnlStatTotal.SuspendLayout();
-            this.pnlStatActive.SuspendLayout();
-            this.pnlStatHours.SuspendLayout();
-            this.pnlCalendar.SuspendLayout();
-            this.pnlDaysContainer.SuspendLayout();
-            this.pnlDay1.SuspendLayout();
-            this.pnlDay2.SuspendLayout();
-            this.pnlDay3.SuspendLayout();
-            this.pnlDay4.SuspendLayout();
-            this.pnlDay5.SuspendLayout();
-            this.pnlDay6.SuspendLayout();
-            this.pnlDay7.SuspendLayout();
-            this.pnlListPanel.SuspendLayout();
-            this.SuspendLayout();
+            viewHostPanel = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            pnlListPanel = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            flpShiftsTable = new FlowLayoutPanel();
+            lblListTitle = new Label();
+            pnlCalendar = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            pnlDaysContainer = new Panel();
+            pnlDay7 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            lblDept7 = new Label();
+            lblRoom7 = new Label();
+            btnShift7 = new Button();
+            lblDayName7 = new Label();
+            lblDayDate7 = new Label();
+            pnlDay6 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            lblDept6 = new Label();
+            lblRoom6 = new Label();
+            btnShift6 = new Button();
+            lblDayName6 = new Label();
+            lblDayDate6 = new Label();
+            pnlDay5 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            lblDept5 = new Label();
+            lblRoom5 = new Label();
+            btnShift5 = new Button();
+            lblDayName5 = new Label();
+            lblDayDate5 = new Label();
+            pnlDay4 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            lblDept4 = new Label();
+            lblRoom4 = new Label();
+            btnShift4 = new Button();
+            lblDayName4 = new Label();
+            lblDayDate4 = new Label();
+            pnlDay3 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            lblDept3 = new Label();
+            lblRoom3 = new Label();
+            btnShift3 = new Button();
+            lblDayName3 = new Label();
+            lblDayDate3 = new Label();
+            pnlDay2 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            lblDept2 = new Label();
+            lblRoom2 = new Label();
+            btnShift2 = new Button();
+            lblDayName2 = new Label();
+            lblDayDate2 = new Label();
+            pnlDay1 = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            lblDept1 = new Label();
+            lblRoom1 = new Label();
+            btnShift1 = new Button();
+            lblDayName1 = new Label();
+            lblDayDate1 = new Label();
+            lblCalendarTitle = new Label();
+            pnlStatsGrid = new TableLayoutPanel();
+            pnlStatTotal = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            lblStatTotalNum = new Label();
+            lblStatTotalTitle = new Label();
+            pnlStatActive = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            lblStatActiveNum = new Label();
+            lblStatActiveTitle = new Label();
+            pnlStatHours = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
+            lblStatHoursNum = new Label();
+            lblStatHoursTitle = new Label();
+            btnReg = new Button();
+            lblSubtitle = new Label();
+            lblTitle = new Label();
+            viewHostPanel.SuspendLayout();
+            pnlListPanel.SuspendLayout();
+            pnlCalendar.SuspendLayout();
+            pnlDaysContainer.SuspendLayout();
+            pnlDay7.SuspendLayout();
+            pnlDay6.SuspendLayout();
+            pnlDay5.SuspendLayout();
+            pnlDay4.SuspendLayout();
+            pnlDay3.SuspendLayout();
+            pnlDay2.SuspendLayout();
+            pnlDay1.SuspendLayout();
+            pnlStatsGrid.SuspendLayout();
+            pnlStatTotal.SuspendLayout();
+            pnlStatActive.SuspendLayout();
+            pnlStatHours.SuspendLayout();
+            SuspendLayout();
             // 
             // viewHostPanel
             // 
-            this.viewHostPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.viewHostPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.viewHostPanel.Controls.Add(this.pnlListPanel);
-            this.viewHostPanel.Controls.Add(this.pnlCalendar);
-            this.viewHostPanel.Controls.Add(this.pnlStatsGrid);
-            this.viewHostPanel.Controls.Add(this.btnReg);
-            this.viewHostPanel.Controls.Add(this.lblSubtitle);
-            this.viewHostPanel.Controls.Add(this.lblTitle);
-            this.viewHostPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.viewHostPanel.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.viewHostPanel.Location = new System.Drawing.Point(0, 0);
-            this.viewHostPanel.Name = "viewHostPanel";
-            this.viewHostPanel.Size = new System.Drawing.Size(1244, 744);
-            this.viewHostPanel.TabIndex = 0;
-            // 
-            // lblTitle
-            // 
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblTitle.Location = new System.Drawing.Point(24, 24);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(400, 32);
-            this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Lịch Làm Việc";
-            // 
-            // lblSubtitle
-            // 
-            this.lblSubtitle.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblSubtitle.Location = new System.Drawing.Point(24, 56);
-            this.lblSubtitle.Name = "lblSubtitle";
-            this.lblSubtitle.Size = new System.Drawing.Size(500, 28);
-            this.lblSubtitle.TabIndex = 1;
-            this.lblSubtitle.Text = "Xem ca trực và phòng khám được phân công của Kỹ thuật viên";
-            // 
-            // btnReg
-            // 
-            this.btnReg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnReg.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(94)))), ((int)(((byte)(240)))));
-            this.btnReg.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnReg.FlatAppearance.BorderSize = 0;
-            this.btnReg.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnReg.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.btnReg.ForeColor = System.Drawing.Color.White;
-            this.btnReg.Location = new System.Drawing.Point(1040, 24);
-            this.btnReg.Name = "btnReg";
-            this.btnReg.Size = new System.Drawing.Size(180, 42);
-            this.btnReg.TabIndex = 2;
-            this.btnReg.Text = "Đăng ký ca mới";
-            this.btnReg.UseVisualStyleBackColor = false;
-            // 
-            // pnlStatsGrid
-            // 
-            this.pnlStatsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlStatsGrid.ColumnCount = 3;
-            this.pnlStatsGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.pnlStatsGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.pnlStatsGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.pnlStatsGrid.Controls.Add(this.pnlStatTotal, 0, 0);
-            this.pnlStatsGrid.Controls.Add(this.pnlStatActive, 1, 0);
-            this.pnlStatsGrid.Controls.Add(this.pnlStatHours, 2, 0);
-            this.pnlStatsGrid.Location = new System.Drawing.Point(24, 96);
-            this.pnlStatsGrid.Name = "pnlStatsGrid";
-            this.pnlStatsGrid.RowCount = 1;
-            this.pnlStatsGrid.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.pnlStatsGrid.Size = new System.Drawing.Size(1196, 110);
-            this.pnlStatsGrid.TabIndex = 3;
-            // 
-            // pnlStatTotal
-            // 
-            this.pnlStatTotal.BackColor = System.Drawing.Color.White;
-            this.pnlStatTotal.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlStatTotal.Controls.Add(this.lblStatTotalNum);
-            this.pnlStatTotal.Controls.Add(this.lblStatTotalTitle);
-            this.pnlStatTotal.CornerRadius = 8;
-            this.pnlStatTotal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlStatTotal.FillColor = System.Drawing.Color.White;
-            this.pnlStatTotal.Location = new System.Drawing.Point(0, 0);
-            this.pnlStatTotal.Margin = new System.Windows.Forms.Padding(0, 0, 14, 0);
-            this.pnlStatTotal.Name = "pnlStatTotal";
-            this.pnlStatTotal.Size = new System.Drawing.Size(384, 110);
-            this.pnlStatTotal.TabIndex = 0;
-            // 
-            // lblStatTotalNum
-            // 
-            this.lblStatTotalNum.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            this.lblStatTotalNum.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblStatTotalNum.Location = new System.Drawing.Point(92, 58);
-            this.lblStatTotalNum.Name = "lblStatTotalNum";
-            this.lblStatTotalNum.Size = new System.Drawing.Size(160, 34);
-            this.lblStatTotalNum.TabIndex = 1;
-            this.lblStatTotalNum.Text = "0";
-            // 
-            // lblStatTotalTitle
-            // 
-            this.lblStatTotalTitle.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblStatTotalTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblStatTotalTitle.Location = new System.Drawing.Point(92, 30);
-            this.lblStatTotalTitle.Name = "lblStatTotalTitle";
-            this.lblStatTotalTitle.Size = new System.Drawing.Size(210, 24);
-            this.lblStatTotalTitle.TabIndex = 0;
-            this.lblStatTotalTitle.Text = "Tổng ca đăng ký";
-            // 
-            // pnlStatActive
-            // 
-            this.pnlStatActive.BackColor = System.Drawing.Color.White;
-            this.pnlStatActive.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlStatActive.Controls.Add(this.lblStatActiveNum);
-            this.pnlStatActive.Controls.Add(this.lblStatActiveTitle);
-            this.pnlStatActive.CornerRadius = 8;
-            this.pnlStatActive.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlStatActive.FillColor = System.Drawing.Color.White;
-            this.pnlStatActive.Location = new System.Drawing.Point(398, 0);
-            this.pnlStatActive.Margin = new System.Windows.Forms.Padding(0, 0, 14, 0);
-            this.pnlStatActive.Name = "pnlStatActive";
-            this.pnlStatActive.Size = new System.Drawing.Size(384, 110);
-            this.pnlStatActive.TabIndex = 1;
-            // 
-            // lblStatActiveNum
-            // 
-            this.lblStatActiveNum.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            this.lblStatActiveNum.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblStatActiveNum.Location = new System.Drawing.Point(92, 58);
-            this.lblStatActiveNum.Name = "lblStatActiveNum";
-            this.lblStatActiveNum.Size = new System.Drawing.Size(160, 34);
-            this.lblStatActiveNum.TabIndex = 1;
-            this.lblStatActiveNum.Text = "1";
-            // 
-            // lblStatActiveTitle
-            // 
-            this.lblStatActiveTitle.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblStatActiveTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblStatActiveTitle.Location = new System.Drawing.Point(92, 30);
-            this.lblStatActiveTitle.Name = "lblStatActiveTitle";
-            this.lblStatActiveTitle.Size = new System.Drawing.Size(210, 24);
-            this.lblStatActiveTitle.TabIndex = 0;
-            this.lblStatActiveTitle.Text = "Ca đang trực";
-            // 
-            // pnlStatHours
-            // 
-            this.pnlStatHours.BackColor = System.Drawing.Color.White;
-            this.pnlStatHours.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlStatHours.Controls.Add(this.lblStatHoursNum);
-            this.pnlStatHours.Controls.Add(this.lblStatHoursTitle);
-            this.pnlStatHours.CornerRadius = 8;
-            this.pnlStatHours.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlStatHours.FillColor = System.Drawing.Color.White;
-            this.pnlStatHours.Location = new System.Drawing.Point(796, 0);
-            this.pnlStatHours.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlStatHours.Name = "pnlStatHours";
-            this.pnlStatHours.Size = new System.Drawing.Size(400, 110);
-            this.pnlStatHours.TabIndex = 2;
-            // 
-            // lblStatHoursNum
-            // 
-            this.lblStatHoursNum.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            this.lblStatHoursNum.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblStatHoursNum.Location = new System.Drawing.Point(92, 58);
-            this.lblStatHoursNum.Name = "lblStatHoursNum";
-            this.lblStatHoursNum.Size = new System.Drawing.Size(160, 34);
-            this.lblStatHoursNum.TabIndex = 1;
-            this.lblStatHoursNum.Text = "0h";
-            // 
-            // lblStatHoursTitle
-            // 
-            this.lblStatHoursTitle.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblStatHoursTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblStatHoursTitle.Location = new System.Drawing.Point(92, 30);
-            this.lblStatHoursTitle.Name = "lblStatHoursTitle";
-            this.lblStatHoursTitle.Size = new System.Drawing.Size(210, 24);
-            this.lblStatHoursTitle.TabIndex = 0;
-            this.lblStatHoursTitle.Text = "Giờ hoàn thành";
-            // 
-            // pnlCalendar
-            // 
-            this.pnlCalendar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlCalendar.BackColor = System.Drawing.Color.White;
-            this.pnlCalendar.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlCalendar.Controls.Add(this.pnlDaysContainer);
-            this.pnlCalendar.Controls.Add(this.lblCalendarTitle);
-            this.pnlCalendar.CornerRadius = 8;
-            this.pnlCalendar.FillColor = System.Drawing.Color.White;
-            this.pnlCalendar.Location = new System.Drawing.Point(24, 222);
-            this.pnlCalendar.Name = "pnlCalendar";
-            this.pnlCalendar.Size = new System.Drawing.Size(1196, 290);
-            this.pnlCalendar.TabIndex = 4;
-            // 
-            // lblCalendarTitle
-            // 
-            this.lblCalendarTitle.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
-            this.lblCalendarTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblCalendarTitle.Location = new System.Drawing.Point(18, 18);
-            this.lblCalendarTitle.Name = "lblCalendarTitle";
-            this.lblCalendarTitle.Size = new System.Drawing.Size(420, 28);
-            this.lblCalendarTitle.TabIndex = 0;
-            this.lblCalendarTitle.Text = "Lịch làm việc tuần này";
-            // 
-            // pnlDaysContainer
-            // 
-            this.pnlDaysContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlDaysContainer.Controls.Add(this.pnlDay7);
-            this.pnlDaysContainer.Controls.Add(this.pnlDay6);
-            this.pnlDaysContainer.Controls.Add(this.pnlDay5);
-            this.pnlDaysContainer.Controls.Add(this.pnlDay4);
-            this.pnlDaysContainer.Controls.Add(this.pnlDay3);
-            this.pnlDaysContainer.Controls.Add(this.pnlDay2);
-            this.pnlDaysContainer.Controls.Add(this.pnlDay1);
-            this.pnlDaysContainer.Location = new System.Drawing.Point(18, 60);
-            this.pnlDaysContainer.Name = "pnlDaysContainer";
-            this.pnlDaysContainer.Size = new System.Drawing.Size(1160, 210);
-            this.pnlDaysContainer.TabIndex = 1;
-            // 
-            // pnlDay1
-            // 
-            this.pnlDay1.BackColor = System.Drawing.Color.White;
-            this.pnlDay1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlDay1.Controls.Add(this.lblDept1);
-            this.pnlDay1.Controls.Add(this.lblRoom1);
-            this.pnlDay1.Controls.Add(this.btnShift1);
-            this.pnlDay1.Controls.Add(this.lblDayName1);
-            this.pnlDay1.Controls.Add(this.lblDayDate1);
-            this.pnlDay1.CornerRadius = 8;
-            this.pnlDay1.FillColor = System.Drawing.Color.White;
-            this.pnlDay1.Location = new System.Drawing.Point(4, 4);
-            this.pnlDay1.Name = "pnlDay1";
-            this.pnlDay1.Size = new System.Drawing.Size(150, 200);
-            this.pnlDay1.TabIndex = 0;
-            // 
-            // lblDayDate1
-            // 
-            this.lblDayDate1.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblDayDate1.Location = new System.Drawing.Point(10, 10);
-            this.lblDayDate1.Name = "lblDayDate1";
-            this.lblDayDate1.Size = new System.Drawing.Size(60, 22);
-            this.lblDayDate1.TabIndex = 0;
-            this.lblDayDate1.Text = "dd/MM";
-            // 
-            // lblDayName1
-            // 
-            this.lblDayName1.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular);
-            this.lblDayName1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDayName1.Location = new System.Drawing.Point(80, 10);
-            this.lblDayName1.Name = "lblDayName1";
-            this.lblDayName1.Size = new System.Drawing.Size(60, 22);
-            this.lblDayName1.TabIndex = 1;
-            this.lblDayName1.Text = "Thứ 2";
-            this.lblDayName1.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // btnShift1
-            // 
-            this.btnShift1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(249)))), ((int)(((byte)(195)))));
-            this.btnShift1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShift1.FlatAppearance.BorderSize = 0;
-            this.btnShift1.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.btnShift1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(83)))), ((int)(((byte)(9)))));
-            this.btnShift1.Location = new System.Drawing.Point(10, 36);
-            this.btnShift1.Name = "btnShift1";
-            this.btnShift1.Size = new System.Drawing.Size(130, 28);
-            this.btnShift1.TabIndex = 2;
-            this.btnShift1.Text = "Sáng";
-            this.btnShift1.UseVisualStyleBackColor = false;
-            // 
-            // lblRoom1
-            // 
-            this.lblRoom1.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblRoom1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(94)))), ((int)(((byte)(240)))));
-            this.lblRoom1.Location = new System.Drawing.Point(10, 68);
-            this.lblRoom1.Name = "lblRoom1";
-            this.lblRoom1.Size = new System.Drawing.Size(130, 18);
-            this.lblRoom1.TabIndex = 3;
-            this.lblRoom1.Text = "Phòng khám 101";
-            // 
-            // lblDept1
-            // 
-            this.lblDept1.Font = new System.Drawing.Font("Segoe UI", 7.5F);
-            this.lblDept1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDept1.Location = new System.Drawing.Point(10, 88);
-            this.lblDept1.Name = "lblDept1";
-            this.lblDept1.Size = new System.Drawing.Size(130, 36);
-            this.lblDept1.TabIndex = 4;
-            this.lblDept1.Text = "Khoa Nội";
-            // 
-            // pnlDay2
-            // 
-            this.pnlDay2.BackColor = System.Drawing.Color.White;
-            this.pnlDay2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlDay2.Controls.Add(this.lblDept2);
-            this.pnlDay2.Controls.Add(this.lblRoom2);
-            this.pnlDay2.Controls.Add(this.btnShift2);
-            this.pnlDay2.Controls.Add(this.lblDayName2);
-            this.pnlDay2.Controls.Add(this.lblDayDate2);
-            this.pnlDay2.CornerRadius = 8;
-            this.pnlDay2.FillColor = System.Drawing.Color.White;
-            this.pnlDay2.Location = new System.Drawing.Point(168, 4);
-            this.pnlDay2.Name = "pnlDay2";
-            this.pnlDay2.Size = new System.Drawing.Size(150, 200);
-            this.pnlDay2.TabIndex = 1;
-            // 
-            // lblDayDate2
-            // 
-            this.lblDayDate2.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblDayDate2.Location = new System.Drawing.Point(10, 10);
-            this.lblDayDate2.Name = "lblDayDate2";
-            this.lblDayDate2.Size = new System.Drawing.Size(60, 22);
-            this.lblDayDate2.TabIndex = 0;
-            this.lblDayDate2.Text = "dd/MM";
-            // 
-            // lblDayName2
-            // 
-            this.lblDayName2.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular);
-            this.lblDayName2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDayName2.Location = new System.Drawing.Point(80, 10);
-            this.lblDayName2.Name = "lblDayName2";
-            this.lblDayName2.Size = new System.Drawing.Size(60, 22);
-            this.lblDayName2.TabIndex = 1;
-            this.lblDayName2.Text = "Thứ 3";
-            this.lblDayName2.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // btnShift2
-            // 
-            this.btnShift2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(249)))), ((int)(((byte)(195)))));
-            this.btnShift2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShift2.FlatAppearance.BorderSize = 0;
-            this.btnShift2.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.btnShift2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(83)))), ((int)(((byte)(9)))));
-            this.btnShift2.Location = new System.Drawing.Point(10, 36);
-            this.btnShift2.Name = "btnShift2";
-            this.btnShift2.Size = new System.Drawing.Size(130, 28);
-            this.btnShift2.TabIndex = 2;
-            this.btnShift2.Text = "Chiều";
-            this.btnShift2.UseVisualStyleBackColor = false;
-            // 
-            // lblRoom2
-            // 
-            this.lblRoom2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblRoom2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(94)))), ((int)(((byte)(240)))));
-            this.lblRoom2.Location = new System.Drawing.Point(10, 68);
-            this.lblRoom2.Name = "lblRoom2";
-            this.lblRoom2.Size = new System.Drawing.Size(130, 18);
-            this.lblRoom2.TabIndex = 3;
-            this.lblRoom2.Text = "Phòng khám 102";
-            // 
-            // lblDept2
-            // 
-            this.lblDept2.Font = new System.Drawing.Font("Segoe UI", 7.5F);
-            this.lblDept2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDept2.Location = new System.Drawing.Point(10, 88);
-            this.lblDept2.Name = "lblDept2";
-            this.lblDept2.Size = new System.Drawing.Size(130, 36);
-            this.lblDept2.TabIndex = 4;
-            this.lblDept2.Text = "Khoa Nội";
-            // 
-            // pnlDay3
-            // 
-            this.pnlDay3.BackColor = System.Drawing.Color.White;
-            this.pnlDay3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlDay3.Controls.Add(this.lblDept3);
-            this.pnlDay3.Controls.Add(this.lblRoom3);
-            this.pnlDay3.Controls.Add(this.btnShift3);
-            this.pnlDay3.Controls.Add(this.lblDayName3);
-            this.pnlDay3.Controls.Add(this.lblDayDate3);
-            this.pnlDay3.CornerRadius = 8;
-            this.pnlDay3.FillColor = System.Drawing.Color.White;
-            this.pnlDay3.Location = new System.Drawing.Point(332, 4);
-            this.pnlDay3.Name = "pnlDay3";
-            this.pnlDay3.Size = new System.Drawing.Size(150, 200);
-            this.pnlDay3.TabIndex = 2;
-            // 
-            // lblDayDate3
-            // 
-            this.lblDayDate3.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblDayDate3.Location = new System.Drawing.Point(10, 10);
-            this.lblDayDate3.Name = "lblDayDate3";
-            this.lblDayDate3.Size = new System.Drawing.Size(60, 22);
-            this.lblDayDate3.TabIndex = 0;
-            this.lblDayDate3.Text = "dd/MM";
-            // 
-            // lblDayName3
-            // 
-            this.lblDayName3.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular);
-            this.lblDayName3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDayName3.Location = new System.Drawing.Point(80, 10);
-            this.lblDayName3.Name = "lblDayName3";
-            this.lblDayName3.Size = new System.Drawing.Size(60, 22);
-            this.lblDayName3.TabIndex = 1;
-            this.lblDayName3.Text = "Thứ 4";
-            this.lblDayName3.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // btnShift3
-            // 
-            this.btnShift3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(249)))), ((int)(((byte)(195)))));
-            this.btnShift3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShift3.FlatAppearance.BorderSize = 0;
-            this.btnShift3.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.btnShift3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(83)))), ((int)(((byte)(9)))));
-            this.btnShift3.Location = new System.Drawing.Point(10, 36);
-            this.btnShift3.Name = "btnShift3";
-            this.btnShift3.Size = new System.Drawing.Size(130, 28);
-            this.btnShift3.TabIndex = 2;
-            this.btnShift3.Text = "Sáng";
-            this.btnShift3.UseVisualStyleBackColor = false;
-            // 
-            // lblRoom3
-            // 
-            this.lblRoom3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblRoom3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(94)))), ((int)(((byte)(240)))));
-            this.lblRoom3.Location = new System.Drawing.Point(10, 68);
-            this.lblRoom3.Name = "lblRoom3";
-            this.lblRoom3.Size = new System.Drawing.Size(130, 18);
-            this.lblRoom3.TabIndex = 3;
-            this.lblRoom3.Text = "Phòng khám 201";
-            // 
-            // lblDept3
-            // 
-            this.lblDept3.Font = new System.Drawing.Font("Segoe UI", 7.5F);
-            this.lblDept3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDept3.Location = new System.Drawing.Point(10, 88);
-            this.lblDept3.Name = "lblDept3";
-            this.lblDept3.Size = new System.Drawing.Size(130, 36);
-            this.lblDept3.TabIndex = 4;
-            this.lblDept3.Text = "Khoa Tim mạch";
-            // 
-            // pnlDay4
-            // 
-            this.pnlDay4.BackColor = System.Drawing.Color.White;
-            this.pnlDay4.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlDay4.Controls.Add(this.lblDept4);
-            this.pnlDay4.Controls.Add(this.lblRoom4);
-            this.pnlDay4.Controls.Add(this.btnShift4);
-            this.pnlDay4.Controls.Add(this.lblDayName4);
-            this.pnlDay4.Controls.Add(this.lblDayDate4);
-            this.pnlDay4.CornerRadius = 8;
-            this.pnlDay4.FillColor = System.Drawing.Color.White;
-            this.pnlDay4.Location = new System.Drawing.Point(496, 4);
-            this.pnlDay4.Name = "pnlDay4";
-            this.pnlDay4.Size = new System.Drawing.Size(150, 200);
-            this.pnlDay4.TabIndex = 3;
-            // 
-            // lblDayDate4
-            // 
-            this.lblDayDate4.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblDayDate4.Location = new System.Drawing.Point(10, 10);
-            this.lblDayDate4.Name = "lblDayDate4";
-            this.lblDayDate4.Size = new System.Drawing.Size(60, 22);
-            this.lblDayDate4.TabIndex = 0;
-            this.lblDayDate4.Text = "dd/MM";
-            // 
-            // lblDayName4
-            // 
-            this.lblDayName4.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular);
-            this.lblDayName4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDayName4.Location = new System.Drawing.Point(80, 10);
-            this.lblDayName4.Name = "lblDayName4";
-            this.lblDayName4.Size = new System.Drawing.Size(60, 22);
-            this.lblDayName4.TabIndex = 1;
-            this.lblDayName4.Text = "Thứ 5";
-            this.lblDayName4.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // btnShift4
-            // 
-            this.btnShift4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(249)))), ((int)(((byte)(195)))));
-            this.btnShift4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShift4.FlatAppearance.BorderSize = 0;
-            this.btnShift4.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.btnShift4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(83)))), ((int)(((byte)(9)))));
-            this.btnShift4.Location = new System.Drawing.Point(10, 36);
-            this.btnShift4.Name = "btnShift4";
-            this.btnShift4.Size = new System.Drawing.Size(130, 28);
-            this.btnShift4.TabIndex = 2;
-            this.btnShift4.Text = "Chiều";
-            this.btnShift4.UseVisualStyleBackColor = false;
-            // 
-            // lblRoom4
-            // 
-            this.lblRoom4.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblRoom4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(94)))), ((int)(((byte)(240)))));
-            this.lblRoom4.Location = new System.Drawing.Point(10, 68);
-            this.lblRoom4.Name = "lblRoom4";
-            this.lblRoom4.Size = new System.Drawing.Size(130, 18);
-            this.lblRoom4.TabIndex = 3;
-            this.lblRoom4.Text = "Phòng khám 103";
-            // 
-            // lblDept4
-            // 
-            this.lblDept4.Font = new System.Drawing.Font("Segoe UI", 7.5F);
-            this.lblDept4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDept4.Location = new System.Drawing.Point(10, 88);
-            this.lblDept4.Name = "lblDept4";
-            this.lblDept4.Size = new System.Drawing.Size(130, 36);
-            this.lblDept4.TabIndex = 4;
-            this.lblDept4.Text = "Khoa Nội";
-            // 
-            // pnlDay5
-            // 
-            this.pnlDay5.BackColor = System.Drawing.Color.White;
-            this.pnlDay5.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlDay5.Controls.Add(this.lblDept5);
-            this.pnlDay5.Controls.Add(this.lblRoom5);
-            this.pnlDay5.Controls.Add(this.btnShift5);
-            this.pnlDay5.Controls.Add(this.lblDayName5);
-            this.pnlDay5.Controls.Add(this.lblDayDate5);
-            this.pnlDay5.CornerRadius = 8;
-            this.pnlDay5.FillColor = System.Drawing.Color.White;
-            this.pnlDay5.Location = new System.Drawing.Point(660, 4);
-            this.pnlDay5.Name = "pnlDay5";
-            this.pnlDay5.Size = new System.Drawing.Size(150, 200);
-            this.pnlDay5.TabIndex = 4;
-            // 
-            // lblDayDate5
-            // 
-            this.lblDayDate5.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblDayDate5.Location = new System.Drawing.Point(10, 10);
-            this.lblDayDate5.Name = "lblDayDate5";
-            this.lblDayDate5.Size = new System.Drawing.Size(60, 22);
-            this.lblDayDate5.TabIndex = 0;
-            this.lblDayDate5.Text = "dd/MM";
-            // 
-            // lblDayName5
-            // 
-            this.lblDayName5.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular);
-            this.lblDayName5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDayName5.Location = new System.Drawing.Point(80, 10);
-            this.lblDayName5.Name = "lblDayName5";
-            this.lblDayName5.Size = new System.Drawing.Size(60, 22);
-            this.lblDayName5.TabIndex = 1;
-            this.lblDayName5.Text = "Thứ 6";
-            this.lblDayName5.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // btnShift5
-            // 
-            this.btnShift5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.btnShift5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShift5.FlatAppearance.BorderSize = 0;
-            this.btnShift5.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.btnShift5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.btnShift5.Location = new System.Drawing.Point(10, 36);
-            this.btnShift5.Name = "btnShift5";
-            this.btnShift5.Size = new System.Drawing.Size(130, 28);
-            this.btnShift5.TabIndex = 2;
-            this.btnShift5.Text = "Trống";
-            this.btnShift5.UseVisualStyleBackColor = false;
-            // 
-            // lblRoom5
-            // 
-            this.lblRoom5.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblRoom5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblRoom5.Location = new System.Drawing.Point(10, 68);
-            this.lblRoom5.Name = "lblRoom5";
-            this.lblRoom5.Size = new System.Drawing.Size(130, 18);
-            this.lblRoom5.TabIndex = 3;
-            this.lblRoom5.Text = "-";
-            // 
-            // lblDept5
-            // 
-            this.lblDept5.Font = new System.Drawing.Font("Segoe UI", 7.5F);
-            this.lblDept5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDept5.Location = new System.Drawing.Point(10, 88);
-            this.lblDept5.Name = "lblDept5";
-            this.lblDept5.Size = new System.Drawing.Size(130, 36);
-            this.lblDept5.TabIndex = 4;
-            this.lblDept5.Text = "-";
-            // 
-            // pnlDay6
-            // 
-            this.pnlDay6.BackColor = System.Drawing.Color.White;
-            this.pnlDay6.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlDay6.Controls.Add(this.lblDept6);
-            this.pnlDay6.Controls.Add(this.lblRoom6);
-            this.pnlDay6.Controls.Add(this.btnShift6);
-            this.pnlDay6.Controls.Add(this.lblDayName6);
-            this.pnlDay6.Controls.Add(this.lblDayDate6);
-            this.pnlDay6.CornerRadius = 8;
-            this.pnlDay6.FillColor = System.Drawing.Color.White;
-            this.pnlDay6.Location = new System.Drawing.Point(824, 4);
-            this.pnlDay6.Name = "pnlDay6";
-            this.pnlDay6.Size = new System.Drawing.Size(150, 200);
-            this.pnlDay6.TabIndex = 5;
-            // 
-            // lblDayDate6
-            // 
-            this.lblDayDate6.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblDayDate6.Location = new System.Drawing.Point(10, 10);
-            this.lblDayDate6.Name = "lblDayDate6";
-            this.lblDayDate6.Size = new System.Drawing.Size(60, 22);
-            this.lblDayDate6.TabIndex = 0;
-            this.lblDayDate6.Text = "dd/MM";
-            // 
-            // lblDayName6
-            // 
-            this.lblDayName6.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular);
-            this.lblDayName6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDayName6.Location = new System.Drawing.Point(80, 10);
-            this.lblDayName6.Name = "lblDayName6";
-            this.lblDayName6.Size = new System.Drawing.Size(60, 22);
-            this.lblDayName6.TabIndex = 1;
-            this.lblDayName6.Text = "Thứ 7";
-            this.lblDayName6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // btnShift6
-            // 
-            this.btnShift6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.btnShift6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShift6.FlatAppearance.BorderSize = 0;
-            this.btnShift6.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.btnShift6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.btnShift6.Location = new System.Drawing.Point(10, 36);
-            this.btnShift6.Name = "btnShift6";
-            this.btnShift6.Size = new System.Drawing.Size(130, 28);
-            this.btnShift6.TabIndex = 2;
-            this.btnShift6.Text = "Trống";
-            this.btnShift6.UseVisualStyleBackColor = false;
-            // 
-            // lblRoom6
-            // 
-            this.lblRoom6.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblRoom6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblRoom6.Location = new System.Drawing.Point(10, 68);
-            this.lblRoom6.Name = "lblRoom6";
-            this.lblRoom6.Size = new System.Drawing.Size(130, 18);
-            this.lblRoom6.TabIndex = 3;
-            this.lblRoom6.Text = "-";
-            // 
-            // lblDept6
-            // 
-            this.lblDept6.Font = new System.Drawing.Font("Segoe UI", 7.5F);
-            this.lblDept6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDept6.Location = new System.Drawing.Point(10, 88);
-            this.lblDept6.Name = "lblDept6";
-            this.lblDept6.Size = new System.Drawing.Size(130, 36);
-            this.lblDept6.TabIndex = 4;
-            this.lblDept6.Text = "-";
-            // 
-            // pnlDay7
-            // 
-            this.pnlDay7.BackColor = System.Drawing.Color.White;
-            this.pnlDay7.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlDay7.Controls.Add(this.lblDept7);
-            this.pnlDay7.Controls.Add(this.lblRoom7);
-            this.pnlDay7.Controls.Add(this.btnShift7);
-            this.pnlDay7.Controls.Add(this.lblDayName7);
-            this.pnlDay7.Controls.Add(this.lblDayDate7);
-            this.pnlDay7.CornerRadius = 8;
-            this.pnlDay7.FillColor = System.Drawing.Color.White;
-            this.pnlDay7.Location = new System.Drawing.Point(988, 4);
-            this.pnlDay7.Name = "pnlDay7";
-            this.pnlDay7.Size = new System.Drawing.Size(150, 200);
-            this.pnlDay7.TabIndex = 6;
-            // 
-            // lblDayDate7
-            // 
-            this.lblDayDate7.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblDayDate7.Location = new System.Drawing.Point(10, 10);
-            this.lblDayDate7.Name = "lblDayDate7";
-            this.lblDayDate7.Size = new System.Drawing.Size(60, 22);
-            this.lblDayDate7.TabIndex = 0;
-            this.lblDayDate7.Text = "dd/MM";
-            // 
-            // lblDayName7
-            // 
-            this.lblDayName7.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular);
-            this.lblDayName7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDayName7.Location = new System.Drawing.Point(80, 10);
-            this.lblDayName7.Name = "lblDayName7";
-            this.lblDayName7.Size = new System.Drawing.Size(60, 22);
-            this.lblDayName7.TabIndex = 1;
-            this.lblDayName7.Text = "CN";
-            this.lblDayName7.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // btnShift7
-            // 
-            this.btnShift7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.btnShift7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShift7.FlatAppearance.BorderSize = 0;
-            this.btnShift7.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.btnShift7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.btnShift7.Location = new System.Drawing.Point(10, 36);
-            this.btnShift7.Name = "btnShift7";
-            this.btnShift7.Size = new System.Drawing.Size(130, 28);
-            this.btnShift7.TabIndex = 2;
-            this.btnShift7.Text = "Trống";
-            this.btnShift7.UseVisualStyleBackColor = false;
-            // 
-            // lblRoom7
-            // 
-            this.lblRoom7.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblRoom7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblRoom7.Location = new System.Drawing.Point(10, 68);
-            this.lblRoom7.Name = "lblRoom7";
-            this.lblRoom7.Size = new System.Drawing.Size(130, 18);
-            this.lblRoom7.TabIndex = 3;
-            this.lblRoom7.Text = "-";
-            // 
-            // lblDept7
-            // 
-            this.lblDept7.Font = new System.Drawing.Font("Segoe UI", 7.5F);
-            this.lblDept7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblDept7.Location = new System.Drawing.Point(10, 88);
-            this.lblDept7.Name = "lblDept7";
-            this.lblDept7.Size = new System.Drawing.Size(130, 36);
-            this.lblDept7.TabIndex = 4;
-            this.lblDept7.Text = "-";
+            viewHostPanel.BackColor = Color.FromArgb(247, 249, 252);
+            viewHostPanel.BorderColor = Color.FromArgb(247, 249, 252);
+            viewHostPanel.BorderWidth = 1;
+            viewHostPanel.Controls.Add(pnlListPanel);
+            viewHostPanel.Controls.Add(pnlCalendar);
+            viewHostPanel.Controls.Add(pnlStatsGrid);
+            viewHostPanel.Controls.Add(btnReg);
+            viewHostPanel.Controls.Add(lblSubtitle);
+            viewHostPanel.Controls.Add(lblTitle);
+            viewHostPanel.CornerRadius = 8;
+            viewHostPanel.Dock = DockStyle.Fill;
+            viewHostPanel.FillColor = Color.FromArgb(247, 249, 252);
+            viewHostPanel.Location = new Point(0, 0);
+            viewHostPanel.Margin = new Padding(3, 4, 3, 4);
+            viewHostPanel.Name = "viewHostPanel";
+            viewHostPanel.Size = new Size(1422, 992);
+            viewHostPanel.TabIndex = 0;
             // 
             // pnlListPanel
             // 
-            this.pnlListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlListPanel.BackColor = System.Drawing.Color.White;
-            this.pnlListPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlListPanel.Controls.Add(this.flpShiftsTable);
-            this.pnlListPanel.Controls.Add(this.lblListTitle);
-            this.pnlListPanel.CornerRadius = 8;
-            this.pnlListPanel.FillColor = System.Drawing.Color.White;
-            this.pnlListPanel.Location = new System.Drawing.Point(24, 528);
-            this.pnlListPanel.Name = "pnlListPanel";
-            this.pnlListPanel.Size = new System.Drawing.Size(1196, 200);
-            this.pnlListPanel.TabIndex = 5;
-            // 
-            // lblListTitle
-            // 
-            this.lblListTitle.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
-            this.lblListTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblListTitle.Location = new System.Drawing.Point(18, 18);
-            this.lblListTitle.Name = "lblListTitle";
-            this.lblListTitle.Size = new System.Drawing.Size(420, 28);
-            this.lblListTitle.TabIndex = 0;
-            this.lblListTitle.Text = "Danh sách ca trực chi tiết";
+            pnlListPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pnlListPanel.BackColor = Color.White;
+            pnlListPanel.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlListPanel.BorderWidth = 1;
+            pnlListPanel.Controls.Add(flpShiftsTable);
+            pnlListPanel.Controls.Add(lblListTitle);
+            pnlListPanel.CornerRadius = 8;
+            pnlListPanel.FillColor = Color.White;
+            pnlListPanel.Location = new Point(27, 704);
+            pnlListPanel.Margin = new Padding(3, 4, 3, 4);
+            pnlListPanel.Name = "pnlListPanel";
+            pnlListPanel.Size = new Size(1367, 267);
+            pnlListPanel.TabIndex = 5;
             // 
             // flpShiftsTable
             // 
-            this.flpShiftsTable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpShiftsTable.AutoScroll = true;
-            this.flpShiftsTable.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpShiftsTable.Location = new System.Drawing.Point(18, 60);
-            this.flpShiftsTable.Name = "flpShiftsTable";
-            this.flpShiftsTable.Size = new System.Drawing.Size(1160, 125);
-            this.flpShiftsTable.TabIndex = 1;
-            this.flpShiftsTable.WrapContents = false;
+            flpShiftsTable.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            flpShiftsTable.AutoScroll = true;
+            flpShiftsTable.FlowDirection = FlowDirection.TopDown;
+            flpShiftsTable.Location = new Point(21, 80);
+            flpShiftsTable.Margin = new Padding(3, 4, 3, 4);
+            flpShiftsTable.Name = "flpShiftsTable";
+            flpShiftsTable.Size = new Size(1326, 167);
+            flpShiftsTable.TabIndex = 1;
+            flpShiftsTable.WrapContents = false;
+            // 
+            // lblListTitle
+            // 
+            lblListTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            lblListTitle.ForeColor = Color.FromArgb(17, 24, 39);
+            lblListTitle.Location = new Point(21, 24);
+            lblListTitle.Name = "lblListTitle";
+            lblListTitle.Size = new Size(480, 37);
+            lblListTitle.TabIndex = 0;
+            lblListTitle.Text = "Danh sách ca trực chi tiết";
+            // 
+            // pnlCalendar
+            // 
+            pnlCalendar.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            pnlCalendar.BackColor = Color.White;
+            pnlCalendar.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlCalendar.BorderWidth = 1;
+            pnlCalendar.Controls.Add(pnlDaysContainer);
+            pnlCalendar.Controls.Add(lblCalendarTitle);
+            pnlCalendar.CornerRadius = 8;
+            pnlCalendar.FillColor = Color.White;
+            pnlCalendar.Location = new Point(27, 296);
+            pnlCalendar.Margin = new Padding(3, 4, 3, 4);
+            pnlCalendar.Name = "pnlCalendar";
+            pnlCalendar.Size = new Size(1367, 387);
+            pnlCalendar.TabIndex = 4;
+            // 
+            // pnlDaysContainer
+            // 
+            pnlDaysContainer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pnlDaysContainer.Controls.Add(pnlDay7);
+            pnlDaysContainer.Controls.Add(pnlDay6);
+            pnlDaysContainer.Controls.Add(pnlDay5);
+            pnlDaysContainer.Controls.Add(pnlDay4);
+            pnlDaysContainer.Controls.Add(pnlDay3);
+            pnlDaysContainer.Controls.Add(pnlDay2);
+            pnlDaysContainer.Controls.Add(pnlDay1);
+            pnlDaysContainer.Location = new Point(21, 80);
+            pnlDaysContainer.Margin = new Padding(3, 4, 3, 4);
+            pnlDaysContainer.Name = "pnlDaysContainer";
+            pnlDaysContainer.Size = new Size(1326, 280);
+            pnlDaysContainer.TabIndex = 1;
+            pnlDaysContainer.Paint += pnlDaysContainer_Paint;
+            // 
+            // pnlDay7
+            // 
+            pnlDay7.BackColor = Color.White;
+            pnlDay7.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlDay7.BorderWidth = 1;
+            pnlDay7.Controls.Add(lblDept7);
+            pnlDay7.Controls.Add(lblRoom7);
+            pnlDay7.Controls.Add(btnShift7);
+            pnlDay7.Controls.Add(lblDayName7);
+            pnlDay7.Controls.Add(lblDayDate7);
+            pnlDay7.CornerRadius = 8;
+            pnlDay7.FillColor = Color.White;
+            pnlDay7.Location = new Point(1129, 5);
+            pnlDay7.Margin = new Padding(3, 4, 3, 4);
+            pnlDay7.Name = "pnlDay7";
+            pnlDay7.Size = new Size(171, 267);
+            pnlDay7.TabIndex = 6;
+            // 
+            // lblDept7
+            // 
+            lblDept7.Font = new Font("Segoe UI", 7.5F);
+            lblDept7.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDept7.Location = new Point(11, 117);
+            lblDept7.Name = "lblDept7";
+            lblDept7.Size = new Size(149, 48);
+            lblDept7.TabIndex = 4;
+            lblDept7.Text = "-";
+            // 
+            // lblRoom7
+            // 
+            lblRoom7.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            lblRoom7.ForeColor = Color.FromArgb(107, 114, 128);
+            lblRoom7.Location = new Point(11, 91);
+            lblRoom7.Name = "lblRoom7";
+            lblRoom7.Size = new Size(149, 24);
+            lblRoom7.TabIndex = 3;
+            lblRoom7.Text = "-";
+            // 
+            // btnShift7
+            // 
+            btnShift7.BackColor = Color.FromArgb(243, 244, 246);
+            btnShift7.FlatAppearance.BorderSize = 0;
+            btnShift7.FlatStyle = FlatStyle.Flat;
+            btnShift7.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            btnShift7.ForeColor = Color.FromArgb(107, 114, 128);
+            btnShift7.Location = new Point(11, 48);
+            btnShift7.Margin = new Padding(3, 4, 3, 4);
+            btnShift7.Name = "btnShift7";
+            btnShift7.Size = new Size(149, 37);
+            btnShift7.TabIndex = 2;
+            btnShift7.Text = "Trống";
+            btnShift7.UseVisualStyleBackColor = false;
+            // 
+            // lblDayName7
+            // 
+            lblDayName7.Font = new Font("Segoe UI", 9.5F);
+            lblDayName7.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDayName7.Location = new Point(91, 13);
+            lblDayName7.Name = "lblDayName7";
+            lblDayName7.Size = new Size(69, 29);
+            lblDayName7.TabIndex = 1;
+            lblDayName7.Text = "CN";
+            lblDayName7.TextAlign = ContentAlignment.TopRight;
+            // 
+            // lblDayDate7
+            // 
+            lblDayDate7.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblDayDate7.Location = new Point(11, 13);
+            lblDayDate7.Name = "lblDayDate7";
+            lblDayDate7.Size = new Size(69, 29);
+            lblDayDate7.TabIndex = 0;
+            lblDayDate7.Text = "dd/MM";
+            // 
+            // pnlDay6
+            // 
+            pnlDay6.BackColor = Color.White;
+            pnlDay6.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlDay6.BorderWidth = 1;
+            pnlDay6.Controls.Add(lblDept6);
+            pnlDay6.Controls.Add(lblRoom6);
+            pnlDay6.Controls.Add(btnShift6);
+            pnlDay6.Controls.Add(lblDayName6);
+            pnlDay6.Controls.Add(lblDayDate6);
+            pnlDay6.CornerRadius = 8;
+            pnlDay6.FillColor = Color.White;
+            pnlDay6.Location = new Point(942, 5);
+            pnlDay6.Margin = new Padding(3, 4, 3, 4);
+            pnlDay6.Name = "pnlDay6";
+            pnlDay6.Size = new Size(171, 267);
+            pnlDay6.TabIndex = 5;
+            // 
+            // lblDept6
+            // 
+            lblDept6.Font = new Font("Segoe UI", 7.5F);
+            lblDept6.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDept6.Location = new Point(11, 117);
+            lblDept6.Name = "lblDept6";
+            lblDept6.Size = new Size(149, 48);
+            lblDept6.TabIndex = 4;
+            lblDept6.Text = "-";
+            // 
+            // lblRoom6
+            // 
+            lblRoom6.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            lblRoom6.ForeColor = Color.FromArgb(107, 114, 128);
+            lblRoom6.Location = new Point(11, 91);
+            lblRoom6.Name = "lblRoom6";
+            lblRoom6.Size = new Size(149, 24);
+            lblRoom6.TabIndex = 3;
+            lblRoom6.Text = "-";
+            // 
+            // btnShift6
+            // 
+            btnShift6.BackColor = Color.FromArgb(243, 244, 246);
+            btnShift6.FlatAppearance.BorderSize = 0;
+            btnShift6.FlatStyle = FlatStyle.Flat;
+            btnShift6.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            btnShift6.ForeColor = Color.FromArgb(107, 114, 128);
+            btnShift6.Location = new Point(11, 48);
+            btnShift6.Margin = new Padding(3, 4, 3, 4);
+            btnShift6.Name = "btnShift6";
+            btnShift6.Size = new Size(149, 37);
+            btnShift6.TabIndex = 2;
+            btnShift6.Text = "Trống";
+            btnShift6.UseVisualStyleBackColor = false;
+            // 
+            // lblDayName6
+            // 
+            lblDayName6.Font = new Font("Segoe UI", 9.5F);
+            lblDayName6.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDayName6.Location = new Point(91, 13);
+            lblDayName6.Name = "lblDayName6";
+            lblDayName6.Size = new Size(69, 29);
+            lblDayName6.TabIndex = 1;
+            lblDayName6.Text = "Thứ 7";
+            lblDayName6.TextAlign = ContentAlignment.TopRight;
+            // 
+            // lblDayDate6
+            // 
+            lblDayDate6.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblDayDate6.Location = new Point(11, 13);
+            lblDayDate6.Name = "lblDayDate6";
+            lblDayDate6.Size = new Size(69, 29);
+            lblDayDate6.TabIndex = 0;
+            lblDayDate6.Text = "dd/MM";
+            // 
+            // pnlDay5
+            // 
+            pnlDay5.BackColor = Color.White;
+            pnlDay5.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlDay5.BorderWidth = 1;
+            pnlDay5.Controls.Add(lblDept5);
+            pnlDay5.Controls.Add(lblRoom5);
+            pnlDay5.Controls.Add(btnShift5);
+            pnlDay5.Controls.Add(lblDayName5);
+            pnlDay5.Controls.Add(lblDayDate5);
+            pnlDay5.CornerRadius = 8;
+            pnlDay5.FillColor = Color.White;
+            pnlDay5.Location = new Point(754, 5);
+            pnlDay5.Margin = new Padding(3, 4, 3, 4);
+            pnlDay5.Name = "pnlDay5";
+            pnlDay5.Size = new Size(171, 267);
+            pnlDay5.TabIndex = 4;
+            // 
+            // lblDept5
+            // 
+            lblDept5.Font = new Font("Segoe UI", 7.5F);
+            lblDept5.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDept5.Location = new Point(11, 117);
+            lblDept5.Name = "lblDept5";
+            lblDept5.Size = new Size(149, 48);
+            lblDept5.TabIndex = 4;
+            lblDept5.Text = "-";
+            // 
+            // lblRoom5
+            // 
+            lblRoom5.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            lblRoom5.ForeColor = Color.FromArgb(107, 114, 128);
+            lblRoom5.Location = new Point(11, 91);
+            lblRoom5.Name = "lblRoom5";
+            lblRoom5.Size = new Size(149, 24);
+            lblRoom5.TabIndex = 3;
+            lblRoom5.Text = "-";
+            // 
+            // btnShift5
+            // 
+            btnShift5.BackColor = Color.FromArgb(243, 244, 246);
+            btnShift5.FlatAppearance.BorderSize = 0;
+            btnShift5.FlatStyle = FlatStyle.Flat;
+            btnShift5.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            btnShift5.ForeColor = Color.FromArgb(107, 114, 128);
+            btnShift5.Location = new Point(11, 48);
+            btnShift5.Margin = new Padding(3, 4, 3, 4);
+            btnShift5.Name = "btnShift5";
+            btnShift5.Size = new Size(149, 37);
+            btnShift5.TabIndex = 2;
+            btnShift5.Text = "Trống";
+            btnShift5.UseVisualStyleBackColor = false;
+            // 
+            // lblDayName5
+            // 
+            lblDayName5.Font = new Font("Segoe UI", 9.5F);
+            lblDayName5.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDayName5.Location = new Point(91, 13);
+            lblDayName5.Name = "lblDayName5";
+            lblDayName5.Size = new Size(69, 29);
+            lblDayName5.TabIndex = 1;
+            lblDayName5.Text = "Thứ 6";
+            lblDayName5.TextAlign = ContentAlignment.TopRight;
+            // 
+            // lblDayDate5
+            // 
+            lblDayDate5.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblDayDate5.Location = new Point(11, 13);
+            lblDayDate5.Name = "lblDayDate5";
+            lblDayDate5.Size = new Size(69, 29);
+            lblDayDate5.TabIndex = 0;
+            lblDayDate5.Text = "dd/MM";
+            // 
+            // pnlDay4
+            // 
+            pnlDay4.BackColor = Color.White;
+            pnlDay4.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlDay4.BorderWidth = 1;
+            pnlDay4.Controls.Add(lblDept4);
+            pnlDay4.Controls.Add(lblRoom4);
+            pnlDay4.Controls.Add(btnShift4);
+            pnlDay4.Controls.Add(lblDayName4);
+            pnlDay4.Controls.Add(lblDayDate4);
+            pnlDay4.CornerRadius = 8;
+            pnlDay4.FillColor = Color.White;
+            pnlDay4.Location = new Point(567, 5);
+            pnlDay4.Margin = new Padding(3, 4, 3, 4);
+            pnlDay4.Name = "pnlDay4";
+            pnlDay4.Size = new Size(171, 267);
+            pnlDay4.TabIndex = 3;
+            // 
+            // lblDept4
+            // 
+            lblDept4.Font = new Font("Segoe UI", 7.5F);
+            lblDept4.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDept4.Location = new Point(11, 117);
+            lblDept4.Name = "lblDept4";
+            lblDept4.Size = new Size(149, 48);
+            lblDept4.TabIndex = 4;
+            lblDept4.Text = "Khoa Nội";
+            // 
+            // lblRoom4
+            // 
+            lblRoom4.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            lblRoom4.ForeColor = Color.FromArgb(47, 94, 240);
+            lblRoom4.Location = new Point(11, 91);
+            lblRoom4.Name = "lblRoom4";
+            lblRoom4.Size = new Size(149, 24);
+            lblRoom4.TabIndex = 3;
+            lblRoom4.Text = "Phòng khám 103";
+            // 
+            // btnShift4
+            // 
+            btnShift4.BackColor = Color.FromArgb(254, 249, 195);
+            btnShift4.FlatAppearance.BorderSize = 0;
+            btnShift4.FlatStyle = FlatStyle.Flat;
+            btnShift4.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            btnShift4.ForeColor = Color.FromArgb(180, 83, 9);
+            btnShift4.Location = new Point(11, 48);
+            btnShift4.Margin = new Padding(3, 4, 3, 4);
+            btnShift4.Name = "btnShift4";
+            btnShift4.Size = new Size(149, 37);
+            btnShift4.TabIndex = 2;
+            btnShift4.Text = "Chiều";
+            btnShift4.UseVisualStyleBackColor = false;
+            // 
+            // lblDayName4
+            // 
+            lblDayName4.Font = new Font("Segoe UI", 9.5F);
+            lblDayName4.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDayName4.Location = new Point(91, 13);
+            lblDayName4.Name = "lblDayName4";
+            lblDayName4.Size = new Size(69, 29);
+            lblDayName4.TabIndex = 1;
+            lblDayName4.Text = "Thứ 5";
+            lblDayName4.TextAlign = ContentAlignment.TopRight;
+            // 
+            // lblDayDate4
+            // 
+            lblDayDate4.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblDayDate4.Location = new Point(11, 13);
+            lblDayDate4.Name = "lblDayDate4";
+            lblDayDate4.Size = new Size(69, 29);
+            lblDayDate4.TabIndex = 0;
+            lblDayDate4.Text = "dd/MM";
+            // 
+            // pnlDay3
+            // 
+            pnlDay3.BackColor = Color.White;
+            pnlDay3.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlDay3.BorderWidth = 1;
+            pnlDay3.Controls.Add(lblDept3);
+            pnlDay3.Controls.Add(lblRoom3);
+            pnlDay3.Controls.Add(btnShift3);
+            pnlDay3.Controls.Add(lblDayName3);
+            pnlDay3.Controls.Add(lblDayDate3);
+            pnlDay3.CornerRadius = 8;
+            pnlDay3.FillColor = Color.White;
+            pnlDay3.Location = new Point(379, 5);
+            pnlDay3.Margin = new Padding(3, 4, 3, 4);
+            pnlDay3.Name = "pnlDay3";
+            pnlDay3.Size = new Size(171, 267);
+            pnlDay3.TabIndex = 2;
+            // 
+            // lblDept3
+            // 
+            lblDept3.Font = new Font("Segoe UI", 7.5F);
+            lblDept3.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDept3.Location = new Point(11, 117);
+            lblDept3.Name = "lblDept3";
+            lblDept3.Size = new Size(149, 48);
+            lblDept3.TabIndex = 4;
+            lblDept3.Text = "Khoa Tim mạch";
+            // 
+            // lblRoom3
+            // 
+            lblRoom3.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            lblRoom3.ForeColor = Color.FromArgb(47, 94, 240);
+            lblRoom3.Location = new Point(11, 91);
+            lblRoom3.Name = "lblRoom3";
+            lblRoom3.Size = new Size(149, 24);
+            lblRoom3.TabIndex = 3;
+            lblRoom3.Text = "Phòng khám 201";
+            // 
+            // btnShift3
+            // 
+            btnShift3.BackColor = Color.FromArgb(254, 249, 195);
+            btnShift3.FlatAppearance.BorderSize = 0;
+            btnShift3.FlatStyle = FlatStyle.Flat;
+            btnShift3.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            btnShift3.ForeColor = Color.FromArgb(180, 83, 9);
+            btnShift3.Location = new Point(11, 48);
+            btnShift3.Margin = new Padding(3, 4, 3, 4);
+            btnShift3.Name = "btnShift3";
+            btnShift3.Size = new Size(149, 37);
+            btnShift3.TabIndex = 2;
+            btnShift3.Text = "Sáng";
+            btnShift3.UseVisualStyleBackColor = false;
+            btnShift3.Click += btnShift3_Click;
+            // 
+            // lblDayName3
+            // 
+            lblDayName3.Font = new Font("Segoe UI", 9.5F);
+            lblDayName3.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDayName3.Location = new Point(91, 13);
+            lblDayName3.Name = "lblDayName3";
+            lblDayName3.Size = new Size(69, 29);
+            lblDayName3.TabIndex = 1;
+            lblDayName3.Text = "Thứ 4";
+            lblDayName3.TextAlign = ContentAlignment.TopRight;
+            // 
+            // lblDayDate3
+            // 
+            lblDayDate3.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblDayDate3.Location = new Point(11, 13);
+            lblDayDate3.Name = "lblDayDate3";
+            lblDayDate3.Size = new Size(69, 29);
+            lblDayDate3.TabIndex = 0;
+            lblDayDate3.Text = "dd/MM";
+            // 
+            // pnlDay2
+            // 
+            pnlDay2.BackColor = Color.White;
+            pnlDay2.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlDay2.BorderWidth = 1;
+            pnlDay2.Controls.Add(lblDept2);
+            pnlDay2.Controls.Add(lblRoom2);
+            pnlDay2.Controls.Add(btnShift2);
+            pnlDay2.Controls.Add(lblDayName2);
+            pnlDay2.Controls.Add(lblDayDate2);
+            pnlDay2.CornerRadius = 8;
+            pnlDay2.FillColor = Color.White;
+            pnlDay2.Location = new Point(192, 5);
+            pnlDay2.Margin = new Padding(3, 4, 3, 4);
+            pnlDay2.Name = "pnlDay2";
+            pnlDay2.Size = new Size(171, 267);
+            pnlDay2.TabIndex = 1;
+            // 
+            // lblDept2
+            // 
+            lblDept2.Font = new Font("Segoe UI", 7.5F);
+            lblDept2.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDept2.Location = new Point(11, 117);
+            lblDept2.Name = "lblDept2";
+            lblDept2.Size = new Size(149, 48);
+            lblDept2.TabIndex = 4;
+            lblDept2.Text = "Khoa Nội";
+            // 
+            // lblRoom2
+            // 
+            lblRoom2.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            lblRoom2.ForeColor = Color.FromArgb(47, 94, 240);
+            lblRoom2.Location = new Point(11, 91);
+            lblRoom2.Name = "lblRoom2";
+            lblRoom2.Size = new Size(149, 24);
+            lblRoom2.TabIndex = 3;
+            lblRoom2.Text = "Phòng khám 102";
+            // 
+            // btnShift2
+            // 
+            btnShift2.BackColor = Color.FromArgb(254, 249, 195);
+            btnShift2.FlatAppearance.BorderSize = 0;
+            btnShift2.FlatStyle = FlatStyle.Flat;
+            btnShift2.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            btnShift2.ForeColor = Color.FromArgb(180, 83, 9);
+            btnShift2.Location = new Point(11, 48);
+            btnShift2.Margin = new Padding(3, 4, 3, 4);
+            btnShift2.Name = "btnShift2";
+            btnShift2.Size = new Size(149, 37);
+            btnShift2.TabIndex = 2;
+            btnShift2.Text = "Chiều";
+            btnShift2.UseVisualStyleBackColor = false;
+            // 
+            // lblDayName2
+            // 
+            lblDayName2.Font = new Font("Segoe UI", 9.5F);
+            lblDayName2.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDayName2.Location = new Point(91, 13);
+            lblDayName2.Name = "lblDayName2";
+            lblDayName2.Size = new Size(69, 29);
+            lblDayName2.TabIndex = 1;
+            lblDayName2.Text = "Thứ 3";
+            lblDayName2.TextAlign = ContentAlignment.TopRight;
+            // 
+            // lblDayDate2
+            // 
+            lblDayDate2.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblDayDate2.Location = new Point(11, 13);
+            lblDayDate2.Name = "lblDayDate2";
+            lblDayDate2.Size = new Size(69, 29);
+            lblDayDate2.TabIndex = 0;
+            lblDayDate2.Text = "dd/MM";
+            lblDayDate2.Click += lblDayDate2_Click;
+            // 
+            // pnlDay1
+            // 
+            pnlDay1.BackColor = Color.White;
+            pnlDay1.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlDay1.BorderWidth = 1;
+            pnlDay1.Controls.Add(lblDept1);
+            pnlDay1.Controls.Add(lblRoom1);
+            pnlDay1.Controls.Add(btnShift1);
+            pnlDay1.Controls.Add(lblDayName1);
+            pnlDay1.Controls.Add(lblDayDate1);
+            pnlDay1.CornerRadius = 8;
+            pnlDay1.FillColor = Color.White;
+            pnlDay1.Location = new Point(5, 5);
+            pnlDay1.Margin = new Padding(3, 4, 3, 4);
+            pnlDay1.Name = "pnlDay1";
+            pnlDay1.Size = new Size(171, 267);
+            pnlDay1.TabIndex = 0;
+            // 
+            // lblDept1
+            // 
+            lblDept1.Font = new Font("Segoe UI", 7.5F);
+            lblDept1.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDept1.Location = new Point(11, 117);
+            lblDept1.Name = "lblDept1";
+            lblDept1.Size = new Size(149, 48);
+            lblDept1.TabIndex = 4;
+            lblDept1.Text = "Khoa Nội";
+            // 
+            // lblRoom1
+            // 
+            lblRoom1.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            lblRoom1.ForeColor = Color.FromArgb(47, 94, 240);
+            lblRoom1.Location = new Point(11, 91);
+            lblRoom1.Name = "lblRoom1";
+            lblRoom1.Size = new Size(149, 24);
+            lblRoom1.TabIndex = 3;
+            lblRoom1.Text = "Phòng khám 101";
+            // 
+            // btnShift1
+            // 
+            btnShift1.BackColor = Color.FromArgb(254, 249, 195);
+            btnShift1.FlatAppearance.BorderSize = 0;
+            btnShift1.FlatStyle = FlatStyle.Flat;
+            btnShift1.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            btnShift1.ForeColor = Color.FromArgb(180, 83, 9);
+            btnShift1.Location = new Point(11, 48);
+            btnShift1.Margin = new Padding(3, 4, 3, 4);
+            btnShift1.Name = "btnShift1";
+            btnShift1.Size = new Size(149, 37);
+            btnShift1.TabIndex = 2;
+            btnShift1.Text = "Sáng";
+            btnShift1.UseVisualStyleBackColor = false;
+            // 
+            // lblDayName1
+            // 
+            lblDayName1.Font = new Font("Segoe UI", 9.5F);
+            lblDayName1.ForeColor = Color.FromArgb(107, 114, 128);
+            lblDayName1.Location = new Point(91, 13);
+            lblDayName1.Name = "lblDayName1";
+            lblDayName1.Size = new Size(69, 29);
+            lblDayName1.TabIndex = 1;
+            lblDayName1.Text = "Thứ 2";
+            lblDayName1.TextAlign = ContentAlignment.TopRight;
+            // 
+            // lblDayDate1
+            // 
+            lblDayDate1.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblDayDate1.Location = new Point(11, 13);
+            lblDayDate1.Name = "lblDayDate1";
+            lblDayDate1.Size = new Size(69, 29);
+            lblDayDate1.TabIndex = 0;
+            lblDayDate1.Text = "dd/MM";
+            lblDayDate1.Click += lblDayDate1_Click;
+            // 
+            // lblCalendarTitle
+            // 
+            lblCalendarTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            lblCalendarTitle.ForeColor = Color.FromArgb(17, 24, 39);
+            lblCalendarTitle.Location = new Point(21, 24);
+            lblCalendarTitle.Name = "lblCalendarTitle";
+            lblCalendarTitle.Size = new Size(480, 37);
+            lblCalendarTitle.TabIndex = 0;
+            lblCalendarTitle.Text = "Lịch làm việc tuần này";
+            // 
+            // pnlStatsGrid
+            // 
+            pnlStatsGrid.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            pnlStatsGrid.ColumnCount = 3;
+            pnlStatsGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33333F));
+            pnlStatsGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33333F));
+            pnlStatsGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33333F));
+            pnlStatsGrid.Controls.Add(pnlStatTotal, 0, 0);
+            pnlStatsGrid.Controls.Add(pnlStatActive, 1, 0);
+            pnlStatsGrid.Controls.Add(pnlStatHours, 2, 0);
+            pnlStatsGrid.Location = new Point(27, 128);
+            pnlStatsGrid.Margin = new Padding(3, 4, 3, 4);
+            pnlStatsGrid.Name = "pnlStatsGrid";
+            pnlStatsGrid.RowCount = 1;
+            pnlStatsGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            pnlStatsGrid.Size = new Size(1367, 147);
+            pnlStatsGrid.TabIndex = 3;
+            // 
+            // pnlStatTotal
+            // 
+            pnlStatTotal.BackColor = Color.White;
+            pnlStatTotal.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlStatTotal.BorderWidth = 1;
+            pnlStatTotal.Controls.Add(lblStatTotalNum);
+            pnlStatTotal.Controls.Add(lblStatTotalTitle);
+            pnlStatTotal.CornerRadius = 8;
+            pnlStatTotal.Dock = DockStyle.Fill;
+            pnlStatTotal.FillColor = Color.White;
+            pnlStatTotal.Location = new Point(0, 0);
+            pnlStatTotal.Margin = new Padding(0, 0, 16, 0);
+            pnlStatTotal.Name = "pnlStatTotal";
+            pnlStatTotal.Size = new Size(439, 147);
+            pnlStatTotal.TabIndex = 0;
+            // 
+            // lblStatTotalNum
+            // 
+            lblStatTotalNum.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblStatTotalNum.ForeColor = Color.FromArgb(17, 24, 39);
+            lblStatTotalNum.Location = new Point(105, 77);
+            lblStatTotalNum.Name = "lblStatTotalNum";
+            lblStatTotalNum.Size = new Size(183, 45);
+            lblStatTotalNum.TabIndex = 1;
+            lblStatTotalNum.Text = "0";
+            // 
+            // lblStatTotalTitle
+            // 
+            lblStatTotalTitle.Font = new Font("Segoe UI", 10F);
+            lblStatTotalTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblStatTotalTitle.Location = new Point(105, 40);
+            lblStatTotalTitle.Name = "lblStatTotalTitle";
+            lblStatTotalTitle.Size = new Size(240, 32);
+            lblStatTotalTitle.TabIndex = 0;
+            lblStatTotalTitle.Text = "Tổng ca đăng ký";
+            // 
+            // pnlStatActive
+            // 
+            pnlStatActive.BackColor = Color.White;
+            pnlStatActive.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlStatActive.BorderWidth = 1;
+            pnlStatActive.Controls.Add(lblStatActiveNum);
+            pnlStatActive.Controls.Add(lblStatActiveTitle);
+            pnlStatActive.CornerRadius = 8;
+            pnlStatActive.Dock = DockStyle.Fill;
+            pnlStatActive.FillColor = Color.White;
+            pnlStatActive.Location = new Point(455, 0);
+            pnlStatActive.Margin = new Padding(0, 0, 16, 0);
+            pnlStatActive.Name = "pnlStatActive";
+            pnlStatActive.Size = new Size(439, 147);
+            pnlStatActive.TabIndex = 1;
+            // 
+            // lblStatActiveNum
+            // 
+            lblStatActiveNum.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblStatActiveNum.ForeColor = Color.FromArgb(17, 24, 39);
+            lblStatActiveNum.Location = new Point(105, 77);
+            lblStatActiveNum.Name = "lblStatActiveNum";
+            lblStatActiveNum.Size = new Size(183, 45);
+            lblStatActiveNum.TabIndex = 1;
+            lblStatActiveNum.Text = "1";
+            // 
+            // lblStatActiveTitle
+            // 
+            lblStatActiveTitle.Font = new Font("Segoe UI", 10F);
+            lblStatActiveTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblStatActiveTitle.Location = new Point(105, 40);
+            lblStatActiveTitle.Name = "lblStatActiveTitle";
+            lblStatActiveTitle.Size = new Size(240, 32);
+            lblStatActiveTitle.TabIndex = 0;
+            lblStatActiveTitle.Text = "Ca đang trực";
+            // 
+            // pnlStatHours
+            // 
+            pnlStatHours.BackColor = Color.White;
+            pnlStatHours.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlStatHours.BorderWidth = 1;
+            pnlStatHours.Controls.Add(lblStatHoursNum);
+            pnlStatHours.Controls.Add(lblStatHoursTitle);
+            pnlStatHours.CornerRadius = 8;
+            pnlStatHours.Dock = DockStyle.Fill;
+            pnlStatHours.FillColor = Color.White;
+            pnlStatHours.Location = new Point(910, 0);
+            pnlStatHours.Margin = new Padding(0);
+            pnlStatHours.Name = "pnlStatHours";
+            pnlStatHours.Size = new Size(457, 147);
+            pnlStatHours.TabIndex = 2;
+            // 
+            // lblStatHoursNum
+            // 
+            lblStatHoursNum.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblStatHoursNum.ForeColor = Color.FromArgb(17, 24, 39);
+            lblStatHoursNum.Location = new Point(105, 77);
+            lblStatHoursNum.Name = "lblStatHoursNum";
+            lblStatHoursNum.Size = new Size(183, 45);
+            lblStatHoursNum.TabIndex = 1;
+            lblStatHoursNum.Text = "0h";
+            // 
+            // lblStatHoursTitle
+            // 
+            lblStatHoursTitle.Font = new Font("Segoe UI", 10F);
+            lblStatHoursTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblStatHoursTitle.Location = new Point(105, 40);
+            lblStatHoursTitle.Name = "lblStatHoursTitle";
+            lblStatHoursTitle.Size = new Size(240, 32);
+            lblStatHoursTitle.TabIndex = 0;
+            lblStatHoursTitle.Text = "Giờ hoàn thành";
+            // 
+            // btnReg
+            // 
+            btnReg.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnReg.BackColor = Color.FromArgb(47, 94, 240);
+            btnReg.Cursor = Cursors.Hand;
+            btnReg.FlatAppearance.BorderSize = 0;
+            btnReg.FlatStyle = FlatStyle.Flat;
+            btnReg.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnReg.ForeColor = Color.White;
+            btnReg.Location = new Point(1189, 32);
+            btnReg.Margin = new Padding(3, 4, 3, 4);
+            btnReg.Name = "btnReg";
+            btnReg.Size = new Size(206, 56);
+            btnReg.TabIndex = 2;
+            btnReg.Text = "Đăng ký ca mới";
+            btnReg.UseVisualStyleBackColor = false;
+            // 
+            // lblSubtitle
+            // 
+            lblSubtitle.Font = new Font("Segoe UI", 10F);
+            lblSubtitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblSubtitle.Location = new Point(27, 75);
+            lblSubtitle.Name = "lblSubtitle";
+            lblSubtitle.Size = new Size(571, 37);
+            lblSubtitle.TabIndex = 1;
+            lblSubtitle.Text = "Xem ca trực và phòng khám được phân công của Kỹ thuật viên";
+            // 
+            // lblTitle
+            // 
+            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.FromArgb(17, 24, 39);
+            lblTitle.Location = new Point(27, 32);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(457, 43);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Lịch Làm Việc";
             // 
             // ucTechnicianShifts
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.Controls.Add(this.viewHostPanel);
-            this.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.Name = "ucTechnicianShifts";
-            this.Size = new System.Drawing.Size(1244, 744);
-            this.Load += new System.EventHandler(this.ucTechnicianShifts_Load);
-            this.Resize += new System.EventHandler(this.ucTechnicianShifts_Resize);
-            this.viewHostPanel.ResumeLayout(false);
-            this.pnlStatsGrid.ResumeLayout(false);
-            this.pnlStatTotal.ResumeLayout(false);
-            this.pnlStatActive.ResumeLayout(false);
-            this.pnlStatHours.ResumeLayout(false);
-            this.pnlCalendar.ResumeLayout(false);
-            this.pnlDaysContainer.ResumeLayout(false);
-            this.pnlDay1.ResumeLayout(false);
-            this.pnlDay2.ResumeLayout(false);
-            this.pnlDay3.ResumeLayout(false);
-            this.pnlDay4.ResumeLayout(false);
-            this.pnlDay5.ResumeLayout(false);
-            this.pnlDay6.ResumeLayout(false);
-            this.pnlDay7.ResumeLayout(false);
-            this.pnlListPanel.ResumeLayout(false);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(247, 249, 252);
+            Controls.Add(viewHostPanel);
+            Margin = new Padding(3, 4, 3, 4);
+            Name = "ucTechnicianShifts";
+            Size = new Size(1422, 992);
+            Load += ucTechnicianShifts_Load;
+            Resize += ucTechnicianShifts_Resize;
+            viewHostPanel.ResumeLayout(false);
+            pnlListPanel.ResumeLayout(false);
+            pnlCalendar.ResumeLayout(false);
+            pnlDaysContainer.ResumeLayout(false);
+            pnlDay7.ResumeLayout(false);
+            pnlDay6.ResumeLayout(false);
+            pnlDay5.ResumeLayout(false);
+            pnlDay4.ResumeLayout(false);
+            pnlDay3.ResumeLayout(false);
+            pnlDay2.ResumeLayout(false);
+            pnlDay1.ResumeLayout(false);
+            pnlStatsGrid.ResumeLayout(false);
+            pnlStatTotal.ResumeLayout(false);
+            pnlStatActive.ResumeLayout(false);
+            pnlStatHours.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         private ClinicManagementSystem.Winforms.Forms.RoundedPanel viewHostPanel;
