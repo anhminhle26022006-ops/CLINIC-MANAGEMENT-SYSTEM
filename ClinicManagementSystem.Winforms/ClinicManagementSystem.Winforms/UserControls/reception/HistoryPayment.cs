@@ -22,35 +22,87 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
 
         private void ConfigureGrid()
         {
-            dataGridView1.AutoGenerateColumns = true;
+            dataGridView1.AutoGenerateColumns = false;
+            dataGridView1.Columns.Clear();
 
             dataGridView1.ReadOnly = true;
-
             dataGridView1.AllowUserToAddRows = false;
-
             dataGridView1.RowHeadersVisible = false;
-
             dataGridView1.AutoSizeColumnsMode =
                 DataGridViewAutoSizeColumnsMode.Fill;
 
-            dataGridView1.EnableHeadersVisualStyles =
-                false;
+            dataGridView1.Columns.Add(
+                new DataGridViewTextBoxColumn
+                {
+                    HeaderText = "Mã thanh toán",
+                    DataPropertyName = "PaymentID"
+                });
 
-            dataGridView1.ColumnHeadersDefaultCellStyle
-                .BackColor = Color.RoyalBlue;
+            dataGridView1.Columns.Add(
+                new DataGridViewTextBoxColumn
+                {
+                    HeaderText = "Mã khám",
+                    DataPropertyName = "EncounterID"
+                });
 
-            dataGridView1.ColumnHeadersDefaultCellStyle
-                .ForeColor = Color.White;
+            dataGridView1.Columns.Add(
+                new DataGridViewTextBoxColumn
+                {
+                    HeaderText = "Tên bệnh nhân",
+                    DataPropertyName = "PatientName"
+                });
+
+            dataGridView1.Columns.Add(
+    new DataGridViewTextBoxColumn
+    {
+        Name = "PaidAt",
+        HeaderText = "Ngày TT",
+        DataPropertyName = "PaidAt"
+    });
+
+            dataGridView1.Columns.Add(
+                new DataGridViewTextBoxColumn
+                {
+                    HeaderText = "Phương thức",
+                    DataPropertyName = "Method"
+                });
+
+            dataGridView1.Columns.Add(
+    new DataGridViewTextBoxColumn
+    {
+        Name = "Amount",
+        HeaderText = "Tổng tiền",
+        DataPropertyName = "Amount"
+    });
+
+            dataGridView1.Columns.Add(
+                new DataGridViewTextBoxColumn
+                {
+                    HeaderText = "Trạng thái",
+                    DataPropertyName = "Status"
+                });
         }
 
         private void LoadHistory()
         {
-            List<Payment_RecepDTO> payments =
-                controller
-                .GetPaymentHistory();
+            var payments =
+                controller.GetPaymentHistory();
 
-            dataGridView1.DataSource =
-                payments;
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = payments;
+
+            if (dataGridView1.Columns["Amount"] != null)
+            {
+                dataGridView1.Columns["Amount"]
+                    .DefaultCellStyle.Format = "N0";
+            }
+
+            if (dataGridView1.Columns["PaidAt"] != null)
+            {
+                dataGridView1.Columns["PaidAt"]
+                    .DefaultCellStyle.Format =
+                    "dd/MM/yyyy HH:mm";
+            }
         }
 
         private void textBox1_TextChanged(
@@ -72,6 +124,51 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
                 controller
                 .SearchPaymentHistory(
                     keyword);
+        }
+
+        private void DataGridView1_CellFormatting(
+    object sender,
+    DataGridViewCellFormattingEventArgs e)
+        {
+            if (dataGridView1.Columns[e.ColumnIndex]
+                .DataPropertyName == "Status")
+            {
+                if (e.Value?.ToString() == "Paid")
+                {
+                    e.Value = "Đã thanh toán";
+
+                    e.CellStyle.BackColor =
+                        Color.FromArgb(220, 252, 231);
+
+                    e.CellStyle.ForeColor =
+                        Color.Green;
+
+                    e.CellStyle.SelectionBackColor =
+                        Color.FromArgb(220, 252, 231);
+                }
+            }
+
+            if (dataGridView1.Columns[e.ColumnIndex]
+                .DataPropertyName == "Method")
+            {
+                if (e.Value?.ToString() == "Tiền mặt")
+                {
+                    e.CellStyle.BackColor =
+                        Color.FromArgb(220, 252, 231);
+
+                    e.CellStyle.ForeColor =
+                        Color.Green;
+                }
+                else if (e.Value?.ToString()
+                         == "Chuyển khoản")
+                {
+                    e.CellStyle.BackColor =
+                        Color.FromArgb(219, 234, 254);
+
+                    e.CellStyle.ForeColor =
+                        Color.RoyalBlue;
+                }
+            }
         }
     }
 }

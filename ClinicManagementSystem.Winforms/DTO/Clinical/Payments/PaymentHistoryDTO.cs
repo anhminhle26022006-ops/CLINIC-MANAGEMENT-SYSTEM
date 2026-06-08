@@ -1,14 +1,16 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DTO
+namespace DTO.Clinical.Payments
 {
-    public class Payment_RecepDTO
+    public class PaymentHistoryDTO
     {
         public int PaymentID { get; set; }
 
         public int EncounterID { get; set; }
-
-        public int PatientID { get; set; }
 
         public string PatientName { get; set; }
             = string.Empty;
