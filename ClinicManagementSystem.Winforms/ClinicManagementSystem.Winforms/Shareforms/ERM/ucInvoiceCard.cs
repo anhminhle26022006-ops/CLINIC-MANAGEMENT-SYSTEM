@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTO.Clinical.erm;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,5 +17,20 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
         {
             InitializeComponent();
         }
+        public void Bind(InvoiceHistoryDto invoice)
+        {
+            if (invoice == null) return;
+
+            lblDate.Text = invoice.InvoiceDate.ToString("dd/MM/yyyy");
+            lblAmount.Text = invoice.TotalAmount.ToString("N0") + " VNĐ";
+            lblStatus.Text = invoice.Status;
+
+            // basic status color
+            lblStatus.ForeColor =
+                invoice.Status == "Đã thanh toán"
+                ? System.Drawing.Color.Green
+                : System.Drawing.Color.Red;
+        }
+
     }
 }

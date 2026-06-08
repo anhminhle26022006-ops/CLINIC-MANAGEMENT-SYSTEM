@@ -1,7 +1,10 @@
 ﻿﻿using BUS.Services;
 using ClinicManagementSystem.Winforms;
+using ClinicManagementSystem.Winforms.Shareforms;
+using ClinicManagementSystem.Winforms.Shareforms.ERM;
 using DAL;
 using DTO;
+using DTO.Clinical.erm;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -10,7 +13,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using ClinicManagementSystem.Winforms.Shareforms;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
@@ -21,6 +23,8 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly Color pageBack = Color.FromArgb(247, 249, 252);
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
+
+        private ucMedicalRecordSidebar ucERM;
 
         private readonly PatientBUS patientBUS = new PatientBUS();
         private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
@@ -75,12 +79,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
                 btnQueue,
                 "Bệnh nhân chờ khám: đang cập nhật",
                 "Ca đang khám: đang cập nhật");
-            btnERM.Click += (s, ev) => ShowSection(
-                "Bệnh án",
-                "Tra cứu và cập nhật hồ sơ bệnh án của bệnh nhân.",
-                btnERM,
-                "Bệnh án cần cập nhật: đang cập nhật",
-                "Kết luận chờ hoàn tất: đang cập nhật");
+            btnERM.Click += (s, ev) => ShowERM();
             btnPharmacy.Click += (s, ev) => ShowSection(
                 "Toa thuốc",
                 "Theo dõi chỉ định thuốc và trạng thái cấp phát.",
@@ -91,7 +90,26 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
             ShowOverview();
         }
+        private void ShowERM()
+        {
+            lblPageTitle.Text = "Bệnh án";
+            lblPageSubtitle.Text = "Tra cứu và cập nhật hồ sơ bệnh án của bệnh nhân";
 
+            SetActiveNav(btnERM);
+
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+
+            if (ucERM == null)
+            {
+                ucERM = new ucMedicalRecordSidebar();
+                ucERM.Dock = DockStyle.Fill;
+            }
+
+            contentPanel.Controls.Add(ucERM);
+
+            contentPanel.ResumeLayout();
+        }
         private void ShowShiftScreen()
         {
             lblPageTitle.Text = "Ca làm việc";
