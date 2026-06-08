@@ -49,7 +49,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void ucTechnicianOverview_Resize(object sender, EventArgs e)
         {
-            // Anchored layout adjusts itself nicely.
+            ResizePendingRows();
         }
 
         private void BtnRegisterShift_Click(object sender, EventArgs e)
@@ -116,9 +116,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             var pendingLabList = requests.Where(r => r.Status == "Chờ xử lý" && CMS.Core.Utils.ServiceTypeHelper.IsLabOrEcgService(r.ServiceType)).Take(2).ToList();
             foreach (var req in pendingLabList)
             {
-                var patientRow = CreateSmallPatient(req.PatientName, req.ServiceType, "BS: " + req.DoctorName, req.Priority, Color.FromArgb(254, 226, 226), Color.FromArgb(185, 28, 28), 0);
-                // Adjust width to fit container FlowLayoutPanel
-                patientRow.Width = flpLabPending.Width - 15;
+                string priority = string.IsNullOrWhiteSpace(req.Priority) ? "Thường" : req.Priority.Trim();
+                Color priorityBack = priority == "Thường" ? Color.FromArgb(243, 244, 246) : Color.FromArgb(254, 226, 226);
+                Color priorityFore = priority == "Thường" ? Color.FromArgb(75, 85, 99) : Color.FromArgb(185, 28, 28);
+                var patientRow = CreateSmallPatient(req.PatientName, req.ServiceType, "BS: " + req.DoctorName, priority, priorityBack, priorityFore, 0);
+                patientRow.Width = PendingRowWidth(flpLabPending);
                 flpLabPending.Controls.Add(patientRow);
             }
 
@@ -127,8 +129,28 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             foreach (var req in pendingScanList)
             {
                 var patientRow = CreateSmallPatient(req.PatientName, req.ServiceType, "BS: " + req.DoctorName, "Chờ chụp", Color.FromArgb(254, 249, 195), Color.FromArgb(161, 98, 7), 0);
-                patientRow.Width = flpScanPending.Width - 15;
+                patientRow.Width = PendingRowWidth(flpScanPending);
                 flpScanPending.Controls.Add(patientRow);
+            }
+        }
+
+        private static int PendingRowWidth(FlowLayoutPanel host)
+        {
+            return Math.Max(260, host.ClientSize.Width - 12);
+        }
+
+        private void ResizePendingRows()
+        {
+            ResizeRows(flpLabPending);
+            ResizeRows(flpScanPending);
+        }
+
+        private static void ResizeRows(FlowLayoutPanel host)
+        {
+            int width = PendingRowWidth(host);
+            foreach (Control row in host.Controls)
+            {
+                row.Width = width;
             }
         }
     }

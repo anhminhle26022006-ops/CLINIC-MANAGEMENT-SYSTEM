@@ -1,4 +1,4 @@
-namespace ClinicManagementSystem.Winforms.Forms.reception
+namespace ClinicManagementSystem.Winforms.Forms
 {
     partial class CreateNewPatient
     {
@@ -41,10 +41,18 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             textBox1 = new TextBox();
             cbBlood = new ComboBox();
             tableLayoutPanel10 = new TableLayoutPanel();
+            tableLayoutPanel13 = new TableLayoutPanel();
+            txtDonvi = new TextBox();
+            label16 = new Label();
+            label17 = new Label();
+            txtBHYT = new TextBox();
             txtDiung = new TextBox();
             Tienef = new Label();
-            txtTiensuBenh = new TextBox();
+            tableLayoutPanel12 = new TableLayoutPanel();
+            dtpExpired = new DateTimePicker();
+            label15 = new Label();
             label13 = new Label();
+            dtpEffective = new DateTimePicker();
             tableLayoutPanel6 = new TableLayoutPanel();
             label6 = new Label();
             tableLayoutPanel7 = new TableLayoutPanel();
@@ -76,6 +84,8 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel8.SuspendLayout();
             tableLayoutPanel9.SuspendLayout();
             tableLayoutPanel10.SuspendLayout();
+            tableLayoutPanel13.SuspendLayout();
+            tableLayoutPanel12.SuspendLayout();
             tableLayoutPanel6.SuspendLayout();
             tableLayoutPanel7.SuspendLayout();
             tableLayoutPanel5.SuspendLayout();
@@ -92,7 +102,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Padding = new Padding(15);
-            panel1.Size = new Size(1000, 971);
+            panel1.Size = new Size(972, 1016);
             panel1.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -109,7 +119,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 59F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 55F));
-            tableLayoutPanel1.Size = new Size(970, 941);
+            tableLayoutPanel1.Size = new Size(942, 986);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // label14
@@ -121,7 +131,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             label14.ForeColor = Color.White;
             label14.Location = new Point(3, 0);
             label14.Name = "label14";
-            label14.Size = new Size(964, 59);
+            label14.Size = new Size(936, 59);
             label14.TabIndex = 2;
             label14.Text = "Thêm bệnh nhân mới";
             label14.TextAlign = ContentAlignment.MiddleLeft;
@@ -132,7 +142,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(3, 62);
             panel2.Name = "panel2";
-            panel2.Size = new Size(964, 821);
+            panel2.Size = new Size(936, 866);
             panel2.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -149,7 +159,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 208F));
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 222F));
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 320F));
-            tableLayoutPanel2.Size = new Size(964, 821);
+            tableLayoutPanel2.Size = new Size(936, 866);
             tableLayoutPanel2.TabIndex = 0;
             // 
             // tableLayoutPanel8
@@ -166,7 +176,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Absolute, 86F));
             tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
-            tableLayoutPanel8.Size = new Size(958, 385);
+            tableLayoutPanel8.Size = new Size(930, 430);
             tableLayoutPanel8.TabIndex = 2;
             // 
             // label10
@@ -176,7 +186,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             label10.Font = new Font("Times New Roman", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label10.Location = new Point(3, 0);
             label10.Name = "label10";
-            label10.Size = new Size(952, 40);
+            label10.Size = new Size(924, 40);
             label10.TabIndex = 0;
             label10.Text = "Thông tin y tế";
             label10.TextAlign = ContentAlignment.MiddleLeft;
@@ -199,7 +209,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Percent, 57.5F));
             tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel9.Size = new Size(952, 80);
+            tableLayoutPanel9.Size = new Size(924, 80);
             tableLayoutPanel9.TabIndex = 1;
             // 
             // label11
@@ -208,7 +218,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             label11.Dock = DockStyle.Fill;
             label11.Location = new Point(3, 0);
             label11.Name = "label11";
-            label11.Size = new Size(470, 33);
+            label11.Size = new Size(456, 33);
             label11.TabIndex = 0;
             label11.Text = "Số điện thoại người thân";
             label11.TextAlign = ContentAlignment.MiddleLeft;
@@ -217,9 +227,9 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             // 
             label12.AutoSize = true;
             label12.Dock = DockStyle.Fill;
-            label12.Location = new Point(479, 0);
+            label12.Location = new Point(465, 0);
             label12.Name = "label12";
-            label12.Size = new Size(470, 33);
+            label12.Size = new Size(456, 33);
             label12.TabIndex = 2;
             label12.Text = "Nhóm máu";
             label12.TextAlign = ContentAlignment.MiddleLeft;
@@ -231,46 +241,110 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
             textBox1.PlaceholderText = "Nhập số điện thoại";
-            textBox1.Size = new Size(470, 41);
+            textBox1.Size = new Size(456, 41);
             textBox1.TabIndex = 4;
             // 
             // cbBlood
             // 
             cbBlood.Dock = DockStyle.Fill;
             cbBlood.FormattingEnabled = true;
-            cbBlood.Location = new Point(479, 36);
+            cbBlood.Location = new Point(465, 36);
             cbBlood.Name = "cbBlood";
-            cbBlood.Size = new Size(470, 34);
+            cbBlood.Size = new Size(456, 44);
             cbBlood.TabIndex = 5;
             // 
             // tableLayoutPanel10
             // 
             tableLayoutPanel10.ColumnCount = 1;
             tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel10.Controls.Add(tableLayoutPanel13, 0, 0);
             tableLayoutPanel10.Controls.Add(txtDiung, 0, 3);
             tableLayoutPanel10.Controls.Add(Tienef, 0, 2);
-            tableLayoutPanel10.Controls.Add(txtTiensuBenh, 0, 1);
-            tableLayoutPanel10.Controls.Add(label13, 0, 0);
+            tableLayoutPanel10.Controls.Add(tableLayoutPanel12, 0, 1);
             tableLayoutPanel10.Dock = DockStyle.Fill;
             tableLayoutPanel10.Location = new Point(3, 129);
             tableLayoutPanel10.Name = "tableLayoutPanel10";
             tableLayoutPanel10.RowCount = 4;
-            tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
-            tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 28.1746025F));
-            tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 15.0793648F));
-            tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 40F));
-            tableLayoutPanel10.Size = new Size(952, 253);
+            tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 31.2080536F));
+            tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 32.2147636F));
+            tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 12.7516775F));
+            tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 23.489933F));
+            tableLayoutPanel10.Size = new Size(924, 298);
             tableLayoutPanel10.TabIndex = 2;
+            // 
+            // tableLayoutPanel13
+            // 
+            tableLayoutPanel13.ColumnCount = 2;
+            tableLayoutPanel13.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel13.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel13.Controls.Add(txtDonvi, 1, 1);
+            tableLayoutPanel13.Controls.Add(label16, 1, 0);
+            tableLayoutPanel13.Controls.Add(label17, 0, 0);
+            tableLayoutPanel13.Controls.Add(txtBHYT, 0, 1);
+            tableLayoutPanel13.Dock = DockStyle.Fill;
+            tableLayoutPanel13.Location = new Point(3, 3);
+            tableLayoutPanel13.Name = "tableLayoutPanel13";
+            tableLayoutPanel13.RowCount = 2;
+            tableLayoutPanel13.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel13.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel13.Size = new Size(918, 87);
+            tableLayoutPanel13.TabIndex = 9;
+            // 
+            // txtDonvi
+            // 
+            txtDonvi.Dock = DockStyle.Fill;
+            txtDonvi.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtDonvi.Location = new Point(462, 46);
+            txtDonvi.Multiline = true;
+            txtDonvi.Name = "txtDonvi";
+            txtDonvi.PlaceholderText = "Nhập đơn vị bảo hiểm";
+            txtDonvi.Size = new Size(453, 38);
+            txtDonvi.TabIndex = 6;
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Dock = DockStyle.Fill;
+            label16.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label16.Location = new Point(462, 0);
+            label16.Name = "label16";
+            label16.Size = new Size(453, 43);
+            label16.TabIndex = 2;
+            label16.Text = "Đơn vị bảo hiểm";
+            label16.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Dock = DockStyle.Fill;
+            label17.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label17.Location = new Point(3, 0);
+            label17.Name = "label17";
+            label17.Size = new Size(453, 43);
+            label17.TabIndex = 1;
+            label17.Text = "Số BHYT";
+            label17.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // txtBHYT
+            // 
+            txtBHYT.Dock = DockStyle.Fill;
+            txtBHYT.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtBHYT.Location = new Point(3, 46);
+            txtBHYT.Multiline = true;
+            txtBHYT.Name = "txtBHYT";
+            txtBHYT.PlaceholderText = "Nhập số BHYT";
+            txtBHYT.Size = new Size(453, 38);
+            txtBHYT.TabIndex = 5;
             // 
             // txtDiung
             // 
             txtDiung.Dock = DockStyle.Fill;
             txtDiung.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtDiung.Location = new Point(3, 154);
+            txtDiung.Location = new Point(3, 230);
             txtDiung.Multiline = true;
             txtDiung.Name = "txtDiung";
-            txtDiung.PlaceholderText = "Nhập địa chỉ";
-            txtDiung.Size = new Size(946, 96);
+            txtDiung.PlaceholderText = "Nhập tiền sử dị ứng";
+            txtDiung.Size = new Size(918, 65);
             txtDiung.TabIndex = 7;
             // 
             // Tienef
@@ -278,23 +352,52 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             Tienef.AutoSize = true;
             Tienef.Dock = DockStyle.Fill;
             Tienef.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Tienef.Location = new Point(3, 113);
+            Tienef.Location = new Point(3, 189);
             Tienef.Name = "Tienef";
-            Tienef.Size = new Size(946, 38);
+            Tienef.Size = new Size(918, 38);
             Tienef.TabIndex = 6;
             Tienef.Text = "Tiền sử dị ứng";
             Tienef.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // txtTiensuBenh
+            // tableLayoutPanel12
             // 
-            txtTiensuBenh.Dock = DockStyle.Fill;
-            txtTiensuBenh.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtTiensuBenh.Location = new Point(3, 45);
-            txtTiensuBenh.Multiline = true;
-            txtTiensuBenh.Name = "txtTiensuBenh";
-            txtTiensuBenh.PlaceholderText = "Nhập địa chỉ";
-            txtTiensuBenh.Size = new Size(946, 65);
-            txtTiensuBenh.TabIndex = 5;
+            tableLayoutPanel12.ColumnCount = 2;
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.Controls.Add(dtpExpired, 1, 1);
+            tableLayoutPanel12.Controls.Add(label15, 1, 0);
+            tableLayoutPanel12.Controls.Add(label13, 0, 0);
+            tableLayoutPanel12.Controls.Add(dtpEffective, 0, 1);
+            tableLayoutPanel12.Dock = DockStyle.Fill;
+            tableLayoutPanel12.Location = new Point(3, 96);
+            tableLayoutPanel12.Name = "tableLayoutPanel12";
+            tableLayoutPanel12.RowCount = 2;
+            tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.Size = new Size(918, 90);
+            tableLayoutPanel12.TabIndex = 8;
+            // 
+            // dtpExpired
+            // 
+            dtpExpired.CalendarFont = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dtpExpired.Dock = DockStyle.Fill;
+            dtpExpired.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dtpExpired.Location = new Point(462, 48);
+            dtpExpired.Name = "dtpExpired";
+            dtpExpired.Size = new Size(453, 45);
+            dtpExpired.TabIndex = 4;
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Dock = DockStyle.Fill;
+            label15.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label15.Location = new Point(462, 0);
+            label15.Name = "label15";
+            label15.Size = new Size(453, 45);
+            label15.TabIndex = 2;
+            label15.Text = "Ngày hết hạn";
+            label15.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label13
             // 
@@ -303,10 +406,20 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             label13.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label13.Location = new Point(3, 0);
             label13.Name = "label13";
-            label13.Size = new Size(946, 42);
+            label13.Size = new Size(453, 45);
             label13.TabIndex = 1;
-            label13.Text = "Tiền sử bệnh";
+            label13.Text = "Ngày hiệu lực";
             label13.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // dtpEffective
+            // 
+            dtpEffective.CalendarFont = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dtpEffective.Dock = DockStyle.Fill;
+            dtpEffective.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dtpEffective.Location = new Point(3, 48);
+            dtpEffective.Name = "dtpEffective";
+            dtpEffective.Size = new Size(453, 45);
+            dtpEffective.TabIndex = 3;
             // 
             // tableLayoutPanel6
             // 
@@ -322,7 +435,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 86F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 90F));
-            tableLayoutPanel6.Size = new Size(958, 216);
+            tableLayoutPanel6.Size = new Size(930, 216);
             tableLayoutPanel6.TabIndex = 1;
             // 
             // label6
@@ -332,7 +445,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             label6.Font = new Font("Times New Roman", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label6.Location = new Point(3, 0);
             label6.Name = "label6";
-            label6.Size = new Size(952, 40);
+            label6.Size = new Size(924, 40);
             label6.TabIndex = 0;
             label6.Text = "Thông tin liên hệ";
             label6.TextAlign = ContentAlignment.MiddleLeft;
@@ -355,15 +468,15 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Percent, 57.5F));
             tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel7.Size = new Size(952, 80);
+            tableLayoutPanel7.Size = new Size(924, 80);
             tableLayoutPanel7.TabIndex = 1;
             // 
             // txtEmail
             // 
             txtEmail.Dock = DockStyle.Fill;
-            txtEmail.Location = new Point(479, 36);
+            txtEmail.Location = new Point(465, 36);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(470, 34);
+            txtEmail.Size = new Size(456, 45);
             txtEmail.TabIndex = 6;
             // 
             // label7
@@ -372,7 +485,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             label7.Dock = DockStyle.Fill;
             label7.Location = new Point(3, 0);
             label7.Name = "label7";
-            label7.Size = new Size(470, 33);
+            label7.Size = new Size(456, 33);
             label7.TabIndex = 0;
             label7.Text = "Số điện thoại";
             label7.TextAlign = ContentAlignment.MiddleLeft;
@@ -381,9 +494,9 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             // 
             label9.AutoSize = true;
             label9.Dock = DockStyle.Fill;
-            label9.Location = new Point(479, 0);
+            label9.Location = new Point(465, 0);
             label9.Name = "label9";
-            label9.Size = new Size(470, 33);
+            label9.Size = new Size(456, 33);
             label9.TabIndex = 2;
             label9.Text = "Email";
             label9.TextAlign = ContentAlignment.MiddleLeft;
@@ -394,7 +507,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             txtsdt.Location = new Point(3, 36);
             txtsdt.Name = "txtsdt";
             txtsdt.PlaceholderText = "Nhập số điện thoại";
-            txtsdt.Size = new Size(470, 34);
+            txtsdt.Size = new Size(456, 45);
             txtsdt.TabIndex = 4;
             // 
             // tableLayoutPanel5
@@ -409,7 +522,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel5.RowCount = 2;
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 37.2340431F));
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 62.7659569F));
-            tableLayoutPanel5.Size = new Size(952, 84);
+            tableLayoutPanel5.Size = new Size(924, 84);
             tableLayoutPanel5.TabIndex = 2;
             // 
             // txtaddress
@@ -420,7 +533,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             txtaddress.Multiline = true;
             txtaddress.Name = "txtaddress";
             txtaddress.PlaceholderText = "Nhập địa chỉ";
-            txtaddress.Size = new Size(946, 47);
+            txtaddress.Size = new Size(918, 47);
             txtaddress.TabIndex = 5;
             // 
             // label8
@@ -430,7 +543,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             label8.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label8.Location = new Point(3, 0);
             label8.Name = "label8";
-            label8.Size = new Size(946, 31);
+            label8.Size = new Size(918, 31);
             label8.TabIndex = 1;
             label8.Text = "Địa chỉ";
             label8.TextAlign = ContentAlignment.MiddleLeft;
@@ -447,7 +560,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel3.RowCount = 2;
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel3.Size = new Size(958, 202);
+            tableLayoutPanel3.Size = new Size(930, 202);
             tableLayoutPanel3.TabIndex = 0;
             // 
             // label1
@@ -457,7 +570,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             label1.Font = new Font("Times New Roman", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.Location = new Point(3, 0);
             label1.Name = "label1";
-            label1.Size = new Size(952, 40);
+            label1.Size = new Size(924, 40);
             label1.TabIndex = 0;
             label1.Text = "Thông tin cá nhân";
             label1.TextAlign = ContentAlignment.MiddleLeft;
@@ -484,7 +597,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 29.4871788F));
             tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 17.9487171F));
             tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 30.1282043F));
-            tableLayoutPanel4.Size = new Size(952, 156);
+            tableLayoutPanel4.Size = new Size(924, 156);
             tableLayoutPanel4.TabIndex = 1;
             // 
             // label2
@@ -493,7 +606,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             label2.Dock = DockStyle.Fill;
             label2.Location = new Point(3, 0);
             label2.Name = "label2";
-            label2.Size = new Size(470, 34);
+            label2.Size = new Size(456, 34);
             label2.TabIndex = 0;
             label2.Text = "Họ và tên";
             label2.TextAlign = ContentAlignment.MiddleLeft;
@@ -504,7 +617,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             label3.Dock = DockStyle.Fill;
             label3.Location = new Point(3, 80);
             label3.Name = "label3";
-            label3.Size = new Size(470, 28);
+            label3.Size = new Size(456, 28);
             label3.TabIndex = 1;
             label3.Text = "Giới tính";
             label3.TextAlign = ContentAlignment.MiddleLeft;
@@ -513,9 +626,9 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             // 
             label4.AutoSize = true;
             label4.Dock = DockStyle.Fill;
-            label4.Location = new Point(479, 0);
+            label4.Location = new Point(465, 0);
             label4.Name = "label4";
-            label4.Size = new Size(470, 34);
+            label4.Size = new Size(456, 34);
             label4.TabIndex = 2;
             label4.Text = "Ngày sinh";
             label4.TextAlign = ContentAlignment.MiddleLeft;
@@ -524,9 +637,9 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             // 
             label5.AutoSize = true;
             label5.Dock = DockStyle.Fill;
-            label5.Location = new Point(479, 80);
+            label5.Location = new Point(465, 80);
             label5.Name = "label5";
-            label5.Size = new Size(470, 28);
+            label5.Size = new Size(456, 28);
             label5.TabIndex = 3;
             label5.Text = "CCCD/CMND";
             label5.TextAlign = ContentAlignment.MiddleLeft;
@@ -537,23 +650,23 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             txtname.Location = new Point(3, 37);
             txtname.Name = "txtname";
             txtname.PlaceholderText = "Nhập họ và tên";
-            txtname.Size = new Size(470, 34);
+            txtname.Size = new Size(456, 45);
             txtname.TabIndex = 4;
             // 
             // txtCCCD
             // 
             txtCCCD.Dock = DockStyle.Fill;
-            txtCCCD.Location = new Point(479, 111);
+            txtCCCD.Location = new Point(465, 111);
             txtCCCD.Name = "txtCCCD";
-            txtCCCD.Size = new Size(470, 34);
+            txtCCCD.Size = new Size(456, 45);
             txtCCCD.TabIndex = 5;
             // 
             // dtpBirthday
             // 
             dtpBirthday.Dock = DockStyle.Fill;
-            dtpBirthday.Location = new Point(479, 37);
+            dtpBirthday.Location = new Point(465, 37);
             dtpBirthday.Name = "dtpBirthday";
-            dtpBirthday.Size = new Size(470, 34);
+            dtpBirthday.Size = new Size(456, 45);
             dtpBirthday.TabIndex = 6;
             // 
             // cbGender
@@ -562,7 +675,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             cbGender.FormattingEnabled = true;
             cbGender.Location = new Point(3, 111);
             cbGender.Name = "cbGender";
-            cbGender.Size = new Size(470, 34);
+            cbGender.Size = new Size(456, 44);
             cbGender.TabIndex = 7;
             // 
             // tableLayoutPanel11
@@ -574,41 +687,43 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel11.Controls.Add(btnCancel, 1, 0);
             tableLayoutPanel11.Controls.Add(btnSave, 2, 0);
             tableLayoutPanel11.Dock = DockStyle.Fill;
-            tableLayoutPanel11.Location = new Point(3, 889);
+            tableLayoutPanel11.Location = new Point(3, 934);
             tableLayoutPanel11.Name = "tableLayoutPanel11";
             tableLayoutPanel11.RowCount = 1;
             tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel11.Size = new Size(964, 49);
+            tableLayoutPanel11.Size = new Size(936, 49);
             tableLayoutPanel11.TabIndex = 1;
             // 
             // btnCancel
             // 
             btnCancel.Dock = DockStyle.Fill;
-            btnCancel.Location = new Point(677, 3);
+            btnCancel.Location = new Point(658, 3);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(138, 43);
+            btnCancel.Size = new Size(134, 43);
             btnCancel.TabIndex = 0;
             btnCancel.Text = "Hủy";
             btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Click += btnCancel_Click;
             // 
             // btnSave
             // 
             btnSave.BackColor = Color.MediumBlue;
             btnSave.Dock = DockStyle.Fill;
             btnSave.ForeColor = Color.White;
-            btnSave.Location = new Point(821, 3);
+            btnSave.Location = new Point(798, 3);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(140, 43);
+            btnSave.Size = new Size(135, 43);
             btnSave.TabIndex = 1;
             btnSave.Text = "Lưu hồ sơ";
             btnSave.UseVisualStyleBackColor = false;
+            btnSave.Click += btnSave_Click;
             // 
             // CreateNewPatient
             // 
-            AutoScaleDimensions = new SizeF(10F, 20F);
+            AutoScaleDimensions = new SizeF(14F, 29F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1000, 971);
+            ClientSize = new Size(972, 1016);
             Controls.Add(panel1);
             Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Margin = new Padding(4, 3, 4, 3);
@@ -625,6 +740,10 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
             tableLayoutPanel9.PerformLayout();
             tableLayoutPanel10.ResumeLayout(false);
             tableLayoutPanel10.PerformLayout();
+            tableLayoutPanel13.ResumeLayout(false);
+            tableLayoutPanel13.PerformLayout();
+            tableLayoutPanel12.ResumeLayout(false);
+            tableLayoutPanel12.PerformLayout();
             tableLayoutPanel6.ResumeLayout(false);
             tableLayoutPanel6.PerformLayout();
             tableLayoutPanel7.ResumeLayout(false);
@@ -674,7 +793,7 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
         private TableLayoutPanel tableLayoutPanel10;
         private TextBox txtDiung;
         private Label Tienef;
-        private TextBox txtTiensuBenh;
+        private TextBox txtBHYT;
         private Label label13;
         private ComboBox cbBlood;
         private TextBox txtEmail;
@@ -682,5 +801,13 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
         private TableLayoutPanel tableLayoutPanel11;
         private Button btnCancel;
         private Button btnSave;
+        private TableLayoutPanel tableLayoutPanel12;
+        private Label label15;
+        private TableLayoutPanel tableLayoutPanel13;
+        private TextBox txtDonvi;
+        private Label label16;
+        private Label label17;
+        private DateTimePicker dtpExpired;
+        private DateTimePicker dtpEffective;
     }
 }

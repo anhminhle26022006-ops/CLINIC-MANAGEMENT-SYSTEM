@@ -12,9 +12,21 @@ namespace ClinicManagementSystem.Winforms.Forms.reception
 {
     public partial class ConfirmAppointment : Form
     {
-        public ConfirmAppointment()
+
+        public ConfirmAppointment(
+        string patientName,
+        string departmentName,
+        string doctorName,
+        string roomCode,
+        string appointmentTime)
         {
             InitializeComponent();
+
+            lbPatient.Text = patientName;
+            lbDepartment.Text = departmentName;
+            lbDoctor.Text = doctorName;
+            lbRoom.Text = roomCode;
+            lbTime.Text = appointmentTime;
         }
 
     }

@@ -39,6 +39,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             // viewHostPanel
             // 
+            this.viewHostPanel.AutoScroll = true;
             this.viewHostPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
             this.viewHostPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
             this.viewHostPanel.Controls.Add(this.tblSplit);
@@ -48,7 +49,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.viewHostPanel.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
             this.viewHostPanel.Location = new System.Drawing.Point(0, 0);
             this.viewHostPanel.Name = "viewHostPanel";
-            this.viewHostPanel.Size = new System.Drawing.Size(1244, 744);
+            this.viewHostPanel.Size = new System.Drawing.Size(1500, 900);
             this.viewHostPanel.TabIndex = 0;
             // 
             // lblTitle
@@ -57,7 +58,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.lblTitle.Location = new System.Drawing.Point(24, 24);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(760, 32);
+            this.lblTitle.Size = new System.Drawing.Size(900, 40);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Hồ Sơ Bệnh Án";
             // 
@@ -67,7 +68,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.lblSubtitle.Location = new System.Drawing.Point(24, 56);
             this.lblSubtitle.Name = "lblSubtitle";
-            this.lblSubtitle.Size = new System.Drawing.Size(900, 28);
+            this.lblSubtitle.Size = new System.Drawing.Size(1320, 34);
             this.lblSubtitle.TabIndex = 1;
             this.lblSubtitle.Text = "Xem hồ sơ bệnh án, lịch sử chụp phim và kết quả xét nghiệm của bệnh nhân";
             // 
@@ -77,15 +78,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tblSplit.ColumnCount = 2;
-            this.tblSplit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32F));
-            this.tblSplit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68F));
+            this.tblSplit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tblSplit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tblSplit.Controls.Add(this.pnlLeft, 0, 0);
             this.tblSplit.Controls.Add(this.pnlRight, 1, 0);
             this.tblSplit.Location = new System.Drawing.Point(24, 96);
             this.tblSplit.Name = "tblSplit";
             this.tblSplit.RowCount = 1;
             this.tblSplit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblSplit.Size = new System.Drawing.Size(1196, 620);
+            this.tblSplit.Size = new System.Drawing.Size(1452, 760);
             this.tblSplit.TabIndex = 2;
             // 
             // pnlLeft
@@ -100,7 +101,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.pnlLeft.Location = new System.Drawing.Point(0, 0);
             this.pnlLeft.Margin = new System.Windows.Forms.Padding(0, 0, 16, 0);
             this.pnlLeft.Name = "pnlLeft";
-            this.pnlLeft.Size = new System.Drawing.Size(366, 620);
+            this.pnlLeft.Size = new System.Drawing.Size(564, 760);
             this.pnlLeft.TabIndex = 0;
             // 
             // txtRecordSearch
@@ -112,7 +113,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.txtRecordSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
             this.txtRecordSearch.Location = new System.Drawing.Point(18, 22);
             this.txtRecordSearch.Name = "txtRecordSearch";
-            this.txtRecordSearch.Size = new System.Drawing.Size(330, 25);
+            this.txtRecordSearch.Size = new System.Drawing.Size(528, 25);
             this.txtRecordSearch.TabIndex = 0;
             this.txtRecordSearch.Text = "Tìm kiếm bệnh nhân...";
             // 
@@ -125,7 +126,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.flpPatients.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpPatients.Location = new System.Drawing.Point(18, 64);
             this.flpPatients.Name = "flpPatients";
-            this.flpPatients.Size = new System.Drawing.Size(330, 538);
+            this.flpPatients.Size = new System.Drawing.Size(528, 678);
             this.flpPatients.TabIndex = 1;
             this.flpPatients.WrapContents = false;
             // 
@@ -144,10 +145,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.pnlRight.CornerRadius = 8;
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlRight.FillColor = System.Drawing.Color.White;
-            this.pnlRight.Location = new System.Drawing.Point(382, 0);
+            this.pnlRight.Location = new System.Drawing.Point(596, 0);
             this.pnlRight.Margin = new System.Windows.Forms.Padding(0);
             this.pnlRight.Name = "pnlRight";
-            this.pnlRight.Size = new System.Drawing.Size(814, 620);
+            this.pnlRight.Size = new System.Drawing.Size(856, 760);
             this.pnlRight.TabIndex = 1;
             // 
             // lblHeart
@@ -158,7 +159,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblHeart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
             this.lblHeart.Location = new System.Drawing.Point(0, 100);
             this.lblHeart.Name = "lblHeart";
-            this.lblHeart.Size = new System.Drawing.Size(814, 70);
+            this.lblHeart.Size = new System.Drawing.Size(856, 70);
             this.lblHeart.TabIndex = 0;
             this.lblHeart.Text = "♡";
             this.lblHeart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -171,7 +172,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblNotice1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.lblNotice1.Location = new System.Drawing.Point(0, 180);
             this.lblNotice1.Name = "lblNotice1";
-            this.lblNotice1.Size = new System.Drawing.Size(814, 32);
+            this.lblNotice1.Size = new System.Drawing.Size(856, 32);
             this.lblNotice1.TabIndex = 1;
             this.lblNotice1.Text = "Chọn bệnh nhân để xem lịch sử hồ sơ bệnh án";
             this.lblNotice1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -184,7 +185,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblNotice2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.lblNotice2.Location = new System.Drawing.Point(0, 218);
             this.lblNotice2.Name = "lblNotice2";
-            this.lblNotice2.Size = new System.Drawing.Size(814, 28);
+            this.lblNotice2.Size = new System.Drawing.Size(856, 28);
             this.lblNotice2.TabIndex = 2;
             this.lblNotice2.Text = "Danh sách bệnh nhân đăng ký hiển thị phía bên trái";
             this.lblNotice2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -195,7 +196,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblPatientName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.lblPatientName.Location = new System.Drawing.Point(24, 24);
             this.lblPatientName.Name = "lblPatientName";
-            this.lblPatientName.Size = new System.Drawing.Size(400, 30);
+            this.lblPatientName.Size = new System.Drawing.Size(808, 34);
             this.lblPatientName.TabIndex = 3;
             this.lblPatientName.Text = "Tên Bệnh Nhân";
             this.lblPatientName.Visible = false;
@@ -206,7 +207,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblPatientMeta.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.lblPatientMeta.Location = new System.Drawing.Point(24, 58);
             this.lblPatientMeta.Name = "lblPatientMeta";
-            this.lblPatientMeta.Size = new System.Drawing.Size(400, 22);
+            this.lblPatientMeta.Size = new System.Drawing.Size(808, 26);
             this.lblPatientMeta.TabIndex = 4;
             this.lblPatientMeta.Text = "Mã BN: - | Giới tính: - | Tuổi: -";
             this.lblPatientMeta.Visible = false;
@@ -217,7 +218,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblPatientContact.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.lblPatientContact.Location = new System.Drawing.Point(24, 82);
             this.lblPatientContact.Name = "lblPatientContact";
-            this.lblPatientContact.Size = new System.Drawing.Size(450, 22);
+            this.lblPatientContact.Size = new System.Drawing.Size(808, 26);
             this.lblPatientContact.TabIndex = 5;
             this.lblPatientContact.Text = "SĐT: - | Địa chỉ: -";
             this.lblPatientContact.Visible = false;
@@ -228,7 +229,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblHistoryTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(94)))), ((int)(((byte)(240)))));
             this.lblHistoryTitle.Location = new System.Drawing.Point(24, 130);
             this.lblHistoryTitle.Name = "lblHistoryTitle";
-            this.lblHistoryTitle.Size = new System.Drawing.Size(400, 22);
+            this.lblHistoryTitle.Size = new System.Drawing.Size(808, 24);
             this.lblHistoryTitle.TabIndex = 6;
             this.lblHistoryTitle.Text = "LỊCH SỬ KẾT QUẢ XÉT NGHIỆM";
             this.lblHistoryTitle.Visible = false;
@@ -242,7 +243,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.flpHistory.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpHistory.Location = new System.Drawing.Point(24, 170);
             this.flpHistory.Name = "flpHistory";
-            this.flpHistory.Size = new System.Drawing.Size(766, 430);
+            this.flpHistory.Size = new System.Drawing.Size(808, 570);
             this.flpHistory.TabIndex = 7;
             this.flpHistory.Visible = false;
             this.flpHistory.WrapContents = false;
@@ -255,7 +256,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.Controls.Add(this.viewHostPanel);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Name = "ucPatientRecords";
-            this.Size = new System.Drawing.Size(1244, 744);
+            this.Size = new System.Drawing.Size(1500, 900);
             this.Load += new System.EventHandler(this.ucPatientRecords_Load);
             this.Resize += new System.EventHandler(this.ucPatientRecords_Resize);
             this.viewHostPanel.ResumeLayout(false);

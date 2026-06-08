@@ -24,6 +24,11 @@ namespace ClinicManagementSystem.Winforms.Forms
     {
         private const int ApiTimeoutSeconds = 60;
         private const string DefaultBackendBaseUrl = "http://localhost:5000";
+        private readonly string customerName;
+        private readonly decimal amount;
+        private readonly int encounterId;
+
+        
 
         private CancellationTokenSource apiRequestCancellation;
         private bool isClosing;
@@ -34,6 +39,18 @@ namespace ClinicManagementSystem.Winforms.Forms
         private TextBox txtCheckoutUrl;
         private Button btnCheckStatus;
 
+        public PayOsPaymentForm(
+            int encounterId,
+            string customerName,
+            decimal amount)
+        {
+            InitializeComponent();
+
+            this.encounterId = encounterId;
+            this.customerName = customerName;
+            this.amount = amount;
+        }
+
         public PayOsPaymentForm()
         {
             InitializeComponent();
@@ -42,11 +59,20 @@ namespace ClinicManagementSystem.Winforms.Forms
         private void PayOsPaymentForm_Load(object sender, EventArgs e)
         {
             ConfigurePayOsUi();
+
             paymentStatusTimer = new System.Windows.Forms.Timer
             {
                 Interval = 5000
             };
-            paymentStatusTimer.Tick += async (s, args) => await CheckCurrentPaymentStatusAsync(false);
+
+            paymentStatusTimer.Tick += async (s, args)
+                => await CheckCurrentPaymentStatusAsync(false);
+
+            // ===== Tự điền thông tin =====
+            txtTenTaiKhoan.Text = customerName;
+            txtSoTien.Text = amount.ToString("0");
+
+            txtNoiDung.Text = $"HD{encounterId}";
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
