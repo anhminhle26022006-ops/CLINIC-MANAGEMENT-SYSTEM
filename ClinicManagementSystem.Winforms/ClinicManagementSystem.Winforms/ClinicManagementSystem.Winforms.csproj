@@ -16,6 +16,11 @@
     <ProjectReference Include="..\ServicesExternal\ServicesExternal.csproj" />
   </ItemGroup>
 
+<ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="UserControls\Doctor\" />
+</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="RestSharp" Version="114.0.0" />
@@ -29,11 +34,65 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Mainforms\PharmacyMainform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Mainforms\PharmacyMainform.Designer.cs">
+      <DependentUpon>PharmacyMainform.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyOverview.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyOverview.Designer.cs">
+      <DependentUpon>ucPharmacyOverview.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPrescriptionDispense.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPrescriptionDispense.Designer.cs">
+      <DependentUpon>ucPrescriptionDispense.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyPrescriptionQueueCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyPrescriptionQueueCard.Designer.cs">
+      <DependentUpon>ucPharmacyPrescriptionQueueCard.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyMedicineItemCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyMedicineItemCard.Designer.cs">
+      <DependentUpon>ucPharmacyMedicineItemCard.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucMedicineCatalog.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucMedicineCatalog.Designer.cs">
+      <DependentUpon>ucMedicineCatalog.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucInventoryManagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucInventoryManagement.Designer.cs">
+      <DependentUpon>ucInventoryManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyShifts.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyShifts.Designer.cs">
+      <DependentUpon>ucPharmacyShifts.cs</DependentUpon>
+    </Compile>
     <Compile Update="UserControls\Technician\ucPatientRecords.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="UserControls\Technician\ucPatientRecords.Designer.cs">
       <DependentUpon>ucPatientRecords.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucPatientRecordRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucPatientRecordRow.Designer.cs">
+      <DependentUpon>ucPatientRecordRow.cs</DependentUpon>
     </Compile>
     <Compile Update="UserControls\Technician\ucSeederTool.cs">
       <SubType>UserControl</SubType>
@@ -65,6 +124,36 @@
     <Compile Update="UserControls\Technician\ucTechnicianRequests.Designer.cs">
       <DependentUpon>ucTechnicianRequests.cs</DependentUpon>
     </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianRequestGroupCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianRequestGroupCard.Designer.cs">
+      <DependentUpon>ucTechnicianRequestGroupCard.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianRequestServiceRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianRequestServiceRow.Designer.cs">
+      <DependentUpon>ucTechnicianRequestServiceRow.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucPatientHistoryResultCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucPatientHistoryResultCard.Designer.cs">
+      <DependentUpon>ucPatientHistoryResultCard.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianQueueRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianQueueRow.Designer.cs">
+      <DependentUpon>ucTechnicianQueueRow.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianShiftTableRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Technician\ucTechnicianShiftTableRow.Designer.cs">
+      <DependentUpon>ucTechnicianShiftTableRow.cs</DependentUpon>
+    </Compile>
     <Compile Update="UserControls\Technician\ucTechnicianShifts.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -90,8 +179,35 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Mainforms\PharmacyMainform.resx">
+      <DependentUpon>PharmacyMainform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Pharmacy\ucPharmacyOverview.resx">
+      <DependentUpon>ucPharmacyOverview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Pharmacy\ucPrescriptionDispense.resx">
+      <DependentUpon>ucPrescriptionDispense.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Pharmacy\ucPharmacyPrescriptionQueueCard.resx">
+      <DependentUpon>ucPharmacyPrescriptionQueueCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Pharmacy\ucPharmacyMedicineItemCard.resx">
+      <DependentUpon>ucPharmacyMedicineItemCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Pharmacy\ucMedicineCatalog.resx">
+      <DependentUpon>ucMedicineCatalog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Pharmacy\ucInventoryManagement.resx">
+      <DependentUpon>ucInventoryManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Pharmacy\ucPharmacyShifts.resx">
+      <DependentUpon>ucPharmacyShifts.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Update="UserControls\Technician\ucPatientRecords.resx">
       <DependentUpon>ucPatientRecords.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucPatientRecordRow.resx">
+      <DependentUpon>ucPatientRecordRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="UserControls\Technician\ucSeederTool.resx">
       <DependentUpon>ucSeederTool.cs</DependentUpon>
@@ -107,6 +223,21 @@
     </EmbeddedResource>
     <EmbeddedResource Update="UserControls\Technician\ucTechnicianRequests.resx">
       <DependentUpon>ucTechnicianRequests.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianRequestGroupCard.resx">
+      <DependentUpon>ucTechnicianRequestGroupCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianRequestServiceRow.resx">
+      <DependentUpon>ucTechnicianRequestServiceRow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucPatientHistoryResultCard.resx">
+      <DependentUpon>ucPatientHistoryResultCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianQueueRow.resx">
+      <DependentUpon>ucTechnicianQueueRow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Technician\ucTechnicianShiftTableRow.resx">
+      <DependentUpon>ucTechnicianShiftTableRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="UserControls\Technician\ucTechnicianShifts.resx">
       <DependentUpon>ucTechnicianShifts.cs</DependentUpon>
