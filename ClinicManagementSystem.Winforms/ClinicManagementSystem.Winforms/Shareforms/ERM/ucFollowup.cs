@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTO.Clinical.erm;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,25 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
         public ucFollowup()
         {
             InitializeComponent();
+        }
+        public void Bind(List<FollowUpHistoryDto> followups)
+        {
+            flowLayoutPanel1.Controls.Clear();
+
+            if (followups == null || followups.Count == 0)
+                return;
+
+            var sorted = followups
+                .OrderByDescending(x => x.FollowUpDate)
+                .ToList();
+
+            foreach (var item in sorted)
+            {
+                var card = new ucFollowupCard();
+                card.Bind(item);
+
+                flowLayoutPanel1.Controls.Add(card);
+            }
         }
     }
 }

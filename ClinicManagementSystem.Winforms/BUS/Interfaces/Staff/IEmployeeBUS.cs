@@ -7,5 +7,7 @@ namespace BUS.Interfaces
     {
         List<EmployeeDTO> GetByRole(string roleName);
         EmployeeDTO FindByName(string fullName);
+        Task<List<ApiEmployeeDTO>> GetAllAsync();
+        Task<ApiEmployeeDTO> AddAsync(ApiEmployeeDTO dto);
     }
 }

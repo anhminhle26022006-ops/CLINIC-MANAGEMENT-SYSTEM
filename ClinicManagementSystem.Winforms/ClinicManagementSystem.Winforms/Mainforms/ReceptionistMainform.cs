@@ -41,7 +41,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         {
             InitializeComponent();
             layoutReady = true;
-            
+
         }
 
         public ReceptionistMainform(UserDTO user) : this()
@@ -136,7 +136,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void btnPayment_Click(object sender, EventArgs e)
         {
-
+            LoadContent(new Payment());
         }
 
         private void btnToday_Click(object sender, EventArgs e)
@@ -155,6 +155,11 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         }
 
         private void btnNavShifts_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
         {
 
         }

@@ -16,5 +16,16 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
         {
             InitializeComponent();
         }
+        public void Bind(EncounterHistoryDto item)
+        {
+            if (item == null) return;
+
+            lblVisitDate.Text = item.VisitDate.ToString("dd/MM/yyyy");
+            lblDoctor.Text = item.DoctorName;
+            lblDepartment.Text = item.DepartmentName;
+            lblSymptoms.Text = item.Symptoms;
+            lblDiagnosis.Text = item.Diagnosis;
+            lblConclusion.Text = item.Conclusion;
+        }
     }
 }

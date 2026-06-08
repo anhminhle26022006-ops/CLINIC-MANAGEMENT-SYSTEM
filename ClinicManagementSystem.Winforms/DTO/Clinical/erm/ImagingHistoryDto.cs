@@ -15,6 +15,7 @@ namespace DTO.Clinical.erm
         public string BodyPart { get; set; }
 
         public string DoctorName { get; set; }
+        public string PatientName { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

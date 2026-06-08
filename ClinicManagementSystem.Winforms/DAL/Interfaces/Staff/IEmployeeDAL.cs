@@ -7,5 +7,13 @@ namespace DAL.Interfaces
     {
         List<EmployeeDTO> GetByRole(string roleName);
         EmployeeDTO FindByName(string fullName);
+        Task<List<ApiEmployeeDTO>> GetAllAsync();
+        Task<ApiEmployeeDTO> GetByCodeAsync(string code);
+        Task<int?> GetIdByCodeAsync(string code);
+
+        Task<ApiEmployeeDTO> InsertAsync(ApiEmployeeDTO dto);
+        Task<ApiEmployeeDTO> UpdateAsync(ApiEmployeeDTO dto);
+
+        Task UpsertAsync(ApiEmployeeDTO dto);
     }
 }

@@ -9,8 +9,8 @@ namespace ClinicManagementSystem.Winforms.Controllers
     {
         private readonly AppointmentBUS appointmentBUS = new();
         private readonly DoctorScheduleBUS scheduleBUS = new();
-        private readonly RoomBUS roomBUS = new();
-        private readonly DepartmentBUS departmentBUS = new();
+        private readonly Room_RecepBUS roomBUS = new();
+        private readonly Department_RecepBUS departmentBUS = new();
 
         public int GetWaitingCount()
         {

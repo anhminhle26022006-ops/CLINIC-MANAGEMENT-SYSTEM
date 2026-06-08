@@ -96,6 +96,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             // viewHostPanel
             // 
+            viewHostPanel.AutoScroll = true;
             viewHostPanel.BackColor = Color.FromArgb(247, 249, 252);
             viewHostPanel.BorderColor = Color.FromArgb(247, 249, 252);
             viewHostPanel.BorderWidth = 1;
@@ -109,9 +110,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             viewHostPanel.Dock = DockStyle.Fill;
             viewHostPanel.FillColor = Color.FromArgb(247, 249, 252);
             viewHostPanel.Location = new Point(0, 0);
-            viewHostPanel.Margin = new Padding(3, 4, 3, 4);
+            viewHostPanel.Margin = new Padding(5, 6, 5, 6);
             viewHostPanel.Name = "viewHostPanel";
-            viewHostPanel.Size = new Size(1422, 992);
+            viewHostPanel.Size = new Size(2133, 1608);
             viewHostPanel.TabIndex = 0;
             // 
             // pnlListPanel
@@ -124,10 +125,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlListPanel.Controls.Add(lblListTitle);
             pnlListPanel.CornerRadius = 8;
             pnlListPanel.FillColor = Color.White;
-            pnlListPanel.Location = new Point(27, 704);
-            pnlListPanel.Margin = new Padding(3, 4, 3, 4);
+            pnlListPanel.Location = new Point(41, 1072);
+            pnlListPanel.Margin = new Padding(5, 6, 5, 6);
             pnlListPanel.Name = "pnlListPanel";
-            pnlListPanel.Size = new Size(1367, 267);
+            pnlListPanel.Size = new Size(2051, 487);
             pnlListPanel.TabIndex = 5;
             // 
             // flpShiftsTable
@@ -135,10 +136,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             flpShiftsTable.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             flpShiftsTable.AutoScroll = true;
             flpShiftsTable.FlowDirection = FlowDirection.TopDown;
-            flpShiftsTable.Location = new Point(21, 80);
-            flpShiftsTable.Margin = new Padding(3, 4, 3, 4);
+            flpShiftsTable.Location = new Point(31, 125);
+            flpShiftsTable.Margin = new Padding(5, 6, 5, 6);
             flpShiftsTable.Name = "flpShiftsTable";
-            flpShiftsTable.Size = new Size(1326, 167);
+            flpShiftsTable.Size = new Size(1952, 241);
             flpShiftsTable.TabIndex = 1;
             flpShiftsTable.WrapContents = false;
             // 
@@ -146,9 +147,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblListTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
             lblListTitle.ForeColor = Color.FromArgb(17, 24, 39);
-            lblListTitle.Location = new Point(21, 24);
+            lblListTitle.Location = new Point(31, 36);
+            lblListTitle.Margin = new Padding(5, 0, 5, 0);
             lblListTitle.Name = "lblListTitle";
-            lblListTitle.Size = new Size(480, 37);
+            lblListTitle.Size = new Size(720, 56);
             lblListTitle.TabIndex = 0;
             lblListTitle.Text = "Danh sách ca trực chi tiết";
             // 
@@ -162,10 +164,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlCalendar.Controls.Add(lblCalendarTitle);
             pnlCalendar.CornerRadius = 8;
             pnlCalendar.FillColor = Color.White;
-            pnlCalendar.Location = new Point(27, 296);
-            pnlCalendar.Margin = new Padding(3, 4, 3, 4);
+            pnlCalendar.Location = new Point(41, 444);
+            pnlCalendar.Margin = new Padding(5, 6, 5, 6);
             pnlCalendar.Name = "pnlCalendar";
-            pnlCalendar.Size = new Size(1367, 387);
+            pnlCalendar.Size = new Size(2050, 580);
             pnlCalendar.TabIndex = 4;
             // 
             // pnlDaysContainer
@@ -178,12 +180,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlDaysContainer.Controls.Add(pnlDay3);
             pnlDaysContainer.Controls.Add(pnlDay2);
             pnlDaysContainer.Controls.Add(pnlDay1);
-            pnlDaysContainer.Location = new Point(21, 80);
-            pnlDaysContainer.Margin = new Padding(3, 4, 3, 4);
+            pnlDaysContainer.Location = new Point(31, 120);
+            pnlDaysContainer.Margin = new Padding(5, 6, 5, 6);
             pnlDaysContainer.Name = "pnlDaysContainer";
-            pnlDaysContainer.Size = new Size(1326, 280);
+            pnlDaysContainer.Size = new Size(1989, 420);
             pnlDaysContainer.TabIndex = 1;
-            pnlDaysContainer.Paint += pnlDaysContainer_Paint;
             // 
             // pnlDay7
             // 
@@ -197,19 +198,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlDay7.Controls.Add(lblDayDate7);
             pnlDay7.CornerRadius = 8;
             pnlDay7.FillColor = Color.White;
-            pnlDay7.Location = new Point(1129, 5);
-            pnlDay7.Margin = new Padding(3, 4, 3, 4);
+            pnlDay7.Location = new Point(1694, 8);
+            pnlDay7.Margin = new Padding(5, 6, 5, 6);
             pnlDay7.Name = "pnlDay7";
-            pnlDay7.Size = new Size(171, 267);
+            pnlDay7.Size = new Size(257, 400);
             pnlDay7.TabIndex = 6;
             // 
             // lblDept7
             // 
             lblDept7.Font = new Font("Segoe UI", 7.5F);
             lblDept7.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDept7.Location = new Point(11, 117);
+            lblDept7.Location = new Point(17, 176);
+            lblDept7.Margin = new Padding(5, 0, 5, 0);
             lblDept7.Name = "lblDept7";
-            lblDept7.Size = new Size(149, 48);
+            lblDept7.Size = new Size(223, 72);
             lblDept7.TabIndex = 4;
             lblDept7.Text = "-";
             // 
@@ -217,9 +219,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblRoom7.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
             lblRoom7.ForeColor = Color.FromArgb(107, 114, 128);
-            lblRoom7.Location = new Point(11, 91);
+            lblRoom7.Location = new Point(17, 136);
+            lblRoom7.Margin = new Padding(5, 0, 5, 0);
             lblRoom7.Name = "lblRoom7";
-            lblRoom7.Size = new Size(149, 24);
+            lblRoom7.Size = new Size(223, 36);
             lblRoom7.TabIndex = 3;
             lblRoom7.Text = "-";
             // 
@@ -230,10 +233,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             btnShift7.FlatStyle = FlatStyle.Flat;
             btnShift7.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             btnShift7.ForeColor = Color.FromArgb(107, 114, 128);
-            btnShift7.Location = new Point(11, 48);
-            btnShift7.Margin = new Padding(3, 4, 3, 4);
+            btnShift7.Location = new Point(17, 72);
+            btnShift7.Margin = new Padding(5, 6, 5, 6);
             btnShift7.Name = "btnShift7";
-            btnShift7.Size = new Size(149, 37);
+            btnShift7.Size = new Size(223, 56);
             btnShift7.TabIndex = 2;
             btnShift7.Text = "Trống";
             btnShift7.UseVisualStyleBackColor = false;
@@ -242,9 +245,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblDayName7.Font = new Font("Segoe UI", 9.5F);
             lblDayName7.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDayName7.Location = new Point(91, 13);
+            lblDayName7.Location = new Point(137, 20);
+            lblDayName7.Margin = new Padding(5, 0, 5, 0);
             lblDayName7.Name = "lblDayName7";
-            lblDayName7.Size = new Size(69, 29);
+            lblDayName7.Size = new Size(103, 44);
             lblDayName7.TabIndex = 1;
             lblDayName7.Text = "CN";
             lblDayName7.TextAlign = ContentAlignment.TopRight;
@@ -252,9 +256,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // lblDayDate7
             // 
             lblDayDate7.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblDayDate7.Location = new Point(11, 13);
+            lblDayDate7.Location = new Point(17, 20);
+            lblDayDate7.Margin = new Padding(5, 0, 5, 0);
             lblDayDate7.Name = "lblDayDate7";
-            lblDayDate7.Size = new Size(69, 29);
+            lblDayDate7.Size = new Size(103, 44);
             lblDayDate7.TabIndex = 0;
             lblDayDate7.Text = "dd/MM";
             // 
@@ -270,19 +275,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlDay6.Controls.Add(lblDayDate6);
             pnlDay6.CornerRadius = 8;
             pnlDay6.FillColor = Color.White;
-            pnlDay6.Location = new Point(942, 5);
-            pnlDay6.Margin = new Padding(3, 4, 3, 4);
+            pnlDay6.Location = new Point(1413, 8);
+            pnlDay6.Margin = new Padding(5, 6, 5, 6);
             pnlDay6.Name = "pnlDay6";
-            pnlDay6.Size = new Size(171, 267);
+            pnlDay6.Size = new Size(257, 400);
             pnlDay6.TabIndex = 5;
             // 
             // lblDept6
             // 
             lblDept6.Font = new Font("Segoe UI", 7.5F);
             lblDept6.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDept6.Location = new Point(11, 117);
+            lblDept6.Location = new Point(17, 176);
+            lblDept6.Margin = new Padding(5, 0, 5, 0);
             lblDept6.Name = "lblDept6";
-            lblDept6.Size = new Size(149, 48);
+            lblDept6.Size = new Size(223, 72);
             lblDept6.TabIndex = 4;
             lblDept6.Text = "-";
             // 
@@ -290,9 +296,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblRoom6.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
             lblRoom6.ForeColor = Color.FromArgb(107, 114, 128);
-            lblRoom6.Location = new Point(11, 91);
+            lblRoom6.Location = new Point(17, 136);
+            lblRoom6.Margin = new Padding(5, 0, 5, 0);
             lblRoom6.Name = "lblRoom6";
-            lblRoom6.Size = new Size(149, 24);
+            lblRoom6.Size = new Size(223, 36);
             lblRoom6.TabIndex = 3;
             lblRoom6.Text = "-";
             // 
@@ -303,10 +310,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             btnShift6.FlatStyle = FlatStyle.Flat;
             btnShift6.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             btnShift6.ForeColor = Color.FromArgb(107, 114, 128);
-            btnShift6.Location = new Point(11, 48);
-            btnShift6.Margin = new Padding(3, 4, 3, 4);
+            btnShift6.Location = new Point(17, 72);
+            btnShift6.Margin = new Padding(5, 6, 5, 6);
             btnShift6.Name = "btnShift6";
-            btnShift6.Size = new Size(149, 37);
+            btnShift6.Size = new Size(223, 56);
             btnShift6.TabIndex = 2;
             btnShift6.Text = "Trống";
             btnShift6.UseVisualStyleBackColor = false;
@@ -315,9 +322,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblDayName6.Font = new Font("Segoe UI", 9.5F);
             lblDayName6.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDayName6.Location = new Point(91, 13);
+            lblDayName6.Location = new Point(137, 20);
+            lblDayName6.Margin = new Padding(5, 0, 5, 0);
             lblDayName6.Name = "lblDayName6";
-            lblDayName6.Size = new Size(69, 29);
+            lblDayName6.Size = new Size(103, 44);
             lblDayName6.TabIndex = 1;
             lblDayName6.Text = "Thứ 7";
             lblDayName6.TextAlign = ContentAlignment.TopRight;
@@ -325,9 +333,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // lblDayDate6
             // 
             lblDayDate6.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblDayDate6.Location = new Point(11, 13);
+            lblDayDate6.Location = new Point(17, 20);
+            lblDayDate6.Margin = new Padding(5, 0, 5, 0);
             lblDayDate6.Name = "lblDayDate6";
-            lblDayDate6.Size = new Size(69, 29);
+            lblDayDate6.Size = new Size(103, 44);
             lblDayDate6.TabIndex = 0;
             lblDayDate6.Text = "dd/MM";
             // 
@@ -343,19 +352,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlDay5.Controls.Add(lblDayDate5);
             pnlDay5.CornerRadius = 8;
             pnlDay5.FillColor = Color.White;
-            pnlDay5.Location = new Point(754, 5);
-            pnlDay5.Margin = new Padding(3, 4, 3, 4);
+            pnlDay5.Location = new Point(1131, 8);
+            pnlDay5.Margin = new Padding(5, 6, 5, 6);
             pnlDay5.Name = "pnlDay5";
-            pnlDay5.Size = new Size(171, 267);
+            pnlDay5.Size = new Size(257, 400);
             pnlDay5.TabIndex = 4;
             // 
             // lblDept5
             // 
             lblDept5.Font = new Font("Segoe UI", 7.5F);
             lblDept5.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDept5.Location = new Point(11, 117);
+            lblDept5.Location = new Point(17, 176);
+            lblDept5.Margin = new Padding(5, 0, 5, 0);
             lblDept5.Name = "lblDept5";
-            lblDept5.Size = new Size(149, 48);
+            lblDept5.Size = new Size(223, 72);
             lblDept5.TabIndex = 4;
             lblDept5.Text = "-";
             // 
@@ -363,9 +373,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblRoom5.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
             lblRoom5.ForeColor = Color.FromArgb(107, 114, 128);
-            lblRoom5.Location = new Point(11, 91);
+            lblRoom5.Location = new Point(17, 136);
+            lblRoom5.Margin = new Padding(5, 0, 5, 0);
             lblRoom5.Name = "lblRoom5";
-            lblRoom5.Size = new Size(149, 24);
+            lblRoom5.Size = new Size(223, 36);
             lblRoom5.TabIndex = 3;
             lblRoom5.Text = "-";
             // 
@@ -376,10 +387,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             btnShift5.FlatStyle = FlatStyle.Flat;
             btnShift5.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             btnShift5.ForeColor = Color.FromArgb(107, 114, 128);
-            btnShift5.Location = new Point(11, 48);
-            btnShift5.Margin = new Padding(3, 4, 3, 4);
+            btnShift5.Location = new Point(17, 72);
+            btnShift5.Margin = new Padding(5, 6, 5, 6);
             btnShift5.Name = "btnShift5";
-            btnShift5.Size = new Size(149, 37);
+            btnShift5.Size = new Size(223, 56);
             btnShift5.TabIndex = 2;
             btnShift5.Text = "Trống";
             btnShift5.UseVisualStyleBackColor = false;
@@ -388,9 +399,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblDayName5.Font = new Font("Segoe UI", 9.5F);
             lblDayName5.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDayName5.Location = new Point(91, 13);
+            lblDayName5.Location = new Point(137, 20);
+            lblDayName5.Margin = new Padding(5, 0, 5, 0);
             lblDayName5.Name = "lblDayName5";
-            lblDayName5.Size = new Size(69, 29);
+            lblDayName5.Size = new Size(103, 44);
             lblDayName5.TabIndex = 1;
             lblDayName5.Text = "Thứ 6";
             lblDayName5.TextAlign = ContentAlignment.TopRight;
@@ -398,9 +410,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // lblDayDate5
             // 
             lblDayDate5.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblDayDate5.Location = new Point(11, 13);
+            lblDayDate5.Location = new Point(17, 20);
+            lblDayDate5.Margin = new Padding(5, 0, 5, 0);
             lblDayDate5.Name = "lblDayDate5";
-            lblDayDate5.Size = new Size(69, 29);
+            lblDayDate5.Size = new Size(103, 44);
             lblDayDate5.TabIndex = 0;
             lblDayDate5.Text = "dd/MM";
             // 
@@ -416,19 +429,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlDay4.Controls.Add(lblDayDate4);
             pnlDay4.CornerRadius = 8;
             pnlDay4.FillColor = Color.White;
-            pnlDay4.Location = new Point(567, 5);
-            pnlDay4.Margin = new Padding(3, 4, 3, 4);
+            pnlDay4.Location = new Point(850, 8);
+            pnlDay4.Margin = new Padding(5, 6, 5, 6);
             pnlDay4.Name = "pnlDay4";
-            pnlDay4.Size = new Size(171, 267);
+            pnlDay4.Size = new Size(257, 400);
             pnlDay4.TabIndex = 3;
             // 
             // lblDept4
             // 
             lblDept4.Font = new Font("Segoe UI", 7.5F);
             lblDept4.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDept4.Location = new Point(11, 117);
+            lblDept4.Location = new Point(17, 176);
+            lblDept4.Margin = new Padding(5, 0, 5, 0);
             lblDept4.Name = "lblDept4";
-            lblDept4.Size = new Size(149, 48);
+            lblDept4.Size = new Size(223, 72);
             lblDept4.TabIndex = 4;
             lblDept4.Text = "Khoa Nội";
             // 
@@ -436,9 +450,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblRoom4.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
             lblRoom4.ForeColor = Color.FromArgb(47, 94, 240);
-            lblRoom4.Location = new Point(11, 91);
+            lblRoom4.Location = new Point(17, 136);
+            lblRoom4.Margin = new Padding(5, 0, 5, 0);
             lblRoom4.Name = "lblRoom4";
-            lblRoom4.Size = new Size(149, 24);
+            lblRoom4.Size = new Size(223, 36);
             lblRoom4.TabIndex = 3;
             lblRoom4.Text = "Phòng khám 103";
             // 
@@ -449,10 +464,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             btnShift4.FlatStyle = FlatStyle.Flat;
             btnShift4.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             btnShift4.ForeColor = Color.FromArgb(180, 83, 9);
-            btnShift4.Location = new Point(11, 48);
-            btnShift4.Margin = new Padding(3, 4, 3, 4);
+            btnShift4.Location = new Point(17, 72);
+            btnShift4.Margin = new Padding(5, 6, 5, 6);
             btnShift4.Name = "btnShift4";
-            btnShift4.Size = new Size(149, 37);
+            btnShift4.Size = new Size(223, 56);
             btnShift4.TabIndex = 2;
             btnShift4.Text = "Chiều";
             btnShift4.UseVisualStyleBackColor = false;
@@ -461,9 +476,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblDayName4.Font = new Font("Segoe UI", 9.5F);
             lblDayName4.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDayName4.Location = new Point(91, 13);
+            lblDayName4.Location = new Point(137, 20);
+            lblDayName4.Margin = new Padding(5, 0, 5, 0);
             lblDayName4.Name = "lblDayName4";
-            lblDayName4.Size = new Size(69, 29);
+            lblDayName4.Size = new Size(103, 44);
             lblDayName4.TabIndex = 1;
             lblDayName4.Text = "Thứ 5";
             lblDayName4.TextAlign = ContentAlignment.TopRight;
@@ -471,9 +487,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // lblDayDate4
             // 
             lblDayDate4.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblDayDate4.Location = new Point(11, 13);
+            lblDayDate4.Location = new Point(17, 20);
+            lblDayDate4.Margin = new Padding(5, 0, 5, 0);
             lblDayDate4.Name = "lblDayDate4";
-            lblDayDate4.Size = new Size(69, 29);
+            lblDayDate4.Size = new Size(103, 44);
             lblDayDate4.TabIndex = 0;
             lblDayDate4.Text = "dd/MM";
             // 
@@ -489,19 +506,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlDay3.Controls.Add(lblDayDate3);
             pnlDay3.CornerRadius = 8;
             pnlDay3.FillColor = Color.White;
-            pnlDay3.Location = new Point(379, 5);
-            pnlDay3.Margin = new Padding(3, 4, 3, 4);
+            pnlDay3.Location = new Point(569, 8);
+            pnlDay3.Margin = new Padding(5, 6, 5, 6);
             pnlDay3.Name = "pnlDay3";
-            pnlDay3.Size = new Size(171, 267);
+            pnlDay3.Size = new Size(257, 400);
             pnlDay3.TabIndex = 2;
             // 
             // lblDept3
             // 
             lblDept3.Font = new Font("Segoe UI", 7.5F);
             lblDept3.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDept3.Location = new Point(11, 117);
+            lblDept3.Location = new Point(17, 176);
+            lblDept3.Margin = new Padding(5, 0, 5, 0);
             lblDept3.Name = "lblDept3";
-            lblDept3.Size = new Size(149, 48);
+            lblDept3.Size = new Size(223, 72);
             lblDept3.TabIndex = 4;
             lblDept3.Text = "Khoa Tim mạch";
             // 
@@ -509,9 +527,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblRoom3.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
             lblRoom3.ForeColor = Color.FromArgb(47, 94, 240);
-            lblRoom3.Location = new Point(11, 91);
+            lblRoom3.Location = new Point(17, 136);
+            lblRoom3.Margin = new Padding(5, 0, 5, 0);
             lblRoom3.Name = "lblRoom3";
-            lblRoom3.Size = new Size(149, 24);
+            lblRoom3.Size = new Size(223, 36);
             lblRoom3.TabIndex = 3;
             lblRoom3.Text = "Phòng khám 201";
             // 
@@ -522,22 +541,22 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             btnShift3.FlatStyle = FlatStyle.Flat;
             btnShift3.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             btnShift3.ForeColor = Color.FromArgb(180, 83, 9);
-            btnShift3.Location = new Point(11, 48);
-            btnShift3.Margin = new Padding(3, 4, 3, 4);
+            btnShift3.Location = new Point(17, 72);
+            btnShift3.Margin = new Padding(5, 6, 5, 6);
             btnShift3.Name = "btnShift3";
-            btnShift3.Size = new Size(149, 37);
+            btnShift3.Size = new Size(223, 56);
             btnShift3.TabIndex = 2;
             btnShift3.Text = "Sáng";
             btnShift3.UseVisualStyleBackColor = false;
-            btnShift3.Click += btnShift3_Click;
             // 
             // lblDayName3
             // 
             lblDayName3.Font = new Font("Segoe UI", 9.5F);
             lblDayName3.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDayName3.Location = new Point(91, 13);
+            lblDayName3.Location = new Point(137, 20);
+            lblDayName3.Margin = new Padding(5, 0, 5, 0);
             lblDayName3.Name = "lblDayName3";
-            lblDayName3.Size = new Size(69, 29);
+            lblDayName3.Size = new Size(103, 44);
             lblDayName3.TabIndex = 1;
             lblDayName3.Text = "Thứ 4";
             lblDayName3.TextAlign = ContentAlignment.TopRight;
@@ -545,9 +564,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // lblDayDate3
             // 
             lblDayDate3.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblDayDate3.Location = new Point(11, 13);
+            lblDayDate3.Location = new Point(17, 20);
+            lblDayDate3.Margin = new Padding(5, 0, 5, 0);
             lblDayDate3.Name = "lblDayDate3";
-            lblDayDate3.Size = new Size(69, 29);
+            lblDayDate3.Size = new Size(103, 44);
             lblDayDate3.TabIndex = 0;
             lblDayDate3.Text = "dd/MM";
             // 
@@ -563,19 +583,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlDay2.Controls.Add(lblDayDate2);
             pnlDay2.CornerRadius = 8;
             pnlDay2.FillColor = Color.White;
-            pnlDay2.Location = new Point(192, 5);
-            pnlDay2.Margin = new Padding(3, 4, 3, 4);
+            pnlDay2.Location = new Point(288, 8);
+            pnlDay2.Margin = new Padding(5, 6, 5, 6);
             pnlDay2.Name = "pnlDay2";
-            pnlDay2.Size = new Size(171, 267);
+            pnlDay2.Size = new Size(257, 400);
             pnlDay2.TabIndex = 1;
             // 
             // lblDept2
             // 
             lblDept2.Font = new Font("Segoe UI", 7.5F);
             lblDept2.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDept2.Location = new Point(11, 117);
+            lblDept2.Location = new Point(17, 176);
+            lblDept2.Margin = new Padding(5, 0, 5, 0);
             lblDept2.Name = "lblDept2";
-            lblDept2.Size = new Size(149, 48);
+            lblDept2.Size = new Size(223, 72);
             lblDept2.TabIndex = 4;
             lblDept2.Text = "Khoa Nội";
             // 
@@ -583,9 +604,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblRoom2.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
             lblRoom2.ForeColor = Color.FromArgb(47, 94, 240);
-            lblRoom2.Location = new Point(11, 91);
+            lblRoom2.Location = new Point(17, 136);
+            lblRoom2.Margin = new Padding(5, 0, 5, 0);
             lblRoom2.Name = "lblRoom2";
-            lblRoom2.Size = new Size(149, 24);
+            lblRoom2.Size = new Size(223, 36);
             lblRoom2.TabIndex = 3;
             lblRoom2.Text = "Phòng khám 102";
             // 
@@ -596,10 +618,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             btnShift2.FlatStyle = FlatStyle.Flat;
             btnShift2.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             btnShift2.ForeColor = Color.FromArgb(180, 83, 9);
-            btnShift2.Location = new Point(11, 48);
-            btnShift2.Margin = new Padding(3, 4, 3, 4);
+            btnShift2.Location = new Point(17, 72);
+            btnShift2.Margin = new Padding(5, 6, 5, 6);
             btnShift2.Name = "btnShift2";
-            btnShift2.Size = new Size(149, 37);
+            btnShift2.Size = new Size(223, 56);
             btnShift2.TabIndex = 2;
             btnShift2.Text = "Chiều";
             btnShift2.UseVisualStyleBackColor = false;
@@ -608,9 +630,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblDayName2.Font = new Font("Segoe UI", 9.5F);
             lblDayName2.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDayName2.Location = new Point(91, 13);
+            lblDayName2.Location = new Point(137, 20);
+            lblDayName2.Margin = new Padding(5, 0, 5, 0);
             lblDayName2.Name = "lblDayName2";
-            lblDayName2.Size = new Size(69, 29);
+            lblDayName2.Size = new Size(103, 44);
             lblDayName2.TabIndex = 1;
             lblDayName2.Text = "Thứ 3";
             lblDayName2.TextAlign = ContentAlignment.TopRight;
@@ -618,12 +641,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // lblDayDate2
             // 
             lblDayDate2.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblDayDate2.Location = new Point(11, 13);
+            lblDayDate2.Location = new Point(17, 20);
+            lblDayDate2.Margin = new Padding(5, 0, 5, 0);
             lblDayDate2.Name = "lblDayDate2";
-            lblDayDate2.Size = new Size(69, 29);
+            lblDayDate2.Size = new Size(103, 44);
             lblDayDate2.TabIndex = 0;
             lblDayDate2.Text = "dd/MM";
-            lblDayDate2.Click += lblDayDate2_Click;
             // 
             // pnlDay1
             // 
@@ -637,19 +660,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlDay1.Controls.Add(lblDayDate1);
             pnlDay1.CornerRadius = 8;
             pnlDay1.FillColor = Color.White;
-            pnlDay1.Location = new Point(5, 5);
-            pnlDay1.Margin = new Padding(3, 4, 3, 4);
+            pnlDay1.Location = new Point(7, 8);
+            pnlDay1.Margin = new Padding(5, 6, 5, 6);
             pnlDay1.Name = "pnlDay1";
-            pnlDay1.Size = new Size(171, 267);
+            pnlDay1.Size = new Size(257, 400);
             pnlDay1.TabIndex = 0;
             // 
             // lblDept1
             // 
             lblDept1.Font = new Font("Segoe UI", 7.5F);
             lblDept1.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDept1.Location = new Point(11, 117);
+            lblDept1.Location = new Point(17, 176);
+            lblDept1.Margin = new Padding(5, 0, 5, 0);
             lblDept1.Name = "lblDept1";
-            lblDept1.Size = new Size(149, 48);
+            lblDept1.Size = new Size(223, 72);
             lblDept1.TabIndex = 4;
             lblDept1.Text = "Khoa Nội";
             // 
@@ -657,9 +681,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblRoom1.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
             lblRoom1.ForeColor = Color.FromArgb(47, 94, 240);
-            lblRoom1.Location = new Point(11, 91);
+            lblRoom1.Location = new Point(17, 136);
+            lblRoom1.Margin = new Padding(5, 0, 5, 0);
             lblRoom1.Name = "lblRoom1";
-            lblRoom1.Size = new Size(149, 24);
+            lblRoom1.Size = new Size(223, 36);
             lblRoom1.TabIndex = 3;
             lblRoom1.Text = "Phòng khám 101";
             // 
@@ -670,10 +695,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             btnShift1.FlatStyle = FlatStyle.Flat;
             btnShift1.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             btnShift1.ForeColor = Color.FromArgb(180, 83, 9);
-            btnShift1.Location = new Point(11, 48);
-            btnShift1.Margin = new Padding(3, 4, 3, 4);
+            btnShift1.Location = new Point(17, 72);
+            btnShift1.Margin = new Padding(5, 6, 5, 6);
             btnShift1.Name = "btnShift1";
-            btnShift1.Size = new Size(149, 37);
+            btnShift1.Size = new Size(223, 56);
             btnShift1.TabIndex = 2;
             btnShift1.Text = "Sáng";
             btnShift1.UseVisualStyleBackColor = false;
@@ -682,9 +707,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblDayName1.Font = new Font("Segoe UI", 9.5F);
             lblDayName1.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDayName1.Location = new Point(91, 13);
+            lblDayName1.Location = new Point(137, 20);
+            lblDayName1.Margin = new Padding(5, 0, 5, 0);
             lblDayName1.Name = "lblDayName1";
-            lblDayName1.Size = new Size(69, 29);
+            lblDayName1.Size = new Size(103, 44);
             lblDayName1.TabIndex = 1;
             lblDayName1.Text = "Thứ 2";
             lblDayName1.TextAlign = ContentAlignment.TopRight;
@@ -692,20 +718,21 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // lblDayDate1
             // 
             lblDayDate1.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblDayDate1.Location = new Point(11, 13);
+            lblDayDate1.Location = new Point(17, 20);
+            lblDayDate1.Margin = new Padding(5, 0, 5, 0);
             lblDayDate1.Name = "lblDayDate1";
-            lblDayDate1.Size = new Size(69, 29);
+            lblDayDate1.Size = new Size(103, 44);
             lblDayDate1.TabIndex = 0;
             lblDayDate1.Text = "dd/MM";
-            lblDayDate1.Click += lblDayDate1_Click;
             // 
             // lblCalendarTitle
             // 
             lblCalendarTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
             lblCalendarTitle.ForeColor = Color.FromArgb(17, 24, 39);
-            lblCalendarTitle.Location = new Point(21, 24);
+            lblCalendarTitle.Location = new Point(31, 36);
+            lblCalendarTitle.Margin = new Padding(5, 0, 5, 0);
             lblCalendarTitle.Name = "lblCalendarTitle";
-            lblCalendarTitle.Size = new Size(480, 37);
+            lblCalendarTitle.Size = new Size(720, 56);
             lblCalendarTitle.TabIndex = 0;
             lblCalendarTitle.Text = "Lịch làm việc tuần này";
             // 
@@ -719,12 +746,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlStatsGrid.Controls.Add(pnlStatTotal, 0, 0);
             pnlStatsGrid.Controls.Add(pnlStatActive, 1, 0);
             pnlStatsGrid.Controls.Add(pnlStatHours, 2, 0);
-            pnlStatsGrid.Location = new Point(27, 128);
-            pnlStatsGrid.Margin = new Padding(3, 4, 3, 4);
+            pnlStatsGrid.Location = new Point(41, 192);
+            pnlStatsGrid.Margin = new Padding(5, 6, 5, 6);
             pnlStatsGrid.Name = "pnlStatsGrid";
             pnlStatsGrid.RowCount = 1;
             pnlStatsGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            pnlStatsGrid.Size = new Size(1367, 147);
+            pnlStatsGrid.Size = new Size(2050, 220);
             pnlStatsGrid.TabIndex = 3;
             // 
             // pnlStatTotal
@@ -738,18 +765,19 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlStatTotal.Dock = DockStyle.Fill;
             pnlStatTotal.FillColor = Color.White;
             pnlStatTotal.Location = new Point(0, 0);
-            pnlStatTotal.Margin = new Padding(0, 0, 16, 0);
+            pnlStatTotal.Margin = new Padding(0, 0, 24, 0);
             pnlStatTotal.Name = "pnlStatTotal";
-            pnlStatTotal.Size = new Size(439, 147);
+            pnlStatTotal.Size = new Size(659, 220);
             pnlStatTotal.TabIndex = 0;
             // 
             // lblStatTotalNum
             // 
             lblStatTotalNum.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             lblStatTotalNum.ForeColor = Color.FromArgb(17, 24, 39);
-            lblStatTotalNum.Location = new Point(105, 77);
+            lblStatTotalNum.Location = new Point(158, 116);
+            lblStatTotalNum.Margin = new Padding(5, 0, 5, 0);
             lblStatTotalNum.Name = "lblStatTotalNum";
-            lblStatTotalNum.Size = new Size(183, 45);
+            lblStatTotalNum.Size = new Size(274, 68);
             lblStatTotalNum.TabIndex = 1;
             lblStatTotalNum.Text = "0";
             // 
@@ -757,9 +785,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblStatTotalTitle.Font = new Font("Segoe UI", 10F);
             lblStatTotalTitle.ForeColor = Color.FromArgb(107, 114, 128);
-            lblStatTotalTitle.Location = new Point(105, 40);
+            lblStatTotalTitle.Location = new Point(158, 60);
+            lblStatTotalTitle.Margin = new Padding(5, 0, 5, 0);
             lblStatTotalTitle.Name = "lblStatTotalTitle";
-            lblStatTotalTitle.Size = new Size(240, 32);
+            lblStatTotalTitle.Size = new Size(360, 48);
             lblStatTotalTitle.TabIndex = 0;
             lblStatTotalTitle.Text = "Tổng ca đăng ký";
             // 
@@ -773,19 +802,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlStatActive.CornerRadius = 8;
             pnlStatActive.Dock = DockStyle.Fill;
             pnlStatActive.FillColor = Color.White;
-            pnlStatActive.Location = new Point(455, 0);
-            pnlStatActive.Margin = new Padding(0, 0, 16, 0);
+            pnlStatActive.Location = new Point(683, 0);
+            pnlStatActive.Margin = new Padding(0, 0, 24, 0);
             pnlStatActive.Name = "pnlStatActive";
-            pnlStatActive.Size = new Size(439, 147);
+            pnlStatActive.Size = new Size(659, 220);
             pnlStatActive.TabIndex = 1;
             // 
             // lblStatActiveNum
             // 
             lblStatActiveNum.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             lblStatActiveNum.ForeColor = Color.FromArgb(17, 24, 39);
-            lblStatActiveNum.Location = new Point(105, 77);
+            lblStatActiveNum.Location = new Point(158, 116);
+            lblStatActiveNum.Margin = new Padding(5, 0, 5, 0);
             lblStatActiveNum.Name = "lblStatActiveNum";
-            lblStatActiveNum.Size = new Size(183, 45);
+            lblStatActiveNum.Size = new Size(274, 68);
             lblStatActiveNum.TabIndex = 1;
             lblStatActiveNum.Text = "1";
             // 
@@ -793,9 +823,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblStatActiveTitle.Font = new Font("Segoe UI", 10F);
             lblStatActiveTitle.ForeColor = Color.FromArgb(107, 114, 128);
-            lblStatActiveTitle.Location = new Point(105, 40);
+            lblStatActiveTitle.Location = new Point(158, 60);
+            lblStatActiveTitle.Margin = new Padding(5, 0, 5, 0);
             lblStatActiveTitle.Name = "lblStatActiveTitle";
-            lblStatActiveTitle.Size = new Size(240, 32);
+            lblStatActiveTitle.Size = new Size(360, 48);
             lblStatActiveTitle.TabIndex = 0;
             lblStatActiveTitle.Text = "Ca đang trực";
             // 
@@ -809,19 +840,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             pnlStatHours.CornerRadius = 8;
             pnlStatHours.Dock = DockStyle.Fill;
             pnlStatHours.FillColor = Color.White;
-            pnlStatHours.Location = new Point(910, 0);
+            pnlStatHours.Location = new Point(1366, 0);
             pnlStatHours.Margin = new Padding(0);
             pnlStatHours.Name = "pnlStatHours";
-            pnlStatHours.Size = new Size(457, 147);
+            pnlStatHours.Size = new Size(684, 220);
             pnlStatHours.TabIndex = 2;
             // 
             // lblStatHoursNum
             // 
             lblStatHoursNum.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             lblStatHoursNum.ForeColor = Color.FromArgb(17, 24, 39);
-            lblStatHoursNum.Location = new Point(105, 77);
+            lblStatHoursNum.Location = new Point(158, 116);
+            lblStatHoursNum.Margin = new Padding(5, 0, 5, 0);
             lblStatHoursNum.Name = "lblStatHoursNum";
-            lblStatHoursNum.Size = new Size(183, 45);
+            lblStatHoursNum.Size = new Size(274, 68);
             lblStatHoursNum.TabIndex = 1;
             lblStatHoursNum.Text = "0h";
             // 
@@ -829,9 +861,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblStatHoursTitle.Font = new Font("Segoe UI", 10F);
             lblStatHoursTitle.ForeColor = Color.FromArgb(107, 114, 128);
-            lblStatHoursTitle.Location = new Point(105, 40);
+            lblStatHoursTitle.Location = new Point(158, 60);
+            lblStatHoursTitle.Margin = new Padding(5, 0, 5, 0);
             lblStatHoursTitle.Name = "lblStatHoursTitle";
-            lblStatHoursTitle.Size = new Size(240, 32);
+            lblStatHoursTitle.Size = new Size(360, 48);
             lblStatHoursTitle.TabIndex = 0;
             lblStatHoursTitle.Text = "Giờ hoàn thành";
             // 
@@ -844,10 +877,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             btnReg.FlatStyle = FlatStyle.Flat;
             btnReg.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnReg.ForeColor = Color.White;
-            btnReg.Location = new Point(1189, 32);
-            btnReg.Margin = new Padding(3, 4, 3, 4);
+            btnReg.Location = new Point(1783, 48);
+            btnReg.Margin = new Padding(5, 6, 5, 6);
             btnReg.Name = "btnReg";
-            btnReg.Size = new Size(206, 56);
+            btnReg.Size = new Size(309, 84);
             btnReg.TabIndex = 2;
             btnReg.Text = "Đăng ký ca mới";
             btnReg.UseVisualStyleBackColor = false;
@@ -856,9 +889,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblSubtitle.Font = new Font("Segoe UI", 10F);
             lblSubtitle.ForeColor = Color.FromArgb(107, 114, 128);
-            lblSubtitle.Location = new Point(27, 75);
+            lblSubtitle.Location = new Point(41, 112);
+            lblSubtitle.Margin = new Padding(5, 0, 5, 0);
             lblSubtitle.Name = "lblSubtitle";
-            lblSubtitle.Size = new Size(571, 37);
+            lblSubtitle.Size = new Size(857, 56);
             lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "Xem ca trực và phòng khám được phân công của Kỹ thuật viên";
             // 
@@ -866,21 +900,22 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(17, 24, 39);
-            lblTitle.Location = new Point(27, 32);
+            lblTitle.Location = new Point(41, 48);
+            lblTitle.Margin = new Padding(5, 0, 5, 0);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(457, 43);
+            lblTitle.Size = new Size(686, 64);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Lịch Làm Việc";
             // 
             // ucTechnicianShifts
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(12F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(247, 249, 252);
             Controls.Add(viewHostPanel);
-            Margin = new Padding(3, 4, 3, 4);
+            Margin = new Padding(5, 6, 5, 6);
             Name = "ucTechnicianShifts";
-            Size = new Size(1422, 992);
+            Size = new Size(2133, 1608);
             Load += ucTechnicianShifts_Load;
             Resize += ucTechnicianShifts_Resize;
             viewHostPanel.ResumeLayout(false);
