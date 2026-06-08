@@ -10,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using ClinicManagementSystem.Winforms.UserControls.Nurse;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
@@ -43,25 +44,34 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         public NurseMainform(UserDTO user) : this()
         {
-            this.currentUser = user;
-            lblUserName.Text = user.Name;
-            lblUserEmail.Text = user.Email ?? user.Username;
-            lblAvatar.Text = string.IsNullOrEmpty(user.Name) ? "K" : user.Name.Substring(0, 1).ToUpper();
-            lblPageSubtitle.Text = "Xin chào, " + user.Name;
+            currentUser = user;
+            string displayName = string.IsNullOrWhiteSpace(user?.Name) ? "Y tá" : user.Name.Trim();
+            string displayEmail = !string.IsNullOrWhiteSpace(user?.Email)
+                ? user.Email.Trim()
+                : user?.Username ?? "nurse";
+
+            lblUserName.Text = displayName;
+            lblUserEmail.Text = displayEmail;
+            lblAvatar.Text = displayName.Substring(0, 1).ToUpper();
+            lblPageSubtitle.Text = "Xin chào, " + displayName;
         }
 
-        private void ReceptionistMainform_Load(object sender, EventArgs e)
+        private void NurseMainform_Load(object sender, EventArgs e)
         {
-            // Set Log Out click handler
             btnLogout.Click += (s, ev) =>
             {
                 LogoutRequested?.Invoke(this, EventArgs.Empty);
             };
 
-            // Close button click handler
             btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
 
+            btnNavOverview.Click += (s, ev) => ShowNurseControl(new ucNurseOverview(), "Tổng quan", btnNavOverview);
+            btnQueue.Click += (s, ev) => ShowNurseControl(new ucQueueManagement(), "Hàng chờ khám", btnQueue);
+            btnVitalSigns.Click += (s, ev) => ShowNurseControl(new ucNurseVitalSigns(), "Chỉ số sinh hiệu", btnVitalSigns);
+            btnERM.Click += (s, ev) => ShowPlaceholder("Bệnh án", "Theo dõi hồ sơ bệnh án và ghi chú điều dưỡng.", btnERM);
+            btnNavShifts.Click += (s, ev) => ShowNurseControl(new ucNurseShift(), "Ca làm việc", btnNavShifts);
 
+            ShowNurseControl(new ucNurseOverview(), "Tổng quan", btnNavOverview);
         }
 
         private Button CreateSidebarButton(string text, Point location, EventHandler onClick)
@@ -89,6 +99,83 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private void contentPanel_Resize(object sender, EventArgs e)
         {
             if (!layoutReady || contentPanel.Width < 400) return;
+        }
+
+        private void ShowNurseControl(UserControl control, string title, Button navButton)
+        {
+            lblPageTitle.Text = title;
+            lblPageSubtitle.Text = "Xin chào, " + (string.IsNullOrWhiteSpace(currentUser?.Name) ? "Y tá" : currentUser.Name);
+            SetActiveNavButton(navButton);
+
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+            control.Dock = DockStyle.Fill;
+            contentPanel.Controls.Add(control);
+            contentPanel.ResumeLayout();
+        }
+
+        private void ShowPlaceholder(string title, string subtitle, Button navButton)
+        {
+            lblPageTitle.Text = title;
+            lblPageSubtitle.Text = subtitle;
+            SetActiveNavButton(navButton);
+
+            Panel panel = new Panel
+            {
+                BackColor = pageBack,
+                Dock = DockStyle.Fill,
+                Padding = new Padding(32)
+            };
+
+            panel.Controls.Add(new Label
+            {
+                AutoSize = false,
+                Dock = DockStyle.Top,
+                Font = new Font("Segoe UI", 11F),
+                ForeColor = textMuted,
+                Height = 34,
+                Text = subtitle
+            });
+
+            panel.Controls.Add(new Label
+            {
+                AutoSize = false,
+                Dock = DockStyle.Top,
+                Font = new Font("Segoe UI", 20F, FontStyle.Bold),
+                ForeColor = textMain,
+                Height = 54,
+                Text = title
+            });
+
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+            contentPanel.Controls.Add(panel);
+            contentPanel.ResumeLayout();
+        }
+
+        private void SetActiveNavButton(Button activeButton)
+        {
+            Button[] buttons =
+            {
+                btnNavOverview,
+                btnQueue,
+                btnVitalSigns,
+                btnERM,
+                btnNavShifts
+            };
+
+            foreach (Button button in buttons)
+            {
+                if (button == null) continue;
+                button.BackColor = Color.White;
+                button.ForeColor = Color.FromArgb(55, 65, 81);
+            }
+
+            if (activeButton != null)
+            {
+                activeButton.BackColor = Color.FromArgb(239, 246, 255);
+                activeButton.ForeColor = primary;
+            }
         }
 
     }

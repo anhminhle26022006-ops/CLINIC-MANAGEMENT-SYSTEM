@@ -66,7 +66,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
                 int technicianId = EnsureUserEmployee("ktv", "123", "tech@phongkham.vn", technicianRoleId, "EMP_KTV", "Lữ Võ Hoàng Phúc", labDepartmentId);
                 EnsureUserEmployee("admin", "admin123", "admin@phongkham.vn", adminRoleId, "EMP_ADM", "Quản Trị Viên", adminDepartmentId);
-                int doctor1 = EnsureUserEmployee("bacsi", "123", "doctor@phongkham.vn", doctorRoleId, "BS001", "BS. Nguyễn Văn Minh", generalDepartmentId);
+                int doctor1 = EnsureUserEmployee("doctor", "123456", "doctor@phongkham.vn", doctorRoleId, "BS001", "BS. Nguyễn Văn Minh", generalDepartmentId);
                 int doctor2 = EnsureEmployee("BS002", "BS. Trần B", doctorRoleId, imagingDepartmentId);
                 int doctor3 = EnsureEmployee("BS003", "BS. Phạm D", doctorRoleId, generalDepartmentId);
                 int doctor4 = EnsureEmployee("BS004", "BS. Lê H", doctorRoleId, cardiologyDepartmentId);
@@ -197,6 +197,18 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                     "SELECT UserID FROM Users WHERE Username = @Username",
                     new[] { new SqlParameter("@Username", username) });
             }
+            else
+            {
+                DatabaseHelper.ExecuteNonQuery(
+                    "UPDATE Users SET PasswordHash = @PasswordHash, Email = @Email, RoleID = @RoleID, IsActive = 1 WHERE UserID = @UserID",
+                    new[]
+                    {
+                        new SqlParameter("@PasswordHash", password),
+                        new SqlParameter("@Email", email),
+                        new SqlParameter("@RoleID", roleId),
+                        new SqlParameter("@UserID", Convert.ToInt32(userId))
+                    });
+            }
 
             return EnsureEmployee(employeeCode, fullName, roleId, departmentId, Convert.ToInt32(userId));
         }
@@ -209,6 +221,21 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
             if (employeeId != null && employeeId != DBNull.Value)
             {
+                if (userId.HasValue)
+                {
+                    DatabaseHelper.ExecuteNonQuery(
+                        "UPDATE Employees SET FullName = @FullName, RoleID = @RoleID, DepartmentID = @DepartmentID, Status = @Status, UserID = @UserID WHERE EmployeeCode = @EmployeeCode",
+                        new[]
+                        {
+                            new SqlParameter("@EmployeeCode", employeeCode),
+                            new SqlParameter("@FullName", fullName),
+                            new SqlParameter("@RoleID", roleId),
+                            new SqlParameter("@DepartmentID", departmentId),
+                            new SqlParameter("@Status", "Active"),
+                            new SqlParameter("@UserID", userId.Value)
+                        });
+                }
+
                 return Convert.ToInt32(employeeId);
             }
 

@@ -782,6 +782,13 @@ VALUES
 ),
 
 (
+    'doctor',
+    '123456',
+    'doctor@cms.local',
+    (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
+),
+
+(
     'doctor_gp',
     '123456',
     'doctor.gp@cms.local',
@@ -902,6 +909,23 @@ N'Quận 3, TP.HCM',
 (SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Tiếp nhận'),
 'Active',
 (SELECT UserID FROM Users WHERE Username='reception')
+),
+
+(
+'EMP_DOCTOR',
+N'BS Demo',
+'1980-03-20',
+N'Nam',
+'079080009999',
+N'Quận 7, TP.HCM',
+'090000999',
+'doctor@clinic.vn',
+'2018-06-01',
+35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Khám tổng quát'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='doctor')
 ),
 
 (
