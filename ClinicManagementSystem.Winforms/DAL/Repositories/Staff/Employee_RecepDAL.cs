@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -28,8 +28,8 @@ namespace DAL.Repositories
 
             SqlParameter[] parameters =
             {
-        new SqlParameter("@DepartmentID", departmentId)
-    };
+                new SqlParameter("@DepartmentID", departmentId)
+            };
 
             DataTable dt =
                 DatabaseHelper.ExecuteQuery(query, parameters);
@@ -58,10 +58,10 @@ WHERE EmployeeID = @EmployeeID";
 
             SqlParameter[] parameters =
             {
-        new SqlParameter(
-            "@EmployeeID",
-            employeeId)
-    };
+                new SqlParameter(
+                    "@EmployeeID",
+                    employeeId)
+            };
 
             DataTable dt =
                 DatabaseHelper.ExecuteQuery(

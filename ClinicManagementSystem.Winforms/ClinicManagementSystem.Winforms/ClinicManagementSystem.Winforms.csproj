@@ -52,6 +52,18 @@
     <Compile Update="UserControls\Pharmacy\ucPrescriptionDispense.Designer.cs">
       <DependentUpon>ucPrescriptionDispense.cs</DependentUpon>
     </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyPrescriptionQueueCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyPrescriptionQueueCard.Designer.cs">
+      <DependentUpon>ucPharmacyPrescriptionQueueCard.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyMedicineItemCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Pharmacy\ucPharmacyMedicineItemCard.Designer.cs">
+      <DependentUpon>ucPharmacyMedicineItemCard.cs</DependentUpon>
+    </Compile>
     <Compile Update="UserControls\Pharmacy\ucMedicineCatalog.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -175,6 +187,12 @@
     </EmbeddedResource>
     <EmbeddedResource Update="UserControls\Pharmacy\ucPrescriptionDispense.resx">
       <DependentUpon>ucPrescriptionDispense.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Pharmacy\ucPharmacyPrescriptionQueueCard.resx">
+      <DependentUpon>ucPharmacyPrescriptionQueueCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Pharmacy\ucPharmacyMedicineItemCard.resx">
+      <DependentUpon>ucPharmacyMedicineItemCard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="UserControls\Pharmacy\ucMedicineCatalog.resx">
       <DependentUpon>ucMedicineCatalog.cs</DependentUpon>

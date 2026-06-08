@@ -250,7 +250,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             cbBlood.FormattingEnabled = true;
             cbBlood.Location = new Point(465, 36);
             cbBlood.Name = "cbBlood";
-            cbBlood.Size = new Size(456, 34);
+            cbBlood.Size = new Size(456, 44);
             cbBlood.TabIndex = 5;
             // 
             // tableLayoutPanel10
@@ -384,7 +384,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             dtpExpired.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtpExpired.Location = new Point(462, 48);
             dtpExpired.Name = "dtpExpired";
-            dtpExpired.Size = new Size(453, 34);
+            dtpExpired.Size = new Size(453, 45);
             dtpExpired.TabIndex = 4;
             // 
             // label15
@@ -418,7 +418,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             dtpEffective.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtpEffective.Location = new Point(3, 48);
             dtpEffective.Name = "dtpEffective";
-            dtpEffective.Size = new Size(453, 34);
+            dtpEffective.Size = new Size(453, 45);
             dtpEffective.TabIndex = 3;
             // 
             // tableLayoutPanel6
@@ -476,7 +476,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             txtEmail.Dock = DockStyle.Fill;
             txtEmail.Location = new Point(465, 36);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(456, 34);
+            txtEmail.Size = new Size(456, 45);
             txtEmail.TabIndex = 6;
             // 
             // label7
@@ -507,7 +507,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             txtsdt.Location = new Point(3, 36);
             txtsdt.Name = "txtsdt";
             txtsdt.PlaceholderText = "Nhập số điện thoại";
-            txtsdt.Size = new Size(456, 34);
+            txtsdt.Size = new Size(456, 45);
             txtsdt.TabIndex = 4;
             // 
             // tableLayoutPanel5
@@ -650,7 +650,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             txtname.Location = new Point(3, 37);
             txtname.Name = "txtname";
             txtname.PlaceholderText = "Nhập họ và tên";
-            txtname.Size = new Size(456, 34);
+            txtname.Size = new Size(456, 45);
             txtname.TabIndex = 4;
             // 
             // txtCCCD
@@ -658,7 +658,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             txtCCCD.Dock = DockStyle.Fill;
             txtCCCD.Location = new Point(465, 111);
             txtCCCD.Name = "txtCCCD";
-            txtCCCD.Size = new Size(456, 34);
+            txtCCCD.Size = new Size(456, 45);
             txtCCCD.TabIndex = 5;
             // 
             // dtpBirthday
@@ -666,7 +666,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             dtpBirthday.Dock = DockStyle.Fill;
             dtpBirthday.Location = new Point(465, 37);
             dtpBirthday.Name = "dtpBirthday";
-            dtpBirthday.Size = new Size(456, 34);
+            dtpBirthday.Size = new Size(456, 45);
             dtpBirthday.TabIndex = 6;
             // 
             // cbGender
@@ -675,7 +675,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             cbGender.FormattingEnabled = true;
             cbGender.Location = new Point(3, 111);
             cbGender.Name = "cbGender";
-            cbGender.Size = new Size(456, 34);
+            cbGender.Size = new Size(456, 44);
             cbGender.TabIndex = 7;
             // 
             // tableLayoutPanel11
@@ -721,7 +721,7 @@ namespace ClinicManagementSystem.Winforms.Forms
             // 
             // CreateNewPatient
             // 
-            AutoScaleDimensions = new SizeF(10F, 20F);
+            AutoScaleDimensions = new SizeF(14F, 29F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(972, 1016);
             Controls.Add(panel1);
