@@ -16,5 +16,24 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
         {
             InitializeComponent();
         }
+        public void Bind(List<EncounterHistoryDto> encounters)
+        {
+            flowLayoutPanel1.Controls.Clear();
+
+            if (encounters == null || encounters.Count == 0)
+                return;
+
+            var sorted = encounters
+                .OrderByDescending(x => x.VisitDate)
+                .ToList();
+
+            foreach (var item in sorted)
+            {
+                var card = new ucVisitCard();
+                card.Bind(item);
+
+                flowLayoutPanel1.Controls.Add(card);
+            }
+        }
     }
 }
