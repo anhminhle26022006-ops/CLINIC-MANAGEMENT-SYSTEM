@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using ClinicManagementSystem.Winforms;
 using BUS.Services;
 using DTO;
-using DAL;
 using ClinicManagementSystem.Winforms.UserControls.Technician;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
@@ -16,7 +15,7 @@ namespace ClinicManagementSystem.Winforms.UserControls
 {
     public partial class TechnicianMainform : Form
     {
-private readonly Color primary = Color.FromArgb(47, 94, 240);
+        private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;
         private readonly Color pageBack = Color.FromArgb(247, 249, 252);
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
@@ -218,4 +217,3 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
 
     }
 }
-

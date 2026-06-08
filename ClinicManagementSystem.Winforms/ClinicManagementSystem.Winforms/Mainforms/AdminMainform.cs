@@ -1,35 +1,20 @@
-﻿﻿using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using ClinicManagementSystem.Winforms;
 using BUS.Services;
+using ClinicManagementSystem.Winforms.UserControls.Admin;
 using DTO;
-using DAL;
-using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
     public partial class AdminMainform : Form
     {
         private readonly Color primary = Color.FromArgb(47, 94, 240);
-        private readonly Color surface = Color.White;
         private readonly Color pageBack = Color.FromArgb(247, 249, 252);
-        private readonly Color textMain = Color.FromArgb(17, 24, 39);
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
-        private readonly PatientBUS patientBUS = new PatientBUS();
-        private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
-        private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
         private UserDTO currentUser;
         private bool layoutReady;
-
-        // Custom Navigation Buttons
-
-        // Active request for processing transitions
 
         public event EventHandler LogoutRequested;
         public event EventHandler CloseRequested;
@@ -42,141 +27,183 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         public AdminMainform(UserDTO user) : this()
         {
-            this.currentUser = user;
+            currentUser = user;
             lblUserName.Text = user.Name;
             lblUserEmail.Text = user.Email ?? user.Username;
-            lblAvatar.Text = string.IsNullOrEmpty(user.Name) ? "K" : user.Name.Substring(0, 1).ToUpper();
+            lblAvatar.Text = string.IsNullOrEmpty(user.Name) ? "A" : user.Name[0].ToString().ToUpper();
             lblPageSubtitle.Text = "Xin chào, " + user.Name;
         }
 
         private void ucTechnicianDashboard_Load(object sender, EventArgs e)
         {
-
-            btnEmployeeManagement.Click += (s, e) => LoadPage(new UserControls.Admin.ucEmployeeManagement(), "Quản lý nhân viên");
-
-
-            // Set Log Out click handler
-            btnLogout.Click += (s, ev) =>
-            {
-                LogoutRequested?.Invoke(this, EventArgs.Empty);
-            };
-
+            btnLogout.Click += (s, ev) => LogoutRequested?.Invoke(this, EventArgs.Empty);
             btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
-            btnUserManagement.Click += (s, e) => LoadPage(new UserControls.Admin.ucUserManagement(), "Quản lý tài khoản");
 
+            btnNavOverview.Click += (s, ev) => ShowDashboard();
+            btnEmployeeManagement.Click += (s, ev) => LoadPage(new ucEmployeeManagement(), "Quản lý nhân viên");
+            btnUserManagement.Click += (s, ev) => LoadPage(new ucUserManagement(), "Quản lý tài khoản");
+            btnDepartmentManagement.Click += (s, ev) => LoadPage(new ucDepartmentManagement(), "Quản lý chuyên khoa");
+            btnNavShifts.Click += (s, ev) => LoadPage(new ucShiftManagement(), "Ca làm việc");
+            btnShiftManagement.Click += (s, ev) => LoadPage(new ucShiftRequestManagement(), "Quản lý ca trực");
+            btnStatitics.Click += (s, ev) => ShowStatistics();
+            btnAdvancedAnalysis.Click += (s, ev) => ShowAdvanced();
 
-            ShowOverview();
+            ShowDashboard();
         }
-        private Button CreateSidebarButton(string text, Point location, EventHandler onClick)
+
+        // ── Navigation ──────────────────────────────────────────────
+        private void ShowDashboard()
         {
-            Button btn = new Button
-            {
-                Text = text,
-                Location = location,
-                Size = new Size(214, 44),
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                FlatStyle = FlatStyle.Flat,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(16, 0, 0, 0),
-                Cursor = Cursors.Hand,
-                BackColor = Color.White,
-                ForeColor = Color.FromArgb(55, 65, 81),
-                UseVisualStyleBackColor = false
-            };
-            btn.FlatAppearance.BorderSize = 0;
-            btn.Click += onClick;
-            panelSidebar.Controls.Add(btn);
-            return btn;
+            lblPageTitle.Text = "Tổng quan";
+            lblPageSubtitle.Text = "Xin chào, " + (currentUser?.Name ?? "Quản trị viên");
+            SetActiveNav(btnNavOverview);
+            LoadContent(new ucAdminDashboard());
         }
 
-
-        private void contentPanel_Resize(object sender, EventArgs e)
+        private void ShowStatistics()
         {
-            if (!layoutReady || contentPanel.Width < 400) return;
+            lblPageTitle.Text = "Thống kê";
+            lblPageSubtitle.Text = "Báo cáo và số liệu thống kê hệ thống";
+            SetActiveNav(btnStatitics);
+            LoadContent(BuildStatisticsPanel());
         }
 
-        private void ShowOverview()
+        private void ShowAdvanced()
         {
-            ShowSection(
-                "Tổng quan",
-                "Xin chào, " + (currentUser != null ? currentUser.Name : "Quản trị viên"),
-                btnNavOverview,
-                "Nhân viên hoạt động: đang cập nhật",
-                "Lịch hẹn hôm nay: đang cập nhật",
-                "Yêu cầu cần xử lý: đang cập nhật");
+            lblPageTitle.Text = "Phân tích nâng cao";
+            lblPageSubtitle.Text = "Phân tích dữ liệu chuyên sâu";
+            SetActiveNav(btnAdvancedAnalysis);
+            LoadContent(BuildComingSoonPanel("Phân tích nâng cao – sắp ra mắt"));
         }
 
-        private void ShowSection(string title, string subtitle, Button activeButton, params string[] lines)
+        private void LoadPage(UserControl uc, string title)
         {
             lblPageTitle.Text = title;
-            lblPageSubtitle.Text = subtitle;
-            SetActiveNav(activeButton);
+            lblPageSubtitle.Text = "";
+            SetActiveNav(GetNavButton(title));
+            LoadContent(uc);
+        }
 
+        private void LoadContent(Control ctrl)
+        {
             contentPanel.SuspendLayout();
             contentPanel.Controls.Clear();
-
-            Panel container = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = pageBack,
-                Padding = new Padding(28)
-            };
-
-            Label titleLabel = CreateLabel(title, 20F, FontStyle.Bold, textMain, DockStyle.Top, 44);
-            Label subtitleLabel = CreateLabel(subtitle, 10.5F, FontStyle.Regular, textMuted, DockStyle.Top, 34);
-
-            Panel body = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 190,
-                BackColor = surface,
-                Padding = new Padding(24),
-                Margin = new Padding(0, 16, 0, 0)
-            };
-
-            int top = 18;
-            foreach (string line in lines)
-            {
-                Label item = new Label
-                {
-                    AutoSize = false,
-                    Text = "- " + line,
-                    Font = new Font("Segoe UI", 10F),
-                    ForeColor = textMain,
-                    Location = new Point(24, top),
-                    Size = new Size(Math.Max(300, contentPanel.Width - 120), 28)
-                };
-                body.Controls.Add(item);
-                top += 36;
-            }
-
-            container.Controls.Add(body);
-            container.Controls.Add(subtitleLabel);
-            container.Controls.Add(titleLabel);
-            contentPanel.Controls.Add(container);
+            ctrl.Dock = DockStyle.Fill;
+            contentPanel.Controls.Add(ctrl);
             contentPanel.ResumeLayout();
         }
 
-        private Label CreateLabel(string text, float size, FontStyle style, Color color, DockStyle dock, int height)
+        private Button GetNavButton(string title) => title switch
         {
-            return new Label
-            {
-                Text = text,
-                Font = new Font("Segoe UI", size, style),
-                ForeColor = color,
-                Dock = dock,
-                Height = height,
-                AutoEllipsis = true
+            "Quản lý nhân viên" => btnEmployeeManagement,
+            "Quản lý tài khoản" => btnUserManagement,
+            "Quản lý chuyên khoa" => btnDepartmentManagement,
+            "Ca làm việc" => btnNavShifts,
+            "Quản lý ca trực" => btnShiftManagement,
+            _ => null
+        };
+
+        private void SetActiveNav(Button active)
+        {
+            Button[] all = {
+                btnNavOverview, btnEmployeeManagement, btnUserManagement,
+                btnDepartmentManagement, btnNavShifts, btnStatitics,
+                btnShiftManagement, btnAdvancedAnalysis
             };
+            foreach (var b in all)
+            {
+                if (b == null) continue;
+                b.BackColor = Color.White;
+                b.ForeColor = Color.FromArgb(55, 65, 81);
+            }
+            if (active != null)
+            {
+                active.BackColor = Color.FromArgb(239, 246, 255);
+                active.ForeColor = primary;
+            }
         }
 
-
+        private void contentPanel_Resize(object sender, EventArgs e) { }
 
         private void btnDepartmentManagement_Click(object sender, EventArgs e)
+        {
+            // Handled via Load event above; kept to satisfy Designer
+        }
+
+        // ── Statistics panel (inline) ────────────────────────────────
+        private Panel BuildStatisticsPanel()
+        {
+            var outer = new Panel { Dock = DockStyle.Fill, BackColor = pageBack, Padding = new Padding(30, 20, 30, 20) };
+
+            // Quick stat cards pulled live
+            var bus = new EmployeeBUS();
+            var deptBus = new DepartmentBUS();
+            var employees = bus.GetAll();
+            int totalEmp = employees.Count, activeEmp = 0, doctor = 0, nurse = 0, pharma = 0;
+            foreach (var e in employees)
+            {
+                if (e.Status == "Active") activeEmp++;
+                switch (e.RoleName)
+                {
+                    case "Doctor": doctor++; break;
+                    case "Nurse": nurse++; break;
+                    case "Pharmacist": pharma++; break;
+                }
+            }
+            int totalDept = deptBus.GetAll().Count;
+
+            var grid = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                Height = 150,
+                BackColor = Color.Transparent,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false
+            };
+
+            grid.Controls.Add(StatCard("Tổng nhân viên", totalEmp.ToString(), Color.FromArgb(37, 99, 235), Color.FromArgb(219, 234, 254)));
+            grid.Controls.Add(StatCard("Đang làm việc", activeEmp.ToString(), Color.FromArgb(5, 150, 105), Color.FromArgb(209, 250, 229)));
+            grid.Controls.Add(StatCard("Bác sĩ", doctor.ToString(), Color.FromArgb(124, 58, 237), Color.FromArgb(237, 233, 254)));
+            grid.Controls.Add(StatCard("Y tá / Điều dưỡng", nurse.ToString(), Color.FromArgb(234, 88, 12), Color.FromArgb(255, 237, 213)));
+            grid.Controls.Add(StatCard("Chuyên khoa", totalDept.ToString(), Color.FromArgb(219, 39, 119), Color.FromArgb(252, 231, 243)));
+
+            outer.Controls.Add(grid);
+            outer.Controls.Add(new Label
+            {
+                Text = "Thống kê nhân sự",
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(17, 24, 39),
+                Dock = DockStyle.Top,
+                Height = 44
+            });
+            return outer;
+        }
+
+        private Panel StatCard(string title, string value, Color accent, Color bg)
+        {
+            var p = new Panel { Size = new Size(180, 110), BackColor = bg, Margin = new Padding(0, 0, 16, 0) };
+            p.Controls.Add(new Label { Text = title, Font = new Font("Segoe UI", 8.5F), ForeColor = accent, Location = new Point(14, 14), AutoSize = true });
+            p.Controls.Add(new Label { Text = value, Font = new Font("Segoe UI", 26F, FontStyle.Bold), ForeColor = accent, Location = new Point(14, 36), AutoSize = true });
+            return p;
+        }
+
+        private Panel BuildComingSoonPanel(string msg)
+        {
+            var p = new Panel { Dock = DockStyle.Fill, BackColor = pageBack };
+            p.Controls.Add(new Label
+            {
+                Text = msg,
+                Font = new Font("Segoe UI", 14F),
+                ForeColor = textMuted,
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter
+            });
+            return p;
+        }
+
+        private void label3_Click(object sender, EventArgs e)
         {
 
         }
     }
 }
-
-

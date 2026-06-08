@@ -18,5 +18,6 @@ namespace DTO
         public int? DepartmentID { get; set; }
         public string DepartmentName { get; set; }
         public string Status { get; set; }
+        public string RoomName { get; set; }
     }
 }

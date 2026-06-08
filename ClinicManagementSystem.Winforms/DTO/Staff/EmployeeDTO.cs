@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace DTO
 {
@@ -18,9 +18,11 @@ namespace DTO
         public decimal? Salary { get; set; }
         public int RoleID { get; set; }
         public string RoleName { get; set; }
-        public int DepartmentID { get; set; }
+        public int? DepartmentID { get; set; }
         public string DepartmentName { get; set; }
         public string Status { get; set; }
         public int? UserID { get; set; }
+
+        public string StatusText => Status == "Active" ? "Đang làm việc" : "Nghỉ việc";
     }
 }

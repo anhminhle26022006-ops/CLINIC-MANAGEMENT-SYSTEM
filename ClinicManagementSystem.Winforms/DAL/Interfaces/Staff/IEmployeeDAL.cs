@@ -7,5 +7,8 @@ namespace DAL.Interfaces
     {
         List<EmployeeDTO> GetByRole(string roleName);
         EmployeeDTO FindByName(string fullName);
+        bool Add(EmployeeDTO dto);
+        bool Update(EmployeeDTO dto);
+        bool Delete(int id);
     }
 }

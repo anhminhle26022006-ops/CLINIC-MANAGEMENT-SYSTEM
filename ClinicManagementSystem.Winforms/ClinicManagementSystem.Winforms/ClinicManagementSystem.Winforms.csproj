@@ -1,127 +1,233 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>disable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>disable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BUS\BUS.csproj" />
-    <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\DTO\DTO.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
-    <ProjectReference Include="..\ServicesExternal\ServicesExternal.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BUS\BUS.csproj" />
+		<ProjectReference Include="..\Core\Core.csproj" />
+		<ProjectReference Include="..\DAL\DAL.csproj" />
+		<ProjectReference Include="..\DTO\DTO.csproj" />
+		<ProjectReference Include="..\Models\Models.csproj" />
+		<ProjectReference Include="..\ServicesExternal\ServicesExternal.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="UserControls\Doctor\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Controllers\" />
+		<Folder Include="UserControls\Doctor\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="RestSharp" Version="114.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.8" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="RestSharp" Version="114.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.8" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucPatientRecords.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucPatientRecords.Designer.cs">
-      <DependentUpon>ucPatientRecords.cs</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucSeederTool.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucSeederTool.Designer.cs">
-      <DependentUpon>ucSeederTool.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Mainforms\TechnicianMainform.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Mainforms\TechnicianMainform.Designer.cs">
-      <DependentUpon>TechnicianMainform.cs</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianLabResult.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianLabResult.Designer.cs">
-      <DependentUpon>ucTechnicianLabResult.cs</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianOverview.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianOverview.Designer.cs">
-      <DependentUpon>ucTechnicianOverview.cs</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianRequests.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianRequests.Designer.cs">
-      <DependentUpon>ucTechnicianRequests.cs</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianShifts.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianShifts.Designer.cs">
-      <DependentUpon>ucTechnicianShifts.cs</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianUploadMri.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianUploadMri.Designer.cs">
-      <DependentUpon>ucTechnicianUploadMri.cs</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianUploadPdf.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\Technician\ucTechnicianUploadPdf.Designer.cs">
-      <DependentUpon>ucTechnicianUploadPdf.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UserControls\Technician\ucPatientRecords.resx">
-      <DependentUpon>ucPatientRecords.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UserControls\Technician\ucSeederTool.resx">
-      <DependentUpon>ucSeederTool.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Mainforms\TechnicianMainform.resx">
-      <DependentUpon>TechnicianMainform.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UserControls\Technician\ucTechnicianLabResult.resx">
-      <DependentUpon>ucTechnicianLabResult.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UserControls\Technician\ucTechnicianOverview.resx">
-      <DependentUpon>ucTechnicianOverview.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UserControls\Technician\ucTechnicianRequests.resx">
-      <DependentUpon>ucTechnicianRequests.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UserControls\Technician\ucTechnicianShifts.resx">
-      <DependentUpon>ucTechnicianShifts.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UserControls\Technician\ucTechnicianUploadMri.resx">
-      <DependentUpon>ucTechnicianUploadMri.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UserControls\Technician\ucTechnicianUploadPdf.resx">
-      <DependentUpon>ucTechnicianUploadPdf.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
+		<!-- Technician UCs -->
+		<Compile Update="UserControls\Technician\ucPatientRecords.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucPatientRecords.Designer.cs">
+			<DependentUpon>ucPatientRecords.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucSeederTool.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucSeederTool.Designer.cs">
+			<DependentUpon>ucSeederTool.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Mainforms\TechnicianMainform.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="Mainforms\TechnicianMainform.Designer.cs">
+			<DependentUpon>TechnicianMainform.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianLabResult.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianLabResult.Designer.cs">
+			<DependentUpon>ucTechnicianLabResult.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianOverview.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianOverview.Designer.cs">
+			<DependentUpon>ucTechnicianOverview.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianRequests.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianRequests.Designer.cs">
+			<DependentUpon>ucTechnicianRequests.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianShifts.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianShifts.Designer.cs">
+			<DependentUpon>ucTechnicianShifts.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianUploadMri.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianUploadMri.Designer.cs">
+			<DependentUpon>ucTechnicianUploadMri.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianUploadPdf.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Technician\ucTechnicianUploadPdf.Designer.cs">
+			<DependentUpon>ucTechnicianUploadPdf.cs</DependentUpon>
+		</Compile>
+
+		<!-- Admin UCs - Nhi -->
+		<Compile Update="UserControls\Admin\ucAdminDashboard.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Admin\ucAdminDashboard.Designer.cs">
+			<DependentUpon>ucAdminDashboard.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Admin\ucDepartmentManagement.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Admin\ucDepartmentManagement.Designer.cs">
+			<DependentUpon>ucDepartmentManagement.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Admin\ucShiftmanagement.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Admin\ucShiftmanagement.Designer.cs">
+			<DependentUpon>ucShiftmanagement.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Admin\ucUserManagement.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Admin\ucUserManagement.Designer.cs">
+			<DependentUpon>ucUserManagement.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\Admin\Ucemployeemanagement.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\Admin\Ucemployeemanagement.Designer.cs">
+			<DependentUpon>Ucemployeemanagement.cs</DependentUpon>
+		</Compile>
+
+		<!-- Admin Forms - Nhi -->
+		<Compile Update="Forms\Admin\Frmaddemployee.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Forms\Admin\Frmaddemployee.Designer.cs">
+			<DependentUpon>Frmaddemployee.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Forms\Admin\Frmeditemployee.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Forms\Admin\Frmeditemployee.Designer.cs">
+			<DependentUpon>Frmeditemployee.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Forms\Admin\Frmviewemployee.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Forms\Admin\Frmviewemployee.Designer.cs">
+			<DependentUpon>Frmviewemployee.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Forms\Admin\frmAddDepartment.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Forms\Admin\frmAddDepartment.Designer.cs">
+			<DependentUpon>frmAddDepartment.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Forms\Admin\frmEditDepartment.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Forms\Admin\frmEditDepartment.Designer.cs">
+			<DependentUpon>frmEditDepartment.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Forms\Admin\frmRegisterShift.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Forms\Admin\frmRegisterShift.Designer.cs">
+			<DependentUpon>frmRegisterShift.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Forms\Admin\frmAddUser.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Forms\Admin\frmAddUser.Designer.cs">
+			<DependentUpon>frmAddUser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Forms\Admin\frmEditUser.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Forms\Admin\frmEditUser.Designer.cs">
+			<DependentUpon>frmEditUser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Forms\Admin\frmViewUser.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Forms\Admin\frmViewUser.Designer.cs">
+			<DependentUpon>frmViewUser.cs</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Technician\ucPatientRecords.resx">
+			<DependentUpon>ucPatientRecords.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Technician\ucSeederTool.resx">
+			<DependentUpon>ucSeederTool.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Mainforms\TechnicianMainform.resx">
+			<DependentUpon>TechnicianMainform.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Technician\ucTechnicianLabResult.resx">
+			<DependentUpon>ucTechnicianLabResult.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Technician\ucTechnicianOverview.resx">
+			<DependentUpon>ucTechnicianOverview.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Technician\ucTechnicianRequests.resx">
+			<DependentUpon>ucTechnicianRequests.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Technician\ucTechnicianShifts.resx">
+			<DependentUpon>ucTechnicianShifts.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Technician\ucTechnicianUploadMri.resx">
+			<DependentUpon>ucTechnicianUploadMri.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Technician\ucTechnicianUploadPdf.resx">
+			<DependentUpon>ucTechnicianUploadPdf.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Admin\ucAdminDashboard.resx">
+			<DependentUpon>ucAdminDashboard.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Admin\ucDepartmentManagement.resx">
+			<DependentUpon>ucDepartmentManagement.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Admin\ucShiftmanagement.resx">
+			<DependentUpon>ucShiftmanagement.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Admin\ucUserManagement.resx">
+			<DependentUpon>ucUserManagement.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="UserControls\Admin\Ucemployeemanagement.resx">
+			<DependentUpon>Ucemployeemanagement.cs</DependentUpon>
+		</EmbeddedResource>
+	</ItemGroup>
 
 </Project>

@@ -1,26 +1,18 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
-using System.Configuration;
-using Microsoft.Data.SqlClient;
+using BUS.Services;
+using DTO;
 
 namespace ClinicManagementSystem.Winforms.Forms.Admin
 {
     public partial class frmAddUser : Form
     {
-        private string _connectionString;
+        private readonly UserBUS _bus = new UserBUS();
 
-        public frmAddUser()
-        {
-            _connectionString = ConfigurationManager.ConnectionStrings["DbConnection"]?.ConnectionString
-                             ?? ConfigurationManager.ConnectionStrings["ClinicDB"]?.ConnectionString
-                             ?? "Server=(localdb)\\MSSQLLocalDB;Database=CMS;Trusted_Connection=True;TrustServerCertificate=True;";
-            InitializeComponent();
-        }
+        public frmAddUser() { InitializeComponent(); }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Validate
             if (string.IsNullOrWhiteSpace(txtUsername.Text))
             { MessageBox.Show("Vui lòng nhập Username.", "Thiếu thông tin"); txtUsername.Focus(); return; }
             if (string.IsNullOrWhiteSpace(txtDisplayName.Text))
@@ -34,32 +26,26 @@ namespace ClinicManagementSystem.Winforms.Forms.Admin
 
             try
             {
-                using var conn = new SqlConnection(_connectionString);
-                conn.Open();
-                bool isActive = cboStatus.SelectedIndex == 0;
-                using var cmd = new SqlCommand(@"
-                    INSERT INTO Users (Username, PasswordHash, Email, RoleID, IsActive, CreatedAt)
-                    VALUES (@u, @p, @e, (SELECT RoleID FROM Roles WHERE RoleName=@r), @active, GETDATE())", conn);
-                cmd.Parameters.AddWithValue("@u", txtUsername.Text.Trim());
-                cmd.Parameters.AddWithValue("@p", txtPassword.Text);
-                cmd.Parameters.AddWithValue("@e", string.IsNullOrEmpty(txtEmail.Text) ? (object)DBNull.Value : txtEmail.Text.Trim());
-                cmd.Parameters.AddWithValue("@r", cboRole.SelectedItem.ToString());
-                cmd.Parameters.AddWithValue("@active", isActive ? 1 : 0);
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("Thêm tài khoản thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                var user = new UserDTO
+                {
+                    Username = txtUsername.Text.Trim(),
+                    Name = txtDisplayName.Text.Trim(),
+                    Password = txtPassword.Text,
+                    Role = cboRole.SelectedItem.ToString(),
+                    Email = txtEmail.Text.Trim()
+                };
+                if (_bus.CreateUser(user))
+                {
+                    MessageBox.Show("Thêm tài khoản thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+                else
+                    MessageBox.Show("Thêm tài khoản thất bại. Username có thể đã tồn tại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
-        }
+        private void btnCancel_Click(object sender, EventArgs e) { this.DialogResult = DialogResult.Cancel; this.Close(); }
     }
 }

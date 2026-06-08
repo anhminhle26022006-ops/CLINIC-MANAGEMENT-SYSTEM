@@ -6,56 +6,26 @@ namespace ClinicManagementSystem.Controllers
 {
     public class PatientManaController
     {
-        private readonly PatientBUS patientBUS = new();
-        private readonly AppointmentBUS appointmentBUS = new();
+        private readonly PatientBUS patientBUS = new PatientBUS();
+        private readonly AppointmentBUS appointmentBUS = new AppointmentBUS();
 
-        public List<PatientDTO> GetPatients()
-        {
-            return patientBUS.GetList();
-        }
+        public List<PatientDTO> GetPatients() => patientBUS.GetList();
 
-        public List<PatientDTO> SearchPatients(string keyword)
-        {
-            return patientBUS.FilterList(keyword);
-        }
+        public List<PatientDTO> SearchPatients(string keyword) => patientBUS.FilterList(keyword);
 
-        public bool CreatePatient(
-            PatientDTO patient,
-            PatientInsuranceDTO insurance)
-        {
-            return patientBUS.CreatePatient(
-                patient,
-                insurance);
-        }
+        public bool CreatePatient(PatientDTO patient, PatientInsuranceDTO insurance)
+            => patientBUS.CreatePatient(patient);
 
-        public bool UpdatePatient(PatientDTO patient)
-        {
-            return patientBUS.UpdatePatient(patient);
-        }
+        public bool UpdatePatient(PatientDTO patient) => patientBUS.UpdatePatient(patient);
 
-        public int CountPatients()
-        {
-            return patientBUS.CountPatients();
-        }
+        public int CountPatients() => patientBUS.CountPatients();
 
-        public int CountNewPatients()
-        {
-            return appointmentBUS.CountNewPatients();
-        }
+        public int CountNewPatients() => appointmentBUS.CountNewPatients();
 
-        public int CountRevisitPatients()
-        {
-            return appointmentBUS.CountRevisitPatients();
-        }
+        public int CountRevisitPatients() => appointmentBUS.CountRevisitPatients();
 
-        public int CountUpcomingAppointments()
-        {
-            return appointmentBUS.CountUpcomingAppointments();
-        }
+        public int CountUpcomingAppointments() => appointmentBUS.CountUpcomingAppointments();
 
-        public string GenerateNewPatientCode()
-        {
-            return patientBUS.GenerateNewPatientCode();
-        }
+        public string GenerateNewPatientCode() => patientBUS.GenerateNewPatientCode();
     }
 }

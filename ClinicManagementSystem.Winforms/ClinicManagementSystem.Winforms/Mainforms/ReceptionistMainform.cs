@@ -5,11 +5,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-﻿using BUS.Services;
+using BUS.Services;
 using ClinicManagementSystem.Winforms;
 using ClinicManagementSystem.Winforms.UserControls;
 using ClinicManagementSystem.Winforms.UserControls.reception;
-using DAL;
 using DTO;
 using Newtonsoft.Json.Linq;
 
@@ -23,9 +22,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
-        private readonly PatientBUS patientBUS = new PatientBUS();
-        private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
-        private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
         private UserDTO currentUser;
         private bool layoutReady;
         private readonly ApiSyncBUS apiSyncBUS = new ApiSyncBUS();
@@ -41,7 +37,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         {
             InitializeComponent();
             layoutReady = true;
-            
+
         }
 
         public ReceptionistMainform(UserDTO user) : this()
@@ -55,14 +51,14 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private async void ReceptionistMainform_Load(object sender, EventArgs e)
         {
-           /* try
-            {
-                await apiSyncBUS.SyncAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            } */
+            /* try
+             {
+                 await apiSyncBUS.SyncAsync();
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show(ex.Message);
+             } */
 
             btnLogout.Click += (s, ev) =>
             {
@@ -165,5 +161,3 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         }
     }
 }
-
-

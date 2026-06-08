@@ -1,6 +1,5 @@
-﻿﻿using BUS.Services;
+﻿using BUS.Services;
 using ClinicManagementSystem.Winforms;
-using DAL;
 using DTO;
 using Newtonsoft.Json.Linq;
 using System;
@@ -21,9 +20,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
-        private readonly PatientBUS patientBUS = new PatientBUS();
-        private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
-        private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
         private UserDTO currentUser;
         private bool layoutReady;
 
@@ -224,5 +220,3 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
     }
 }
-
-

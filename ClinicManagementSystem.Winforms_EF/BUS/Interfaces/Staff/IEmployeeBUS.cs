@@ -7,5 +7,8 @@ namespace BUS.Interfaces
     {
         List<EmployeeDTO> GetByRole(string roleName);
         EmployeeDTO FindByName(string fullName);
+        bool Add(EmployeeDTO employee);
+        bool Update(EmployeeDTO employee);
+        bool Delete(int employeeId);
     }
 }

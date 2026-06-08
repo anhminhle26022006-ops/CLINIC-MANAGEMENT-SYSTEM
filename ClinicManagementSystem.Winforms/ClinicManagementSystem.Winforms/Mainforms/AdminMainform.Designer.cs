@@ -27,7 +27,6 @@
             panel4 = new Panel();
             btnUserManagement = new Button();
             panel5 = new Panel();
-            btnDepartmentManagement = new Button();
             panel6 = new Panel();
             btnNavShifts = new Button();
             panel7 = new Panel();
@@ -58,8 +57,14 @@
             lblUserName = new Label();
             lblUserEmail = new Label();
             contentPanel = new Panel();
+            label1 = new Label();
+            label2 = new Label();
+            button1 = new Button();
+            label3 = new Label();
+            btnDepartmentManagement = new Button();
             panelSidebar.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
+            panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
             panel4.SuspendLayout();
@@ -123,9 +128,13 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(label3);
+            panel1.Controls.Add(button1);
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(200, 95);
+            panel1.Size = new Size(282, 95);
             panel1.TabIndex = 0;
             // 
             // panel2
@@ -200,7 +209,7 @@
             btnUserManagement.FlatStyle = FlatStyle.Flat;
             btnUserManagement.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnUserManagement.ForeColor = Color.FromArgb(55, 65, 81);
-            btnUserManagement.Location = new Point(4, 29);
+            btnUserManagement.Location = new Point(4, 23);
             btnUserManagement.Margin = new Padding(4);
             btnUserManagement.Name = "btnUserManagement";
             btnUserManagement.Size = new Size(273, 74);
@@ -217,26 +226,6 @@
             panel5.Name = "panel5";
             panel5.Size = new Size(280, 119);
             panel5.TabIndex = 4;
-            // 
-            // btnDepartmentManagement
-            // 
-            btnDepartmentManagement.BackColor = Color.White;
-            btnDepartmentManagement.Cursor = Cursors.Hand;
-            btnDepartmentManagement.Dock = DockStyle.Fill;
-            btnDepartmentManagement.FlatAppearance.BorderSize = 0;
-            btnDepartmentManagement.FlatStyle = FlatStyle.Flat;
-            btnDepartmentManagement.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnDepartmentManagement.ForeColor = Color.FromArgb(55, 65, 81);
-            btnDepartmentManagement.Location = new Point(0, 0);
-            btnDepartmentManagement.Margin = new Padding(3, 4, 3, 4);
-            btnDepartmentManagement.Name = "btnDepartmentManagement";
-            btnDepartmentManagement.Padding = new Padding(18, 0, 0, 0);
-            btnDepartmentManagement.Size = new Size(280, 119);
-            btnDepartmentManagement.TabIndex = 7;
-            btnDepartmentManagement.Text = "Quản lý chuyên khoa";
-            btnDepartmentManagement.TextAlign = ContentAlignment.MiddleLeft;
-            btnDepartmentManagement.UseVisualStyleBackColor = false;
-            btnDepartmentManagement.Click += btnDepartmentManagement_Click;
             // 
             // panel6
             // 
@@ -499,7 +488,7 @@
             lblSearchIcon.AutoSize = true;
             lblSearchIcon.Font = new Font("Segoe UI", 11F);
             lblSearchIcon.ForeColor = Color.FromArgb(156, 163, 175);
-            lblSearchIcon.Location = new Point(17, 45);
+            lblSearchIcon.Location = new Point(18, 36);
             lblSearchIcon.Margin = new Padding(4, 0, 4, 0);
             lblSearchIcon.Name = "lblSearchIcon";
             lblSearchIcon.Size = new Size(43, 30);
@@ -596,6 +585,79 @@
             contentPanel.TabIndex = 2;
             contentPanel.Resize += contentPanel_Resize;
             // 
+            // label1
+            // 
+            label1.BackColor = Color.FromArgb(47, 94, 240);
+            label1.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            label1.ForeColor = Color.White;
+            label1.Location = new Point(4, 20);
+            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(54, 64);
+            label1.TabIndex = 9;
+            label1.Text = "H+";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+            label2.ForeColor = Color.FromArgb(17, 24, 39);
+            label2.Location = new Point(66, 6);
+            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(196, 41);
+            label2.TabIndex = 10;
+            label2.Text = "HealthCare+";
+            // 
+            // button1
+            // 
+            button1.BackColor = Color.White;
+            button1.Cursor = Cursors.Hand;
+            button1.FlatAppearance.BorderSize = 0;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Segoe UI", 13F);
+            button1.Location = new Point(278, 25);
+            button1.Margin = new Padding(4, 5, 4, 5);
+            button1.Name = "button1";
+            button1.Size = new Size(38, 54);
+            button1.TabIndex = 8;
+            button1.Text = "x";
+            button1.UseVisualStyleBackColor = false;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 8.5F);
+            label3.ForeColor = Color.FromArgb(107, 114, 128);
+            label3.Location = new Point(66, 59);
+            label3.Margin = new Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(60, 23);
+            label3.TabIndex = 11;
+            label3.Text = "Admin";
+            label3.Click += label3_Click;
+            // 
+            // btnDepartmentManagement
+            // 
+            btnDepartmentManagement.BackColor = Color.White;
+            btnDepartmentManagement.Cursor = Cursors.Hand;
+            btnDepartmentManagement.Dock = DockStyle.Fill;
+            btnDepartmentManagement.FlatAppearance.BorderSize = 0;
+            btnDepartmentManagement.FlatStyle = FlatStyle.Flat;
+            btnDepartmentManagement.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnDepartmentManagement.ForeColor = Color.FromArgb(55, 65, 81);
+            btnDepartmentManagement.Location = new Point(0, 0);
+            btnDepartmentManagement.Margin = new Padding(3, 4, 3, 4);
+            btnDepartmentManagement.Name = "btnDepartmentManagement";
+            btnDepartmentManagement.Padding = new Padding(18, 0, 0, 0);
+            btnDepartmentManagement.Size = new Size(280, 119);
+            btnDepartmentManagement.TabIndex = 7;
+            btnDepartmentManagement.Text = "Quản lý chuyên khoa";
+            btnDepartmentManagement.TextAlign = ContentAlignment.MiddleLeft;
+            btnDepartmentManagement.UseVisualStyleBackColor = false;
+            btnDepartmentManagement.Click += btnDepartmentManagement_Click;
+            // 
             // AdminMainform
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -611,6 +673,8 @@
             Load += ucTechnicianDashboard_Load;
             panelSidebar.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             panel2.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel4.ResumeLayout(false);
@@ -643,7 +707,6 @@
         private Button btnNavOverview;
         private Button btnEmployeeManagement;
         private Button btnUserManagement;
-        private Button btnDepartmentManagement;
         private Button btnShiftManagement;
         private Button btnNavShifts;
         private Button btnStatitics;
@@ -659,5 +722,10 @@
         private Label lblBell, lblNotifDot;
         private Label lblAvatar, lblUserName, lblUserEmail;
         private Panel contentPanel;
+        private Label label1;
+        private Label label2;
+        private Label label3;
+        private Button button1;
+        private Button btnDepartmentManagement;
     }
 }

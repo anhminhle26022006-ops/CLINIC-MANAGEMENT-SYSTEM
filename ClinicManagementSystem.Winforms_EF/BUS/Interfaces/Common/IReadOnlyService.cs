@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using DTO;
 
 namespace BUS.Interfaces
 {
-    public interface IReadOnlyService<TDto, TKey>
+    public interface IDepartmentBUS : IReadOnlyService<DepartmentDTO, int>
     {
-        List<TDto> GetAll();
-        TDto GetById(TKey id);
-        bool Exists(TKey id);
+        bool Add(DepartmentDTO dto);
+        bool Update(DepartmentDTO dto);
+        bool Delete(int id);
+        List<DepartmentDTO> Search(string keyword);
     }
 }

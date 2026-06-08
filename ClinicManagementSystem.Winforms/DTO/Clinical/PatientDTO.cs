@@ -24,9 +24,12 @@ namespace DTO
         {
             get
             {
-                return DateTime.Now.Year - BirthDate.Year;
+                return BirthDate.HasValue
+                    ? DateTime.Now.Year - BirthDate.Value.Year
+                    : 0;
             }
         }
+
     }
 }
 
