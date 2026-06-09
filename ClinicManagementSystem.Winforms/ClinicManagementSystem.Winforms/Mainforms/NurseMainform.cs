@@ -18,19 +18,9 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;
         private readonly Color pageBack = Color.FromArgb(247, 249, 252);
-        private readonly Color textMain = Color.FromArgb(17, 24, 39);
-        private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
-        private readonly PatientBUS patientBUS = new PatientBUS();
-        private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
-        private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
         private UserDTO currentUser;
         private bool layoutReady;
-
-        // Custom Navigation Buttons
-        private Button btnERM;
-
-        // Active request for processing transitions
 
         public event EventHandler LogoutRequested;
         public event EventHandler CloseRequested;
@@ -43,54 +33,122 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         public NurseMainform(UserDTO user) : this()
         {
-            this.currentUser = user;
+            currentUser = user;
+
             lblUserName.Text = user.Name;
-            lblUserEmail.Text = user.Email ?? user.Username;
-            lblAvatar.Text = string.IsNullOrEmpty(user.Name) ? "K" : user.Name.Substring(0, 1).ToUpper();
-            lblPageSubtitle.Text = "Xin chào, " + user.Name;
+            lblUserEmail.Text = string.IsNullOrEmpty(user.Email)
+                ? user.Username
+                : user.Email;
+
+            lblAvatar.Text = string.IsNullOrEmpty(user.Name)
+                ? "N"
+                : user.Name.Substring(0, 1).ToUpper();
+
+            lblPageSubtitle.Text = $"Xin chào, {user.Name}";
         }
 
         private void ReceptionistMainform_Load(object sender, EventArgs e)
         {
-            // Set Log Out click handler
             btnLogout.Click += (s, ev) =>
             {
                 LogoutRequested?.Invoke(this, EventArgs.Empty);
             };
 
-            // Close button click handler
-            btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
+            btnClose.Click += (s, ev) =>
+            {
+                CloseRequested?.Invoke(this, EventArgs.Empty);
+            };
 
+            btnNavOverview.Click += BtnNavOverview_Click;
+            btnQueue.Click += BtnQueue_Click;
+            btnVitalSigns.Click += BtnVitalSigns_Click;
+            btnERM.Click += BtnERM_Click;
+            btnNavShifts.Click += BtnNavShifts_Click;
 
+            SetActiveButton(btnNavOverview);
         }
 
-        private Button CreateSidebarButton(string text, Point location, EventHandler onClick)
+        private void SetActiveButton(Button activeButton)
         {
-            Button btn = new Button
+            Button[] buttons =
             {
-                Text = text,
-                Location = location,
-                Size = new Size(214, 44),
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                FlatStyle = FlatStyle.Flat,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(16, 0, 0, 0),
-                Cursor = Cursors.Hand,
-                BackColor = Color.White,
-                ForeColor = Color.FromArgb(55, 65, 81),
-                UseVisualStyleBackColor = false
+                btnNavOverview,
+                btnQueue,
+                btnVitalSigns,
+                btnERM,
+                btnNavShifts
             };
-            btn.FlatAppearance.BorderSize = 0;
-            btn.Click += onClick;
-            panelSidebar.Controls.Add(btn);
-            return btn;
+
+            foreach (var btn in buttons)
+            {
+                btn.BackColor = Color.White;
+                btn.ForeColor = Color.FromArgb(55, 65, 81);
+            }
+
+            activeButton.BackColor = Color.FromArgb(239, 246, 255);
+            activeButton.ForeColor = primary;
+        }
+
+        private void BtnNavOverview_Click(object sender, EventArgs e)
+        {
+            lblPageTitle.Text = "Tổng quan";
+            SetActiveButton(btnNavOverview);
+
+            // TODO:
+            // LoadControl(new UCNurseDashboard());
+        }
+
+        private void BtnQueue_Click(object sender, EventArgs e)
+        {
+            lblPageTitle.Text = "Hàng chờ khám";
+            SetActiveButton(btnQueue);
+
+            // TODO:
+            // LoadControl(new UCNurseQueue());
+        }
+
+        private void BtnVitalSigns_Click(object sender, EventArgs e)
+        {
+            lblPageTitle.Text = "Chỉ số sinh hiệu";
+            SetActiveButton(btnVitalSigns);
+
+            // TODO:
+            // LoadControl(new UCNurseVitalSigns());
+        }
+
+        private void BtnERM_Click(object sender, EventArgs e)
+        {
+            lblPageTitle.Text = "Bệnh án";
+            SetActiveButton(btnERM);
+
+            // TODO:
+            // LoadControl(new UCNurseMedicalRecord());
+        }
+
+        private void BtnNavShifts_Click(object sender, EventArgs e)
+        {
+            lblPageTitle.Text = "Ca làm việc";
+            SetActiveButton(btnNavShifts);
+
+            // TODO:
+            // LoadControl(new UCNurseShifts());
         }
 
         private void contentPanel_Resize(object sender, EventArgs e)
         {
-            if (!layoutReady || contentPanel.Width < 400) return;
+            if (!layoutReady || contentPanel.Width < 400)
+                return;
         }
 
+        private void LoadControl(UserControl control)
+        {
+            contentPanel.Controls.Clear();
+
+            control.Dock = DockStyle.Fill;
+
+            contentPanel.Controls.Add(control);
+            control.BringToFront();
+        }
     }
 }
 
