@@ -89,6 +89,23 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
                         break;
                 }
             }
+            if (dgvAppointment.Columns[e.ColumnIndex].Name == "colAction")
+            {
+                string status =
+                    dgvAppointment.Rows[e.RowIndex]
+                    .Cells["Trạng thái"]
+                    .Value?.ToString();
+
+                if (status != "Waiting" &&
+                    status != "Chờ tiếp nhận")
+                {
+                    e.Value = "";
+                }
+                else
+                {
+                    e.Value = "Tiếp nhận";
+                }
+            }
         }
 
         private void SetupCards()
@@ -200,7 +217,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
                 controller.GetAppointmentsToday();
 
             SetupActionColumn();
-            UpdateActionButtons();
         }
 
         private void SetupActionColumn()
@@ -216,16 +232,21 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
 
             btnAction.Text = "Tiếp nhận";
 
-            btnAction.UseColumnTextForButtonValue = false;
+            btnAction.UseColumnTextForButtonValue = true;
 
             dgvAppointment.Columns.Add(btnAction);
 
             dgvAppointment.Columns["AppointmentID"].Visible = false;
 
             dgvAppointment.Columns["colAction"].FillWeight = 80;
+            btnAction.DefaultCellStyle.ForeColor =
+    Color.Black;
+
+            btnAction.DefaultCellStyle.SelectionForeColor =
+                Color.Black;
         }
 
-        private void UpdateActionButtons()
+      /*  private void UpdateActionButtons()
         {
             foreach (DataGridViewRow row in dgvAppointment.Rows)
             {
@@ -233,17 +254,17 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
                     row.Cells["Trạng thái"]
                        .Value?.ToString();
 
-                if (status == "Waiting")
+                if (status == "Waiting" ||
+                    status == "Chờ tiếp nhận")
                 {
                     row.Cells["colAction"].Value =
                         "Tiếp nhận";
-                }
-                else
-                {
-                    row.Cells["colAction"].Value = "";
+
+                    MessageBox.Show(
+                        row.Cells["colAction"].Value?.ToString());
                 }
             }
-        }
+        }*/
 
         private void dgvAppointment_CellContentClick(
     object sender,
@@ -265,7 +286,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
     .Cells["Trạng thái"]
     .Value.ToString();
 
-                if (status != "Waiting")
+                if (status != "Waiting" &&
+    status != "Chờ tiếp nhận")
                 {
                     return;
                 }
@@ -303,7 +325,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
 
             SetupActionColumn();
 
-            UpdateActionButtons();
+         //   UpdateActionButtons();
         }
 
         private void textBox1_TextChanged(

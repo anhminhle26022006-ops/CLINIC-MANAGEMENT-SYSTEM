@@ -12,6 +12,7 @@ using ClinicManagementSystem.Winforms.UserControls.reception;
 using DAL;
 using DTO;
 using Newtonsoft.Json.Linq;
+using ClinicManagementSystem.Winforms.Shareforms;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
@@ -156,7 +157,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void btnNavShifts_Click(object sender, EventArgs e)
         {
-
+            LoadContent(new Shift());
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
