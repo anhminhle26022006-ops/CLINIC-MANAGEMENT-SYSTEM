@@ -1,74 +1,36 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
-using DAL.DataContext;
+﻿using System.Linq;
+using DAL.Models;
 using DTO;
 
 namespace DAL.Repositories
 {
     public class EncounterDAL
     {
-        private EncounterDTO MapRowToDTO(
-            DataRow row)
+        private EncounterDTO MapToDTO(Encounter encounter)
         {
             return new EncounterDTO
             {
-                EncounterID =
-                    Convert.ToInt32(
-                        row["EncounterID"]),
-
-                AppointmentID =
-                    Convert.ToInt32(
-                        row["AppointmentID"]),
-
-                PatientID =
-                    Convert.ToInt32(
-                        row["PatientID"]),
-
-                DoctorID =
-                    Convert.ToInt32(
-                        row["DoctorID"]),
-
-                StartTime =
-                    row["StartTime"] != DBNull.Value
-                        ? Convert.ToDateTime(
-                            row["StartTime"])
-                        : null,
-
-                EndTime =
-                    row["EndTime"] != DBNull.Value
-                        ? Convert.ToDateTime(
-                            row["EndTime"])
-                        : null,
-
-                Status =
-                    row["Status"]?.ToString()
+                EncounterID = encounter.EncounterId,
+                AppointmentID = encounter.AppointmentId ?? 0,
+                PatientID = encounter.PatientId ?? 0,
+                DoctorID = encounter.DoctorId ?? 0,
+                StartTime = encounter.StartTime,
+                EndTime = encounter.EndTime,
+                Status = encounter.Status
             };
         }
 
-        public EncounterDTO GetById(
-            int encounterId)
+        public EncounterDTO GetById(int encounterId)
         {
-            string query = @"
-SELECT *
-FROM Encounters
-WHERE EncounterID = @EncounterID";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters =
-            {
-                new("@EncounterID",
-                    encounterId)
-            };
+            var encounter = db.Encounters
+                .FirstOrDefault(e => e.EncounterId == encounterId);
 
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(
-                    query,
-                    parameters);
-
-            if (dt.Rows.Count == 0)
+            if (encounter == null)
                 return null;
 
-            return MapRowToDTO(
-                dt.Rows[0]);
+            return MapToDTO(encounter);
         }
     }
 }
