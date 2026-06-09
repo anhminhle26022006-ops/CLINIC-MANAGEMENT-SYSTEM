@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,8 @@ namespace DTO.Doctor
     {
         public int QueueID { get; set; }
         public int EncounterID { get; set; }
+
+        public int AppointmentID { get; set; }   // <-- added
 
         public string PatientName { get; set; }
         public string PatientCode { get; set; }
