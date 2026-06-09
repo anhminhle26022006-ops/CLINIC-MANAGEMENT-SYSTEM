@@ -15,6 +15,19 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
         public Payment()
         {
             InitializeComponent();
+            LoadPaymentContent();
+        }
+
+        private void LoadPaymentContent()
+        {
+            pnlContent.Controls.Clear();
+
+            PaymentContent content =
+                new PaymentContent();
+
+            content.Dock = DockStyle.Fill;
+
+            pnlContent.Controls.Add(content);
         }
 
         private void button1_Click(object sender, EventArgs e)

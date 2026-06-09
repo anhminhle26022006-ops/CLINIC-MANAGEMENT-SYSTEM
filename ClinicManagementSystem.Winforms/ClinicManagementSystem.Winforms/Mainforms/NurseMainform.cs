@@ -25,6 +25,11 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         public event EventHandler LogoutRequested;
         public event EventHandler CloseRequested;
+        private readonly Color textMain =
+    Color.FromArgb(17, 24, 39);
+
+        private readonly Color textMuted =
+            Color.FromArgb(107, 114, 128);
 
         public NurseMainform()
         {
