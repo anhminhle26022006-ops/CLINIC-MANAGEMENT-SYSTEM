@@ -2,6 +2,9 @@
 using ClinicManagementSystem.Winforms;
 using ClinicManagementSystem.Winforms.Shareforms;
 using ClinicManagementSystem.Winforms.Shareforms.ERM;
+using ClinicManagementSystem.Winforms.UserControls.Doctor;
+using ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh;
+using ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription;
 using DAL;
 using DTO;
 using DTO.Clinical.erm;
@@ -25,6 +28,9 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
         private ucMedicalRecordSidebar ucERM;
+        private ucAppointmentSidebar ucAppointment;
+        private ucDoctorExaminationSidebar ucExamination;
+        private ucPrescriptionSidebar ucPrescription;
 
         private readonly PatientBUS patientBUS = new PatientBUS();
         private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
@@ -56,6 +62,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             lblAvatar.Text = string.IsNullOrEmpty(user.Name) ? "K" : user.Name.Substring(0, 1).ToUpper();
             lblPageSubtitle.Text = "Xin chào, " + user.Name;
         }
+        
 
         private void DoctorMainform_Load(object sender, EventArgs e)
         {
@@ -67,28 +74,53 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
 
             btnNavOverview.Click += (s, ev) => ShowOverview();
-            btnSchedule.Click += (s, ev) => ShowSection(
-                "Lịch khám",
-                "Danh sách lịch hẹn và bệnh nhân được phân công.",
-                btnSchedule,
-                "Lịch hẹn hôm nay: đang cập nhật",
-                "Bệnh nhân sắp tới: đang cập nhật");
-            btnQueue.Click += (s, ev) => ShowSection(
-                "Khám bệnh",
-                "Khu vực xử lý hàng đợi khám và encounter của bác sĩ.",
-                btnQueue,
-                "Bệnh nhân chờ khám: đang cập nhật",
-                "Ca đang khám: đang cập nhật");
+            btnSchedule.Click += (s, ev) => ShowAppointment();
+            btnQueue.Click += (s, ev) => ShowExamination();
             btnERM.Click += (s, ev) => ShowERM();
-            btnPharmacy.Click += (s, ev) => ShowSection(
-                "Toa thuốc",
-                "Theo dõi chỉ định thuốc và trạng thái cấp phát.",
-                btnPharmacy,
-                "Toa thuốc mới: đang cập nhật",
-                "Toa đã cấp phát: đang cập nhật");
+            btnPharmacy.Click += (s, ev) => ShowPrescription();
             btnNavShifts.Click += (s, ev) => ShowShiftScreen();
 
             ShowOverview();
+        }
+        private void ShowExamination()
+        {
+            lblPageTitle.Text = "Khám bệnh";
+            lblPageSubtitle.Text = "Khám bệnh, kê toa, xét nghiệm và chẩn đoán hình ảnh";
+
+            SetActiveNav(btnQueue);
+
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+
+            if (ucExamination == null)
+            {
+                ucExamination = new ucDoctorExaminationSidebar();
+                ucExamination.Dock = DockStyle.Fill;
+            }
+
+            contentPanel.Controls.Add(ucExamination);
+
+            contentPanel.ResumeLayout();
+        }
+        private void ShowAppointment()
+        {
+            lblPageTitle.Text = "Lịch khám";
+            lblPageSubtitle.Text = "Quản lý lịch khám bệnh nhân";
+
+            SetActiveNav(btnSchedule);
+
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+
+            if (ucAppointment == null)
+            {
+                ucAppointment = new ucAppointmentSidebar();
+                ucAppointment.Dock = DockStyle.Fill;
+            }
+
+            contentPanel.Controls.Add(ucAppointment);
+
+            contentPanel.ResumeLayout();
         }
         private void ShowERM()
         {
@@ -107,6 +139,26 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             }
 
             contentPanel.Controls.Add(ucERM);
+
+            contentPanel.ResumeLayout();
+        }
+        private void ShowPrescription()
+        {
+            lblPageTitle.Text = "Toa thuốc";
+            lblPageSubtitle.Text = "Xem lại lịch sử toa thuốc đã kê";
+
+            SetActiveNav(btnPharmacy);
+
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+
+            if (ucPrescription == null)
+            {
+                ucPrescription = new ucPrescriptionSidebar();
+                ucPrescription.Dock = DockStyle.Fill;
+            }
+
+            contentPanel.Controls.Add(ucPrescription);
 
             contentPanel.ResumeLayout();
         }

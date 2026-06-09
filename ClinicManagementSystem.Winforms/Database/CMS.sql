@@ -242,6 +242,7 @@ CREATE TABLE VitalSigns (
    SPO2 INT,
    Weight DECIMAL(5,2),
    Notes NVARCHAR(MAX),
+   Height DECIMAL(5,2),
    CreatedAt DATETIME DEFAULT GETDATE(),
 
    FOREIGN KEY (EncounterID) REFERENCES Encounters(EncounterID)
@@ -347,6 +348,8 @@ CREATE TABLE PrescriptionDetails (
    MedicineID INT,
    Quantity INT,
    Dosage NVARCHAR(100),
+   Frequency NVARCHAR(100),
+   Instruction NVARCHAR(500),
    FOREIGN KEY (PrescriptionID)
    REFERENCES Prescriptions(PrescriptionID),
 
@@ -686,14 +689,7 @@ ALTER TABLE Transfers
 ADD CONSTRAINT UQ_Transfers_UUID
 UNIQUE (TransferUUID);
 
-ALTER TABLE VitalSigns
-ADD Height DECIMAL(5,2);
 
-ALTER TABLE PrescriptionDetails
-ADD Frequency NVARCHAR(100);
-
-ALTER TABLE PrescriptionDetails
-ADD Instruction NVARCHAR(500);
 
 INSERT INTO Departments(DepartmentName)
 VALUES
@@ -749,6 +745,12 @@ VALUES
  (SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Chẩn đoán hình ảnh'),
  'Available');
 
+ INSERT INTO Shifts (Name, StartTime, EndTime)
+VALUES 
+(N'Ca sáng', '07:00', '11:00'),
+(N'Ca chiều', '13:00', '17:00'),
+(N'Ca tối', '17:00', '21:00');
+
 INSERT INTO Roles(RoleName, Description)
 VALUES
 ('Admin','System Administrator'),
@@ -758,98 +760,49 @@ VALUES
 ('Pharmacist','Pharmacist'),
 ('Technician','Lab / Imaging Technician');
 
-INSERT INTO Users
-(
-    Username,
-    PasswordHash,
-    Email,
-    RoleID
-)
+INSERT INTO Users (Username, PasswordHash, Email, RoleID)
 VALUES
+-- Admin (2)
+('admin1','123456','admin1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Admin')),
+('admin2','123456','admin2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Admin')),
 
-(
-    'admin',
-    '123456',
-    'admin@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Admin')
-),
+-- Receptionist (2)
+('reception1','123456','reception1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Receptionist')),
+('reception2','123456','reception2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Receptionist')),
 
-(
-    'reception',
-    '123456',
-    'reception@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Receptionist')
-),
+-- Doctors (16 người = 8 chuyên khoa × 2)
+('gp1','123456','gp1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
+('gp2','123456','gp2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
 
-(
-    'doctor_gp',
-    '123456',
-    'doctor.gp@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
-),
+('ped1','123456','ped1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
+('ped2','123456','ped2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
 
-(
-    'doctor_ped',
-    '123456',
-    'doctor.ped@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
-),
+('obs1','123456','obs1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
+('obs2','123456','obs2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
 
-(
-    'doctor_obs',
-    '123456',
-    'doctor.obs@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
-),
+('ent1','123456','ent1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
+('ent2','123456','ent2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
 
-(
-    'doctor_ent',
-    '123456',
-    'doctor.ent@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
-),
+('den1','123456','den1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
+('den2','123456','den2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
 
-(
-    'doctor_den',
-    '123456',
-    'doctor.den@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
-),
+('der1','123456','der1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
+('der2','123456','der2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
 
-(
-    'doctor_der',
-    '123456',
-    'doctor.der@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
-),
+('eye1','123456','eye1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
+('eye2','123456','eye2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
 
-(
-    'doctor_eye',
-    '123456',
-    'doctor.eye@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
-),
+-- Nurse (2)
+('nurse1','123456','nurse1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Nurse')),
+('nurse2','123456','nurse2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Nurse')),
 
-(
-    'nurse',
-    '123456',
-    'nurse@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Nurse')
-),
+-- Pharmacist (2)
+('pharma1','123456','pharma1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Pharmacist')),
+('pharma2','123456','pharma2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Pharmacist')),
 
-(
-    'pharmacist',
-    '123456',
-    'pharmacist@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Pharmacist')
-),
-
-(
-    'tech',
-    '123456',
-    'tech@cms.local',
-    (SELECT RoleID FROM Roles WHERE RoleName='Technician')
-);
+-- Technician (2)
+('tech1','123456','tech1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Technician')),
+('tech2','123456','tech2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Technician'));
 
 INSERT INTO Employees
 (
@@ -869,210 +822,190 @@ INSERT INTO Employees
     UserID
 )
 VALUES
-
+-- ================= ADMIN =================
 (
-'EMP001',
-N'Admin System',
-'1985-01-15',
-N'Nam',
-'079085000001',
-N'Quận 1, TP.HCM',
-'090000001',
-'admin@clinic.vn',
-'2020-01-01',
-30000000,
+'ADM001', N'Admin 1','1985-01-01',N'Nam','100000000001',N'HCM','0900000001','admin1@cms.local','2020-01-01',30000000,
 (SELECT RoleID FROM Roles WHERE RoleName='Admin'),
 (SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Hành chính'),
 'Active',
-(SELECT UserID FROM Users WHERE Username='admin')
+(SELECT UserID FROM Users WHERE Username='admin1')
+),
+(
+'ADM002', N'Admin 2','1986-02-02',N'Nữ','100000000002',N'HCM','0900000002','admin2@cms.local','2020-01-01',30000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Admin'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Hành chính'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='admin2')
 ),
 
+-- ================= RECEPTION =================
 (
-'EMP002',
-N'Nguyễn Lễ Tân',
-'1995-05-10',
-N'Nữ',
-'079095000002',
-N'Quận 3, TP.HCM',
-'090000002',
-'reception@clinic.vn',
-'2023-01-10',
-10000000,
+'REC001', N'Tiếp tân 1','1995-01-01',N'Nữ','200000000001',N'HCM','0900000003','reception1@cms.local','2023-01-01',10000000,
 (SELECT RoleID FROM Roles WHERE RoleName='Receptionist'),
 (SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Tiếp nhận'),
 'Active',
-(SELECT UserID FROM Users WHERE Username='reception')
+(SELECT UserID FROM Users WHERE Username='reception1')
 ),
-
 (
-'EMP003',
-N'BS Trần Minh',
-'1980-03-20',
-N'Nam',
-'079080000003',
-N'Quận 7, TP.HCM',
-'090000003',
-'doctor.gp@clinic.vn',
-'2018-06-01',
-35000000,
-(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
-(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Khám tổng quát'),
+'REC002', N'Tiếp tân 2','1996-02-02',N'Nữ','200000000002',N'HCM','0900000004','reception2@cms.local','2023-01-01',10000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Receptionist'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Tiếp nhận'),
 'Active',
-(SELECT UserID FROM Users WHERE Username='doctor_gp')
+(SELECT UserID FROM Users WHERE Username='reception2')
 ),
 
+-- ================= NURSE =================
 (
-'EMP004',
-N'BS Nguyễn Hoàng',
-'1982-07-15',
-N'Nam',
-'079082000004',
-N'Thủ Đức, TP.HCM',
-'090000004',
-'doctor.ped@clinic.vn',
-'2019-01-15',
-35000000,
-(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
-(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Nhi khoa'),
-'Active',
-(SELECT UserID FROM Users WHERE Username='doctor_ped')
-),
-
-(
-'EMP005',
-N'BS Lê Thanh',
-'1984-09-25',
-N'Nữ',
-'079084000005',
-N'Quận 10, TP.HCM',
-'090000005',
-'doctor.obs@clinic.vn',
-'2019-08-01',
-38000000,
-(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
-(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Sản phụ khoa'),
-'Active',
-(SELECT UserID FROM Users WHERE Username='doctor_obs')
-),
-
-(
-'EMP006',
-N'BS Võ Minh',
-'1981-04-12',
-N'Nam',
-'079081000006',
-N'Tân Bình, TP.HCM',
-'090000006',
-'doctor.ent@clinic.vn',
-'2018-11-01',
-35000000,
-(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
-(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Tai Mũi Họng'),
-'Active',
-(SELECT UserID FROM Users WHERE Username='doctor_ent')
-),
-
-(
-'EMP007',
-N'BS Trương Anh',
-'1983-12-05',
-N'Nam',
-'079083000007',
-N'Bình Thạnh, TP.HCM',
-'090000007',
-'doctor.den@clinic.vn',
-'2020-03-01',
-35000000,
-(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
-(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Răng Hàm Mặt'),
-'Active',
-(SELECT UserID FROM Users WHERE Username='doctor_den')
-),
-
-(
-'EMP008',
-N'BS Phạm Duy',
-'1986-02-18',
-N'Nữ',
-'079086000008',
-N'Phú Nhuận, TP.HCM',
-'090000008',
-'doctor.der@clinic.vn',
-'2021-01-01',
-35000000,
-(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
-(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Da liễu'),
-'Active',
-(SELECT UserID FROM Users WHERE Username='doctor_der')
-),
-
-(
-'EMP009',
-N'BS Nguyễn Ngọc',
-'1987-06-30',
-N'Nữ',
-'079087000009',
-N'Gò Vấp, TP.HCM',
-'090000009',
-'doctor.eye@clinic.vn',
-'2021-05-01',
-35000000,
-(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
-(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Mắt'),
-'Active',
-(SELECT UserID FROM Users WHERE Username='doctor_eye')
-),
-
-(
-'EMP010',
-N'YT Lê Lan',
-'1994-10-20',
-N'Nữ',
-'079094000010',
-N'Quận 12, TP.HCM',
-'090000010',
-'nurse@clinic.vn',
-'2023-02-01',
-12000000,
+'NUR001', N'Điều dưỡng 1','1994-03-03',N'Nữ','300000000001',N'HCM','0900000005','nurse1@cms.local','2023-01-01',12000000,
 (SELECT RoleID FROM Roles WHERE RoleName='Nurse'),
 (SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Khám tổng quát'),
 'Active',
-(SELECT UserID FROM Users WHERE Username='nurse')
+(SELECT UserID FROM Users WHERE Username='nurse1')
+),
+(
+'NUR002', N'Điều dưỡng 2','1993-04-04',N'Nữ','300000000002',N'HCM','0900000006','nurse2@cms.local','2023-01-01',12000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Nurse'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Nhi khoa'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='nurse2')
 ),
 
+-- ================= PHARMACIST =================
 (
-'EMP011',
-N'DS Phạm Hùng',
-'1990-08-15',
-N'Nam',
-'079090000011',
-N'Bình Tân, TP.HCM',
-'090000011',
-'pharmacist@clinic.vn',
-'2022-01-01',
-15000000,
+'PHA001', N'Dược sĩ 1','1990-05-05',N'Nam','400000000001',N'HCM','0900000007','pharma1@cms.local','2022-01-01',15000000,
 (SELECT RoleID FROM Roles WHERE RoleName='Pharmacist'),
 (SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Nhà thuốc'),
 'Active',
-(SELECT UserID FROM Users WHERE Username='pharmacist')
+(SELECT UserID FROM Users WHERE Username='pharma1')
+),
+(
+'PHA002', N'Dược sĩ 2','1991-06-06',N'Nữ','400000000002',N'HCM','0900000008','pharma2@cms.local','2022-01-01',15000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Pharmacist'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Nhà thuốc'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='pharma2')
 ),
 
+-- ================= TECHNICIAN =================
 (
-'EMP012',
-N'KTV Võ Phúc',
-'1992-11-25',
-N'Nam',
-'079092000012',
-N'Hóc Môn, TP.HCM',
-'090000012',
-'tech@clinic.vn',
-'2022-05-01',
-14000000,
+'TEC001', N'KTV 1','1992-07-07',N'Nam','500000000001',N'HCM','0900000009','tech1@cms.local','2022-01-01',14000000,
 (SELECT RoleID FROM Roles WHERE RoleName='Technician'),
 (SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Xét nghiệm'),
 'Active',
-(SELECT UserID FROM Users WHERE Username='tech')
-);
+(SELECT UserID FROM Users WHERE Username='tech1')
+),
+(
+'TEC002', N'KTV 2','1993-08-08',N'Nữ','500000000002',N'HCM','0900000010','tech2@cms.local','2022-01-01',14000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Technician'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Xét nghiệm'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='tech2')
+),
+
+-- ================= DOCTORS =================
+(
+'DOC_GP1', N'BS GP 1','1980-01-01',N'Nam','600000000001',N'HCM','0900000011','gp1@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Khám tổng quát'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='gp1')
+),
+(
+'DOC_GP2', N'BS GP 2','1981-02-02',N'Nữ','600000000002',N'HCM','0900000012','gp2@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Khám tổng quát'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='gp2')
+),
+
+(
+'DOC_PED1', N'BS Nhi 1','1982-03-03',N'Nữ','600000000003',N'HCM','0900000013','ped1@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Nhi khoa'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='ped1')
+),
+(
+'DOC_PED2', N'BS Nhi 2','1983-04-04',N'Nam','600000000004',N'HCM','0900000014','ped2@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Nhi khoa'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='ped2')
+),
+
+(
+'DOC_OBS1', N'BS Sản 1','1984-05-05',N'Nữ','600000000005',N'HCM','0900000015','obs1@cms.local','2018-01-01',38000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Sản phụ khoa'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='obs1')
+),
+(
+'DOC_OBS2', N'BS Sản 2','1985-06-06',N'Nữ','600000000006',N'HCM','0900000016','obs2@cms.local','2018-01-01',38000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Sản phụ khoa'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='obs2')
+),
+
+(
+'DOC_ENT1', N'BS ENT 1','1986-07-07',N'Nam','600000000007',N'HCM','0900000017','ent1@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Tai Mũi Họng'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='ent1')
+),
+(
+'DOC_ENT2', N'BS ENT 2','1987-08-08',N'Nữ','600000000008',N'HCM','0900000018','ent2@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Tai Mũi Họng'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='ent2')
+),
+
+(
+'DOC_DEN1', N'BS RHM 1','1988-09-09',N'Nam','600000000009',N'HCM','0900000019','den1@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Răng Hàm Mặt'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='den1')
+),
+(
+'DOC_DEN2', N'BS RHM 2','1989-10-10',N'Nữ','600000000010',N'HCM','0900000020','den2@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Răng Hàm Mặt'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='den2')
+),
+
+(
+'DOC_DER1', N'BS Da 1','1990-11-11',N'Nữ','600000000011',N'HCM','0900000021','der1@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Da liễu'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='der1')
+),
+(
+'DOC_DER2', N'BS Da 2','1991-12-12',N'Nam','600000000012',N'HCM','0900000022','der2@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Da liễu'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='der2')
+),
+
+(
+'DOC_EYE1', N'BS Mắt 1','1982-01-02',N'Nữ','600000000013',N'HCM','0900000023','eye1@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Mắt'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='eye1')
+),
+(
+'DOC_EYE2', N'BS Mắt 2','1983-02-03',N'Nam','600000000014',N'HCM','0900000024','eye2@cms.local','2018-01-01',35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Mắt'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='eye2'));
 
 
 INSERT INTO DoctorSchedules
@@ -1141,6 +1074,33 @@ GETDATE(),
 7
 );
 
+-- ADMIN
+INSERT INTO EmployeeShifts VALUES
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='ADM001'), 1, GETDATE()),
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='ADM002'), 1, GETDATE());
+
+-- RECEPTION
+INSERT INTO EmployeeShifts VALUES
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='REC001'), 1, GETDATE()),
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='REC001'), 2, GETDATE()),
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='REC002'), 1, GETDATE()),
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='REC002'), 2, GETDATE());
+
+-- NURSE
+INSERT INTO EmployeeShifts VALUES
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='NUR001'), 1, GETDATE()),
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='NUR002'), 1, GETDATE());
+
+-- PHARMACIST
+INSERT INTO EmployeeShifts VALUES
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='PHA001'), 3, GETDATE()),
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='PHA002'), 3, GETDATE());
+
+-- TECHNICIAN
+INSERT INTO EmployeeShifts VALUES
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='TEC001'), 2, GETDATE()),
+((SELECT EmployeeID FROM Employees WHERE EmployeeCode='TEC002'), 2, GETDATE());
+
 INSERT INTO Services
 (ServiceName, Price, DepartmentID)
 VALUES
@@ -1166,74 +1126,173 @@ VALUES
 
 (N'Paracetamol 500mg',N'Viên',2000,1000,'PAR001','2028-12-31'),
 (N'Amoxicillin 500mg',N'Viên',3000,500,'AMX001','2028-12-31'),
-(N'Vitamin C',N'Viên',1000,1000,'VTC001','2028-12-31');
+(N'Vitamin C',N'Viên',1000,1000,'VTC001','2028-12-31'),
+(N'Ibuprofen 400mg',N'Viên',2500,800,'IBU001','2028-12-31'),
+(N'Cefixime 200mg',N'Viên',5000,600,'CFX001','2028-12-31'),
+(N'Omeprazole 20mg',N'Viên',3000,700,'OMP001','2028-12-31'),
+(N'Loratadine 10mg',N'Viên',2000,900,'LOR001','2028-12-31');
 
 INSERT INTO Patients
-(
-    PatientCode,
-    FullName,
-    Gender,
-    DOB,
-    Phone,
-    Address,
-    BloodType,
-    Allergy
-)
+(PatientCode, FullName, Gender, DOB, Phone, Address, BloodType, Allergy)
 VALUES
+('BN20051',N'Nguyễn Minh Khôi',N'Nam','1998-03-12','0901000001',N'Quận 1, TP.HCM','O+',N'Không có'),
+('BN20052',N'Lê Thị Hồng Nhung',N'Nữ','1995-07-21','0901000002',N'Quận 3, TP.HCM','A+',N'Phấn hoa'),
+('BN20053',N'Trần Quốc Huy',N'Nam','2000-11-05','0901000003',N'Quận 7, TP.HCM','B+',N'Đậu phộng'),
+('BN20054',N'Phạm Ngọc Lan',N'Nữ','1988-01-18','0901000004',N'Thủ Đức, TP.HCM','O-',N'Không có'),
+('BN20055',N'Võ Thành Đạt',N'Nam','1993-09-09','0901000005',N'Bình Thạnh, TP.HCM','AB+',N'Sulfa'),
+('BN20056',N'Đặng Minh Tâm',N'Nữ','1979-04-02','0901000006',N'Quận 10, TP.HCM','A-',N'Trứng'),
+('BN20057',N'Bùi Gia Huy',N'Nam','1996-06-15','0901000007',N'Quận 12, TP.HCM','O+',N'Không có'),
+('BN20058',N'Phan Thảo Vy',N'Nữ','2001-02-28','0901000008',N'Gò Vấp, TP.HCM','B-',N'Phấn hoa'),
+('BN20059',N'Lê Hoàng Nam',N'Nam','1985-12-10','0901000009',N'Tân Bình, TP.HCM','AB-',N'Hải sản'),
+('BN20060',N'Trần Thu Trang',N'Nữ','1999-08-08','0901000010',N'Quận 4, TP.HCM','O+',N'Không có'),
 
-(
-    'PT001',
-    N'Nguyễn Văn A',
-    N'Nam',
-    '2000-01-01',
-    '0901111111',
-    N'HCM',
-    'A+',
-    N'Không'
-),
+('BN20061',N'Nguyễn Văn Khoa',N'Nam','1992-03-03','0901000011',N'Bình Chánh, TP.HCM','A+',N'Đậu nành'),
+('BN20062',N'Võ Thị Kim Ngân',N'Nữ','1987-07-19','0901000012',N'Hóc Môn, TP.HCM','B+',N'Sữa bò'),
+('BN20063',N'Phạm Quốc Bảo',N'Nam','2003-01-25','0901000013',N'Quận 6, TP.HCM','O-',N'Không có'),
+('BN20064',N'Lê Thị Mai',N'Nữ','1970-05-11','0901000014',N'Thủ Đức, TP.HCM','A-',N'Sulfa'),
+('BN20065',N'Trần Minh Đức',N'Nam','1995-09-30','0901000015',N'Quận 8, TP.HCM','AB+',N'Phấn hoa'),
+('BN20066',N'Đỗ Ngọc Hân',N'Nữ','1982-11-22','0901000016',N'Quận 11, TP.HCM','O+',N'Không có'),
+('BN20067',N'Nguyễn Hoàng Phúc',N'Nam','1997-04-14','0901000017',N'Quận 9, TP.HCM','B+',N'Đậu phộng'),
+('BN20068',N'Phan Thị Yến',N'Nữ','2000-10-05','0901000018',N'Bình Tân, TP.HCM','A+',N'Hải sản'),
+('BN20069',N'Lý Gia Hưng',N'Nam','1989-06-07','0901000019',N'Quận 5, TP.HCM','O-',N'Không có'),
+('BN20070',N'Hoàng Thị Linh',N'Nữ','1991-12-12','0901000020',N'Quận 2, TP.HCM','AB+',N'Phấn hoa'),
 
-(
-    'PT002',
-    N'Trần Thị B',
-    N'Nữ',
-    '1998-05-20',
-    '0902222222',
-    N'HCM',
-    'B+',
-    N'Penicillin'
-),
+('BN20071',N'Nguyễn Tấn Phát',N'Nam','1994-03-18','0901000021',N'Gò Vấp, TP.HCM','A-',N'Sulfa'),
+('BN20072',N'Lê Thị Bích',N'Nữ','1980-09-09','0901000022',N'Tân Phú, TP.HCM','B+',N'Trứng'),
+('BN20073',N'Trần Gia Bảo',N'Nam','2002-11-11','0901000023',N'Quận 7, TP.HCM','O+',N'Không có'),
+('BN20074',N'Phạm Thị Ngọc',N'Nữ','1975-01-01','0901000024',N'Quận 3, TP.HCM','A+',N'Đậu nành'),
+('BN20075',N'Bùi Văn Long',N'Nam','1983-04-20','0901000025',N'Quận 12, TP.HCM','AB-',N'Hải sản'),
+('BN20076',N'Đặng Thị Hoa',N'Nữ','1998-08-28','0901000026',N'Bình Thạnh, TP.HCM','O-',N'Không có'),
+('BN20077',N'Nguyễn Quốc Việt',N'Nam','1990-02-14','0901000027',N'Thủ Đức, TP.HCM','B+',N'Sulfa'),
+('BN20078',N'Lê Thanh Tùng',N'Nam','1993-06-25','0901000028',N'Quận 1, TP.HCM','A+',N'Phấn hoa'),
+('BN20079',N'Phan Thị Kim',N'Nữ','1986-10-10','0901000029',N'Quận 6, TP.HCM','O+',N'Không có'),
+('BN20080',N'Võ Minh Quân',N'Nam','2001-05-05','0901000030',N'Quận 10, TP.HCM','AB+',N'Đậu phộng'),
 
-(
-    'PT003',
-    N'Lê Văn C',
-    N'Nam',
-    '2010-03-15',
-    '0903333333',
-    N'HCM',
-    'O+',
-    N'Hải sản'
-),
+('BN20081',N'Nguyễn Thị Thảo',N'Nữ','1999-09-19','0901000031',N'Quận 4, TP.HCM','A-',N'Hải sản'),
+('BN20082',N'Trần Văn Hải',N'Nam','1988-12-21','0901000032',N'Quận 8, TP.HCM','B-',N'Không có'),
+('BN20083',N'Phạm Gia Huy',N'Nam','1996-07-07','0901000033',N'Gò Vấp, TP.HCM','O+',N'Sulfa'),
+('BN20084',N'Lê Thị Xuân',N'Nữ','1972-03-30','0901000034',N'Hóc Môn, TP.HCM','A+',N'Phấn hoa'),
+('BN20085',N'Đỗ Văn Minh',N'Nam','1981-11-11','0901000035',N'Quận 11, TP.HCM','AB-',N'Không có'),
+('BN20086',N'Nguyễn Thị Hạnh',N'Nữ','1997-02-22','0901000036',N'Tân Bình, TP.HCM','O-',N'Đậu nành'),
+('BN20087',N'Bùi Quốc Thái',N'Nam','1992-06-06','0901000037',N'Quận 9, TP.HCM','A+',N'Trứng'),
+('BN20088',N'Phan Minh Anh',N'Nữ','2004-04-04','0901000038',N'Quận 2, TP.HCM','B+',N'Không có'),
+('BN20089',N'Võ Thị Ngọc',N'Nữ','1984-08-18','0901000039',N'Quận 5, TP.HCM','O+',N'Hải sản'),
+('BN20090',N'Trần Văn Phúc',N'Nam','1990-10-30','0901000040',N'Bình Tân, TP.HCM','AB+',N'Sulfa'),
 
-(
-    'PT004',
-    N'Phạm Thị D',
-    N'Nữ',
-    '1995-07-10',
-    '0904444444',
-    N'HCM',
-    'AB+',
-    N'Phấn hoa'
-),
+('BN20091',N'Lê Gia Bảo',N'Nam','1998-01-09','0901000041',N'Quận 7, TP.HCM','A-',N'Không có'),
+('BN20092',N'Nguyễn Thị Lan Anh',N'Nữ','1995-05-15','0901000042',N'Quận 3, TP.HCM','O-',N'Phấn hoa'),
+('BN20093',N'Phạm Văn Hùng',N'Nam','1987-07-27','0901000043',N'Quận 6, TP.HCM','B+',N'Đậu phộng'),
+('BN20094',N'Đặng Thị Ngọc Mai',N'Nữ','2000-12-12','0901000044',N'Thủ Đức, TP.HCM','A+',N'Không có'),
+('BN20095',N'Hoàng Văn Khoa',N'Nam','1993-03-23','0901000045',N'Quận 12, TP.HCM','O+',N'Sulfa');
 
-(
-    'PT005',
-    N'Nguyễn Văn E',
-    N'Nam',
-    '1988-12-01',
-    '0905555555',
-    N'HCM',
-    'O-',
-    N'Không'
-);
+INSERT INTO Encounters
+(AppointmentID, PatientID, DoctorID, StartTime, EndTime, Status)
+SELECT 
+NULL,
+P.PatientID,
+D.EmployeeID,
+DATEADD(MINUTE, ABS(CHECKSUM(NEWID())) % 480, GETDATE()),
+NULL,
+'Completed'
+FROM Patients P
+CROSS APPLY (
+    SELECT TOP 1 EmployeeID
+    FROM Employees E
+    WHERE E.RoleID = (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
+    ORDER BY NEWID()
+) D;
+
+INSERT INTO VitalSigns (EncounterID, Temperature, BloodPressure, HeartRate, SPO2, Weight, Height, Notes)
+SELECT 
+E.EncounterID,
+36 + (ABS(CHECKSUM(NEWID())) % 20) / 10.0,
+'120/80',
+60 + ABS(CHECKSUM(NEWID())) % 40,
+95 + ABS(CHECKSUM(NEWID())) % 5,
+50 + ABS(CHECKSUM(NEWID())) % 40,
+150 + ABS(CHECKSUM(NEWID())) % 40,
+N'Sinh hiệu ổn định'
+FROM Encounters E;
+
+INSERT INTO MedicalRecords (EncounterID, ChiefComplaint, Symptoms, Diagnosis, ICDCode, Conclusion, Notes)
+SELECT 
+EncounterID,
+N'Đau đầu',
+N'Chóng mặt, mệt mỏi',
+N'Viêm đường hô hấp nhẹ',
+'J06.9',
+N'Theo dõi ngoại trú',
+N'Không biến chứng'
+FROM Encounters;
+
+INSERT INTO Prescriptions (EncounterID, DoctorID, Status)
+SELECT EncounterID, DoctorID, 'Issued'
+FROM Encounters;
+
+INSERT INTO PrescriptionDetails (PrescriptionID, MedicineID, Quantity, Dosage, Frequency, Instruction)
+SELECT 
+P.PrescriptionID,
+M.MedicineID,
+2,
+N'1 viên/lần',
+N'2 lần/ngày',
+N'Uống sau ăn'
+FROM Prescriptions P
+CROSS APPLY (
+    SELECT TOP 1 MedicineID
+    FROM Medicines
+    ORDER BY NEWID()
+) M;
+
+INSERT INTO LabRequests (EncounterID, DoctorID, TestType, Status)
+SELECT 
+EncounterID,
+DoctorID,
+N'Xét nghiệm máu tổng quát',
+'Completed'
+FROM Encounters;
+
+INSERT INTO LabResults (LabID, ResultText, CompletedAt)
+SELECT 
+LabID,
+N'Chỉ số bình thường',
+GETDATE()
+FROM LabRequests;
+
+WITH Ranked AS (
+    SELECT 
+        E.EncounterID,
+        E.DoctorID,
+        ROW_NUMBER() OVER (PARTITION BY E.DoctorID ORDER BY NEWID()) rn
+    FROM Encounters E
+)
+INSERT INTO PatientQueues (EncounterID, Priority, Status, CurrentStep)
+SELECT 
+EncounterID,
+'Normal',
+'Waiting',
+N'Chờ khám'
+FROM Ranked
+WHERE rn <= 5;
+
+INSERT INTO Invoices (EncounterID, PatientID, Total, Status)
+SELECT 
+E.EncounterID,
+E.PatientID,
+500000,
+'Unpaid'
+FROM Encounters E;
+
+INSERT INTO Payments (EncounterID, Amount, Method, Status, PaidAt, PatientID)
+SELECT 
+EncounterID,
+500000,
+'Cash',
+'Paid',
+GETDATE(),
+PatientID
+FROM Encounters;
+
+
 
 
