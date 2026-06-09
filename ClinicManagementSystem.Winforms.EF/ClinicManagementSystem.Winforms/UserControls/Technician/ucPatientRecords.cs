@@ -51,7 +51,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void ucPatientRecords_Resize(object sender, EventArgs e)
         {
-            // Anchored layouts resize automatically.
+            ResizePatientRows();
+            ResizeHistoryCards();
         }
 
         private void TxtRecordSearch_Enter(object sender, EventArgs e)
@@ -100,42 +101,43 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void AddPatientRecordRow(PatientDTO pat)
         {
-            string init = string.IsNullOrEmpty(pat.Name) ? "?" : pat.Name.Substring(0, 1).ToUpper();
-            
-            var row = new Panel
+            var row = new ucPatientRecordRow
             {
-                Size = new Size(flpPatients.Width - 32, 76),
-                BackColor = Color.FromArgb(249, 250, 251),
-                Cursor = Cursors.Hand,
-                Margin = new Padding(0, 0, 0, 8)
+                Width = PatientRowWidth(),
+                Margin = new Padding(0, 0, 0, 12)
             };
-
-            // Set up clicks recursively for child controls
-            Action<object, EventArgs> onClick = (s, ev) => SelectRecordPatient(pat);
-            row.Click += new EventHandler(onClick);
-
-            var avatar = CreateAvatar(init, 12, 14);
-            avatar.Click += new EventHandler(onClick);
-            row.Controls.Add(avatar);
-
-            var lblName = CreateLabel(pat.Name, 10.5F, FontStyle.Bold, textMain, 70, 8, 180, 24);
-            lblName.Click += new EventHandler(onClick);
-            row.Controls.Add(lblName);
-
-            var lblCode = CreateLabel(pat.PatientCode, 8.5F, FontStyle.Regular, textMuted, 70, 32, 180, 18);
-            lblCode.Click += new EventHandler(onClick);
-            row.Controls.Add(lblCode);
-
-            var lblAge = CreateLabel($"{pat.Age} tuổi - {pat.Gender}", 8.5F, FontStyle.Bold, textMuted, 70, 50, 180, 18);
-            lblAge.Click += new EventHandler(onClick);
-            row.Controls.Add(lblAge);
-
-            var lblChevron = CreateLabel(">", 16F, FontStyle.Regular, Color.FromArgb(156, 163, 175), row.Width - 36, 20, 24, 30, ContentAlignment.MiddleCenter);
-            lblChevron.Click += new EventHandler(onClick);
-            lblChevron.Anchor = AnchorStyles.Right;
-            row.Controls.Add(lblChevron);
+            row.Configure(pat);
+            row.PatientClicked += (s, ev) => SelectRecordPatient(pat);
 
             flpPatients.Controls.Add(row);
+        }
+
+        private int PatientRowWidth()
+        {
+            return Math.Max(420, flpPatients.ClientSize.Width - 10);
+        }
+
+        private void ResizePatientRows()
+        {
+            int width = PatientRowWidth();
+            foreach (Control row in flpPatients.Controls)
+            {
+                row.Width = width;
+            }
+        }
+
+        private int HistoryCardWidth()
+        {
+            return Math.Max(640, flpHistory.ClientSize.Width - 12);
+        }
+
+        private void ResizeHistoryCards()
+        {
+            int width = HistoryCardWidth();
+            foreach (Control card in flpHistory.Controls)
+            {
+                card.Width = width;
+            }
         }
 
         private void SelectRecordPatient(PatientDTO pat)
@@ -147,12 +149,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
             // Show and populate details
             lblPatientName.Text = pat.Name;
+            lblPatientName.Width = Math.Max(420, pnlRight.ClientSize.Width - 48);
             lblPatientName.Visible = true;
 
             lblPatientMeta.Text = $"Mã BN: {pat.PatientCode} | Giới tính: {pat.Gender} | Tuổi: {pat.Age}";
+            lblPatientMeta.Width = Math.Max(420, pnlRight.ClientSize.Width - 48);
             lblPatientMeta.Visible = true;
 
             lblPatientContact.Text = $"SĐT: {pat.Phone} | Địa chỉ: {pat.Address}";
+            lblPatientContact.Width = Math.Max(420, pnlRight.ClientSize.Width - 48);
             lblPatientContact.Visible = true;
 
             lblHistoryTitle.Visible = true;
@@ -178,94 +183,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 return;
             }
 
-            int cardW = flpHistory.Width - 32;
+            int cardW = HistoryCardWidth();
             foreach (var req in history)
             {
-                var card = new RoundedPanel
+                var card = new ucPatientHistoryResultCard
                 {
-                    BorderColor = Color.FromArgb(229, 231, 235),
-                    CornerRadius = 8,
-                    FillColor = Color.FromArgb(249, 250, 251),
-                    Size = new Size(cardW, 160),
+                    Width = cardW,
                     Margin = new Padding(0, 0, 0, 16)
                 };
-
-                card.Controls.Add(CreateLabel(req.ServiceType, 11F, FontStyle.Bold, textMain, 18, 12, 350, 24));
-                card.Controls.Add(CreateLabel($"Bác sĩ chỉ định: {req.DoctorName} | Ngày: {req.RequestDate:dd/MM/yyyy HH:mm}", 8.5F, FontStyle.Regular, textMuted, 18, 38, 450, 20));
-
-                if (!string.IsNullOrEmpty(req.ResultFile))
-                {
-                    card.Controls.Add(CreateLabel("Kết quả: Đã chụp phim MRI/X-Ray.", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 64, 400, 20));
-                    card.Controls.Add(CreateLabel("Kết luận: " + req.RequestNote, 9F, FontStyle.Regular, textMain, 18, 86, 400, 20));
-
-                    var btnViewImage = CreateFlatButton("Xem hình phim...", Color.White, primary, 18, 114, 150, 32);
-                    btnViewImage.Click += (s, ev) =>
-                    {
-                        string path = req.ResultFile;
-                        bool isUrl = !string.IsNullOrEmpty(path) && (path.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
-                        if (isUrl || File.Exists(path))
-                        {
-                            try
-                            {
-                                Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
-                            }
-                            catch (Exception ex)
-                            {
-                                System.Diagnostics.Debug.WriteLine("Error opening image file: " + ex);
-                                MessageBox.Show("Không thể mở file kết quả: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Không tìm thấy tệp ảnh phim gốc. Có thể tệp đã bị di chuyển hoặc bị xóa.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    };
-                    card.Controls.Add(btnViewImage);
-                }
-                else if (!string.IsNullOrEmpty(req.ResultPDF))
-                {
-                    card.Controls.Add(CreateLabel("Kết quả: Báo cáo xét nghiệm PDF tổng hợp.", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 64, 400, 20));
-
-                    var btnViewPDF = CreateFlatButton("Mở file PDF...", Color.White, primary, 18, 114, 150, 32);
-                    btnViewPDF.Click += (s, ev) =>
-                    {
-                        string path = req.ResultPDF;
-                        bool isUrl = !string.IsNullOrEmpty(path) && (path.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
-                        if (isUrl || File.Exists(path))
-                        {
-                            try
-                            {
-                                Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
-                            }
-                            catch (Exception ex)
-                            {
-                                System.Diagnostics.Debug.WriteLine("Error opening PDF file: " + ex);
-                                MessageBox.Show("Không thể mở file PDF: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Không tìm thấy file PDF chẩn đoán.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    };
-                    card.Controls.Add(btnViewPDF);
-                }
-                else if (!string.IsNullOrEmpty(req.LabValues))
-                {
-                    card.Controls.Add(CreateLabel("Kết quả: Các chỉ số sinh hóa máu đo được:", 9F, FontStyle.Bold, Color.FromArgb(22, 101, 52), 18, 62, 400, 20));
-                    try
-                    {
-                        JObject vals = JObject.Parse(req.LabValues);
-                        string resStr = $"RBC: {vals["RBC"]} T/L | WBC: {vals["WBC"]} G/L | Glucose: {vals["Glucose"]} mmol/L | Acid Uric: {vals["UricAcid"]} umol/L";
-                        card.Controls.Add(CreateLabel(resStr, 9F, FontStyle.Regular, textMain, 18, 84, 450, 20));
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Error parsing LabValues: " + ex);
-                        card.Controls.Add(CreateLabel("Dữ liệu chỉ số lab không đúng định dạng.", 9F, FontStyle.Regular, textMain, 18, 84, 400, 20));
-                    }
-                }
-
+                card.Configure(req);
                 flpHistory.Controls.Add(card);
             }
         }

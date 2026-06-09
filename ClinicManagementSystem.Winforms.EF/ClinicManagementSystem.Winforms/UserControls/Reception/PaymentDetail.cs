@@ -19,8 +19,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
 
         private readonly PaymentController
             controller = new();
-        private decimal totalAmount;
-        private string patientName;
 
         public PaymentDetail(
     int encounterId)
@@ -160,21 +158,22 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
         private void LoadInvoice()
         {
             List<PaymentDetailDTO> details =
-                controller.GetInvoiceDetails(encounterId);
+                controller.GetInvoiceDetails(
+                    encounterId);
 
-            dataGridView1.DataSource = details;
+            dataGridView1.DataSource =
+                details;
 
-            totalAmount = details.Sum(x => x.Amount);
+            decimal total =
+                details.Sum(
+                    x => x.Amount);
 
             lblTotal.Text =
-                totalAmount.ToString("N0") + " đ";
+                total.ToString("N0")
+                + " đ";
 
             lblInvoiceID.Text =
                 encounterId.ToString();
-
-            patientName =
-        details.FirstOrDefault()?.PatientName ?? "";
-
 
             lblPaymentMethod.Text =
                 "Phương thức thanh toán:";
@@ -199,16 +198,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
     object sender,
     EventArgs e)
         {
-            paymentMethod = "Chuyển khoản";
+            paymentMethod =
+                "Chuyển khoản";
 
             lblPaymentMethod.Text =
                 "Phương thức thanh toán: Chuyển khoản";
 
             PayOsPaymentForm frm =
-                new PayOsPaymentForm(
-                    encounterId,
-                    patientName,
-                    totalAmount);
+                new();
 
             frm.ShowDialog();
         }

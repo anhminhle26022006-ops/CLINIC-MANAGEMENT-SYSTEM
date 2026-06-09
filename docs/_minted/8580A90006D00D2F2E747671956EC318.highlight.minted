@@ -1,0 +1,9 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{paymentStatusTimer}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{System}\PYG{p}{.}\PYG{n}{Windows}\PYG{p}{.}\PYG{n}{Forms}\PYG{p}{.}\PYG{n}{Timer}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{Interval}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{5000}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{n}{paymentStatusTimer}\PYG{p}{.}\PYG{n}{Tick}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{k}{async}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{s}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{args}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}
+\PYG{+w}{    }\PYG{k}{await}\PYG{+w}{ }\PYG{n+nf}{CheckCurrentPaymentStatusAsync}\PYG{p}{(}\PYG{k}{false}\PYG{p}{);}
+\end{MintedVerbatim}

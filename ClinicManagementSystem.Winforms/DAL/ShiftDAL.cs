@@ -6,7 +6,7 @@ namespace DAL
     public class ShiftDAL
     {
         private string connectionString =
-            "Data Source=DESKTOP-KF6OV10;Database=CMS;Integrated Security=True;Trust Server Certificate=True";
+            "Data Source=localhost\\SQLEXPRESS;\r\nInitial Catalog=CMS;\r\nIntegrated Security=True;\r\nTrustServerCertificate=True;";
 
         public List<EmployeeShiftDTO> GetAllShifts()
         {
@@ -29,7 +29,7 @@ namespace DAL
                 while (reader.Read())
                 {
                     EmployeeShiftDTO dto =
-                        new EmployeeShiftDTO;
+    new EmployeeShiftDTO();
 
                     dto.ShiftID =
                     Convert.ToInt32(reader["ShiftID"]);
@@ -76,8 +76,8 @@ namespace DAL
                     shift.EmployeeID);
 
                 cmd.Parameters.AddWithValue(
-                    "@ShiftDate",
-                    shift.ShiftDate);
+    "@ShiftDate",
+    shift.WorkDate);
 
                 cmd.Parameters.AddWithValue(
                     "@ShiftType",

@@ -10,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using ClinicManagementSystem.Winforms.Shareforms;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
@@ -26,6 +27,8 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
         private UserDTO currentUser;
         private bool layoutReady;
+
+        private Shift shiftControl;
 
         // Custom Navigation Buttons
         private Button btnERM;
@@ -84,14 +87,30 @@ namespace ClinicManagementSystem.Winforms.Mainforms
                 btnPharmacy,
                 "Toa thuốc mới: đang cập nhật",
                 "Toa đã cấp phát: đang cập nhật");
-            btnNavShifts.Click += (s, ev) => ShowSection(
-                "Ca làm việc",
-                "Lịch trực và thông tin phân ca của bác sĩ.",
-                btnNavShifts,
-                "Ca trực tuần này: đang cập nhật",
-                "Phòng khám được phân công: đang cập nhật");
+            btnNavShifts.Click += (s, ev) => ShowShiftScreen();
 
             ShowOverview();
+        }
+
+        private void ShowShiftScreen()
+        {
+            lblPageTitle.Text = "Ca làm việc";
+            lblPageSubtitle.Text = "Lịch trực và thông tin phân ca của bác sĩ";
+
+            SetActiveNav(btnNavShifts);
+
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+
+            if (shiftControl == null)
+            {
+                shiftControl = new Shift();
+                shiftControl.Dock = DockStyle.Fill;
+            }
+
+            contentPanel.Controls.Add(shiftControl);
+
+            contentPanel.ResumeLayout();
         }
 
         private Button CreateSidebarButton(string text, Point location, EventHandler onClick)

@@ -6,7 +6,7 @@ namespace DAL
     public class VitalSignsDAL
     {
         private string connectionString =
-            "Data Source=DESKTOP-KF6OV10;Integrated Security=True;Trust Server Certificate=True";
+            "Data Source=localhost\\SQLEXPRESS;\r\nInitial Catalog=CMS;\r\nIntegrated Security=True;\r\nTrustServerCertificate=True;";
 
         public bool InsertVitalSigns(
             VitalSignsDTO vital)

@@ -1,0 +1,21 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n+nf}{CreatePayOsPaymentSignature}\PYG{p}{(}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{amount}\PYG{p}{,}
+\PYG{+w}{    }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{cancelUrl}\PYG{p}{,}
+\PYG{+w}{    }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{description}\PYG{p}{,}
+\PYG{+w}{    }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{orderCode}\PYG{p}{,}
+\PYG{+w}{    }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{returnUrl}\PYG{p}{,}
+\PYG{+w}{    }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{checksumKey}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}
+\PYG{+w}{        }\PYG{l+s}{\PYGZdl{}\PYGZdq{}amount=\PYGZob{}amount\PYGZcb{}\PYGZam{}cancelUrl=\PYGZob{}cancelUrl\PYGZcb{}\PYGZdq{}}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{        }\PYG{l+s}{\PYGZdl{}\PYGZdq{}\PYGZam{}description=\PYGZob{}description\PYGZcb{}\PYGZam{}orderCode=\PYGZob{}orderCode\PYGZcb{}\PYGZdq{}}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{        }\PYG{l+s}{\PYGZdl{}\PYGZdq{}\PYGZam{}returnUrl=\PYGZob{}returnUrl\PYGZcb{}\PYGZdq{}}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{k}{using}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{hmac}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{HMACSHA256}\PYG{p}{(}\PYG{n}{Encoding}\PYG{p}{.}\PYG{n}{UTF8}\PYG{p}{.}\PYG{n}{GetBytes}\PYG{p}{(}\PYG{n}{checksumKey}\PYG{p}{)))}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{hash}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{hmac}\PYG{p}{.}\PYG{n}{ComputeHash}\PYG{p}{(}\PYG{n}{Encoding}\PYG{p}{.}\PYG{n}{UTF8}\PYG{p}{.}\PYG{n}{GetBytes}\PYG{p}{(}\PYG{n}{data}\PYG{p}{));}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{BitConverter}\PYG{p}{.}\PYG{n}{ToString}\PYG{p}{(}\PYG{n}{hash}\PYG{p}{).}\PYG{n}{Replace}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}\PYGZhy{}\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{p}{).}\PYG{n}{ToLowerInvariant}\PYG{p}{();}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

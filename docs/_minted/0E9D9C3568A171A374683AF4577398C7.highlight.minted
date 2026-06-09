@@ -1,0 +1,12 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{ConfigureGrid}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{dgvRequests}\PYG{p}{.}\PYG{n}{AutoGenerateColumns}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{dgvRequests}\PYG{p}{.}\PYG{n}{SelectionMode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DataGridViewSelectionMode}\PYG{p}{.}\PYG{n}{FullRowSelect}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{dgvRequests}\PYG{p}{.}\PYG{n}{MultiSelect}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{dgvRequests}\PYG{p}{.}\PYG{n}{ReadOnly}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{true}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{dgvRequests}\PYG{p}{.}\PYG{n}{AllowUserToAddRows}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{dgvRequests}\PYG{p}{.}\PYG{n}{AllowUserToDeleteRows}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{dgvRequests}\PYG{p}{.}\PYG{n}{RowHeadersVisible}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

@@ -300,6 +300,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 
             try
             {
+                // Validate stock for all medicines first to ensure transactional integrity
+                prescriptionBUS.ValidateStock(selectedPrescription.Items);
+
                 foreach (var item in selectedPrescription.Items)
                 {
                     prescriptionBUS.DispenseMedicine(item.MedicineID, item.Quantity);

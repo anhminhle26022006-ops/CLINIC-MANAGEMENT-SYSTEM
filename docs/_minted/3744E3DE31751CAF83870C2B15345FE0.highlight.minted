@@ -1,0 +1,22 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n+nf}{CreateAppointment}\PYG{p}{(}\PYG{n}{AppointmentDTO}\PYG{+w}{ }\PYG{n}{appointment}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{appointment}\PYG{p}{.}\PYG{n}{PatientID}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{n}{appointment}\PYG{p}{.}\PYG{n}{DoctorID}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{schedule}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{scheduleDAL}\PYG{p}{.}\PYG{n}{GetDoctorSchedule}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{appointment}\PYG{p}{.}\PYG{n}{DoctorID}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{appointment}\PYG{p}{.}\PYG{n}{AppointmentDate}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{schedule}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{k}{null}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{n}{schedule}\PYG{p}{.}\PYG{n}{RoomID}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{appointment}\PYG{p}{.}\PYG{n}{RoomID}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{schedule}\PYG{p}{.}\PYG{n}{RoomID}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{appointment}\PYG{p}{.}\PYG{n}{Status}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{AppointmentStatus}\PYG{p}{.}\PYG{n}{Pending}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{appointmentDAL}\PYG{p}{.}\PYG{n}{Insert}\PYG{p}{(}\PYG{n}{appointment}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

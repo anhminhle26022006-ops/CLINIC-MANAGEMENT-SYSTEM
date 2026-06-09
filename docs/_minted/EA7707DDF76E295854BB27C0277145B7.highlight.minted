@@ -1,0 +1,21 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{PaymentController}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{private}\PYG{+w}{ }\PYG{k}{readonly}\PYG{+w}{ }\PYG{n}{PaymentBUS}\PYG{+w}{ }\PYG{n}{paymentBUS}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{n}{List}\PYG{o}{\PYGZlt{}}\PYG{n}{PaymentWaitingDTO}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{GetWaitingPayments}\PYG{p}{()}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{paymentBUS}\PYG{p}{.}\PYG{n}{GetWaitingPayments}\PYG{p}{();}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n+nf}{UpdatePaymentStatus}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{encounterId}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{method}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{paymentBUS}\PYG{p}{.}\PYG{n}{UpdatePaymentStatus}\PYG{p}{(}\PYG{n}{encounterId}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{method}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k}{public}\PYG{+w}{ }\PYG{n}{List}\PYG{o}{\PYGZlt{}}\PYG{n}{PaymentDetailDTO}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{GetInvoiceDetails}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{encounterId}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{paymentBUS}\PYG{p}{.}\PYG{n}{GetInvoiceDetails}\PYG{p}{(}\PYG{n}{encounterId}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

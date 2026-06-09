@@ -1,0 +1,25 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{AddDepartmentCard}\PYG{p}{(}\PYG{n}{DepartmentDTO}\PYG{+w}{ }\PYG{n}{department}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{Panel}\PYG{+w}{ }\PYG{n}{card}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{Panel}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{Width}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{180}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{Height}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{90}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{Margin}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{Padding}\PYG{p}{(}\PYG{l+m+mi}{8}\PYG{p}{),}
+\PYG{+w}{        }\PYG{n}{Cursor}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{Cursors}\PYG{p}{.}\PYG{n}{Hand}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{Tag}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{department}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{};}
+
+\PYG{+w}{    }\PYG{n}{Label}\PYG{+w}{ }\PYG{n}{lblName}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{Label}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{Text}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{department}\PYG{p}{.}\PYG{n}{DepartmentName}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{Dock}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DockStyle}\PYG{p}{.}\PYG{n}{Fill}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{TextAlign}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ContentAlignment}\PYG{p}{.}\PYG{n}{MiddleCenter}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{};}
+
+\PYG{+w}{    }\PYG{n}{card}\PYG{p}{.}\PYG{n}{Controls}\PYG{p}{.}\PYG{n}{Add}\PYG{p}{(}\PYG{n}{lblName}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{card}\PYG{p}{.}\PYG{n}{Click}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{Department\PYGZus{}Click}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{lblName}\PYG{p}{.}\PYG{n}{Click}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{Department\PYGZus{}Click}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{flpDepartment}\PYG{p}{.}\PYG{n}{Controls}\PYG{p}{.}\PYG{n}{Add}\PYG{p}{(}\PYG{n}{card}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

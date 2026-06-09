@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -28,6 +28,12 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Forms\AddMedicineForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\AddMedicineForm.Designer.cs">
+      <DependentUpon>AddMedicineForm.cs</DependentUpon>
     </Compile>
     <Compile Update="Mainforms\PharmacyMainform.cs">
       <SubType>Form</SubType>
@@ -167,6 +173,48 @@
     <Compile Update="UserControls\Technician\ucTechnicianUploadPdf.Designer.cs">
       <DependentUpon>ucTechnicianUploadPdf.cs</DependentUpon>
     </Compile>
+    <Compile Update="UserControls\Admin\ucAdminDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucAdminDashboard.Designer.cs">
+      <DependentUpon>ucAdminDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucAdminStatistics.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucAdminStatistics.Designer.cs">
+      <DependentUpon>ucAdminStatistics.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucDepartmentManagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucDepartmentManagement.Designer.cs">
+      <DependentUpon>ucDepartmentManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Admin\Ucemployeemanagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Admin\Ucemployeemanagement.Designer.cs">
+      <DependentUpon>Ucemployeemanagement.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucShiftmanagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucShiftmanagement.Designer.cs">
+      <DependentUpon>ucShiftmanagement.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucShiftRequestManagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucShiftRequestManagement.Designer.cs">
+      <DependentUpon>ucShiftRequestManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucUserManagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\Admin\ucUserManagement.Designer.cs">
+      <DependentUpon>ucUserManagement.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -242,6 +290,24 @@
     </EmbeddedResource>
     <EmbeddedResource Update="UserControls\Technician\ucTechnicianUploadPdf.resx">
       <DependentUpon>ucTechnicianUploadPdf.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Admin\ucAdminDashboard.resx">
+      <DependentUpon>ucAdminDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Admin\ucDepartmentManagement.resx">
+      <DependentUpon>ucDepartmentManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Admin\Ucemployeemanagement.resx">
+      <DependentUpon>Ucemployeemanagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Admin\ucShiftmanagement.resx">
+      <DependentUpon>ucShiftmanagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Admin\ucShiftRequestManagement.resx">
+      <DependentUpon>ucShiftRequestManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UserControls\Admin\ucUserManagement.resx">
+      <DependentUpon>ucUserManagement.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
 

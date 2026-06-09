@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using DTO;
 using DAL;
+using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 {
@@ -66,7 +67,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 
             int typesCount = allMedicines.Count;
             int lowStockCount = allMedicines.Count(m => m.Stock <= 100);
-            int expiredCount = allMedicines.Count(m => m.ExpiryDate <= DateTime.Today.AddMonths(6));
+            int expiredCount = allMedicines.Count(m => m.ExpiryDate != DateTime.MinValue && m.ExpiryDate <= DateTime.Today.AddMonths(6));
 
             lblValueNumber.Text = totalValueStr;
             lblTypesNumber.Text = typesCount.ToString();
@@ -131,6 +132,17 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
                 case "Vitamin": return "C1";
                 case "Kháng viêm": return "B3";
                 default: return "D1";
+            }
+        }
+
+        private void btnAddMedicine_Click(object sender, EventArgs e)
+        {
+            using (var form = new AddMedicineForm())
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    LoadInventory();
+                }
             }
         }
     }

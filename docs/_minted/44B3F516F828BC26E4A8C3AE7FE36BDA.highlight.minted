@@ -1,0 +1,9 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n+na}{[STAThread]}
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{Main}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{Application}\PYG{p}{.}\PYG{n}{EnableVisualStyles}\PYG{p}{();}
+\PYG{+w}{    }\PYG{n}{Application}\PYG{p}{.}\PYG{n}{SetCompatibleTextRenderingDefault}\PYG{p}{(}\PYG{k}{false}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{Application}\PYG{p}{.}\PYG{n}{Run}\PYG{p}{(}\PYG{k}{new}\PYG{+w}{ }\PYG{n}{LoginForm}\PYG{p}{());}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

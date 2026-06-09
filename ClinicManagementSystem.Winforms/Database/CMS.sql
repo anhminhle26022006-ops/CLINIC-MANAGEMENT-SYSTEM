@@ -776,8 +776,19 @@ VALUES
 ('gp1','123456','gp1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
 ('gp2','123456','gp2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
 
-('ped1','123456','ped1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
-('ped2','123456','ped2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
+(
+    'doctor',
+    '123456',
+    'doctor@cms.local',
+    (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
+),
+
+(
+    'doctor_gp',
+    '123456',
+    'doctor.gp@cms.local',
+    (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
+),
 
 ('obs1','123456','obs1@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
 ('obs2','123456','obs2@cms.local', (SELECT RoleID FROM Roles WHERE RoleName='Doctor')),
@@ -913,7 +924,33 @@ VALUES
 (SELECT UserID FROM Users WHERE Username='gp1')
 ),
 (
-'DOC_GP2', N'BS GP 2','1981-02-02',N'Nữ','600000000002',N'HCM','0900000012','gp2@cms.local','2018-01-01',35000000,
+'EMP_DOCTOR',
+N'BS Demo',
+'1980-03-20',
+N'Nam',
+'079080009999',
+N'Quận 7, TP.HCM',
+'090000999',
+'doctor@clinic.vn',
+'2018-06-01',
+35000000,
+(SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
+(SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Khám tổng quát'),
+'Active',
+(SELECT UserID FROM Users WHERE Username='doctor')
+),
+
+(
+'EMP003',
+N'BS Trần Minh',
+'1980-03-20',
+N'Nam',
+'079080000003',
+N'Quận 7, TP.HCM',
+'090000003',
+'doctor.gp@clinic.vn',
+'2018-06-01',
+35000000,
 (SELECT RoleID FROM Roles WHERE RoleName='Doctor'),
 (SELECT DepartmentID FROM Departments WHERE DepartmentName=N'Khám tổng quát'),
 'Active',

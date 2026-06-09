@@ -1,0 +1,12 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{dataGridView1}\PYG{p}{.}\PYG{n}{AllowUserToAddRows}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{n}{dataGridView1}\PYG{p}{.}\PYG{n}{AllowUserToDeleteRows}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{n}{dataGridView1}\PYG{p}{.}\PYG{n}{ReadOnly}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{true}\PYG{p}{;}
+\PYG{n}{dataGridView1}\PYG{p}{.}\PYG{n}{AutoSizeColumnsMode}\PYG{+w}{ }\PYG{o}{=}
+\PYG{+w}{    }\PYG{n}{DataGridViewAutoSizeColumnsMode}\PYG{p}{.}\PYG{n}{Fill}\PYG{p}{;}
+\PYG{n}{dataGridView1}\PYG{p}{.}\PYG{n}{SelectionMode}\PYG{+w}{ }\PYG{o}{=}
+\PYG{+w}{    }\PYG{n}{DataGridViewSelectionMode}\PYG{p}{.}\PYG{n}{FullRowSelect}\PYG{p}{;}
+\PYG{n}{dataGridView1}\PYG{p}{.}\PYG{n}{EnableHeadersVisualStyles}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{n}{dataGridView1}\PYG{p}{.}\PYG{n}{ColumnHeadersDefaultCellStyle}\PYG{p}{.}\PYG{n}{BackColor}\PYG{+w}{ }\PYG{o}{=}
+\PYG{+w}{    }\PYG{n}{Color}\PYG{p}{.}\PYG{n}{RoyalBlue}\PYG{p}{;}
+\end{MintedVerbatim}

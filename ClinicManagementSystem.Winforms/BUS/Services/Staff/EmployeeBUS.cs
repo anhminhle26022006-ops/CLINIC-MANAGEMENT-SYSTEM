@@ -52,5 +52,8 @@ namespace BUS.Services
         {
             return dal.InsertAsync(dto);
         }
+        public bool Insert(EmployeeDTO emp) => dal.Insert(emp);
+        public bool Update(EmployeeDTO emp) => dal.Update(emp);
+        public bool Delete(int employeeId) => dal.Delete(employeeId);
     }
 }

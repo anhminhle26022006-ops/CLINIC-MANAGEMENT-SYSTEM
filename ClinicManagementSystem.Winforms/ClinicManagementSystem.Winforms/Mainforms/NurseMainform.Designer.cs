@@ -552,7 +552,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             Font = new Font("Segoe UI", 9F);
             Margin = new Padding(3, 4, 3, 4);
             Name = "NurseMainform";
-            Load += ReceptionistMainform_Load;
+            Load += NurseMainform_Load;
             panelSidebar.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             panel6.ResumeLayout(false);

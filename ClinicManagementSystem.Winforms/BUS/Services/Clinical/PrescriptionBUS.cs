@@ -30,5 +30,18 @@ namespace BUS
         {
             return prescriptionDAL.UpdatePrescriptionStatus(prescriptionId, "Completed");
         }
+
+        public void ValidateStock(List<PrescriptionItemDTO> items)
+        {
+            if (items == null) return;
+            foreach (var item in items)
+            {
+                int stock = medicineDAL.GetStock(item.MedicineID);
+                if (item.Quantity > stock)
+                {
+                    throw new InvalidOperationException($"Thuốc '{item.MedicineName}' không đủ tồn kho.\n(Yêu cầu: {item.Quantity}, Hiện có: {stock})");
+                }
+            }
+        }
     }
 }

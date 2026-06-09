@@ -22,6 +22,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             viewHostPanel = new RoundedPanel();
             lblHeading = new Label();
             lblSubheading = new Label();
+            btnAddMedicine = new Button();
             pnlStatsGrid = new TableLayoutPanel();
             pnlValue = new RoundedPanel();
             lblValueTitle = new Label();
@@ -85,6 +86,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             this.viewHostPanel.CornerRadius = 8;
             this.viewHostPanel.FillColor = System.Drawing.Color.FromArgb(247, 249, 252);
             this.viewHostPanel.AutoScroll = true;
+            this.viewHostPanel.Controls.Add(this.btnAddMedicine);
             this.viewHostPanel.Controls.Add(this.pnlHistory);
             this.viewHostPanel.Controls.Add(this.pnlTable);
             this.viewHostPanel.Controls.Add(this.pnlFilters);
@@ -93,6 +95,22 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             this.viewHostPanel.Controls.Add(this.lblHeading);
             this.viewHostPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.viewHostPanel.Size = new System.Drawing.Size(1244, 1000);
+
+            // 
+            // btnAddMedicine
+            // 
+            this.btnAddMedicine.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.btnAddMedicine.BackColor = System.Drawing.Color.FromArgb(47, 94, 240);
+            this.btnAddMedicine.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAddMedicine.FlatAppearance.BorderSize = 0;
+            this.btnAddMedicine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAddMedicine.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnAddMedicine.ForeColor = System.Drawing.Color.White;
+            this.btnAddMedicine.Location = new System.Drawing.Point(1068, 34);
+            this.btnAddMedicine.Size = new System.Drawing.Size(150, 42);
+            this.btnAddMedicine.Text = "+  Thêm thuốc";
+            this.btnAddMedicine.UseVisualStyleBackColor = false;
+            this.btnAddMedicine.Click += new System.EventHandler(this.btnAddMedicine_Click);
 
             this.lblHeading.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
             this.lblHeading.ForeColor = System.Drawing.Color.FromArgb(17, 24, 39);
@@ -507,5 +525,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
         private Label lblHistoryThreeIcon;
         private Label lblHistoryThreeText;
         private Label lblHistoryThreeQty;
+        private Button btnAddMedicine;
     }
 }

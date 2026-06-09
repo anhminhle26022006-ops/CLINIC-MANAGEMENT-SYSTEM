@@ -53,6 +53,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             // 
             // viewHostPanel
             // 
+            this.viewHostPanel.AutoScroll = true;
             this.viewHostPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
             this.viewHostPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
             this.viewHostPanel.Controls.Add(this.pnlProcessNote);
@@ -66,7 +67,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.viewHostPanel.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
             this.viewHostPanel.Location = new System.Drawing.Point(0, 0);
             this.viewHostPanel.Name = "viewHostPanel";
-            this.viewHostPanel.Size = new System.Drawing.Size(1244, 744);
+            this.viewHostPanel.Size = new System.Drawing.Size(1500, 900);
             this.viewHostPanel.TabIndex = 0;
             // 
             // lblTitle
@@ -75,7 +76,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.lblTitle.Location = new System.Drawing.Point(24, 24);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(400, 32);
+            this.lblTitle.Size = new System.Drawing.Size(560, 36);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Xét nghiệm & Chẩn đoán";
             // 
@@ -85,7 +86,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.lblSubtitle.Location = new System.Drawing.Point(24, 56);
             this.lblSubtitle.Name = "lblSubtitle";
-            this.lblSubtitle.Size = new System.Drawing.Size(500, 28);
+            this.lblSubtitle.Size = new System.Drawing.Size(900, 30);
             this.lblSubtitle.TabIndex = 1;
             this.lblSubtitle.Text = "Quản lý danh sách yêu cầu thực hiện cận lâm sàng";
             // 
@@ -106,7 +107,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.pnlStatsGrid.Name = "pnlStatsGrid";
             this.pnlStatsGrid.RowCount = 1;
             this.pnlStatsGrid.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.pnlStatsGrid.Size = new System.Drawing.Size(1196, 90);
+            this.pnlStatsGrid.Size = new System.Drawing.Size(1452, 104);
             this.pnlStatsGrid.TabIndex = 3;
             // 
             // pnlStatPending
@@ -259,9 +260,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.pnlFilter.Controls.Add(this.txtRequestSearch);
             this.pnlFilter.CornerRadius = 8;
             this.pnlFilter.FillColor = System.Drawing.Color.White;
-            this.pnlFilter.Location = new System.Drawing.Point(24, 198);
+            this.pnlFilter.Location = new System.Drawing.Point(24, 214);
             this.pnlFilter.Name = "pnlFilter";
-            this.pnlFilter.Size = new System.Drawing.Size(1196, 88);
+            this.pnlFilter.Size = new System.Drawing.Size(1452, 96);
             this.pnlFilter.TabIndex = 4;
             // 
             // txtRequestSearch
@@ -269,9 +270,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.txtRequestSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtRequestSearch.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtRequestSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
-            this.txtRequestSearch.Location = new System.Drawing.Point(20, 24);
+            this.txtRequestSearch.Location = new System.Drawing.Point(24, 30);
             this.txtRequestSearch.Name = "txtRequestSearch";
-            this.txtRequestSearch.Size = new System.Drawing.Size(560, 25);
+            this.txtRequestSearch.Size = new System.Drawing.Size(670, 25);
             this.txtRequestSearch.TabIndex = 0;
             this.txtRequestSearch.Text = "Tìm kiếm bệnh nhân hoặc tên xét nghiệm...";
             // 
@@ -286,9 +287,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             "Chờ xử lý",
             "Đang xử lý",
             "Hoàn thành"});
-            this.comboRequestStatusFilter.Location = new System.Drawing.Point(616, 24);
+            this.comboRequestStatusFilter.Location = new System.Drawing.Point(760, 30);
             this.comboRequestStatusFilter.Name = "comboRequestStatusFilter";
-            this.comboRequestStatusFilter.Size = new System.Drawing.Size(560, 26);
+            this.comboRequestStatusFilter.Size = new System.Drawing.Size(668, 26);
             this.comboRequestStatusFilter.TabIndex = 1;
             // 
             // flpRequests
@@ -298,9 +299,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flpRequests.AutoScroll = true;
             this.flpRequests.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpRequests.Location = new System.Drawing.Point(24, 298);
+            this.flpRequests.Location = new System.Drawing.Point(24, 328);
             this.flpRequests.Name = "flpRequests";
-            this.flpRequests.Size = new System.Drawing.Size(1196, 264);
+            this.flpRequests.Size = new System.Drawing.Size(1452, 390);
             this.flpRequests.TabIndex = 5;
             this.flpRequests.WrapContents = false;
             // 
@@ -316,9 +317,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.pnlProcessNote.Controls.Add(this.lblProcessTitle);
             this.pnlProcessNote.CornerRadius = 8;
             this.pnlProcessNote.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            this.pnlProcessNote.Location = new System.Drawing.Point(24, 574);
+            this.pnlProcessNote.Location = new System.Drawing.Point(24, 736);
             this.pnlProcessNote.Name = "pnlProcessNote";
-            this.pnlProcessNote.Size = new System.Drawing.Size(1196, 130);
+            this.pnlProcessNote.Size = new System.Drawing.Size(1452, 130);
             this.pnlProcessNote.TabIndex = 6;
             // 
             // lblProcessTitle
@@ -376,9 +377,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.btnSyncCloud.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSyncCloud.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSyncCloud.ForeColor = System.Drawing.Color.White;
-            this.btnSyncCloud.Location = new System.Drawing.Point(1030, 24);
+            this.btnSyncCloud.Location = new System.Drawing.Point(1260, 24);
             this.btnSyncCloud.Name = "btnSyncCloud";
-            this.btnSyncCloud.Size = new System.Drawing.Size(190, 40);
+            this.btnSyncCloud.Size = new System.Drawing.Size(216, 44);
             this.btnSyncCloud.TabIndex = 7;
             this.btnSyncCloud.Text = "Đồng bộ Cloud";
             this.btnSyncCloud.UseVisualStyleBackColor = false;
@@ -392,7 +393,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
             this.Controls.Add(this.viewHostPanel);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Name = "ucTechnicianRequests";
-            this.Size = new System.Drawing.Size(1244, 744);
+            this.Size = new System.Drawing.Size(1500, 900);
             this.Load += new System.EventHandler(this.ucTechnicianRequests_Load);
             this.Resize += new System.EventHandler(this.ucTechnicianRequests_Resize);
             this.viewHostPanel.ResumeLayout(false);

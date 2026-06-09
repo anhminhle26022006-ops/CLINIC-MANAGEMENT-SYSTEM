@@ -1,0 +1,2155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="CMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Roles">
+          <Property Name="RoleID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Users">
+          <Property Name="UserID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="varchar" MaxLength="100" />
+          <Property Name="PasswordHash" Type="nvarchar" MaxLength="255" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="RoleID" Type="nvarchar" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Sessions">
+          <Property Name="SessionID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="nvarchar" />
+          <Property Name="Token" Type="nvarchar" MaxLength="255" />
+          <Property Name="ExpiredAt" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="SessionID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Departments">
+          <Property Name="DepartmentID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="DepartmentName" Type="nvarchar" MaxLength="255" />
+          <Key>
+            <PropertyRef Name="DepartmentID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Rooms">
+          <Property Name="RoomID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="RoomCode" Type="varchar" MaxLength="50" />
+          <Property Name="DepartmentID" Type="nvarchar" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Employees">
+          <Property Name="EmployeeID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeUUID" Type="uniqueidentifier" />
+          <Property Name="NOT" Type="nvarchar" Nullable="false" />
+          <Property Name="EmployeeCode" Type="varchar" MaxLength="50" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="255" />
+          <Property Name="NOT" Type="nvarchar" Nullable="false" />
+          <Property Name="DateOfBirth" Type="nvarchar" />
+          <Property Name="Gender" Type="nvarchar" MaxLength="10" />
+          <Property Name="CitizenId" Type="nvarchar" MaxLength="20" />
+          <Property Name="Address" Type="nvarchar" MaxLength="500" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="20" />
+          <Property Name="Email" Type="nvarchar" MaxLength="255" />
+          <Property Name="HireDate" Type="nvarchar" />
+          <Property Name="Salary" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="RoleID" Type="int" Nullable="false" />
+          <Property Name="DepartmentID" Type="int" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="DEFAULT" Type="nvarchar" />
+          <Property Name="UserID" Type="nvarchar" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ROLEID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="DEPARTMENTID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="USERID" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="EmployeeID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Patients">
+          <Property Name="PatientID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="PatientCode" Type="varchar" MaxLength="50" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Gender" Type="nvarchar" MaxLength="20" />
+          <Property Name="DOB" Type="nvarchar" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="20" />
+          <Property Name="Address" Type="nvarchar" MaxLength="500" />
+          <Property Name="BloodType" Type="nvarchar" MaxLength="10" />
+          <Property Name="Allergy" Type="nvarchar" MaxLength="Max" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="PatientUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="PatientID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="PatientInsurance">
+          <Property Name="InsuranceID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="PatientID" Type="nvarchar" />
+          <Property Name="InsuranceNumber" Type="nvarchar" MaxLength="100" />
+          <Property Name="Provider" Type="nvarchar" MaxLength="255" />
+          <Property Name="EffectiveDate" Type="nvarchar" />
+          <Property Name="ExpiryDate" Type="nvarchar" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="PATIENTID" />
+          <Key>
+            <PropertyRef Name="InsuranceID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Appointments">
+          <Property Name="AppointmentID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="PatientID" Type="nvarchar" />
+          <Property Name="DoctorID" Type="nvarchar" />
+          <Property Name="DepartmentID" Type="nvarchar" />
+          <Property Name="RoomID" Type="nvarchar" />
+          <Property Name="AppointmentDate" Type="nvarchar" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="AppointmentUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="AppointmentID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Encounters">
+          <Property Name="EncounterID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="AppointmentID" Type="nvarchar" />
+          <Property Name="PatientID" Type="nvarchar" />
+          <Property Name="DoctorID" Type="nvarchar" />
+          <Property Name="StartTime" Type="nvarchar" />
+          <Property Name="EndTime" Type="nvarchar" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="PATIENTID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="EMPLOYEEID" />
+          <Property Name="EncounterUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="EncounterID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Services">
+          <Property Name="ServiceID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="ServiceName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Price" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="DepartmentID" Type="nvarchar" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="DEPARTMENTID" />
+          <Key>
+            <PropertyRef Name="ServiceID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="EncounterServices">
+          <Property Name="EncounterServiceID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="int" Nullable="false" />
+          <Property Name="ServiceID" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="UnitPrice" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="OrderedBy" Type="int" />
+          <Property Name="OrderedAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ENCOUNTERID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="SERVICEID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="EMPLOYEEID" />
+          <Key>
+            <PropertyRef Name="EncounterServiceID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="DoctorSchedules">
+          <Property Name="ScheduleID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="DoctorID" Type="nvarchar" />
+          <Property Name="WorkDate" Type="nvarchar" />
+          <Property Name="StartTime" Type="nvarchar" />
+          <Property Name="EndTime" Type="nvarchar" />
+          <Property Name="RoomID" Type="nvarchar" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="EMPLOYEEID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ROOMID" />
+          <Key>
+            <PropertyRef Name="ScheduleID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="PatientQueues">
+          <Property Name="QueueID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="Priority" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="CurrentStep" Type="nvarchar" MaxLength="50" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ENCOUNTERID" />
+          <Property Name="QueueUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="QueueID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="MedicalRecords">
+          <Property Name="RecordID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="ChiefComplaint" Type="nvarchar" MaxLength="Max" />
+          <Property Name="Symptoms" Type="nvarchar" MaxLength="Max" />
+          <Property Name="Diagnosis" Type="nvarchar" MaxLength="Max" />
+          <Property Name="ICDCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Conclusion" Type="nvarchar" MaxLength="Max" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="Max" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="RecordUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="RecordID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="MedicalRecordFiles">
+          <Property Name="FileID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="RecordID" Type="int" Nullable="false" />
+          <Property Name="FileType" Type="nvarchar" MaxLength="50" />
+          <Property Name="FileURL" Type="nvarchar" MaxLength="Max" />
+          <Property Name="UploadedAt" Type="datetime" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="RECORDID" />
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="VitalSigns">
+          <Property Name="VitalID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="Temperature" Type="nvarchar" Precision="4" Scale="1" />
+          <Property Name="BloodPressure" Type="nvarchar" MaxLength="20" />
+          <Property Name="HeartRate" Type="nvarchar" />
+          <Property Name="SPO2" Type="nvarchar" />
+          <Property Name="Weight" Type="nvarchar" Precision="5" Scale="2" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="Max" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Key>
+            <PropertyRef Name="VitalID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="LabRequests">
+          <Property Name="LabID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="DoctorID" Type="nvarchar" />
+          <Property Name="TestType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ENCOUNTERID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="EMPLOYEEID" />
+          <Property Name="LabRequestUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="LabID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="LabResults">
+          <Property Name="ResultID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="LabID" Type="nvarchar" />
+          <Property Name="ResultText" Type="nvarchar" MaxLength="Max" />
+          <Property Name="FileURL" Type="nvarchar" MaxLength="Max" />
+          <Property Name="CompletedAt" Type="nvarchar" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="LABID" />
+          <Key>
+            <PropertyRef Name="ResultID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="ImagingServices">
+          <Property Name="ImagingServiceID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="ServiceCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="ServiceName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Modality" Type="nvarchar" MaxLength="50" />
+          <Property Name="Price" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="IsActive" Type="bit" />
+          <Key>
+            <PropertyRef Name="ImagingServiceID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="ImagingRequests">
+          <Property Name="ImagingRequestID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="DoctorID" Type="nvarchar" />
+          <Property Name="ImagingServiceID" Type="nvarchar" />
+          <Property Name="BodyPart" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="Priority" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ENCOUNTERID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="EMPLOYEEID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="IMAGINGSERVICEID" />
+          <Property Name="ImagingRequestUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="ImagingRequestID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="ImagingResults">
+          <Property Name="ImagingResultID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="ImagingRequestID" Type="nvarchar" />
+          <Property Name="ResultText" Type="nvarchar" MaxLength="Max" />
+          <Property Name="ImageURL" Type="nvarchar" MaxLength="Max" />
+          <Property Name="PDFURL" Type="nvarchar" MaxLength="Max" />
+          <Property Name="TechnicianNote" Type="nvarchar" MaxLength="Max" />
+          <Property Name="CompletedAt" Type="nvarchar" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="IMAGINGREQUESTID" />
+          <Key>
+            <PropertyRef Name="ImagingResultID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="ImagingFiles">
+          <Property Name="FileID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="ImagingResultID" Type="nvarchar" />
+          <Property Name="FileType" Type="nvarchar" MaxLength="50" />
+          <Property Name="FileURL" Type="nvarchar" MaxLength="Max" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="IMAGINGRESULTID" />
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Medicines">
+          <Property Name="MedicineID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Unit" Type="nvarchar" MaxLength="50" />
+          <Property Name="Price" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="Stock" Type="nvarchar" />
+          <Property Name="BatchNumber" Type="nvarchar" MaxLength="100" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Key>
+            <PropertyRef Name="MedicineID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Prescriptions">
+          <Property Name="PrescriptionID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="DoctorID" Type="nvarchar" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ENCOUNTERID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="EMPLOYEEID" />
+          <Property Name="PrescriptionUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="PrescriptionID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="PrescriptionDetails">
+          <Property Name="DetailID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="PrescriptionID" Type="nvarchar" />
+          <Property Name="MedicineID" Type="nvarchar" />
+          <Property Name="Quantity" Type="nvarchar" />
+          <Property Name="Dosage" Type="nvarchar" MaxLength="100" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="PRESCRIPTIONID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="MEDICINEID" />
+          <Key>
+            <PropertyRef Name="DetailID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Dispense">
+          <Property Name="DispenseID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="PrescriptionID" Type="nvarchar" />
+          <Property Name="PharmacistID" Type="nvarchar" />
+          <Property Name="TotalAmount" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="PRESCRIPTIONID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="EMPLOYEEID" />
+          <Property Name="DispenseUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="DispenseID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="QueueHistory">
+          <Property Name="HistoryID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="QueueID" Type="nvarchar" />
+          <Property Name="StepName" Type="nvarchar" MaxLength="100" />
+          <Property Name="StartTime" Type="nvarchar" />
+          <Property Name="EndTime" Type="nvarchar" />
+          <Property Name="EmployeeID" Type="int" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="QUEUEID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="EMPLOYEEID" />
+          <Key>
+            <PropertyRef Name="HistoryID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Payments">
+          <Property Name="PaymentID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="Amount" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="Method" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="PaidAt" Type="nvarchar" />
+          <Property Name="PatientID" Type="nvarchar" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="PATIENTID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ENCOUNTERID" />
+          <Property Name="PaymentUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="PaymentID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="PaymentDetails">
+          <Property Name="PaymentDetailID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="PaymentID" Type="int" Nullable="false" />
+          <Property Name="ItemType" Type="nvarchar" MaxLength="50" />
+          <Property Name="ItemID" Type="nvarchar" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="Quantity" Type="nvarchar" />
+          <Property Name="UnitPrice" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="Amount" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="PAYMENTID" />
+          <Key>
+            <PropertyRef Name="PaymentDetailID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Invoices">
+          <Property Name="InvoiceID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="PatientID" Type="nvarchar" />
+          <Property Name="Total" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ENCOUNTERID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="PATIENTID" />
+          <Property Name="InvoiceUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="InvoiceID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="InvoiceDetails">
+          <Property Name="DetailID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="InvoiceID" Type="nvarchar" />
+          <Property Name="ServiceID" Type="nvarchar" />
+          <Property Name="Quantity" Type="nvarchar" />
+          <Property Name="Price" Type="nvarchar" Precision="18" Scale="2" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="INVOICEID" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="SERVICEID" />
+          <Key>
+            <PropertyRef Name="DetailID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Files">
+          <Property Name="FileID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="FileType" Type="nvarchar" MaxLength="50" />
+          <Property Name="FileURL" Type="nvarchar" MaxLength="Max" />
+          <Property Name="UploadedAt" Type="datetime" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ENCOUNTERID" />
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="FollowUps">
+          <Property Name="FollowUpID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="FollowUpDate" Type="nvarchar" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ENCOUNTERID" />
+          <Property Name="FollowUpUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="FollowUpID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Transfers">
+          <Property Name="TransferID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="nvarchar" />
+          <Property Name="Reason" Type="nvarchar" MaxLength="Max" />
+          <Property Name="Severity" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="ENCOUNTERID" />
+          <Property Name="TransferUUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="TransferID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Shifts">
+          <Property Name="ShiftID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="StartTime" Type="nvarchar" />
+          <Property Name="EndTime" Type="time" />
+          <Key>
+            <PropertyRef Name="ShiftID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="EmployeeShifts">
+          <Property Name="ID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeID" Type="nvarchar" />
+          <Property Name="ShiftID" Type="nvarchar" />
+          <Property Name="WorkDate" Type="nvarchar" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="SHIFTID" />
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Property Name="NotificationID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="nvarchar" />
+          <Property Name="Message" Type="nvarchar" MaxLength="Max" />
+          <Property Name="IsRead" Type="bit" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="USERID" />
+          <Key>
+            <PropertyRef Name="NotificationID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="AuditLogs">
+          <Property Name="LogID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="nvarchar" />
+          <Property Name="Action" Type="nvarchar" MaxLength="100" />
+          <Property Name="TableName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="USERID" />
+          <Key>
+            <PropertyRef Name="LogID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="AuditLogDetails">
+          <Property Name="DetailID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="LogID" Type="nvarchar" />
+          <Property Name="OldValue" Type="nvarchar" MaxLength="Max" />
+          <Property Name="NewValue" Type="nvarchar" MaxLength="Max" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="LOGID" />
+          <Key>
+            <PropertyRef Name="DetailID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="PatientIdentifiers">
+          <Property Name="IdentifierID" Type="int" Nullable="false" store:StoreGeneratedPattern="Identity" />
+          <Property Name="PatientID" Type="nvarchar" />
+          <Property Name="SourceSystem" Type="nvarchar" MaxLength="100" />
+          <Property Name="IdentifierType" Type="nvarchar" MaxLength="100" />
+          <Property Name="IdentifierValue" Type="nvarchar" MaxLength="255" />
+          <Property Name="REFERENCES" Type="nvarchar" MaxLength="PATIENTID" />
+          <Property Name="UNIQUE(SourceSystem," Type="nvarchar" />
+          <Key>
+            <PropertyRef Name="IdentifierID" />
+          </Key>
+        </EntityType>
+        <Association Name="FK_Users_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RoleID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sessions_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Sessions" Type="Self.Sessions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Sessions">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rooms_Departments">
+          <End Role="Departments" Type="Self.Departments" Multiplicity="0..1" />
+          <End Role="Rooms" Type="Self.Rooms" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departments">
+              <PropertyRef Name="DepartmentID" />
+            </Principal>
+            <Dependent Role="Rooms">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Patients">
+          <End Role="Patients" Type="Self.Patients" Multiplicity="0..1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patients">
+              <PropertyRef Name="PatientID" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="PatientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="0..1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="EmployeeID" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="DoctorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Departments">
+          <End Role="Departments" Type="Self.Departments" Multiplicity="0..1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departments">
+              <PropertyRef Name="DepartmentID" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Rooms">
+          <End Role="Rooms" Type="Self.Rooms" Multiplicity="0..1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rooms">
+              <PropertyRef Name="RoomID" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Encounters_Appointments">
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="0..1" />
+          <End Role="Encounters" Type="Self.Encounters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointments">
+              <PropertyRef Name="AppointmentID" />
+            </Principal>
+            <Dependent Role="Encounters">
+              <PropertyRef Name="AppointmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MedicalRecords_Encounters">
+          <End Role="Encounters" Type="Self.Encounters" Multiplicity="0..1" />
+          <End Role="MedicalRecords" Type="Self.MedicalRecords" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Encounters">
+              <PropertyRef Name="EncounterID" />
+            </Principal>
+            <Dependent Role="MedicalRecords">
+              <PropertyRef Name="EncounterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VitalSigns_Encounters">
+          <End Role="Encounters" Type="Self.Encounters" Multiplicity="0..1" />
+          <End Role="VitalSigns" Type="Self.VitalSigns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Encounters">
+              <PropertyRef Name="EncounterID" />
+            </Principal>
+            <Dependent Role="VitalSigns">
+              <PropertyRef Name="EncounterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeShifts_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="0..1" />
+          <End Role="EmployeeShifts" Type="Self.EmployeeShifts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="EmployeeID" />
+            </Principal>
+            <Dependent Role="EmployeeShifts">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+
+        <EntityContainer Name="CMSModelStoreContainer">
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sessions" EntityType="Self.Sessions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Departments" EntityType="Self.Departments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rooms" EntityType="Self.Rooms" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Employees" EntityType="Self.Employees" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Patients" EntityType="Self.Patients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatientInsurance" EntityType="Self.PatientInsurance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Appointments" EntityType="Self.Appointments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Encounters" EntityType="Self.Encounters" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Services" EntityType="Self.Services" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EncounterServices" EntityType="Self.EncounterServices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DoctorSchedules" EntityType="Self.DoctorSchedules" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatientQueues" EntityType="Self.PatientQueues" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MedicalRecords" EntityType="Self.MedicalRecords" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MedicalRecordFiles" EntityType="Self.MedicalRecordFiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VitalSigns" EntityType="Self.VitalSigns" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LabRequests" EntityType="Self.LabRequests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LabResults" EntityType="Self.LabResults" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ImagingServices" EntityType="Self.ImagingServices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ImagingRequests" EntityType="Self.ImagingRequests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ImagingResults" EntityType="Self.ImagingResults" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ImagingFiles" EntityType="Self.ImagingFiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Medicines" EntityType="Self.Medicines" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Prescriptions" EntityType="Self.Prescriptions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PrescriptionDetails" EntityType="Self.PrescriptionDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Dispense" EntityType="Self.Dispense" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QueueHistory" EntityType="Self.QueueHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Payments" EntityType="Self.Payments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PaymentDetails" EntityType="Self.PaymentDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Invoices" EntityType="Self.Invoices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InvoiceDetails" EntityType="Self.InvoiceDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Files" EntityType="Self.Files" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FollowUps" EntityType="Self.FollowUps" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transfers" EntityType="Self.Transfers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Shifts" EntityType="Self.Shifts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmployeeShifts" EntityType="Self.EmployeeShifts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AuditLogs" EntityType="Self.AuditLogs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AuditLogDetails" EntityType="Self.AuditLogDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatientIdentifiers" EntityType="Self.PatientIdentifiers" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Users_Roles" Association="Self.FK_Users_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sessions_Users" Association="Self.FK_Sessions_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Sessions" EntitySet="Sessions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rooms_Departments" Association="Self.FK_Rooms_Departments">
+            <End Role="Departments" EntitySet="Departments" />
+            <End Role="Rooms" EntitySet="Rooms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Patients" Association="Self.FK_Appointments_Patients">
+            <End Role="Patients" EntitySet="Patients" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Employees" Association="Self.FK_Appointments_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Departments" Association="Self.FK_Appointments_Departments">
+            <End Role="Departments" EntitySet="Departments" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Rooms" Association="Self.FK_Appointments_Rooms">
+            <End Role="Rooms" EntitySet="Rooms" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Encounters_Appointments" Association="Self.FK_Encounters_Appointments">
+            <End Role="Appointments" EntitySet="Appointments" />
+            <End Role="Encounters" EntitySet="Encounters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MedicalRecords_Encounters" Association="Self.FK_MedicalRecords_Encounters">
+            <End Role="Encounters" EntitySet="Encounters" />
+            <End Role="MedicalRecords" EntitySet="MedicalRecords" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VitalSigns_Encounters" Association="Self.FK_VitalSigns_Encounters">
+            <End Role="Encounters" EntitySet="Encounters" />
+            <End Role="VitalSigns" EntitySet="VitalSigns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeShifts_Employees" Association="Self.FK_EmployeeShifts_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="EmployeeShifts" EntitySet="EmployeeShifts" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Roles">
+          <Property Name="RoleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" MaxLength="100" />
+          <Property Name="Description" Type="String" MaxLength="255" />
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Users">
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="100" />
+          <Property Name="PasswordHash" Type="String" MaxLength="255" />
+          <Property Name="Email" Type="String" MaxLength="255" />
+          <Property Name="RoleID" Type="String" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Sessions">
+          <Property Name="SessionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="String" />
+          <Property Name="Token" Type="String" MaxLength="255" />
+          <Property Name="ExpiredAt" Type="String" />
+          <Key>
+            <PropertyRef Name="SessionID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Departments">
+          <Property Name="DepartmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DepartmentName" Type="String" MaxLength="255" />
+          <Key>
+            <PropertyRef Name="DepartmentID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Rooms">
+          <Property Name="RoomID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoomCode" Type="String" MaxLength="50" />
+          <Property Name="DepartmentID" Type="String" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Employees">
+          <Property Name="EmployeeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeUUID" Type="Guid" />
+          <Property Name="NOT" Type="String" Nullable="false" />
+          <Property Name="EmployeeCode" Type="String" MaxLength="50" />
+          <Property Name="FullName" Type="String" MaxLength="255" />
+          <Property Name="NOT" Type="String" Nullable="false" />
+          <Property Name="DateOfBirth" Type="String" />
+          <Property Name="Gender" Type="String" MaxLength="10" />
+          <Property Name="CitizenId" Type="String" MaxLength="20" />
+          <Property Name="Address" Type="String" MaxLength="500" />
+          <Property Name="Phone" Type="String" MaxLength="20" />
+          <Property Name="Email" Type="String" MaxLength="255" />
+          <Property Name="HireDate" Type="String" />
+          <Property Name="Salary" Type="String" Precision="18" Scale="2" />
+          <Property Name="RoleID" Type="Int32" Nullable="false" />
+          <Property Name="DepartmentID" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="DEFAULT" Type="String" />
+          <Property Name="UserID" Type="String" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ROLEID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="DEPARTMENTID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="USERID" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="EmployeeID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Patients">
+          <Property Name="PatientID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatientCode" Type="String" MaxLength="50" />
+          <Property Name="FullName" Type="String" MaxLength="255" />
+          <Property Name="Gender" Type="String" MaxLength="20" />
+          <Property Name="DOB" Type="String" />
+          <Property Name="Phone" Type="String" MaxLength="20" />
+          <Property Name="Address" Type="String" MaxLength="500" />
+          <Property Name="BloodType" Type="String" MaxLength="10" />
+          <Property Name="Allergy" Type="String" MaxLength="Max" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Property Name="PatientUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="PatientID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="PatientInsurance">
+          <Property Name="InsuranceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatientID" Type="String" />
+          <Property Name="InsuranceNumber" Type="String" MaxLength="100" />
+          <Property Name="Provider" Type="String" MaxLength="255" />
+          <Property Name="EffectiveDate" Type="String" />
+          <Property Name="ExpiryDate" Type="String" />
+          <Property Name="REFERENCES" Type="String" MaxLength="PATIENTID" />
+          <Key>
+            <PropertyRef Name="InsuranceID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Appointments">
+          <Property Name="AppointmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatientID" Type="String" />
+          <Property Name="DoctorID" Type="String" />
+          <Property Name="DepartmentID" Type="String" />
+          <Property Name="RoomID" Type="String" />
+          <Property Name="AppointmentDate" Type="String" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="AppointmentUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="AppointmentID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Encounters">
+          <Property Name="EncounterID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AppointmentID" Type="String" />
+          <Property Name="PatientID" Type="String" />
+          <Property Name="DoctorID" Type="String" />
+          <Property Name="StartTime" Type="String" />
+          <Property Name="EndTime" Type="String" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="REFERENCES" Type="String" MaxLength="PATIENTID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="EMPLOYEEID" />
+          <Property Name="EncounterUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="EncounterID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Services">
+          <Property Name="ServiceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ServiceName" Type="String" MaxLength="255" />
+          <Property Name="Price" Type="String" Precision="18" Scale="2" />
+          <Property Name="DepartmentID" Type="String" />
+          <Property Name="REFERENCES" Type="String" MaxLength="DEPARTMENTID" />
+          <Key>
+            <PropertyRef Name="ServiceID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="EncounterServices">
+          <Property Name="EncounterServiceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="Int32" Nullable="false" />
+          <Property Name="ServiceID" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="UnitPrice" Type="String" Precision="18" Scale="2" />
+          <Property Name="OrderedBy" Type="Int32" />
+          <Property Name="OrderedAt" Type="DateTime" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ENCOUNTERID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="SERVICEID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="EMPLOYEEID" />
+          <Key>
+            <PropertyRef Name="EncounterServiceID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="DoctorSchedules">
+          <Property Name="ScheduleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DoctorID" Type="String" />
+          <Property Name="WorkDate" Type="String" />
+          <Property Name="StartTime" Type="String" />
+          <Property Name="EndTime" Type="String" />
+          <Property Name="RoomID" Type="String" />
+          <Property Name="REFERENCES" Type="String" MaxLength="EMPLOYEEID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ROOMID" />
+          <Key>
+            <PropertyRef Name="ScheduleID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="PatientQueues">
+          <Property Name="QueueID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="Priority" Type="String" MaxLength="50" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="CurrentStep" Type="String" MaxLength="50" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ENCOUNTERID" />
+          <Property Name="QueueUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="QueueID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="MedicalRecords">
+          <Property Name="RecordID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="ChiefComplaint" Type="String" MaxLength="Max" />
+          <Property Name="Symptoms" Type="String" MaxLength="Max" />
+          <Property Name="Diagnosis" Type="String" MaxLength="Max" />
+          <Property Name="ICDCode" Type="String" MaxLength="50" />
+          <Property Name="Conclusion" Type="String" MaxLength="Max" />
+          <Property Name="Notes" Type="String" MaxLength="Max" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Property Name="RecordUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="RecordID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="MedicalRecordFiles">
+          <Property Name="FileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecordID" Type="Int32" Nullable="false" />
+          <Property Name="FileType" Type="String" MaxLength="50" />
+          <Property Name="FileURL" Type="String" MaxLength="Max" />
+          <Property Name="UploadedAt" Type="DateTime" />
+          <Property Name="REFERENCES" Type="String" MaxLength="RECORDID" />
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="VitalSigns">
+          <Property Name="VitalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="Temperature" Type="String" Precision="4" Scale="1" />
+          <Property Name="BloodPressure" Type="String" MaxLength="20" />
+          <Property Name="HeartRate" Type="String" />
+          <Property Name="SPO2" Type="String" />
+          <Property Name="Weight" Type="String" Precision="5" Scale="2" />
+          <Property Name="Notes" Type="String" MaxLength="Max" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Key>
+            <PropertyRef Name="VitalID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="LabRequests">
+          <Property Name="LabID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="DoctorID" Type="String" />
+          <Property Name="TestType" Type="String" MaxLength="255" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ENCOUNTERID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="EMPLOYEEID" />
+          <Property Name="LabRequestUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="LabID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="LabResults">
+          <Property Name="ResultID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LabID" Type="String" />
+          <Property Name="ResultText" Type="String" MaxLength="Max" />
+          <Property Name="FileURL" Type="String" MaxLength="Max" />
+          <Property Name="CompletedAt" Type="String" />
+          <Property Name="REFERENCES" Type="String" MaxLength="LABID" />
+          <Key>
+            <PropertyRef Name="ResultID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="ImagingServices">
+          <Property Name="ImagingServiceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ServiceCode" Type="String" MaxLength="50" />
+          <Property Name="ServiceName" Type="String" MaxLength="255" />
+          <Property Name="Modality" Type="String" MaxLength="50" />
+          <Property Name="Price" Type="String" Precision="18" Scale="2" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Key>
+            <PropertyRef Name="ImagingServiceID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="ImagingRequests">
+          <Property Name="ImagingRequestID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="DoctorID" Type="String" />
+          <Property Name="ImagingServiceID" Type="String" />
+          <Property Name="BodyPart" Type="String" MaxLength="500" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Property Name="Priority" Type="String" MaxLength="50" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ENCOUNTERID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="EMPLOYEEID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="IMAGINGSERVICEID" />
+          <Property Name="ImagingRequestUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="ImagingRequestID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="ImagingResults">
+          <Property Name="ImagingResultID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ImagingRequestID" Type="String" />
+          <Property Name="ResultText" Type="String" MaxLength="Max" />
+          <Property Name="ImageURL" Type="String" MaxLength="Max" />
+          <Property Name="PDFURL" Type="String" MaxLength="Max" />
+          <Property Name="TechnicianNote" Type="String" MaxLength="Max" />
+          <Property Name="CompletedAt" Type="String" />
+          <Property Name="REFERENCES" Type="String" MaxLength="IMAGINGREQUESTID" />
+          <Key>
+            <PropertyRef Name="ImagingResultID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="ImagingFiles">
+          <Property Name="FileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ImagingResultID" Type="String" />
+          <Property Name="FileType" Type="String" MaxLength="50" />
+          <Property Name="FileURL" Type="String" MaxLength="Max" />
+          <Property Name="REFERENCES" Type="String" MaxLength="IMAGINGRESULTID" />
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Medicines">
+          <Property Name="MedicineID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" />
+          <Property Name="Unit" Type="String" MaxLength="50" />
+          <Property Name="Price" Type="String" Precision="18" Scale="2" />
+          <Property Name="Stock" Type="String" />
+          <Property Name="BatchNumber" Type="String" MaxLength="100" />
+          <Property Name="ExpiryDate" Type="DateTime" />
+          <Key>
+            <PropertyRef Name="MedicineID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Prescriptions">
+          <Property Name="PrescriptionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="DoctorID" Type="String" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ENCOUNTERID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="EMPLOYEEID" />
+          <Property Name="PrescriptionUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="PrescriptionID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="PrescriptionDetails">
+          <Property Name="DetailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PrescriptionID" Type="String" />
+          <Property Name="MedicineID" Type="String" />
+          <Property Name="Quantity" Type="String" />
+          <Property Name="Dosage" Type="String" MaxLength="100" />
+          <Property Name="REFERENCES" Type="String" MaxLength="PRESCRIPTIONID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="MEDICINEID" />
+          <Key>
+            <PropertyRef Name="DetailID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Dispense">
+          <Property Name="DispenseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PrescriptionID" Type="String" />
+          <Property Name="PharmacistID" Type="String" />
+          <Property Name="TotalAmount" Type="String" Precision="18" Scale="2" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="REFERENCES" Type="String" MaxLength="PRESCRIPTIONID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="EMPLOYEEID" />
+          <Property Name="DispenseUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="DispenseID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="QueueHistory">
+          <Property Name="HistoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="QueueID" Type="String" />
+          <Property Name="StepName" Type="String" MaxLength="100" />
+          <Property Name="StartTime" Type="String" />
+          <Property Name="EndTime" Type="String" />
+          <Property Name="EmployeeID" Type="Int32" />
+          <Property Name="REFERENCES" Type="String" MaxLength="QUEUEID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="EMPLOYEEID" />
+          <Key>
+            <PropertyRef Name="HistoryID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Payments">
+          <Property Name="PaymentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="Amount" Type="String" Precision="18" Scale="2" />
+          <Property Name="Method" Type="String" MaxLength="50" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="PaidAt" Type="String" />
+          <Property Name="PatientID" Type="String" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Property Name="REFERENCES" Type="String" MaxLength="PATIENTID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ENCOUNTERID" />
+          <Property Name="PaymentUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="PaymentID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="PaymentDetails">
+          <Property Name="PaymentDetailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PaymentID" Type="Int32" Nullable="false" />
+          <Property Name="ItemType" Type="String" MaxLength="50" />
+          <Property Name="ItemID" Type="String" />
+          <Property Name="Description" Type="String" MaxLength="255" />
+          <Property Name="Quantity" Type="String" />
+          <Property Name="UnitPrice" Type="String" Precision="18" Scale="2" />
+          <Property Name="Amount" Type="String" Precision="18" Scale="2" />
+          <Property Name="REFERENCES" Type="String" MaxLength="PAYMENTID" />
+          <Key>
+            <PropertyRef Name="PaymentDetailID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Invoices">
+          <Property Name="InvoiceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="PatientID" Type="String" />
+          <Property Name="Total" Type="String" Precision="18" Scale="2" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ENCOUNTERID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="PATIENTID" />
+          <Property Name="InvoiceUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="InvoiceID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="InvoiceDetails">
+          <Property Name="DetailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InvoiceID" Type="String" />
+          <Property Name="ServiceID" Type="String" />
+          <Property Name="Quantity" Type="String" />
+          <Property Name="Price" Type="String" Precision="18" Scale="2" />
+          <Property Name="REFERENCES" Type="String" MaxLength="INVOICEID" />
+          <Property Name="REFERENCES" Type="String" MaxLength="SERVICEID" />
+          <Key>
+            <PropertyRef Name="DetailID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Files">
+          <Property Name="FileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="FileType" Type="String" MaxLength="50" />
+          <Property Name="FileURL" Type="String" MaxLength="Max" />
+          <Property Name="UploadedAt" Type="DateTime" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ENCOUNTERID" />
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="FollowUps">
+          <Property Name="FollowUpID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="FollowUpDate" Type="String" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ENCOUNTERID" />
+          <Property Name="FollowUpUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="FollowUpID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Transfers">
+          <Property Name="TransferID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EncounterID" Type="String" />
+          <Property Name="Reason" Type="String" MaxLength="Max" />
+          <Property Name="Severity" Type="String" MaxLength="50" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="REFERENCES" Type="String" MaxLength="ENCOUNTERID" />
+          <Property Name="TransferUUID" Type="Guid" Nullable="false" />
+          <Property Name="CONSTRAINT" Type="String" />
+          <Key>
+            <PropertyRef Name="TransferID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Shifts">
+          <Property Name="ShiftID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" />
+          <Property Name="StartTime" Type="String" />
+          <Property Name="EndTime" Type="TimeSpan" />
+          <Key>
+            <PropertyRef Name="ShiftID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="EmployeeShifts">
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeID" Type="String" />
+          <Property Name="ShiftID" Type="String" />
+          <Property Name="WorkDate" Type="String" />
+          <Property Name="REFERENCES" Type="String" MaxLength="SHIFTID" />
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Property Name="NotificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="String" />
+          <Property Name="Message" Type="String" MaxLength="Max" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="REFERENCES" Type="String" MaxLength="USERID" />
+          <Key>
+            <PropertyRef Name="NotificationID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="AuditLogs">
+          <Property Name="LogID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="String" />
+          <Property Name="Action" Type="String" MaxLength="100" />
+          <Property Name="TableName" Type="String" MaxLength="100" />
+          <Property Name="CreatedAt" Type="DateTime" />
+          <Property Name="REFERENCES" Type="String" MaxLength="USERID" />
+          <Key>
+            <PropertyRef Name="LogID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="AuditLogDetails">
+          <Property Name="DetailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LogID" Type="String" />
+          <Property Name="OldValue" Type="String" MaxLength="Max" />
+          <Property Name="NewValue" Type="String" MaxLength="Max" />
+          <Property Name="REFERENCES" Type="String" MaxLength="LOGID" />
+          <Key>
+            <PropertyRef Name="DetailID" />
+          </Key>
+        </EntityType>
+        <EntityType Name="PatientIdentifiers">
+          <Property Name="IdentifierID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatientID" Type="String" />
+          <Property Name="SourceSystem" Type="String" MaxLength="100" />
+          <Property Name="IdentifierType" Type="String" MaxLength="100" />
+          <Property Name="IdentifierValue" Type="String" MaxLength="255" />
+          <Property Name="REFERENCES" Type="String" MaxLength="PATIENTID" />
+          <Property Name="UNIQUE(SourceSystem," Type="String" />
+          <Key>
+            <PropertyRef Name="IdentifierID" />
+          </Key>
+        </EntityType>
+        <Association Name="FK_Users_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RoleID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sessions_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Sessions" Type="Self.Sessions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Sessions">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rooms_Departments">
+          <End Role="Departments" Type="Self.Departments" Multiplicity="0..1" />
+          <End Role="Rooms" Type="Self.Rooms" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departments">
+              <PropertyRef Name="DepartmentID" />
+            </Principal>
+            <Dependent Role="Rooms">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Patients">
+          <End Role="Patients" Type="Self.Patients" Multiplicity="0..1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patients">
+              <PropertyRef Name="PatientID" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="PatientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="0..1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="EmployeeID" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="DoctorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Departments">
+          <End Role="Departments" Type="Self.Departments" Multiplicity="0..1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departments">
+              <PropertyRef Name="DepartmentID" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Rooms">
+          <End Role="Rooms" Type="Self.Rooms" Multiplicity="0..1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rooms">
+              <PropertyRef Name="RoomID" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Encounters_Appointments">
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="0..1" />
+          <End Role="Encounters" Type="Self.Encounters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointments">
+              <PropertyRef Name="AppointmentID" />
+            </Principal>
+            <Dependent Role="Encounters">
+              <PropertyRef Name="AppointmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MedicalRecords_Encounters">
+          <End Role="Encounters" Type="Self.Encounters" Multiplicity="0..1" />
+          <End Role="MedicalRecords" Type="Self.MedicalRecords" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Encounters">
+              <PropertyRef Name="EncounterID" />
+            </Principal>
+            <Dependent Role="MedicalRecords">
+              <PropertyRef Name="EncounterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VitalSigns_Encounters">
+          <End Role="Encounters" Type="Self.Encounters" Multiplicity="0..1" />
+          <End Role="VitalSigns" Type="Self.VitalSigns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Encounters">
+              <PropertyRef Name="EncounterID" />
+            </Principal>
+            <Dependent Role="VitalSigns">
+              <PropertyRef Name="EncounterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeShifts_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="0..1" />
+          <End Role="EmployeeShifts" Type="Self.EmployeeShifts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="EmployeeID" />
+            </Principal>
+            <Dependent Role="EmployeeShifts">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+
+        <EntityContainer Name="CMSEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Roless" EntityType="Self.Roles" />
+          <EntitySet Name="Userss" EntityType="Self.Users" />
+          <EntitySet Name="Sessionss" EntityType="Self.Sessions" />
+          <EntitySet Name="Departmentss" EntityType="Self.Departments" />
+          <EntitySet Name="Roomss" EntityType="Self.Rooms" />
+          <EntitySet Name="Employeess" EntityType="Self.Employees" />
+          <EntitySet Name="Patientss" EntityType="Self.Patients" />
+          <EntitySet Name="PatientInsurances" EntityType="Self.PatientInsurance" />
+          <EntitySet Name="Appointmentss" EntityType="Self.Appointments" />
+          <EntitySet Name="Encounterss" EntityType="Self.Encounters" />
+          <EntitySet Name="Servicess" EntityType="Self.Services" />
+          <EntitySet Name="EncounterServicess" EntityType="Self.EncounterServices" />
+          <EntitySet Name="DoctorScheduless" EntityType="Self.DoctorSchedules" />
+          <EntitySet Name="PatientQueuess" EntityType="Self.PatientQueues" />
+          <EntitySet Name="MedicalRecordss" EntityType="Self.MedicalRecords" />
+          <EntitySet Name="MedicalRecordFiless" EntityType="Self.MedicalRecordFiles" />
+          <EntitySet Name="VitalSignss" EntityType="Self.VitalSigns" />
+          <EntitySet Name="LabRequestss" EntityType="Self.LabRequests" />
+          <EntitySet Name="LabResultss" EntityType="Self.LabResults" />
+          <EntitySet Name="ImagingServicess" EntityType="Self.ImagingServices" />
+          <EntitySet Name="ImagingRequestss" EntityType="Self.ImagingRequests" />
+          <EntitySet Name="ImagingResultss" EntityType="Self.ImagingResults" />
+          <EntitySet Name="ImagingFiless" EntityType="Self.ImagingFiles" />
+          <EntitySet Name="Mediciness" EntityType="Self.Medicines" />
+          <EntitySet Name="Prescriptionss" EntityType="Self.Prescriptions" />
+          <EntitySet Name="PrescriptionDetailss" EntityType="Self.PrescriptionDetails" />
+          <EntitySet Name="Dispenses" EntityType="Self.Dispense" />
+          <EntitySet Name="QueueHistorys" EntityType="Self.QueueHistory" />
+          <EntitySet Name="Paymentss" EntityType="Self.Payments" />
+          <EntitySet Name="PaymentDetailss" EntityType="Self.PaymentDetails" />
+          <EntitySet Name="Invoicess" EntityType="Self.Invoices" />
+          <EntitySet Name="InvoiceDetailss" EntityType="Self.InvoiceDetails" />
+          <EntitySet Name="Filess" EntityType="Self.Files" />
+          <EntitySet Name="FollowUpss" EntityType="Self.FollowUps" />
+          <EntitySet Name="Transferss" EntityType="Self.Transfers" />
+          <EntitySet Name="Shiftss" EntityType="Self.Shifts" />
+          <EntitySet Name="EmployeeShiftss" EntityType="Self.EmployeeShifts" />
+          <EntitySet Name="Notificationss" EntityType="Self.Notifications" />
+          <EntitySet Name="AuditLogss" EntityType="Self.AuditLogs" />
+          <EntitySet Name="AuditLogDetailss" EntityType="Self.AuditLogDetails" />
+          <EntitySet Name="PatientIdentifierss" EntityType="Self.PatientIdentifiers" />
+          <AssociationSet Name="FK_Users_Roles" Association="Self.FK_Users_Roles">
+            <End Role="Roles" EntitySet="Roless" />
+            <End Role="Users" EntitySet="Userss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sessions_Users" Association="Self.FK_Sessions_Users">
+            <End Role="Users" EntitySet="Userss" />
+            <End Role="Sessions" EntitySet="Sessionss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rooms_Departments" Association="Self.FK_Rooms_Departments">
+            <End Role="Departments" EntitySet="Departmentss" />
+            <End Role="Rooms" EntitySet="Roomss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Patients" Association="Self.FK_Appointments_Patients">
+            <End Role="Patients" EntitySet="Patientss" />
+            <End Role="Appointments" EntitySet="Appointmentss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Employees" Association="Self.FK_Appointments_Employees">
+            <End Role="Employees" EntitySet="Employeess" />
+            <End Role="Appointments" EntitySet="Appointmentss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Departments" Association="Self.FK_Appointments_Departments">
+            <End Role="Departments" EntitySet="Departmentss" />
+            <End Role="Appointments" EntitySet="Appointmentss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Rooms" Association="Self.FK_Appointments_Rooms">
+            <End Role="Rooms" EntitySet="Roomss" />
+            <End Role="Appointments" EntitySet="Appointmentss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Encounters_Appointments" Association="Self.FK_Encounters_Appointments">
+            <End Role="Appointments" EntitySet="Appointmentss" />
+            <End Role="Encounters" EntitySet="Encounterss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MedicalRecords_Encounters" Association="Self.FK_MedicalRecords_Encounters">
+            <End Role="Encounters" EntitySet="Encounterss" />
+            <End Role="MedicalRecords" EntitySet="MedicalRecordss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VitalSigns_Encounters" Association="Self.FK_VitalSigns_Encounters">
+            <End Role="Encounters" EntitySet="Encounterss" />
+            <End Role="VitalSigns" EntitySet="VitalSignss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeShifts_Employees" Association="Self.FK_EmployeeShifts_Employees">
+            <End Role="Employees" EntitySet="Employeess" />
+            <End Role="EmployeeShifts" EntitySet="EmployeeShiftss" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CMSModelStoreContainer" CdmEntityContainer="CMSEntities">
+          <EntitySetMapping Name="Roless">
+            <EntityTypeMapping TypeName="CMSModel.Roles">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Userss">
+            <EntityTypeMapping TypeName="CMSModel.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sessionss">
+            <EntityTypeMapping TypeName="CMSModel.Sessions">
+              <MappingFragment StoreEntitySet="Sessions">
+                <ScalarProperty Name="SessionID" ColumnName="SessionID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="ExpiredAt" ColumnName="ExpiredAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Departmentss">
+            <EntityTypeMapping TypeName="CMSModel.Departments">
+              <MappingFragment StoreEntitySet="Departments">
+                <ScalarProperty Name="DepartmentID" ColumnName="DepartmentID" />
+                <ScalarProperty Name="DepartmentName" ColumnName="DepartmentName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roomss">
+            <EntityTypeMapping TypeName="CMSModel.Rooms">
+              <MappingFragment StoreEntitySet="Rooms">
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+                <ScalarProperty Name="RoomCode" ColumnName="RoomCode" />
+                <ScalarProperty Name="DepartmentID" ColumnName="DepartmentID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Employeess">
+            <EntityTypeMapping TypeName="CMSModel.Employees">
+              <MappingFragment StoreEntitySet="Employees">
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="EmployeeUUID" ColumnName="EmployeeUUID" />
+                <ScalarProperty Name="NOT" ColumnName="NOT" />
+                <ScalarProperty Name="EmployeeCode" ColumnName="EmployeeCode" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="NOT" ColumnName="NOT" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="CitizenId" ColumnName="CitizenId" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="HireDate" ColumnName="HireDate" />
+                <ScalarProperty Name="Salary" ColumnName="Salary" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="DepartmentID" ColumnName="DepartmentID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DEFAULT" ColumnName="DEFAULT" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Patientss">
+            <EntityTypeMapping TypeName="CMSModel.Patients">
+              <MappingFragment StoreEntitySet="Patients">
+                <ScalarProperty Name="PatientID" ColumnName="PatientID" />
+                <ScalarProperty Name="PatientCode" ColumnName="PatientCode" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="BloodType" ColumnName="BloodType" />
+                <ScalarProperty Name="Allergy" ColumnName="Allergy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="PatientUUID" ColumnName="PatientUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatientInsurances">
+            <EntityTypeMapping TypeName="CMSModel.PatientInsurance">
+              <MappingFragment StoreEntitySet="PatientInsurance">
+                <ScalarProperty Name="InsuranceID" ColumnName="InsuranceID" />
+                <ScalarProperty Name="PatientID" ColumnName="PatientID" />
+                <ScalarProperty Name="InsuranceNumber" ColumnName="InsuranceNumber" />
+                <ScalarProperty Name="Provider" ColumnName="Provider" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Appointmentss">
+            <EntityTypeMapping TypeName="CMSModel.Appointments">
+              <MappingFragment StoreEntitySet="Appointments">
+                <ScalarProperty Name="AppointmentID" ColumnName="AppointmentID" />
+                <ScalarProperty Name="PatientID" ColumnName="PatientID" />
+                <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
+                <ScalarProperty Name="DepartmentID" ColumnName="DepartmentID" />
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+                <ScalarProperty Name="AppointmentDate" ColumnName="AppointmentDate" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="AppointmentUUID" ColumnName="AppointmentUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Encounterss">
+            <EntityTypeMapping TypeName="CMSModel.Encounters">
+              <MappingFragment StoreEntitySet="Encounters">
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="AppointmentID" ColumnName="AppointmentID" />
+                <ScalarProperty Name="PatientID" ColumnName="PatientID" />
+                <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="EncounterUUID" ColumnName="EncounterUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Servicess">
+            <EntityTypeMapping TypeName="CMSModel.Services">
+              <MappingFragment StoreEntitySet="Services">
+                <ScalarProperty Name="ServiceID" ColumnName="ServiceID" />
+                <ScalarProperty Name="ServiceName" ColumnName="ServiceName" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="DepartmentID" ColumnName="DepartmentID" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EncounterServicess">
+            <EntityTypeMapping TypeName="CMSModel.EncounterServices">
+              <MappingFragment StoreEntitySet="EncounterServices">
+                <ScalarProperty Name="EncounterServiceID" ColumnName="EncounterServiceID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="ServiceID" ColumnName="ServiceID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="OrderedBy" ColumnName="OrderedBy" />
+                <ScalarProperty Name="OrderedAt" ColumnName="OrderedAt" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DoctorScheduless">
+            <EntityTypeMapping TypeName="CMSModel.DoctorSchedules">
+              <MappingFragment StoreEntitySet="DoctorSchedules">
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+                <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
+                <ScalarProperty Name="WorkDate" ColumnName="WorkDate" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatientQueuess">
+            <EntityTypeMapping TypeName="CMSModel.PatientQueues">
+              <MappingFragment StoreEntitySet="PatientQueues">
+                <ScalarProperty Name="QueueID" ColumnName="QueueID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CurrentStep" ColumnName="CurrentStep" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="QueueUUID" ColumnName="QueueUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MedicalRecordss">
+            <EntityTypeMapping TypeName="CMSModel.MedicalRecords">
+              <MappingFragment StoreEntitySet="MedicalRecords">
+                <ScalarProperty Name="RecordID" ColumnName="RecordID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="ChiefComplaint" ColumnName="ChiefComplaint" />
+                <ScalarProperty Name="Symptoms" ColumnName="Symptoms" />
+                <ScalarProperty Name="Diagnosis" ColumnName="Diagnosis" />
+                <ScalarProperty Name="ICDCode" ColumnName="ICDCode" />
+                <ScalarProperty Name="Conclusion" ColumnName="Conclusion" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="RecordUUID" ColumnName="RecordUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MedicalRecordFiless">
+            <EntityTypeMapping TypeName="CMSModel.MedicalRecordFiles">
+              <MappingFragment StoreEntitySet="MedicalRecordFiles">
+                <ScalarProperty Name="FileID" ColumnName="FileID" />
+                <ScalarProperty Name="RecordID" ColumnName="RecordID" />
+                <ScalarProperty Name="FileType" ColumnName="FileType" />
+                <ScalarProperty Name="FileURL" ColumnName="FileURL" />
+                <ScalarProperty Name="UploadedAt" ColumnName="UploadedAt" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VitalSignss">
+            <EntityTypeMapping TypeName="CMSModel.VitalSigns">
+              <MappingFragment StoreEntitySet="VitalSigns">
+                <ScalarProperty Name="VitalID" ColumnName="VitalID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="Temperature" ColumnName="Temperature" />
+                <ScalarProperty Name="BloodPressure" ColumnName="BloodPressure" />
+                <ScalarProperty Name="HeartRate" ColumnName="HeartRate" />
+                <ScalarProperty Name="SPO2" ColumnName="SPO2" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LabRequestss">
+            <EntityTypeMapping TypeName="CMSModel.LabRequests">
+              <MappingFragment StoreEntitySet="LabRequests">
+                <ScalarProperty Name="LabID" ColumnName="LabID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
+                <ScalarProperty Name="TestType" ColumnName="TestType" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="LabRequestUUID" ColumnName="LabRequestUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LabResultss">
+            <EntityTypeMapping TypeName="CMSModel.LabResults">
+              <MappingFragment StoreEntitySet="LabResults">
+                <ScalarProperty Name="ResultID" ColumnName="ResultID" />
+                <ScalarProperty Name="LabID" ColumnName="LabID" />
+                <ScalarProperty Name="ResultText" ColumnName="ResultText" />
+                <ScalarProperty Name="FileURL" ColumnName="FileURL" />
+                <ScalarProperty Name="CompletedAt" ColumnName="CompletedAt" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ImagingServicess">
+            <EntityTypeMapping TypeName="CMSModel.ImagingServices">
+              <MappingFragment StoreEntitySet="ImagingServices">
+                <ScalarProperty Name="ImagingServiceID" ColumnName="ImagingServiceID" />
+                <ScalarProperty Name="ServiceCode" ColumnName="ServiceCode" />
+                <ScalarProperty Name="ServiceName" ColumnName="ServiceName" />
+                <ScalarProperty Name="Modality" ColumnName="Modality" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ImagingRequestss">
+            <EntityTypeMapping TypeName="CMSModel.ImagingRequests">
+              <MappingFragment StoreEntitySet="ImagingRequests">
+                <ScalarProperty Name="ImagingRequestID" ColumnName="ImagingRequestID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
+                <ScalarProperty Name="ImagingServiceID" ColumnName="ImagingServiceID" />
+                <ScalarProperty Name="BodyPart" ColumnName="BodyPart" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="ImagingRequestUUID" ColumnName="ImagingRequestUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ImagingResultss">
+            <EntityTypeMapping TypeName="CMSModel.ImagingResults">
+              <MappingFragment StoreEntitySet="ImagingResults">
+                <ScalarProperty Name="ImagingResultID" ColumnName="ImagingResultID" />
+                <ScalarProperty Name="ImagingRequestID" ColumnName="ImagingRequestID" />
+                <ScalarProperty Name="ResultText" ColumnName="ResultText" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+                <ScalarProperty Name="PDFURL" ColumnName="PDFURL" />
+                <ScalarProperty Name="TechnicianNote" ColumnName="TechnicianNote" />
+                <ScalarProperty Name="CompletedAt" ColumnName="CompletedAt" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ImagingFiless">
+            <EntityTypeMapping TypeName="CMSModel.ImagingFiles">
+              <MappingFragment StoreEntitySet="ImagingFiles">
+                <ScalarProperty Name="FileID" ColumnName="FileID" />
+                <ScalarProperty Name="ImagingResultID" ColumnName="ImagingResultID" />
+                <ScalarProperty Name="FileType" ColumnName="FileType" />
+                <ScalarProperty Name="FileURL" ColumnName="FileURL" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Mediciness">
+            <EntityTypeMapping TypeName="CMSModel.Medicines">
+              <MappingFragment StoreEntitySet="Medicines">
+                <ScalarProperty Name="MedicineID" ColumnName="MedicineID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Unit" ColumnName="Unit" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Stock" ColumnName="Stock" />
+                <ScalarProperty Name="BatchNumber" ColumnName="BatchNumber" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Prescriptionss">
+            <EntityTypeMapping TypeName="CMSModel.Prescriptions">
+              <MappingFragment StoreEntitySet="Prescriptions">
+                <ScalarProperty Name="PrescriptionID" ColumnName="PrescriptionID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="PrescriptionUUID" ColumnName="PrescriptionUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PrescriptionDetailss">
+            <EntityTypeMapping TypeName="CMSModel.PrescriptionDetails">
+              <MappingFragment StoreEntitySet="PrescriptionDetails">
+                <ScalarProperty Name="DetailID" ColumnName="DetailID" />
+                <ScalarProperty Name="PrescriptionID" ColumnName="PrescriptionID" />
+                <ScalarProperty Name="MedicineID" ColumnName="MedicineID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Dosage" ColumnName="Dosage" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dispenses">
+            <EntityTypeMapping TypeName="CMSModel.Dispense">
+              <MappingFragment StoreEntitySet="Dispense">
+                <ScalarProperty Name="DispenseID" ColumnName="DispenseID" />
+                <ScalarProperty Name="PrescriptionID" ColumnName="PrescriptionID" />
+                <ScalarProperty Name="PharmacistID" ColumnName="PharmacistID" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="DispenseUUID" ColumnName="DispenseUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QueueHistorys">
+            <EntityTypeMapping TypeName="CMSModel.QueueHistory">
+              <MappingFragment StoreEntitySet="QueueHistory">
+                <ScalarProperty Name="HistoryID" ColumnName="HistoryID" />
+                <ScalarProperty Name="QueueID" ColumnName="QueueID" />
+                <ScalarProperty Name="StepName" ColumnName="StepName" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Paymentss">
+            <EntityTypeMapping TypeName="CMSModel.Payments">
+              <MappingFragment StoreEntitySet="Payments">
+                <ScalarProperty Name="PaymentID" ColumnName="PaymentID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Method" ColumnName="Method" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PaidAt" ColumnName="PaidAt" />
+                <ScalarProperty Name="PatientID" ColumnName="PatientID" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="PaymentUUID" ColumnName="PaymentUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PaymentDetailss">
+            <EntityTypeMapping TypeName="CMSModel.PaymentDetails">
+              <MappingFragment StoreEntitySet="PaymentDetails">
+                <ScalarProperty Name="PaymentDetailID" ColumnName="PaymentDetailID" />
+                <ScalarProperty Name="PaymentID" ColumnName="PaymentID" />
+                <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Invoicess">
+            <EntityTypeMapping TypeName="CMSModel.Invoices">
+              <MappingFragment StoreEntitySet="Invoices">
+                <ScalarProperty Name="InvoiceID" ColumnName="InvoiceID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="PatientID" ColumnName="PatientID" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="InvoiceUUID" ColumnName="InvoiceUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvoiceDetailss">
+            <EntityTypeMapping TypeName="CMSModel.InvoiceDetails">
+              <MappingFragment StoreEntitySet="InvoiceDetails">
+                <ScalarProperty Name="DetailID" ColumnName="DetailID" />
+                <ScalarProperty Name="InvoiceID" ColumnName="InvoiceID" />
+                <ScalarProperty Name="ServiceID" ColumnName="ServiceID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Filess">
+            <EntityTypeMapping TypeName="CMSModel.Files">
+              <MappingFragment StoreEntitySet="Files">
+                <ScalarProperty Name="FileID" ColumnName="FileID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="FileType" ColumnName="FileType" />
+                <ScalarProperty Name="FileURL" ColumnName="FileURL" />
+                <ScalarProperty Name="UploadedAt" ColumnName="UploadedAt" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FollowUpss">
+            <EntityTypeMapping TypeName="CMSModel.FollowUps">
+              <MappingFragment StoreEntitySet="FollowUps">
+                <ScalarProperty Name="FollowUpID" ColumnName="FollowUpID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="FollowUpDate" ColumnName="FollowUpDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="FollowUpUUID" ColumnName="FollowUpUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Transferss">
+            <EntityTypeMapping TypeName="CMSModel.Transfers">
+              <MappingFragment StoreEntitySet="Transfers">
+                <ScalarProperty Name="TransferID" ColumnName="TransferID" />
+                <ScalarProperty Name="EncounterID" ColumnName="EncounterID" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="Severity" ColumnName="Severity" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="TransferUUID" ColumnName="TransferUUID" />
+                <ScalarProperty Name="CONSTRAINT" ColumnName="CONSTRAINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Shiftss">
+            <EntityTypeMapping TypeName="CMSModel.Shifts">
+              <MappingFragment StoreEntitySet="Shifts">
+                <ScalarProperty Name="ShiftID" ColumnName="ShiftID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmployeeShiftss">
+            <EntityTypeMapping TypeName="CMSModel.EmployeeShifts">
+              <MappingFragment StoreEntitySet="EmployeeShifts">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="ShiftID" ColumnName="ShiftID" />
+                <ScalarProperty Name="WorkDate" ColumnName="WorkDate" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notificationss">
+            <EntityTypeMapping TypeName="CMSModel.Notifications">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AuditLogss">
+            <EntityTypeMapping TypeName="CMSModel.AuditLogs">
+              <MappingFragment StoreEntitySet="AuditLogs">
+                <ScalarProperty Name="LogID" ColumnName="LogID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="TableName" ColumnName="TableName" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AuditLogDetailss">
+            <EntityTypeMapping TypeName="CMSModel.AuditLogDetails">
+              <MappingFragment StoreEntitySet="AuditLogDetails">
+                <ScalarProperty Name="DetailID" ColumnName="DetailID" />
+                <ScalarProperty Name="LogID" ColumnName="LogID" />
+                <ScalarProperty Name="OldValue" ColumnName="OldValue" />
+                <ScalarProperty Name="NewValue" ColumnName="NewValue" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatientIdentifierss">
+            <EntityTypeMapping TypeName="CMSModel.PatientIdentifiers">
+              <MappingFragment StoreEntitySet="PatientIdentifiers">
+                <ScalarProperty Name="IdentifierID" ColumnName="IdentifierID" />
+                <ScalarProperty Name="PatientID" ColumnName="PatientID" />
+                <ScalarProperty Name="SourceSystem" ColumnName="SourceSystem" />
+                <ScalarProperty Name="IdentifierType" ColumnName="IdentifierType" />
+                <ScalarProperty Name="IdentifierValue" ColumnName="IdentifierValue" />
+                <ScalarProperty Name="REFERENCES" ColumnName="REFERENCES" />
+                <ScalarProperty Name="UNIQUE(SourceSystem," ColumnName="UNIQUE(SourceSystem," />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content -->
+    <Diagrams>
+      <Diagram DiagramId="a1b2c3d4e5f6g7h8i9j0" Name="Diagram1" ZoomLevel="100">
+        <EntityTypeShape EntityType="CMSModel.Roles" Width="1.5" PointX="0.50" PointY="0.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Users" Width="1.5" PointX="2.50" PointY="0.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Sessions" Width="1.5" PointX="4.50" PointY="0.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Departments" Width="1.5" PointX="6.50" PointY="0.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Rooms" Width="1.5" PointX="8.50" PointY="0.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Employees" Width="1.5" PointX="0.50" PointY="2.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Patients" Width="1.5" PointX="2.50" PointY="2.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.PatientInsurance" Width="1.5" PointX="4.50" PointY="2.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Appointments" Width="1.5" PointX="6.50" PointY="2.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Encounters" Width="1.5" PointX="8.50" PointY="2.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Services" Width="1.5" PointX="0.50" PointY="4.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.EncounterServices" Width="1.5" PointX="2.50" PointY="4.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.DoctorSchedules" Width="1.5" PointX="4.50" PointY="4.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.PatientQueues" Width="1.5" PointX="6.50" PointY="4.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.MedicalRecords" Width="1.5" PointX="8.50" PointY="4.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.MedicalRecordFiles" Width="1.5" PointX="0.50" PointY="6.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.VitalSigns" Width="1.5" PointX="2.50" PointY="6.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.LabRequests" Width="1.5" PointX="4.50" PointY="6.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.LabResults" Width="1.5" PointX="6.50" PointY="6.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.ImagingServices" Width="1.5" PointX="8.50" PointY="6.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.ImagingRequests" Width="1.5" PointX="0.50" PointY="8.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.ImagingResults" Width="1.5" PointX="2.50" PointY="8.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.ImagingFiles" Width="1.5" PointX="4.50" PointY="8.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Medicines" Width="1.5" PointX="6.50" PointY="8.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Prescriptions" Width="1.5" PointX="8.50" PointY="8.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.PrescriptionDetails" Width="1.5" PointX="0.50" PointY="10.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Dispense" Width="1.5" PointX="2.50" PointY="10.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.QueueHistory" Width="1.5" PointX="4.50" PointY="10.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Payments" Width="1.5" PointX="6.50" PointY="10.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.PaymentDetails" Width="1.5" PointX="8.50" PointY="10.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Invoices" Width="1.5" PointX="0.50" PointY="12.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.InvoiceDetails" Width="1.5" PointX="2.50" PointY="12.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Files" Width="1.5" PointX="4.50" PointY="12.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.FollowUps" Width="1.5" PointX="6.50" PointY="12.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Transfers" Width="1.5" PointX="8.50" PointY="12.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Shifts" Width="1.5" PointX="0.50" PointY="14.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.EmployeeShifts" Width="1.5" PointX="2.50" PointY="14.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.Notifications" Width="1.5" PointX="4.50" PointY="14.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.AuditLogs" Width="1.5" PointX="6.50" PointY="14.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.AuditLogDetails" Width="1.5" PointX="8.50" PointY="14.50" IsExpanded="true" />
+        <EntityTypeShape EntityType="CMSModel.PatientIdentifiers" Width="1.5" PointX="0.50" PointY="16.50" IsExpanded="true" />
+        <AssociationConnector Association="CMSModel.FK_Users_Roles" ManuallyRouted="false" />
+        <AssociationConnector Association="CMSModel.FK_Sessions_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="CMSModel.FK_Rooms_Departments" ManuallyRouted="false" />
+        <AssociationConnector Association="CMSModel.FK_Appointments_Patients" ManuallyRouted="false" />
+        <AssociationConnector Association="CMSModel.FK_Appointments_Employees" ManuallyRouted="false" />
+        <AssociationConnector Association="CMSModel.FK_Appointments_Departments" ManuallyRouted="false" />
+        <AssociationConnector Association="CMSModel.FK_Appointments_Rooms" ManuallyRouted="false" />
+        <AssociationConnector Association="CMSModel.FK_Encounters_Appointments" ManuallyRouted="false" />
+        <AssociationConnector Association="CMSModel.FK_MedicalRecords_Encounters" ManuallyRouted="false" />
+        <AssociationConnector Association="CMSModel.FK_VitalSigns_Encounters" ManuallyRouted="false" />
+        <AssociationConnector Association="CMSModel.FK_EmployeeShifts_Employees" ManuallyRouted="false" />
+      </Diagram>
+    </Diagrams>  </edmx:Designer>
+</edmx:Edmx>
