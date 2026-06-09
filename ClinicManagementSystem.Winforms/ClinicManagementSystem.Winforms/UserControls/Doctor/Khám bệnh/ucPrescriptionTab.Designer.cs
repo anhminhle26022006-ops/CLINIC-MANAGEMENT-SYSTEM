@@ -33,7 +33,7 @@
             // btnAddMedicine
             // 
             btnAddMedicine.BackColor = Color.DeepSkyBlue;
-            btnAddMedicine.Location = new Point(524, 10);
+            btnAddMedicine.Location = new Point(510, 10);
             btnAddMedicine.Name = "btnAddMedicine";
             btnAddMedicine.Size = new Size(140, 35);
             btnAddMedicine.TabIndex = 1;
@@ -46,7 +46,7 @@
             flpMedicines.FlowDirection = FlowDirection.TopDown;
             flpMedicines.Location = new Point(10, 60);
             flpMedicines.Name = "flpMedicines";
-            flpMedicines.Size = new Size(654, 352);
+            flpMedicines.Size = new Size(658, 352);
             flpMedicines.TabIndex = 2;
             flpMedicines.WrapContents = false;
             // 
@@ -58,7 +58,7 @@
             Controls.Add(btnAddMedicine);
             Controls.Add(flpMedicines);
             Name = "ucPrescriptionTab";
-            Size = new Size(696, 446);
+            Size = new Size(697, 446);
             ResumeLayout(false);
             PerformLayout();
         }

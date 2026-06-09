@@ -254,19 +254,20 @@
             // btnFollowUp
             // 
             btnFollowUp.BackColor = Color.NavajoWhite;
-            btnFollowUp.Location = new Point(235, 15);
+            btnFollowUp.Location = new Point(201, 15);
             btnFollowUp.Name = "btnFollowUp";
             btnFollowUp.Size = new Size(212, 40);
             btnFollowUp.TabIndex = 1;
             btnFollowUp.Text = "Tạo lịch tái khám";
             btnFollowUp.UseVisualStyleBackColor = false;
+            btnFollowUp.Click += BtnFollowUp_Click;
             // 
             // btnComplete
             // 
             btnComplete.BackColor = Color.FromArgb(192, 255, 192);
-            btnComplete.Location = new Point(482, 15);
+            btnComplete.Location = new Point(432, 15);
             btnComplete.Name = "btnComplete";
-            btnComplete.Size = new Size(241, 40);
+            btnComplete.Size = new Size(211, 40);
             btnComplete.TabIndex = 2;
             btnComplete.Text = "Hoàn thành khám";
             btnComplete.UseVisualStyleBackColor = false;

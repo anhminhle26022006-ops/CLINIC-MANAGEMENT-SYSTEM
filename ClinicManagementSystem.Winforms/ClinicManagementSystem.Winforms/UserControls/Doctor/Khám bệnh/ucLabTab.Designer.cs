@@ -30,7 +30,7 @@
             // 
             // btnAddLab
             // 
-            btnAddLab.Location = new Point(514, 10);
+            btnAddLab.Location = new Point(478, 10);
             btnAddLab.Name = "btnAddLab";
             btnAddLab.Size = new Size(170, 35);
             btnAddLab.TabIndex = 1;
@@ -42,7 +42,7 @@
             flpLabs.FlowDirection = FlowDirection.TopDown;
             flpLabs.Location = new Point(10, 60);
             flpLabs.Name = "flpLabs";
-            flpLabs.Size = new Size(674, 455);
+            flpLabs.Size = new Size(638, 455);
             flpLabs.TabIndex = 2;
             flpLabs.WrapContents = false;
             // 
@@ -54,7 +54,7 @@
             Controls.Add(btnAddLab);
             Controls.Add(flpLabs);
             Name = "ucLabTab";
-            Size = new Size(713, 540);
+            Size = new Size(676, 540);
             ResumeLayout(false);
         }
 

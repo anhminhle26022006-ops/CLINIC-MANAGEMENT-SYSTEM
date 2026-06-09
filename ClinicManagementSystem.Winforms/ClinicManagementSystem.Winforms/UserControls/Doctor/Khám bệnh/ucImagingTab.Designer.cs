@@ -29,7 +29,7 @@
             // 
             // btnAddImaging
             // 
-            btnAddImaging.Location = new Point(545, 10);
+            btnAddImaging.Location = new Point(429, 10);
             btnAddImaging.Name = "btnAddImaging";
             btnAddImaging.Size = new Size(150, 35);
             btnAddImaging.TabIndex = 1;
@@ -41,7 +41,7 @@
             flpImagings.FlowDirection = FlowDirection.TopDown;
             flpImagings.Location = new Point(10, 60);
             flpImagings.Name = "flpImagings";
-            flpImagings.Size = new Size(685, 448);
+            flpImagings.Size = new Size(569, 429);
             flpImagings.TabIndex = 2;
             flpImagings.WrapContents = false;
             // 
@@ -51,7 +51,7 @@
             Controls.Add(btnAddImaging);
             Controls.Add(flpImagings);
             Name = "ucImagingTab";
-            Size = new Size(718, 540);
+            Size = new Size(605, 515);
             ResumeLayout(false);
         }
     }

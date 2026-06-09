@@ -28,68 +28,81 @@
         private void InitializeComponent()
         {
             pnlMain = new Panel();
-
             lblType = new Label();
-            lblNote = new Label();
-
             cboImagingType = new ComboBox();
+            lblNote = new Label();
             txtNote = new TextBox();
-
             btnDelete = new Button();
-            components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-
+            pnlMain.SuspendLayout();
             SuspendLayout();
-
-            Size = new Size(700, 120);
-
-            pnlMain.Dock = DockStyle.Fill;
+            // 
+            // pnlMain
+            // 
             pnlMain.BackColor = Color.White;
             pnlMain.BorderStyle = BorderStyle.FixedSingle;
-
-            lblType.Text = "Loại chẩn đoán";
-            lblType.Location = new Point(15, 15);
-            lblType.AutoSize = true;
-
-            cboImagingType.Location =
-                new Point(15, 40);
-
-            cboImagingType.Size =
-                new Size(250, 30);
-
-            lblNote.Text = "Ghi chú yêu cầu";
-            lblNote.Location =
-                new Point(290, 15);
-
-            lblNote.AutoSize = true;
-
-            txtNote.Location =
-                new Point(290, 40);
-
-            txtNote.Size =
-                new Size(330, 30);
-
-            btnDelete.Text = "🗑";
-
-            btnDelete.Size =
-                new Size(50, 50);
-
-            btnDelete.Location =
-                new Point(635, 30);
-
             pnlMain.Controls.Add(lblType);
             pnlMain.Controls.Add(cboImagingType);
-
             pnlMain.Controls.Add(lblNote);
             pnlMain.Controls.Add(txtNote);
-
             pnlMain.Controls.Add(btnDelete);
-
+            pnlMain.Dock = DockStyle.Fill;
+            pnlMain.Location = new Point(0, 0);
+            pnlMain.Name = "pnlMain";
+            pnlMain.Size = new Size(650, 120);
+            pnlMain.TabIndex = 0;
+            // 
+            // lblType
+            // 
+            lblType.AutoSize = true;
+            lblType.Location = new Point(15, 15);
+            lblType.Name = "lblType";
+            lblType.Size = new Size(110, 20);
+            lblType.TabIndex = 0;
+            lblType.Text = "Loại chẩn đoán";
+            // 
+            // cboImagingType
+            // 
+            cboImagingType.Location = new Point(15, 40);
+            cboImagingType.Name = "cboImagingType";
+            cboImagingType.Size = new Size(161, 28);
+            cboImagingType.TabIndex = 1;
+            // 
+            // lblNote
+            // 
+            lblNote.AutoSize = true;
+            lblNote.Location = new Point(215, 15);
+            lblNote.Name = "lblNote";
+            lblNote.Size = new Size(112, 20);
+            lblNote.TabIndex = 2;
+            lblNote.Text = "Ghi chú yêu cầu";
+            // 
+            // txtNote
+            // 
+            txtNote.Location = new Point(215, 38);
+            txtNote.Name = "txtNote";
+            txtNote.Size = new Size(306, 27);
+            txtNote.TabIndex = 3;
+            // 
+            // btnDelete
+            // 
+            btnDelete.Location = new Point(548, 26);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(50, 50);
+            btnDelete.TabIndex = 4;
+            btnDelete.Text = "🗑";
+            // 
+            // ucImagingRequestItem
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(pnlMain);
-
+            Name = "ucImagingRequestItem";
+            Size = new Size(650, 120);
+            pnlMain.ResumeLayout(false);
+            pnlMain.PerformLayout();
             ResumeLayout(false);
         }
-    
+
 
         #region Component Designer generated code
 
@@ -97,7 +110,7 @@
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-       
+
 
         #endregion
     }

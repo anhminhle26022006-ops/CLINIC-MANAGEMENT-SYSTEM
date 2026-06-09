@@ -44,7 +44,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
             btnLab.Click += btnLab_Click;
 
             btnImaging.Click += btnImaging_Click;
-            
+            btnFollowUp.Click += BtnFollowUp_Click;
+
         }
         private void LoadHistory()
         {
@@ -273,6 +274,29 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
             lblBMI.Text =
                 "21.5";
         }
-       
+        private void BtnFollowUp_Click(object sender, EventArgs e)
+        {
+            if (_selectedPatient == null)
+            {
+                MessageBox.Show(
+                    "Vui lòng chọn bệnh nhân trước khi tạo lịch tái khám!",
+                    "Thông báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            var form = new frmFollowUpSchedule();
+
+            // truyền dữ liệu sang form (nếu bạn muốn)
+            form.lblPatientName.Text = lblPatientName.Text;
+            form.lblPatientCode.Text = lblPatientInfo.Text;
+
+            form.StartPosition = FormStartPosition.CenterParent;
+
+            form.ShowDialog();
         }
+
+    }
 }

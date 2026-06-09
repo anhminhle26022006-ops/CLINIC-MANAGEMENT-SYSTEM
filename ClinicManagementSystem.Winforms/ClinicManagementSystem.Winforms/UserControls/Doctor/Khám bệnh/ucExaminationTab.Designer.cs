@@ -114,7 +114,7 @@
             Controls.Add(lblNote);
             Controls.Add(txtNote);
             Name = "ucExaminationTab";
-            Size = new Size(768, 492);
+            Size = new Size(754, 492);
             ResumeLayout(false);
             PerformLayout();
         }
