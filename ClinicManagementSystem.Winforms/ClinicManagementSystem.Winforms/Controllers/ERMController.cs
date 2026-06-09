@@ -1,21 +1,25 @@
 ﻿#nullable enable
-using System;
-using System.Threading.Tasks;
+using BUS.Services.Doctor;
 using BUS.Services.ERM;
 using DTO.Clinical.erm;
+using System;
+using System.Threading.Tasks;
 
 namespace ClinicManagementSystem.Winforms.Controllers
 {
     public class ERMController
     {
-        private readonly ERMBus _bus;
+        private readonly ERMService _service;
 
-        public ERMController(ERMBus bus) => _bus = bus;
-
-        public Task<PatientERMDto?> GetPatientERMAsync(Guid uuid)
+        public ERMController()
         {
-            // Forward to your existing bus/service. Keep name async to indicate async work.
-            return _bus.GetPatientERM(uuid);
+            _service = new ERMService();
+        }
+
+        public Task<PatientERMDto> GetPatientERMAsync(Guid patientUuid)
+        {
+            return Task.Run(() =>
+                _service.GetPatientERM(patientUuid));
         }
     }
 }
