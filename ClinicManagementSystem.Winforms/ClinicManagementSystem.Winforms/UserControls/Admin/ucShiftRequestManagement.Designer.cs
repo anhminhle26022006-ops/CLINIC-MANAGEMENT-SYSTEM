@@ -197,23 +197,52 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private Panel MakeKpiCard(string title, string value, string sub, Color accent, Color bg, bool hasBorder, string icon)
         {
-            var card = new Panel { BackColor = bg, Size = new Size(280, 120), Margin = new Padding(0, 0, 16, 0) };
+            var card = new Panel { BackColor = bg, Size = new Size(280, 130), Margin = new Padding(0, 0, 16, 0) };
             if (hasBorder)
                 card.Paint += KpiCard_Paint;
 
             // Icon box
             var iconBox = new Panel
             {
-                Size = new Size(44, 44),
+                Size = new Size(40, 40),
                 BackColor = Color.FromArgb(219, 234, 254),
-                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right,
-                Location = new Point(card.Width - 60, 16)
+                Location = new Point(card.Width - 56, 12)
             };
-            iconBox.Controls.Add(new Label { Text = icon, Font = new Font("Segoe UI", 14F), ForeColor = accent, Location = new Point(8, 8), AutoSize = true });
+            iconBox.Controls.Add(new Label
+            {
+                Text = icon,
+                Font = new Font("Segoe UI", 13F),
+                ForeColor = accent,
+                Location = new Point(6, 6),
+                AutoSize = true
+            });
 
-            card.Controls.Add(new Label { Text = title, Font = new Font("Segoe UI", 9F), ForeColor = Color.FromArgb(107, 114, 128), Location = new Point(16, 16), AutoSize = true });
-            card.Controls.Add(new Label { Text = value, Tag = "value", Font = new Font("Segoe UI", 28F, FontStyle.Bold), ForeColor = accent, Location = new Point(16, 36), AutoSize = true });
-            card.Controls.Add(new Label { Text = sub, Tag = "sub", Font = new Font("Segoe UI", 8.5F), ForeColor = Color.FromArgb(107, 114, 128), Location = new Point(16, 92), AutoSize = true });
+            card.Controls.Add(new Label
+            {
+                Text = title,
+                Font = new Font("Segoe UI", 9F),
+                ForeColor = Color.FromArgb(107, 114, 128),
+                Location = new Point(16, 12),
+                AutoSize = true
+            });
+            card.Controls.Add(new Label
+            {
+                Text = value,
+                Tag = "value",
+                Font = new Font("Segoe UI", 24F, FontStyle.Bold),
+                ForeColor = accent,
+                Location = new Point(16, 32),
+                AutoSize = true
+            });
+            card.Controls.Add(new Label
+            {
+                Text = sub,
+                Tag = "sub",
+                Font = new Font("Segoe UI", 8F),
+                ForeColor = Color.FromArgb(107, 114, 128),
+                Location = new Point(16, 100),   // ← tăng từ 92 lên 100
+                AutoSize = true
+            });
             card.Controls.Add(iconBox);
             return card;
         }

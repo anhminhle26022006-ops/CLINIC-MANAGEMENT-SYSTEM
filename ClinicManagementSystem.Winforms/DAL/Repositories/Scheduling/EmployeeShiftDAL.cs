@@ -48,75 +48,133 @@ namespace DAL.Repositories
 
         public bool Add(EmployeeShiftDTO shift)
         {
-            if (!SupportsEmployeeShiftSchema())
-            {
-                return false;
-            }
+            if (!SupportsEmployeeShiftSchema()) return false;
 
-            string query = "INSERT INTO EmployeeShifts(EmployeeID, ShiftID, WorkDate) VALUES(@EmployeeID, @ShiftID, @WorkDate)";
+            string query = @"
+                INSERT INTO EmployeeShifts (EmployeeID, ShiftID, WorkDate)
+                VALUES (@EmployeeID, @ShiftID, @WorkDate)";
+
             return DatabaseHelper.ExecuteNonQuery(query, new[]
             {
                 new SqlParameter("@EmployeeID", shift.EmployeeID),
-                new SqlParameter("@ShiftID", shift.ShiftID),
-                new SqlParameter("@WorkDate", shift.WorkDate.Date)
+                new SqlParameter("@ShiftID",    shift.ShiftID),
+                new SqlParameter("@WorkDate",   shift.WorkDate.Date)
+            }) > 0;
+        }
+
+        public bool Update(int employeeShiftId, int shiftId, DateTime workDate)
+        {
+            string query = @"
+                UPDATE EmployeeShifts
+                SET ShiftID  = @ShiftID,
+                    WorkDate = @WorkDate
+                WHERE ID = @ID";
+
+            return DatabaseHelper.ExecuteNonQuery(query, new[]
+            {
+                new SqlParameter("@ShiftID",  shiftId),
+                new SqlParameter("@WorkDate", workDate.Date),
+                new SqlParameter("@ID",       employeeShiftId)
+            }) > 0;
+        }
+
+        public bool Delete(int employeeShiftId)
+        {
+            string query = "DELETE FROM EmployeeShifts WHERE ID = @ID";
+
+            return DatabaseHelper.ExecuteNonQuery(query, new[]
+            {
+                new SqlParameter("@ID", employeeShiftId)
             }) > 0;
         }
 
         public bool HasConflict(int employeeId, DateTime workDate, int shiftId)
         {
-            if (!SupportsEmployeeShiftSchema())
-            {
-                return false;
-            }
+            if (!SupportsEmployeeShiftSchema()) return false;
 
             string query = @"
                 SELECT COUNT(*)
                 FROM EmployeeShifts
                 WHERE EmployeeID = @EmployeeID
-                  AND ShiftID = @ShiftID
+                  AND ShiftID    = @ShiftID
                   AND CAST(WorkDate AS date) = @WorkDate";
+
             object result = DatabaseHelper.ExecuteScalar(query, new[]
             {
                 new SqlParameter("@EmployeeID", employeeId),
-                new SqlParameter("@ShiftID", shiftId),
-                new SqlParameter("@WorkDate", workDate.Date)
+                new SqlParameter("@ShiftID",    shiftId),
+                new SqlParameter("@WorkDate",   workDate.Date)
             });
             return Convert.ToInt32(result) > 0;
         }
 
-        private List<EmployeeShiftDTO> GetFiltered(string whereClause, SqlParameter[] parameters, string orderBy)
+        public List<EmployeeShiftDTO> GetByDateWithRoom(DateTime workDate)
+        {
+            string query = @"
+                SELECT
+                    es.ID AS EmployeeShiftID,
+                    es.EmployeeID,
+                    ISNULL(e.FullName, '')        AS EmployeeName,
+                    ISNULL(r.RoleName, '')        AS RoleName,
+                    es.ShiftID,
+                    ISNULL(s.Name, '')            AS ShiftName,
+                    es.WorkDate,
+                    ISNULL(s.StartTime, CAST('00:00:00' AS time)) AS StartTime,
+                    ISNULL(s.EndTime,   CAST('00:00:00' AS time)) AS EndTime,
+                    ds.RoomID,
+                    ISNULL(rm.RoomCode, '—')      AS RoomCode,
+                    e.DepartmentID,
+                    ISNULL(d.DepartmentName, '')  AS DepartmentName,
+                    CAST('Approved' AS nvarchar(50)) AS Status
+                FROM EmployeeShifts es
+                LEFT JOIN Employees       e  ON es.EmployeeID = e.EmployeeID
+                LEFT JOIN Roles           r  ON e.RoleID       = r.RoleID
+                LEFT JOIN Departments     d  ON e.DepartmentID = d.DepartmentID
+                LEFT JOIN Shifts          s  ON es.ShiftID     = s.ShiftID
+                LEFT JOIN DoctorSchedules ds ON ds.DoctorID    = es.EmployeeID
+                    AND CAST(ds.WorkDate AS DATE) = CAST(es.WorkDate AS DATE)
+                LEFT JOIN Rooms          rm  ON rm.RoomID      = ds.RoomID
+                WHERE CAST(es.WorkDate AS DATE) = @WorkDate
+                ORDER BY s.StartTime ASC, e.FullName ASC";
+
+            return Map(DatabaseHelper.ExecuteQuery(query, new[]
+            {
+                new SqlParameter("@WorkDate", workDate.Date)
+            }));
+        }
+
+        private List<EmployeeShiftDTO> GetFiltered(
+            string whereClause, SqlParameter[] parameters, string orderBy)
         {
             if (!SupportsEmployeeShiftSchema())
-            {
                 return new List<EmployeeShiftDTO>();
-            }
 
-            string idColumn = SchemaHelper.ColumnExists("EmployeeShifts", "EmployeeShiftID") ? "es.EmployeeShiftID" : "es.ID";
+            string idColumn = SchemaHelper.ColumnExists("EmployeeShifts", "EmployeeShiftID")
+                ? "es.EmployeeShiftID" : "es.ID";
+
             string query = $@"
                 SELECT {idColumn} AS EmployeeShiftID,
                        es.EmployeeID,
-                       ISNULL(e.FullName, '') AS EmployeeName,
-                       ISNULL(r.RoleName, '') AS RoleName,
+                       ISNULL(e.FullName, '')       AS EmployeeName,
+                       ISNULL(r.RoleName, '')       AS RoleName,
                        es.ShiftID,
-                       ISNULL(s.Name, '') AS ShiftName,
+                       ISNULL(s.Name, '')           AS ShiftName,
                        es.WorkDate,
                        ISNULL(s.StartTime, CAST('00:00:00' AS time)) AS StartTime,
-                       ISNULL(s.EndTime, CAST('00:00:00' AS time)) AS EndTime,
-                       CAST(NULL AS int) AS RoomID,
-                       CAST('' AS nvarchar(50)) AS RoomCode,
+                       ISNULL(s.EndTime,   CAST('00:00:00' AS time)) AS EndTime,
+                       CAST(NULL AS int)            AS RoomID,
+                       CAST('' AS nvarchar(50))     AS RoomCode,
                        e.DepartmentID,
                        ISNULL(d.DepartmentName, '') AS DepartmentName,
                        CAST('Approved' AS nvarchar(50)) AS Status
                 FROM EmployeeShifts es
-                LEFT JOIN Employees e ON es.EmployeeID = e.EmployeeID
-                LEFT JOIN Roles r ON e.RoleID = r.RoleID
+                LEFT JOIN Employees  e ON es.EmployeeID = e.EmployeeID
+                LEFT JOIN Roles      r ON e.RoleID       = r.RoleID
                 LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-                LEFT JOIN Shifts s ON es.ShiftID = s.ShiftID";
+                LEFT JOIN Shifts     s ON es.ShiftID     = s.ShiftID";
 
             if (!string.IsNullOrWhiteSpace(whereClause))
-            {
                 query += " WHERE " + whereClause;
-            }
 
             query += string.IsNullOrWhiteSpace(orderBy)
                 ? " ORDER BY es.WorkDate DESC, s.StartTime ASC, e.FullName ASC"
@@ -127,7 +185,7 @@ namespace DAL.Repositories
 
         private static List<EmployeeShiftDTO> Map(DataTable table)
         {
-            List<EmployeeShiftDTO> list = new List<EmployeeShiftDTO>();
+            var list = new List<EmployeeShiftDTO>();
             foreach (DataRow row in table.Rows)
             {
                 list.Add(new EmployeeShiftDTO

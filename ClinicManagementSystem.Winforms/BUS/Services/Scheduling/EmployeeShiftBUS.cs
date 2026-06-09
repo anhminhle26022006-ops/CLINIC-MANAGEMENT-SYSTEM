@@ -17,6 +17,11 @@ namespace BUS.Services
         {
             return dal.SupportsEmployeeShiftSchema();
         }
+        public bool Update(int id, int shiftId, DateTime workDate)
+    => dal.Update(id, shiftId, workDate);
+
+        public bool Delete(int id)
+            => dal.Delete(id);
 
         public List<EmployeeShiftDTO> GetAll()
         {
@@ -32,7 +37,10 @@ namespace BUS.Services
         {
             return dal.GetByDate(workDate.Date);
         }
-
+        public List<EmployeeShiftDTO> GetByDateWithRoom(DateTime workDate)
+        {
+            return dal.GetByDateWithRoom(workDate.Date);
+        }
         public List<EmployeeShiftDTO> GetByRole(string roleName)
         {
             return string.IsNullOrWhiteSpace(roleName)
