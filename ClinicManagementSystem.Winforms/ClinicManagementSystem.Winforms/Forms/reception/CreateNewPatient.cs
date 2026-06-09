@@ -15,12 +15,22 @@ namespace ClinicManagementSystem.Winforms.Forms
     public partial class CreateNewPatient : Form
     {
         private readonly PatientManaController controller = new();
+        private readonly PatientDTO editingPatient;
+        private readonly bool viewOnly;
         public CreateNewPatient()
         {
             InitializeComponent();
             SetupDatePickers();
             LoadBloodTypes();
             LoadGender();
+        }
+
+        public CreateNewPatient(PatientDTO patient, bool viewOnly = false) : this()
+        {
+            editingPatient = patient;
+            this.viewOnly = viewOnly;
+            BindPatient();
+            ApplyMode();
         }
 
         private void SetupDatePickers()
@@ -71,7 +81,8 @@ namespace ClinicManagementSystem.Winforms.Forms
             {
                 PatientDTO patient = new PatientDTO
                 {
-                    PatientCode = controller.GenerateNewPatientCode(),
+                    PatientID = editingPatient?.PatientID ?? 0,
+                    PatientCode = editingPatient?.PatientCode ?? controller.GenerateNewPatientCode(),
                     Name = txtname.Text.Trim(),
                     BirthDate = dtpBirthday.Value.Date,
                     Gender = cbGender.Text,
@@ -97,15 +108,14 @@ namespace ClinicManagementSystem.Winforms.Forms
                             dtpExpired.Value.Date
                     };
 
-                bool success =
-                    controller.CreatePatient(
-                        patient,
-                        insurance);
+                bool success = editingPatient == null
+                    ? controller.CreatePatient(patient, insurance)
+                    : controller.UpdatePatient(patient);
 
                 if (success)
                 {
                     MessageBox.Show(
-                        "Thêm bệnh nhân thành công!",
+                        editingPatient == null ? "Thêm bệnh nhân thành công!" : "Cập nhật bệnh nhân thành công!",
                         "Thông báo",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
@@ -135,6 +145,62 @@ namespace ClinicManagementSystem.Winforms.Forms
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void BindPatient()
+        {
+            if (editingPatient == null)
+            {
+                return;
+            }
+
+            Text = viewOnly ? "Xem bệnh nhân" : "Sửa bệnh nhân";
+            txtname.Text = editingPatient.Name;
+            txtsdt.Text = editingPatient.Phone;
+            txtaddress.Text = editingPatient.Address;
+            txtDiung.Text = editingPatient.Allergy;
+            if (editingPatient.BirthDate.HasValue && editingPatient.BirthDate.Value > DateTimePicker.MinimumDateTime)
+            {
+                dtpBirthday.Value = editingPatient.BirthDate.Value.Date;
+            }
+
+            if (!string.IsNullOrWhiteSpace(editingPatient.Gender) && cbGender.Items.Contains(editingPatient.Gender))
+            {
+                cbGender.SelectedItem = editingPatient.Gender;
+            }
+
+            if (!string.IsNullOrWhiteSpace(editingPatient.BloodType) && cbBlood.Items.Contains(editingPatient.BloodType))
+            {
+                cbBlood.SelectedItem = editingPatient.BloodType;
+            }
+        }
+
+        private void ApplyMode()
+        {
+            if (editingPatient == null)
+            {
+                return;
+            }
+
+            txtBHYT.Enabled = false;
+            txtDonvi.Enabled = false;
+            dtpEffective.Enabled = false;
+            dtpExpired.Enabled = false;
+
+            if (!viewOnly)
+            {
+                return;
+            }
+
+            txtname.ReadOnly = true;
+            txtsdt.ReadOnly = true;
+            txtaddress.ReadOnly = true;
+            txtDiung.ReadOnly = true;
+            cbGender.Enabled = false;
+            cbBlood.Enabled = false;
+            dtpBirthday.Enabled = false;
+            btnSave.Visible = false;
+            btnCancel.Text = "Đóng";
         }
     }
 }

@@ -6,7 +6,7 @@ namespace ClinicManagementSystem.Controllers
 {
     public class PatientManaController
     {
-        private readonly PatientBUS patientBUS = new();
+        private readonly Patient_RecepBUS patientBUS = new();
         private readonly AppointmentBUS appointmentBUS = new();
 
         public List<PatientDTO> GetPatients()
@@ -31,6 +31,16 @@ namespace ClinicManagementSystem.Controllers
         public bool UpdatePatient(PatientDTO patient)
         {
             return patientBUS.UpdatePatient(patient);
+        }
+
+        public PatientDTO GetPatientById(int id)
+        {
+            return patientBUS.GetById(id);
+        }
+
+        public bool DeletePatient(int id)
+        {
+            return patientBUS.DeletePatient(id);
         }
 
         public int CountPatients()

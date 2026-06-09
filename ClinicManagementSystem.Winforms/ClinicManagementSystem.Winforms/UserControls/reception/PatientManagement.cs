@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ClinicManagementSystem.Controllers;
 using ClinicManagementSystem.Winforms.Forms;
+using DTO;
 
 namespace ClinicManagementSystem.Winforms.UserControls
 {
@@ -81,6 +82,10 @@ namespace ClinicManagementSystem.Winforms.UserControls
 
             dgvPatientMana.GridColor =
                 Color.FromArgb(235, 235, 235);
+
+            dgvPatientMana.CellContentClick -= dgvPatientMana_CellContentClick;
+            dgvPatientMana.CellClick -= dgvPatientMana_CellContentClick;
+            dgvPatientMana.CellClick += dgvPatientMana_CellContentClick;
         }
 
         private void LoadPatients()
@@ -172,6 +177,7 @@ namespace ClinicManagementSystem.Winforms.UserControls
             dgvPatientMana.Columns["Age"].DisplayIndex = 6;
             dgvPatientMana.Columns["View"].DisplayIndex = 7;
             dgvPatientMana.Columns["Edit"].DisplayIndex = 8;
+            dgvPatientMana.Columns["Delete"].DisplayIndex = 9;
         }
 
         private void AddActionColumns()
@@ -206,10 +212,28 @@ namespace ClinicManagementSystem.Winforms.UserControls
                 dgvPatientMana.Columns.Add(editColumn);
             }
 
+            if (!dgvPatientMana.Columns.Contains("Delete"))
+            {
+                var deleteColumn = new DataGridViewButtonColumn
+                {
+                    Name = "Delete",
+                    HeaderText = "XÓA",
+                    Text = "Xóa",
+                    UseColumnTextForButtonValue = true,
+                    Width = 70,
+                    FlatStyle = FlatStyle.Flat
+                };
+
+                dgvPatientMana.Columns.Add(deleteColumn);
+            }
+
             dgvPatientMana.Columns["View"].DefaultCellStyle.Alignment =
                 DataGridViewContentAlignment.MiddleCenter;
 
             dgvPatientMana.Columns["Edit"].DefaultCellStyle.Alignment =
+                DataGridViewContentAlignment.MiddleCenter;
+
+            dgvPatientMana.Columns["Delete"].DefaultCellStyle.Alignment =
                 DataGridViewContentAlignment.MiddleCenter;
             
         }
@@ -223,6 +247,8 @@ namespace ClinicManagementSystem.Winforms.UserControls
         {
             dgvPatientMana.DataSource =
                 controller.SearchPatients(txtSearch.Text.Trim());
+            AddActionColumns();
+            FormatColumns();
 
             BeginInvoke(new Action(() =>
             {
@@ -281,6 +307,7 @@ namespace ClinicManagementSystem.Winforms.UserControls
             dgvPatientMana.DataSource = null;
             dgvPatientMana.DataSource = patients;
 
+            AddActionColumns();
             FormatColumns();
 
             BeginInvoke(new Action(() =>
@@ -293,11 +320,16 @@ namespace ClinicManagementSystem.Winforms.UserControls
             object sender,
             DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0)
+            if (e.RowIndex < 0 || e.ColumnIndex < 0)
                 return;
 
             string columnName =
                 dgvPatientMana.Columns[e.ColumnIndex].Name;
+
+            if (columnName != "View" && columnName != "Edit" && columnName != "Delete")
+            {
+                return;
+            }
 
             int patientId = Convert.ToInt32(
                 dgvPatientMana.Rows[e.RowIndex]
@@ -305,13 +337,50 @@ namespace ClinicManagementSystem.Winforms.UserControls
 
             if (columnName == "View")
             {
-                MessageBox.Show(
-                    $"Xem bệnh nhân ID = {patientId}");
+                PatientDTO patient = controller.GetPatientById(patientId);
+                if (patient == null)
+                {
+                    return;
+                }
+
+                using CreateNewPatient frm = new CreateNewPatient(patient, true);
+                frm.ShowDialog();
             }
             else if (columnName == "Edit")
             {
-                MessageBox.Show(
-                    $"Sửa bệnh nhân ID = {patientId}");
+                PatientDTO patient = controller.GetPatientById(patientId);
+                if (patient == null)
+                {
+                    return;
+                }
+
+                using CreateNewPatient frm = new CreateNewPatient(patient);
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    LoadPatients();
+                    LoadStatistics();
+                }
+            }
+            else if (columnName == "Delete")
+            {
+                string patientName = dgvPatientMana.Rows[e.RowIndex].Cells["Name"].Value?.ToString() ?? "bệnh nhân";
+                if (MessageBox.Show($"Xóa {patientName}?", "Xóa bệnh nhân", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                try
+                {
+                    if (controller.DeletePatient(patientId))
+                    {
+                        LoadPatients();
+                        LoadStatistics();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Không thể xóa bệnh nhân này vì đã có lịch khám/hồ sơ/thanh toán liên quan.\n" + ex.Message, "Xóa bệnh nhân", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         }
 

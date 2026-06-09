@@ -1,0 +1,19 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n+nf}{CanDispensePrescription}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{prescriptionId}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{List}\PYG{o}{\PYGZlt{}}\PYG{n}{PrescriptionDetailDTO}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{details}\PYG{+w}{ }\PYG{o}{=}
+\PYG{+w}{        }\PYG{n}{prescriptionDAL}\PYG{p}{.}\PYG{n}{GetDetails}\PYG{p}{(}\PYG{n}{prescriptionId}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{foreach}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{PrescriptionDetailDTO}\PYG{+w}{ }\PYG{n}{item}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{n}{details}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{MedicineDTO}\PYG{+w}{ }\PYG{n}{medicine}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{medicineDAL}\PYG{p}{.}\PYG{n}{GetById}\PYG{p}{(}\PYG{n}{item}\PYG{p}{.}\PYG{n}{MedicineID}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{medicine}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{k}{null}\PYG{+w}{ }\PYG{o}{||}
+\PYG{+w}{            }\PYG{n}{medicine}\PYG{p}{.}\PYG{n}{StockQuantity}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{item}\PYG{p}{.}\PYG{n}{Quantity}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{true}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

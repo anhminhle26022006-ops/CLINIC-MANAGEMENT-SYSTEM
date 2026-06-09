@@ -1,0 +1,20 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{n}{List}\PYG{o}{\PYGZlt{}}\PYG{n}{PatientDTO}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{SearchPatients}\PYG{p}{(}\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{keyword}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{const}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{query}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{@\PYGZdq{}}
+\PYG{l+s}{        SELECT PatientID, PatientCode, FullName AS Name, DOB AS BirthDate,}
+\PYG{l+s}{               Gender, Phone, Address, BloodType, Allergies}
+\PYG{l+s}{        FROM Patients}
+\PYG{l+s}{        WHERE FullName LIKE @Term}
+\PYG{l+s}{           OR PatientCode LIKE @Term}
+\PYG{l+s}{           OR Phone LIKE @Term\PYGZdq{}}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{n}{SqlParameter}\PYG{p}{[]}\PYG{+w}{ }\PYG{n}{parameters}\PYG{+w}{ }\PYG{o}{=}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{SqlParameter}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}@Term\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZpc{}\PYGZdq{}}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{keyword}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZpc{}\PYGZdq{}}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{};}
+
+\PYG{+w}{    }\PYG{n}{DataTable}\PYG{+w}{ }\PYG{n}{table}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DatabaseHelper}\PYG{p}{.}\PYG{n}{ExecuteQuery}\PYG{p}{(}\PYG{n}{query}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{parameters}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{table}\PYG{p}{.}\PYG{n}{AsEnumerable}\PYG{p}{().}\PYG{n}{Select}\PYG{p}{(}\PYG{n}{MapPatient}\PYG{p}{).}\PYG{n}{ToList}\PYG{p}{();}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

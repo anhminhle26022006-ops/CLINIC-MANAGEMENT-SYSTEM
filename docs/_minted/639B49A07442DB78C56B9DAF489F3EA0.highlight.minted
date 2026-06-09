@@ -1,0 +1,24 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{n}{Form}\PYG{+w}{ }\PYG{n+nf}{CreateDashboardForCurrentUser}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{role}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RoleNormalizer}\PYG{p}{.}\PYG{n}{Normalize}\PYG{p}{(}\PYG{n}{currentUser}\PYG{p}{.}\PYG{n}{Role}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{switch}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{role}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Admin}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{AdminMainform}\PYG{p}{(}\PYG{n}{currentUser}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Doctor}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{DoctorMainform}\PYG{p}{(}\PYG{n}{currentUser}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Nurse}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{NurseMainform}\PYG{p}{(}\PYG{n}{currentUser}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Pharmacist}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{PharmacyMainform}\PYG{p}{(}\PYG{n}{currentUser}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Receptionist}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{ReceptionistMainform}\PYG{p}{(}\PYG{n}{currentUser}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Technician}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{TechnicianMainform}\PYG{p}{(}\PYG{n}{currentUser}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{default}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{null}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

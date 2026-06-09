@@ -1,0 +1,24 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{n}{Form}\PYG{+w}{ }\PYG{n+nf}{CreateDashboardForCurrentUser}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{role}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RoleNormalizer}\PYG{p}{.}\PYG{n}{Normalize}\PYG{p}{(}\PYG{n}{UserSession}\PYG{p}{.}\PYG{n}{RoleName}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{switch}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{role}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Admin}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{AdminMainform}\PYG{p}{();}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Doctor}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{DoctorMainform}\PYG{p}{();}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Nurse}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{NurseMainform}\PYG{p}{();}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Receptionist}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{ReceptionistMainform}\PYG{p}{();}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Technician}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{TechnicianMainform}\PYG{p}{();}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{Role}\PYG{p}{.}\PYG{n}{Pharmacy}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{PharmacyMainform}\PYG{p}{();}
+\PYG{+w}{        }\PYG{k}{default}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{throw}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{InvalidOperationException}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Role khong hop le\PYGZdq{}}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

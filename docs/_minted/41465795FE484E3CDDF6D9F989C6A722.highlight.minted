@@ -1,0 +1,17 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+Roles       \PYGZhy{}\PYGZgt{} Users
+Users       \PYGZhy{}\PYGZgt{} Employees
+Departments \PYGZhy{}\PYGZgt{} Rooms
+Departments \PYGZhy{}\PYGZgt{} Employees
+Patients    \PYGZhy{}\PYGZgt{} Appointments
+Appointments \PYGZhy{}\PYGZgt{} Encounters
+Encounters  \PYGZhy{}\PYGZgt{} MedicalRecords
+Encounters  \PYGZhy{}\PYGZgt{} EncounterServices
+Encounters  \PYGZhy{}\PYGZgt{} Prescriptions
+Encounters  \PYGZhy{}\PYGZgt{} Payments
+Prescriptions \PYGZhy{}\PYGZgt{} PrescriptionDetails \PYGZhy{}\PYGZgt{} Medicines
+Payments    \PYGZhy{}\PYGZgt{} PaymentDetails
+Invoices    \PYGZhy{}\PYGZgt{} InvoiceDetails
+Employees   \PYGZhy{}\PYGZgt{} DoctorSchedules
+Employees   \PYGZhy{}\PYGZgt{} EmployeeShifts
+\end{MintedVerbatim}

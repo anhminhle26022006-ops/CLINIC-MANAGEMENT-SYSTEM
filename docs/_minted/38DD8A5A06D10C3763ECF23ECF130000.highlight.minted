@@ -1,0 +1,25 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{ContentView\PYGZus{}NavigateRequested}\PYG{p}{(}
+\PYG{+w}{    }\PYG{k+kt}{object}\PYG{+w}{ }\PYG{n}{sender}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{TechnicianNavigationEventArgs}\PYG{+w}{ }\PYG{n}{e}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{switch}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{e}\PYG{p}{.}\PYG{n}{Target}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{TechnicianViewTarget}\PYG{p}{.}\PYG{n}{Requests}\PYG{p}{:}
+\PYG{+w}{            }\PYG{n}{ShowRequests}\PYG{p}{();}
+\PYG{+w}{            }\PYG{k}{break}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{TechnicianViewTarget}\PYG{p}{.}\PYG{n}{UploadMRI}\PYG{p}{:}
+\PYG{+w}{            }\PYG{n}{ShowUploadMRI}\PYG{p}{(}\PYG{n}{e}\PYG{p}{.}\PYG{n}{RequestId}\PYG{p}{);}
+\PYG{+w}{            }\PYG{k}{break}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{TechnicianViewTarget}\PYG{p}{.}\PYG{n}{UploadPDF}\PYG{p}{:}
+\PYG{+w}{            }\PYG{n}{ShowUploadPDF}\PYG{p}{(}\PYG{n}{e}\PYG{p}{.}\PYG{n}{RequestId}\PYG{p}{);}
+\PYG{+w}{            }\PYG{k}{break}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{TechnicianViewTarget}\PYG{p}{.}\PYG{n}{LabResult}\PYG{p}{:}
+\PYG{+w}{            }\PYG{n}{ShowLabResult}\PYG{p}{(}\PYG{n}{e}\PYG{p}{.}\PYG{n}{RequestId}\PYG{p}{);}
+\PYG{+w}{            }\PYG{k}{break}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{TechnicianViewTarget}\PYG{p}{.}\PYG{n}{Records}\PYG{p}{:}
+\PYG{+w}{            }\PYG{n}{ShowRecords}\PYG{p}{(}\PYG{n}{e}\PYG{p}{.}\PYG{n}{PatientId}\PYG{p}{);}
+\PYG{+w}{            }\PYG{k}{break}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

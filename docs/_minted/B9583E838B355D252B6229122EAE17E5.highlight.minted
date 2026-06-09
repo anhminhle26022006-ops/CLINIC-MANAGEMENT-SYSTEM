@@ -1,0 +1,10 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k}{event}\PYG{+w}{ }\PYG{n}{EventHandler}\PYG{o}{\PYGZlt{}}\PYG{n}{PharmacyNavigationEventArgs}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{NavigateRequested}\PYG{p}{;}
+
+\PYG{k}{protected}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{NavigateTo}\PYG{p}{(}\PYG{n}{PharmacyViewTarget}\PYG{+w}{ }\PYG{n}{target}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{id}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{NavigateRequested}\PYG{o}{?.}\PYG{n}{Invoke}\PYG{p}{(}
+\PYG{+w}{        }\PYG{k}{this}\PYG{p}{,}
+\PYG{+w}{        }\PYG{k}{new}\PYG{+w}{ }\PYG{n+nf}{PharmacyNavigationEventArgs}\PYG{p}{(}\PYG{n}{target}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{id}\PYG{p}{));}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

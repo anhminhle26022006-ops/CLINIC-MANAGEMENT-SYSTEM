@@ -1,0 +1,50 @@
+\babel@toc {vietnamese}{}\relax 
+\contentsline {table}{\numberline {2.2.1}{\ignorespaces Kỹ thuật layout WinForms sử dụng trong đồ án}}{5}{table.2.2.1}%
+\contentsline {table}{\numberline {2.6.1}{\ignorespaces Vai trò các tầng trong kiến trúc DTO--BUS--DAL}}{9}{table.2.6.1}%
+\contentsline {table}{\numberline {2.9.1}{\ignorespaces Vai trò các nguồn dữ liệu trong tích hợp ngoài}}{11}{table.2.9.1}%
+\contentsline {table}{\numberline {2.9.2}{\ignorespaces Ví dụ cấu trúc sheet bệnh nhân}}{12}{table.2.9.2}%
+\contentsline {table}{\numberline {3.1.1}{\ignorespaces Tác nhân và phạm vi chức năng}}{16}{table.3.1.1}%
+\contentsline {table}{\numberline {3.2.1}{\ignorespaces Danh sách yêu cầu chức năng chính}}{17}{table.3.2.1}%
+\contentsline {table}{\numberline {3.3.1}{\ignorespaces Đặc tả use case đăng nhập}}{17}{table.3.3.1}%
+\contentsline {table}{\numberline {3.3.2}{\ignorespaces Đặc tả use case tạo lịch hẹn}}{18}{table.3.3.2}%
+\contentsline {table}{\numberline {3.3.3}{\ignorespaces Đặc tả use case tiếp nhận bệnh nhân}}{18}{table.3.3.3}%
+\contentsline {table}{\numberline {3.3.4}{\ignorespaces Đặc tả use case khám bệnh}}{19}{table.3.3.4}%
+\contentsline {table}{\numberline {3.3.5}{\ignorespaces Đặc tả use case kỹ thuật viên xử lý yêu cầu}}{19}{table.3.3.5}%
+\contentsline {table}{\numberline {3.3.6}{\ignorespaces Đặc tả use case cấp phát thuốc và thanh toán}}{19}{table.3.3.6}%
+\contentsline {table}{\numberline {3.6.1}{\ignorespaces Nhóm bảng dữ liệu chính}}{21}{table.3.6.1}%
+\contentsline {table}{\numberline {3.8.1}{\ignorespaces Từ điển dữ liệu rút gọn}}{22}{table.3.8.1}%
+\contentsline {table}{\numberline {3.8.2}{\ignorespaces Từ điển dữ liệu nhóm phân quyền và nhân sự}}{23}{table.3.8.2}%
+\contentsline {table}{\numberline {3.8.3}{\ignorespaces Từ điển dữ liệu nhóm tiếp nhận}}{23}{table.3.8.3}%
+\contentsline {table}{\numberline {3.8.4}{\ignorespaces Từ điển dữ liệu nhóm lâm sàng}}{24}{table.3.8.4}%
+\contentsline {table}{\numberline {3.8.5}{\ignorespaces Từ điển dữ liệu nhóm dược và thanh toán}}{24}{table.3.8.5}%
+\contentsline {table}{\numberline {4.1.1}{\ignorespaces Tổ chức project trong solution}}{25}{table.4.1.1}%
+\contentsline {table}{\numberline {4.1.2}{\ignorespaces Cấu trúc thư mục giao diện WinForms}}{26}{table.4.1.2}%
+\contentsline {table}{\numberline {4.1.3}{\ignorespaces Quy ước thiết kế form/control trong đồ án}}{27}{table.4.1.3}%
+\contentsline {table}{\numberline {4.1.4}{\ignorespaces Ứng dụng DataGridView trong các phân hệ}}{30}{table.4.1.4}%
+\contentsline {table}{\numberline {4.1.5}{\ignorespaces Ánh xạ vai trò sang giao diện chính}}{32}{table.4.1.5}%
+\contentsline {table}{\numberline {4.2.1}{\ignorespaces Phân nhóm DTO trong project}}{33}{table.4.2.1}%
+\contentsline {table}{\numberline {4.2.2}{\ignorespaces Nhóm repository DAL và trách nhiệm}}{35}{table.4.2.2}%
+\contentsline {table}{\numberline {4.2.3}{\ignorespaces Định hướng chọn ADO.NET hoặc Entity Framework trong DAL}}{37}{table.4.2.3}%
+\contentsline {table}{\numberline {4.2.4}{\ignorespaces Nhóm BUS và logic nghiệp vụ}}{38}{table.4.2.4}%
+\contentsline {table}{\numberline {4.2.5}{\ignorespaces Luồng cài đặt đăng nhập và phân quyền}}{40}{table.4.2.5}%
+\contentsline {table}{\numberline {4.2.6}{\ignorespaces Logic BUS cho lịch hẹn và hàng chờ}}{41}{table.4.2.6}%
+\contentsline {table}{\numberline {4.2.7}{\ignorespaces Logic BUS của phân hệ kỹ thuật viên}}{42}{table.4.2.7}%
+\contentsline {table}{\numberline {4.2.8}{\ignorespaces Thành phần trong project Core}}{42}{table.4.2.8}%
+\contentsline {table}{\numberline {4.3.1}{\ignorespaces Nguyên tắc phân tách Designer và code-behind}}{47}{table.4.3.1}%
+\contentsline {table}{\numberline {4.3.2}{\ignorespaces Thiết kế giao diện phân hệ lễ tân}}{52}{table.4.3.2}%
+\contentsline {table}{\numberline {4.3.3}{\ignorespaces Cấu trúc màn hình ERM của bác sĩ}}{58}{table.4.3.3}%
+\contentsline {table}{\numberline {4.3.4}{\ignorespaces Cài đặt nhóm màn hình ca làm việc}}{72}{table.4.3.4}%
+\contentsline {table}{\numberline {4.4.1}{\ignorespaces Các bước xử lý dữ liệu API ở tầng DAL/BUS}}{75}{table.4.4.1}%
+\contentsline {table}{\numberline {4.4.2}{\ignorespaces Dữ liệu phản hồi PayOS dùng trong WinForms}}{78}{table.4.4.2}%
+\contentsline {table}{\numberline {4.4.3}{\ignorespaces Luồng triển khai PayOS trong ứng dụng Desktop}}{78}{table.4.4.3}%
+\contentsline {table}{\numberline {4.5.1}{\ignorespaces Trace cài đặt end-to-end của các nghiệp vụ chính}}{79}{table.4.5.1}%
+\contentsline {table}{\numberline {4.6.1}{\ignorespaces Diễn giải chi tiết luồng đăng nhập}}{80}{table.4.6.1}%
+\contentsline {table}{\numberline {4.6.2}{\ignorespaces Trạng thái giao diện trong luồng tạo lịch hẹn}}{81}{table.4.6.2}%
+\contentsline {table}{\numberline {4.6.3}{\ignorespaces Điều kiện và kết quả của thao tác check-in}}{82}{table.4.6.3}%
+\contentsline {table}{\numberline {4.6.4}{\ignorespaces Luồng dữ liệu trong ERM}}{83}{table.4.6.4}%
+\contentsline {table}{\numberline {4.6.5}{\ignorespaces Vòng đời request cận lâm sàng}}{84}{table.4.6.5}%
+\contentsline {table}{\numberline {4.6.6}{\ignorespaces Luồng cấp phát thuốc}}{85}{table.4.6.6}%
+\contentsline {table}{\numberline {4.6.7}{\ignorespaces Chiến lược xử lý xung đột khi đồng bộ}}{86}{table.4.6.7}%
+\contentsline {table}{\numberline {4.6.8}{\ignorespaces Chi tiết luồng PayOS/VietQR}}{87}{table.4.6.8}%
+\contentsline {table}{\numberline {5.2.1}{\ignorespaces Kiểm thử giao diện WinForms}}{89}{table.5.2.1}%
+\contentsline {table}{\numberline {5.3.1}{\ignorespaces Bảng kiểm thử chức năng tiêu biểu}}{89}{table.5.3.1}%

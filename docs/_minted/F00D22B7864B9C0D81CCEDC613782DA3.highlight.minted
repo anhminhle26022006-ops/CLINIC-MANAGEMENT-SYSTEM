@@ -1,0 +1,13 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{LoadMedicalRecord}\PYG{p}{(}\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n}{patientUuid}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{overview}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ermController}\PYG{p}{.}\PYG{n}{GetOverview}\PYG{p}{(}\PYG{n}{patientUuid}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{ucOverview}\PYG{p}{.}\PYG{n}{BindData}\PYG{p}{(}\PYG{n}{overview}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{history}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ermController}\PYG{p}{.}\PYG{n}{GetHistory}\PYG{p}{(}\PYG{n}{patientUuid}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{ucHistory}\PYG{p}{.}\PYG{n}{BindData}\PYG{p}{(}\PYG{n}{history}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{prescriptions}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ermController}\PYG{p}{.}\PYG{n}{GetPrescriptions}\PYG{p}{(}\PYG{n}{patientUuid}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{ucPrescription}\PYG{p}{.}\PYG{n}{BindData}\PYG{p}{(}\PYG{n}{prescriptions}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

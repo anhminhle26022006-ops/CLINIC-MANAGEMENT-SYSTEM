@@ -1,0 +1,13 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{void}\PYG{+w}{ }\PYG{n+nf}{LoadInvoice}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{List}\PYG{o}{\PYGZlt{}}\PYG{n}{PaymentDetailDTO}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{details}\PYG{+w}{ }\PYG{o}{=}
+\PYG{+w}{        }\PYG{n}{controller}\PYG{p}{.}\PYG{n}{GetInvoiceDetails}\PYG{p}{(}\PYG{n}{encounterId}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{dataGridView1}\PYG{p}{.}\PYG{n}{DataSource}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{details}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{k+kt}{decimal}\PYG{+w}{ }\PYG{n}{total}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{details}\PYG{p}{.}\PYG{n}{Sum}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{x}\PYG{p}{.}\PYG{n}{Amount}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{lblTotal}\PYG{p}{.}\PYG{n}{Text}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{total}\PYG{p}{.}\PYG{n}{ToString}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}N0\PYGZdq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{} đ\PYGZdq{}}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{lblInvoiceID}\PYG{p}{.}\PYG{n}{Text}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{encounterId}\PYG{p}{.}\PYG{n}{ToString}\PYG{p}{();}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

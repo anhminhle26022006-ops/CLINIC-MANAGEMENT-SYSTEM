@@ -1,0 +1,32 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{public}\PYG{+w}{ }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n+nf}{CheckInAppointment}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{appointmentId}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{AppointmentDTO}\PYG{+w}{ }\PYG{n}{appointment}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{appointmentDAL}\PYG{p}{.}\PYG{n}{GetById}\PYG{p}{(}\PYG{n}{appointmentId}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{appointment}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{k}{null}\PYG{+w}{ }\PYG{o}{||}
+\PYG{+w}{        }\PYG{n}{appointment}\PYG{p}{.}\PYG{n}{Status}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{n}{AppointmentStatus}\PYG{p}{.}\PYG{n}{Confirmed}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{statusUpdated}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{appointmentDAL}\PYG{p}{.}\PYG{n}{UpdateStatus}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{appointmentId}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{AppointmentStatus}\PYG{p}{.}\PYG{n}{CheckedIn}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{!}\PYG{n}{statusUpdated}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k}{false}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{QueueDTO}\PYG{+w}{ }\PYG{n}{queue}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{QueueDTO}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{AppointmentID}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{appointmentId}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{PatientID}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{appointment}\PYG{p}{.}\PYG{n}{PatientID}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{DoctorID}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{appointment}\PYG{p}{.}\PYG{n}{DoctorID}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{RoomID}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{appointment}\PYG{p}{.}\PYG{n}{RoomID}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{Status}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{QueueStatus}\PYG{p}{.}\PYG{n}{Waiting}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{CreatedAt}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DateTime}\PYG{p}{.}\PYG{n}{Now}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{};}
+
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{queueDAL}\PYG{p}{.}\PYG{n}{Insert}\PYG{p}{(}\PYG{n}{queue}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

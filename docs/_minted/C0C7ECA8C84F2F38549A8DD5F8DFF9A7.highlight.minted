@@ -1,0 +1,33 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{private}\PYG{+w}{ }\PYG{k}{async}\PYG{+w}{ }\PYG{n}{Task}\PYG{+w}{ }\PYG{n+nf}{SyncPatientsToLocalSqlServerAsync}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{List}\PYG{o}{\PYGZlt{}}\PYG{n}{ApiPatientDTO}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{patients}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{ApiSyncResultDTO}\PYG{+w}{ }\PYG{n}{result}\PYG{p}{,}
+\PYG{+w}{    }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{patchSheetWhenMissingUuid}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{foreach}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{ApiPatientDTO}\PYG{+w}{ }\PYG{n}{patient}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{n}{patients}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{patient}\PYG{p}{.}\PYG{n}{PatientCode}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{||}
+\PYG{+w}{            }\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{patient}\PYG{p}{.}\PYG{n}{FullName}\PYG{p}{))}
+\PYG{+w}{        }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{result}\PYG{p}{.}\PYG{n}{SkippedPatients}\PYG{o}{++}\PYG{p}{;}
+\PYG{+w}{            }\PYG{k}{continue}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{string}\PYG{p}{.}\PYG{n}{IsNullOrWhiteSpace}\PYG{p}{(}\PYG{n}{patient}\PYG{p}{.}\PYG{n}{PatientUuid}\PYG{p}{))}
+\PYG{+w}{        }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{patient}\PYG{p}{.}\PYG{n}{PatientUuid}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{Guid}\PYG{p}{.}\PYG{n}{NewGuid}\PYG{p}{().}\PYG{n}{ToString}\PYG{p}{();}
+
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{patchSheetWhenMissingUuid}\PYG{p}{)}
+\PYG{+w}{            }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{k}{await}\PYG{+w}{ }\PYG{n}{repository}\PYG{p}{.}\PYG{n}{PatchPatientSheetUuidAsync}\PYG{p}{(}\PYG{n}{patient}\PYG{p}{);}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{changed}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{repository}\PYG{p}{.}\PYG{n}{UpsertLocalPatient}\PYG{p}{(}\PYG{n}{patient}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{changed}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{result}\PYG{p}{.}\PYG{n}{LocalPatientsChanged}\PYG{o}{++}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

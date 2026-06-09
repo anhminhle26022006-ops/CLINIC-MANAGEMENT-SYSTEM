@@ -1,0 +1,13 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{using}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{dialog}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{OpenFileDialog}\PYG{p}{())}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{dialog}\PYG{p}{.}\PYG{n}{Title}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Chon tep ket qua\PYGZdq{}}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{dialog}\PYG{p}{.}\PYG{n}{Filter}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}PDF files (*.pdf)|*.pdf|Image files (*.png;*.jpg)|*.png;*.jpg\PYGZdq{}}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{dialog}\PYG{p}{.}\PYG{n}{ShowDialog}\PYG{p}{()}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{DialogResult}\PYG{p}{.}\PYG{n}{OK}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{txtFilePath}\PYG{p}{.}\PYG{n}{Text}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{dialog}\PYG{p}{.}\PYG{n}{FileName}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{btnUpload}\PYG{p}{.}\PYG{n}{Enabled}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{true}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

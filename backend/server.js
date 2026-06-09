@@ -102,6 +102,7 @@ const paymentSchema = new mongoose.Schema({
   qrCode: { type: String },
   reference: { type: String },
   paidAt: { type: String },
+  canceledAt: { type: String },
   webhookData: { type: mongoose.Schema.Types.Mixed }
 }, { timestamps: true });
 
@@ -288,6 +289,7 @@ const normalizePaymentResponse = (payment) => ({
   qrCode: payment.qrCode,
   reference: payment.reference,
   paidAt: payment.paidAt,
+  canceledAt: payment.canceledAt,
   createdAt: payment.createdAt,
   updatedAt: payment.updatedAt
 });
@@ -297,12 +299,25 @@ const isFinalPaymentStatus = (status) => ['PAID', 'CANCELLED', 'CANCELED', 'EXPI
 const findStoredPayment = async (orderCode) => {
   if (isMongoDBConnected) {
     return Payment.findOne({ orderCode })
-      .select('-_id orderCode amount description status paymentLinkId checkoutUrl qrCode reference paidAt createdAt updatedAt')
+      .select('-_id orderCode amount description status paymentLinkId checkoutUrl qrCode reference paidAt canceledAt createdAt updatedAt')
       .lean();
   }
 
   const payments = readJSONFile(paymentsFilePath, []);
   return payments.find(item => Number(item.orderCode) === orderCode) || null;
+};
+
+const findStoredPaymentByLinkId = async (paymentLinkId) => {
+  if (!paymentLinkId) return null;
+
+  if (isMongoDBConnected) {
+    return Payment.findOne({ paymentLinkId })
+      .select('-_id orderCode amount description status paymentLinkId checkoutUrl qrCode reference paidAt canceledAt createdAt updatedAt')
+      .lean();
+  }
+
+  const payments = readJSONFile(paymentsFilePath, []);
+  return payments.find(item => item.paymentLinkId === paymentLinkId) || null;
 };
 
 const saveLocalPaymentFromWebhook = (body, paymentUpdate) => {
@@ -328,6 +343,7 @@ const saveLocalPaymentFromWebhook = (body, paymentUpdate) => {
       qrCode: null,
       reference: paymentUpdate.reference || null,
       paidAt: paymentUpdate.paidAt || null,
+      canceledAt: paymentUpdate.canceledAt || null,
       createdAt: now,
       updatedAt: now,
       webhookData: body
@@ -351,7 +367,8 @@ const saveLocalPaymentFromCreate = (paymentData, payosResponse) => {
     checkoutUrl: paymentData.checkoutUrl || null,
     qrCode: paymentData.qrCode || null,
     reference: paymentData.reference || null,
-    paidAt: null,
+    paidAt: paymentData.paidAt || null,
+    canceledAt: paymentData.canceledAt || null,
     payosResponse,
     updatedAt: now
   };
@@ -369,6 +386,60 @@ const saveLocalPaymentFromCreate = (paymentData, payosResponse) => {
   }
 
   writeJSONFile(paymentsFilePath, payments);
+};
+
+const persistPaymentUpdate = async (paymentUpdate, sourcePayload = null) => {
+  if (isMongoDBConnected) {
+    await Payment.findOneAndUpdate(
+      { orderCode: paymentUpdate.orderCode },
+      { $set: paymentUpdate },
+      { upsert: true, new: true }
+    );
+    return;
+  }
+
+  saveLocalPaymentFromCreate(paymentUpdate, sourcePayload || { code: '00', desc: 'local update', data: paymentUpdate });
+};
+
+const getPayOSRedirectOrderCode = (query) => {
+  const raw = query.orderCode || query.order_code || query.ordercode;
+  const orderCode = Number(raw);
+  return Number.isFinite(orderCode) ? orderCode : null;
+};
+
+const renderPaymentResultPage = ({ title, message, color, orderCode, status }) => {
+  const safeOrder = orderCode ? `Ma don hang: ${orderCode}` : 'Khong tim thay ma don hang tren URL.';
+  const safeStatus = status ? `Trang thai: ${status}` : '';
+
+  return `<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>${title}</title>
+  <style>
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#151936;color:#e5e7eb;font-family:Segoe UI,Arial,sans-serif}
+    .card{width:min(580px,calc(100vw - 40px));padding:46px 36px;border-radius:26px;background:#202840;border:1px solid #34405f;box-shadow:0 28px 90px rgba(0,0,0,.35);text-align:center}
+    .icon{width:92px;height:92px;margin:0 auto 24px;border-radius:50%;border:3px solid ${color};display:flex;align-items:center;justify-content:center;color:${color};font-size:56px;line-height:1}
+    h1{margin:0 0 14px;color:${color};font-size:34px}
+    p{margin:8px 0;color:#b9c0d4;font-size:19px;line-height:1.55}
+    .meta{margin-top:18px;padding:12px 14px;border-radius:12px;background:#151936;color:#dbeafe;font-size:15px}
+    button,a{display:block;width:100%;box-sizing:border-box;margin-top:20px;padding:16px 18px;border-radius:14px;border:0;background:${color};color:#fff;font-weight:700;font-size:17px;text-decoration:none;cursor:pointer}
+    a.secondary{margin-top:14px;background:#2b344d;border:1px solid #4b556b}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="icon">${status === 'PAID' ? '✓' : '×'}</div>
+    <h1>${title}</h1>
+    <p>${message}</p>
+    <div class="meta">${safeOrder}<br>${safeStatus}</div>
+    <button onclick="window.close()">Dong Cua So</button>
+    <a class="secondary" href="/">Ve Trang Hoc Tap</a>
+  </main>
+  <script>setTimeout(function(){ try { window.close(); } catch(e) {} }, 6000);</script>
+</body>
+</html>`;
 };
 
 // Auto-Migration Function
@@ -1232,6 +1303,88 @@ app.post('/api/payos/create-payment', async (req, res) => {
   }
 });
 
+app.get('/payment/cancel', async (req, res) => {
+  let orderCode = getPayOSRedirectOrderCode(req.query);
+  let storedPayment = null;
+  if (!orderCode && req.query.id) {
+    storedPayment = await findStoredPaymentByLinkId(req.query.id);
+    orderCode = storedPayment ? Number(storedPayment.orderCode) : null;
+  }
+
+  if (orderCode) {
+    storedPayment = storedPayment || await findStoredPayment(orderCode);
+    await persistPaymentUpdate({
+      orderCode,
+      amount: Number(req.query.amount ?? storedPayment?.amount) || 0,
+      description: req.query.description || storedPayment?.description || '',
+      status: 'CANCELLED',
+      paymentLinkId: req.query.id || req.query.paymentLinkId || storedPayment?.paymentLinkId || null,
+      checkoutUrl: storedPayment?.checkoutUrl || null,
+      qrCode: storedPayment?.qrCode || null,
+      reference: req.query.reference || storedPayment?.reference || null,
+      paidAt: storedPayment?.paidAt || null,
+      canceledAt: new Date().toISOString(),
+      redirectData: req.query
+    }, {
+      code: '00',
+      desc: 'cancel redirect',
+      data: req.query
+    });
+  }
+
+  res
+    .status(200)
+    .type('html')
+    .send(renderPaymentResultPage({
+      title: 'Giao Dich Da Huy',
+      message: 'Yeu cau thanh toan nay da bi huy. He thong da ghi nhan CANCELLED de WinForms doc lai trang thai.',
+      color: '#ef5350',
+      orderCode,
+      status: 'CANCELLED'
+    }));
+});
+
+app.get('/payment/success', async (req, res) => {
+  let orderCode = getPayOSRedirectOrderCode(req.query);
+  let storedPayment = null;
+  if (!orderCode && req.query.id) {
+    storedPayment = await findStoredPaymentByLinkId(req.query.id);
+    orderCode = storedPayment ? Number(storedPayment.orderCode) : null;
+  }
+
+  if (orderCode) {
+    storedPayment = storedPayment || await findStoredPayment(orderCode);
+    await persistPaymentUpdate({
+      orderCode,
+      amount: Number(req.query.amount ?? storedPayment?.amount) || 0,
+      description: req.query.description || storedPayment?.description || '',
+      status: 'PAID',
+      paymentLinkId: req.query.id || req.query.paymentLinkId || storedPayment?.paymentLinkId || null,
+      checkoutUrl: storedPayment?.checkoutUrl || null,
+      qrCode: storedPayment?.qrCode || null,
+      reference: req.query.reference || storedPayment?.reference || null,
+      paidAt: new Date().toISOString(),
+      canceledAt: storedPayment?.canceledAt || null,
+      redirectData: req.query
+    }, {
+      code: '00',
+      desc: 'success redirect',
+      data: req.query
+    });
+  }
+
+  res
+    .status(200)
+    .type('html')
+    .send(renderPaymentResultPage({
+      title: 'Thanh Toan Thanh Cong',
+      message: 'He thong da ghi nhan PAID de WinForms doc lai trang thai.',
+      color: '#22c55e',
+      orderCode,
+      status: 'PAID'
+    }));
+});
+
 // 10. payOS webhook receiver
 app.get('/api/payos/webhook', (req, res) => {
   res.json({
@@ -1261,15 +1414,21 @@ app.post('/api/payos/webhook', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid orderCode' });
     }
 
-    const isPaid = body.success === true && body.code === '00';
+    const dataStatus = String(body.data.status || '').toUpperCase();
+    const isCancelEvent = body.cancel === true ||
+      body.data.cancel === true ||
+      dataStatus.includes('CANCEL') ||
+      String(body.code || '').toUpperCase().includes('CANCEL');
+    const isPaid = !isCancelEvent && body.success === true && body.code === '00';
     const paymentUpdate = {
       orderCode,
       amount: Number(body.data.amount) || 0,
       description: body.data.description || '',
-      status: isPaid ? 'PAID' : 'PENDING',
+      status: isPaid ? 'PAID' : (isCancelEvent ? 'CANCELLED' : (body.data.status || 'PENDING')),
       paymentLinkId: body.data.paymentLinkId || null,
       reference: body.data.reference || null,
-      paidAt: body.data.transactionDateTime || null,
+      paidAt: isPaid ? (body.data.transactionDateTime || new Date().toISOString()) : null,
+      canceledAt: isCancelEvent ? (body.data.canceledAt || new Date().toISOString()) : null,
       webhookData: body
     };
 
@@ -1396,6 +1555,59 @@ app.get('/api/payos/payments/:orderCode', async (req, res) => {
   }
 });
 
+app.post('/api/payos/payments/:orderCode/cancel', async (req, res) => {
+  const orderCode = Number(req.params.orderCode);
+
+  if (!Number.isFinite(orderCode)) {
+    return res.status(400).json({ code: 'BAD_ORDER_CODE', desc: 'Invalid orderCode' });
+  }
+
+  try {
+    const cancellationReason = req.body?.cancellationReason || 'Cancelled from HealthCare+ demo';
+    const payosResult = await callPayOS(`/v2/payment-requests/${orderCode}/cancel`, {
+      method: 'POST',
+      body: JSON.stringify({ cancellationReason })
+    });
+
+    const paymentData = payosResult?.data || {};
+    const storedPayment = await findStoredPayment(orderCode);
+    const paymentUpdate = {
+      orderCode,
+      amount: Number(paymentData.amount ?? storedPayment?.amount) || 0,
+      description: paymentData.description || storedPayment?.description || '',
+      status: paymentData.status || 'CANCELLED',
+      paymentLinkId: paymentData.id || paymentData.paymentLinkId || storedPayment?.paymentLinkId || null,
+      checkoutUrl: paymentData.checkoutUrl || storedPayment?.checkoutUrl || null,
+      qrCode: paymentData.qrCode || storedPayment?.qrCode || null,
+      reference: paymentData.reference || storedPayment?.reference || null,
+      paidAt: storedPayment?.paidAt || null,
+      canceledAt: paymentData.canceledAt || new Date().toISOString()
+    };
+
+    if (isMongoDBConnected) {
+      await Payment.findOneAndUpdate(
+        { orderCode },
+        { $set: paymentUpdate },
+        { upsert: true, new: true }
+      );
+    } else {
+      saveLocalPaymentFromCreate(paymentUpdate, payosResult);
+    }
+
+    return res.json({
+      code: '00',
+      desc: 'cancelled',
+      data: {
+        ...paymentData,
+        ...paymentUpdate
+      }
+    });
+  } catch (error) {
+    console.error('PayOS cancel payment error:', error);
+    return res.status(502).json({ code: 'PAYOS_CANCEL_FAILED', desc: error.message });
+  }
+});
+
 // 12. Payment status lookup for future clients
 app.get('/api/payments/:orderCode', async (req, res) => {
   const orderCode = Number(req.params.orderCode);
@@ -1407,7 +1619,7 @@ app.get('/api/payments/:orderCode', async (req, res) => {
   try {
     if (isMongoDBConnected) {
       const payment = await Payment.findOne({ orderCode })
-        .select('-_id orderCode amount description status paymentLinkId checkoutUrl qrCode reference paidAt createdAt updatedAt')
+        .select('-_id orderCode amount description status paymentLinkId checkoutUrl qrCode reference paidAt canceledAt createdAt updatedAt')
         .lean();
       if (!payment) {
         return res.status(404).json({ success: false, message: 'Payment not found' });

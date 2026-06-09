@@ -15,6 +15,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
         public ucTechnicianShifts()
         {
             InitializeComponent();
+            ConfigureShiftListLayout();
         }
 
         private void ucTechnicianShifts_Load(object sender, EventArgs e)
@@ -25,7 +26,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void ucTechnicianShifts_Resize(object sender, EventArgs e)
         {
+            ConfigureShiftListLayout();
             AdjustCalendarLayout();
+            ResizeShiftRows();
         }
 
         private void BtnReg_Click(object sender, EventArgs e)
@@ -39,22 +42,31 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
         private void LoadShifts()
         {
+            pnlListPanel.AutoScroll = false;
+            flpShiftsTable.AutoScroll = true;
+
             int countShifts = 0;
             try
             {
                 countShifts = shiftBUS.GetShiftCount();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error getting shift count: " + ex);
+            }
 
             lblStatTotalNum.Text = countShifts.ToString();
             lblStatHoursNum.Text = (countShifts * 5) + "h";
 
-            List<ShiftDTO> weekShifts = new List<ShiftDTO>();
+            List<TechnicianShiftDTO> weekShifts = new List<TechnicianShiftDTO>();
             try
             {
                 weekShifts = shiftBUS.GetList();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error getting shifts list: " + ex);
+            }
 
             // Populate Calendar
             DateTime startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
@@ -109,25 +121,22 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 }
             }
 
-            // Populate Shifts Table (remove dynamic rows first, keep header and title)
-            for (int idx = pnlListPanel.Controls.Count - 1; idx >= 0; idx--)
-            {
-                if (pnlListPanel.Controls[idx] != lblListTitle && pnlListPanel.Controls[idx] != flpShiftsTable)
-                {
-                    pnlListPanel.Controls.RemoveAt(idx);
-                }
-            }
-
-            AddShiftRow(pnlListPanel, "NGÀY", "CA", "CHUYÊN KHOA", "PHÒNG KHÁM", "TRẠNG THÁI", 60, true);
-
-            int yShift = 100;
+            flpShiftsTable.SuspendLayout();
+            flpShiftsTable.Controls.Clear();
+            flpShiftsTable.Controls.Add(CreateShiftTableRow("NGÀY", "CA", "CHUYÊN KHOA", "PHÒNG KHÁM", "TRẠNG THÁI", true));
             foreach (var s in weekShifts)
             {
-                AddShiftRow(pnlListPanel, s.ShiftDate.ToString("dd/MM/yyyy"), s.ShiftName, s.Department, s.Room, s.Status, yShift, false);
-                yShift += 46;
+                flpShiftsTable.Controls.Add(CreateShiftTableRow(s.ShiftDate.ToString("dd/MM/yyyy"), s.ShiftName, s.Department, s.Room, s.Status, false));
             }
+            if (weekShifts.Count == 0)
+            {
+                flpShiftsTable.Controls.Add(CreateShiftTableRow("-", "-", "Chưa có ca trực", "-", "-", false));
+            }
+            flpShiftsTable.ResumeLayout();
 
+            ConfigureShiftListLayout();
             AdjustCalendarLayout();
+            ResizeShiftRows();
         }
 
         private void AdjustCalendarLayout()
@@ -141,6 +150,77 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
                 dayPanels[i].Width = cellW - 10;
                 dayPanels[i].Left = i * cellW;
             }
+        }
+
+        private Control CreateShiftTableRow(string date, string shift, string department, string room, string status, bool header)
+        {
+            var row = new ucTechnicianShiftTableRow
+            {
+                Margin = new Padding(0, 0, 0, header ? 6 : 8),
+                Width = ShiftRowWidth()
+            };
+            row.Configure(date, shift, department, room, status, header);
+            return row;
+        }
+
+        private int ShiftRowWidth()
+        {
+            return Math.Max(720, flpShiftsTable.ClientSize.Width - 8);
+        }
+
+        private void ResizeShiftRows()
+        {
+            int width = ShiftRowWidth();
+            foreach (Control row in flpShiftsTable.Controls)
+            {
+                row.Width = width;
+            }
+        }
+
+        private void ConfigureShiftListLayout()
+        {
+            if (pnlListPanel == null || flpShiftsTable == null || lblListTitle == null)
+            {
+                return;
+            }
+
+            pnlListPanel.SuspendLayout();
+
+            lblListTitle.Location = new Point(18, 16);
+            lblListTitle.Size = new Size(Math.Max(360, pnlListPanel.ClientSize.Width - 36), 34);
+            lblListTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+            flpShiftsTable.Location = new Point(18, 58);
+            flpShiftsTable.Size = new Size(
+                Math.Max(720, pnlListPanel.ClientSize.Width - 36),
+                Math.Max(150, pnlListPanel.ClientSize.Height - 76));
+            flpShiftsTable.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            flpShiftsTable.FlowDirection = FlowDirection.TopDown;
+            flpShiftsTable.WrapContents = false;
+            flpShiftsTable.AutoScroll = true;
+            flpShiftsTable.BringToFront();
+
+            pnlListPanel.ResumeLayout();
+        }
+
+        private void pnlDaysContainer_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblDayDate1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblDayDate2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnShift3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
