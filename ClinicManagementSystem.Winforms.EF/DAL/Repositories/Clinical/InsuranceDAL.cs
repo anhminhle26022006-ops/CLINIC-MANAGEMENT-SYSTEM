@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.DataContext;
+﻿using DAL.Models;
 using DTO;
-using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
@@ -13,40 +7,23 @@ namespace DAL.Repositories
     {
         public bool Add(PatientInsuranceDTO insurance)
         {
-            string query = @"
-                INSERT INTO PatientInsurance
-                (
-                    PatientID,
-                    InsuranceNumber,
-                    Provider,
-                    EffectiveDate,
-                    ExpiryDate
-                )
-                VALUES
-                (
-                    @PatientID,
-                    @InsuranceNumber,
-                    @Provider,
-                    @EffectiveDate,
-                    @ExpiryDate
-                )";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters =
+            var entity = new PatientInsurance
             {
-                new SqlParameter("@PatientID", insurance.PatientID),
-                new SqlParameter("@InsuranceNumber",
-                    (object)insurance.InsuranceNumber ?? DBNull.Value),
-                new SqlParameter("@Provider",
-                    (object)insurance.Provider ?? DBNull.Value),
-                new SqlParameter("@EffectiveDate",
-                    insurance.EffectiveDate),
-                new SqlParameter("@ExpiryDate",
-                    insurance.ExpiryDate)
+                PatientId = insurance.PatientID,
+                InsuranceNumber = insurance.InsuranceNumber,
+                Provider = insurance.Provider,
+                EffectiveDate = DateOnly.FromDateTime(
+        insurance.EffectiveDate),
+
+                ExpiryDate = DateOnly.FromDateTime(
+        insurance.ExpiryDate)
             };
 
-            return DatabaseHelper.ExecuteNonQuery(
-                query,
-                parameters) > 0;
+            db.PatientInsurances.Add(entity);
+
+            return db.SaveChanges() > 0;
         }
     }
 }

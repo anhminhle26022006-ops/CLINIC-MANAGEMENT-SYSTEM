@@ -1,8 +1,9 @@
 ﻿using System.Data;
-using Microsoft.Data.SqlClient;
 using DAL.DataContext;
+using DAL.Models;
 using DTO;
 using DTO.Clinical.erm;
+using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
@@ -32,72 +33,24 @@ namespace DAL.Repositories
             };
         }
 
-        public MedicalRecordDTO
-            GetByEncounterId(
-                int encounterId)
+        public MedicalRecordDTO GetByEncounterId(int encounterId)
         {
-            string query = @"
-SELECT *
-FROM MedicalRecords
-WHERE EncounterID = @EncounterID";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters =
-            {
-                new("@EncounterID",
-                    encounterId)
-            };
+            var record = db.MedicalRecords
+                .FirstOrDefault(x => x.EncounterId == encounterId);
 
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(
-                    query,
-                    parameters);
-
-            if (dt.Rows.Count == 0)
+            if (record == null)
                 return null;
 
-            return MapRowToDTO(
-                dt.Rows[0]);
-        }
-
-        public List<MedicalRecordDto> GetAllErmRecords()
-        {
-            string query = @"
-SELECT
-    mr.RecordID,
-    mr.RecordUUID,
-    p.PatientUUID,
-    mr.CreatedAt,
-    ISNULL(p.FullName, '') AS PatientName,
-    ISNULL(mr.Diagnosis, '') AS Diagnosis,
-    ISNULL(e.FullName, '') AS DoctorName,
-    ISNULL(en.Status, '') AS Status
-FROM MedicalRecords mr
-LEFT JOIN Encounters en ON mr.EncounterID = en.EncounterID
-LEFT JOIN Patients p ON en.PatientID = p.PatientID
-LEFT JOIN Employees e ON en.DoctorID = e.EmployeeID
-ORDER BY mr.CreatedAt DESC, mr.RecordID DESC";
-
-            DataTable dt = DatabaseHelper.ExecuteQuery(query);
-            List<MedicalRecordDto> list = new();
-
-            foreach (DataRow row in dt.Rows)
+            return new MedicalRecordDTO
             {
-                int recordId = Convert.ToInt32(row["RecordID"]);
-                list.Add(new MedicalRecordDto
-                {
-                    RecordID = recordId,
-                    RecordUUID = row["RecordUUID"] != DBNull.Value ? Guid.Parse(row["RecordUUID"].ToString()) : Guid.Empty,
-                    PatientUUID = row["PatientUUID"] != DBNull.Value ? Guid.Parse(row["PatientUUID"].ToString()) : Guid.Empty,
-                    Code = "MR-" + recordId.ToString("D5"),
-                    Date = row["CreatedAt"] != DBNull.Value ? Convert.ToDateTime(row["CreatedAt"]) : DateTime.MinValue,
-                    Patient = row["PatientName"].ToString(),
-                    Diagnosis = row["Diagnosis"].ToString(),
-                    Doctor = row["DoctorName"].ToString(),
-                    Status = row["Status"].ToString()
-                });
-            }
-
-            return list;
+                RecordID = record.RecordId,
+                EncounterID = record.EncounterId ?? 0,
+                Diagnosis = record.Diagnosis,
+                Conclusion = record.Conclusion,
+                Notes = record.Notes
+            };
         }
     }
 }
