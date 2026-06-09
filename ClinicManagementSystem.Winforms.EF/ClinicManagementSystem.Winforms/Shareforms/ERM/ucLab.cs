@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTO.Clinical.erm;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,21 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
         public ucLab()
         {
             InitializeComponent();
+        }
+        public void Bind(List<LabHistoryDto> data)
+        {
+            flowLayoutPanel1.Controls.Clear();
+
+            if (data == null) return;
+
+            var sorted = data.OrderByDescending(x => x.CreatedAt).ToList();
+
+            foreach (var item in sorted)
+            {
+                var card = new ucLabCard();
+                card.Bind(item);
+                flowLayoutPanel1.Controls.Add(card);
+            }
         }
     }
 }

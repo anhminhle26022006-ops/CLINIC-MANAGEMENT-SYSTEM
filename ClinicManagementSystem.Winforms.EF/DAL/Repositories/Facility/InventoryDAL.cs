@@ -1,74 +1,35 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
 using DTO;
+using Microsoft.Data.SqlClient;
 using DAL.DataContext;
-using Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Repositories
+namespace DAL
 {
     public class InventoryDAL
     {
         public List<MedicineDTO> GetAllMedicines()
         {
-            using (var context = new ClinicDbContext())
-            {
-                return context.Medicines
-                    .AsNoTracking()
-                    .Select(m => new MedicineDTO
-                    {
-                        MedicineID = m.MedicineID,
-                        Name = m.Name,
-                        Unit = m.Unit,
-                        Price = m.Price ?? 0,
-                        Stock = m.Stock ?? 0,
-                        BatchNumber = m.BatchNumber ?? "",
-                        ExpiryDate = m.ExpiryDate ?? DateTime.MinValue
-                    })
-                    .ToList();
-            }
-        }
+            List<MedicineDTO> list = new List<MedicineDTO>();
+            string query = "SELECT MedicineID, Name, Stock, Price, Unit, BatchNumber, ExpiryDate FROM Medicines";
 
-        public bool InsertMedicine(MedicineDTO medicine)
-        {
-            using (var context = new ClinicDbContext())
+            DataTable dt = DatabaseHelper.ExecuteQuery(query);
+            foreach (DataRow row in dt.Rows)
             {
-                var newMed = new Medicine
+                list.Add(new MedicineDTO
                 {
-                    Name = medicine.Name,
-                    Unit = medicine.Unit,
-                    Price = medicine.Price,
-                    Stock = medicine.Stock,
-                    BatchNumber = medicine.BatchNumber,
-                    ExpiryDate = medicine.ExpiryDate == DateTime.MinValue ? (DateTime?)null : medicine.ExpiryDate
-                };
-                context.Medicines.Add(newMed);
-                return context.SaveChanges() > 0;
+                    MedicineID = Convert.ToInt32(row["MedicineID"]),
+                    Name = row["Name"].ToString(),
+                    Stock = Convert.ToInt32(row["Stock"]),
+                    Price = Convert.ToDecimal(row["Price"]),
+                    Unit = row["Unit"] != DBNull.Value ? row["Unit"].ToString() : "",
+                    BatchNumber = row["BatchNumber"] != DBNull.Value ? row["BatchNumber"].ToString() : "",
+                    ExpiryDate = row["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(row["ExpiryDate"]) : DateTime.MinValue
+                });
             }
-        }
 
-        public bool UpdateStock(int medicineId, int qty)
-        {
-            using (var context = new ClinicDbContext())
-            {
-                var med = context.Medicines.Find(medicineId);
-                if (med != null)
-                {
-                    med.Stock = (med.Stock ?? 0) - qty;
-                    return context.SaveChanges() > 0;
-                }
-                return false;
-            }
-        }
-
-        public int GetStock(int medicineId)
-        {
-            using (var context = new ClinicDbContext())
-            {
-                var med = context.Medicines.Find(medicineId);
-                return med?.Stock ?? 0;
-            }
+            return list;
         }
     }
 }

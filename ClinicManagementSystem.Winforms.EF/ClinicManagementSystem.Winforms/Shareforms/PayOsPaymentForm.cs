@@ -24,6 +24,11 @@ namespace ClinicManagementSystem.Winforms.Forms
     {
         private const int ApiTimeoutSeconds = 60;
         private const string DefaultBackendBaseUrl = "http://localhost:5000";
+        private readonly string customerName;
+        private readonly decimal amount;
+        private readonly int encounterId;
+
+        
 
         private CancellationTokenSource apiRequestCancellation;
         private bool isClosing;
@@ -33,6 +38,25 @@ namespace ClinicManagementSystem.Winforms.Forms
         private Label lblPaymentStatus;
         private TextBox txtCheckoutUrl;
         private Button btnCheckStatus;
+        private LinkLabel lnkCheckoutUrl;
+        private Label lblWebhookStatus;
+        private Button btnOpenCheckout;
+        private Button btnCopyCheckout;
+        private Button btnCancelPayment;
+
+        public bool IsPaymentPaid { get; private set; }
+
+        public PayOsPaymentForm(
+            int encounterId,
+            string customerName,
+            decimal amount)
+        {
+            InitializeComponent();
+
+            this.encounterId = encounterId;
+            this.customerName = customerName;
+            this.amount = amount;
+        }
 
         public PayOsPaymentForm()
         {
@@ -42,11 +66,20 @@ namespace ClinicManagementSystem.Winforms.Forms
         private void PayOsPaymentForm_Load(object sender, EventArgs e)
         {
             ConfigurePayOsUi();
+
             paymentStatusTimer = new System.Windows.Forms.Timer
             {
                 Interval = 5000
             };
-            paymentStatusTimer.Tick += async (s, args) => await CheckCurrentPaymentStatusAsync(false);
+
+            paymentStatusTimer.Tick += async (s, args)
+                => await CheckCurrentPaymentStatusAsync(false);
+
+            // ===== Tự điền thông tin =====
+            txtTenTaiKhoan.Text = customerName;
+            txtSoTien.Text = amount.ToString("0");
+
+            txtNoiDung.Text = $"HD{encounterId}";
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -87,27 +120,31 @@ namespace ClinicManagementSystem.Winforms.Forms
             button1.Visible = false;
 
             button2.Location = new Point(270, 235);
+            groupBox1.Size = new Size(405, 430);
+            groupBox2.Size = new Size(487, 430);
+            ClientSize = new Size(949, 530);
 
             var checkoutLabel = new Label
             {
                 AutoSize = true,
-                Location = new Point(53, 306),
+                Location = new Point(53, 315),
                 Name = "labelCheckout",
                 Size = new Size(65, 14),
                 Text = "Checkout:"
             };
             txtCheckoutUrl = new TextBox
             {
-                Location = new Point(134, 303),
+                Location = new Point(134, 312),
                 Name = "txtCheckoutUrl",
                 ReadOnly = true,
-                Size = new Size(287, 22)
+                Size = new Size(287, 22),
+                TabStop = false
             };
             lblPaymentStatus = new Label
             {
                 AutoSize = true,
                 ForeColor = Color.DimGray,
-                Location = new Point(134, 333),
+                Location = new Point(134, 342),
                 Name = "lblPaymentStatus",
                 Size = new Size(120, 14),
                 Text = "Chưa tạo thanh toán"
@@ -115,18 +152,84 @@ namespace ClinicManagementSystem.Winforms.Forms
             btnCheckStatus = new Button
             {
                 Enabled = false,
-                Location = new Point(270, 328),
+                Location = new Point(134, 366),
                 Name = "btnCheckStatus",
-                Size = new Size(151, 25),
+                Size = new Size(139, 28),
                 Text = "Kiểm tra trạng thái",
                 UseVisualStyleBackColor = true
             };
             btnCheckStatus.Click += async (s, e) => await CheckCurrentPaymentStatusAsync(true);
+            btnCancelPayment = new Button
+            {
+                Enabled = false,
+                ForeColor = Color.Firebrick,
+                Location = new Point(282, 366),
+                Name = "btnCancelPayment",
+                Size = new Size(139, 28),
+                Text = "Hủy thanh toán",
+                UseVisualStyleBackColor = true
+            };
+            btnCancelPayment.Click += async (s, e) => await CancelCurrentPaymentAsync();
+
+            var linkTitle = new Label
+            {
+                AutoSize = true,
+                Location = new Point(12, 333),
+                Name = "lblQrCheckoutTitle",
+                Text = "Link PayOS:"
+            };
+            lnkCheckoutUrl = new LinkLabel
+            {
+                AutoEllipsis = true,
+                Enabled = false,
+                Location = new Point(88, 330),
+                Name = "lnkCheckoutUrl",
+                Size = new Size(300, 23),
+                TabStop = true,
+                Text = "Chưa tạo link"
+            };
+            lnkCheckoutUrl.LinkClicked += (s, e) => OpenCheckoutUrl();
+
+            btnOpenCheckout = new Button
+            {
+                Enabled = false,
+                Location = new Point(15, 358),
+                Name = "btnOpenCheckout",
+                Size = new Size(114, 28),
+                Text = "Mở link",
+                UseVisualStyleBackColor = true
+            };
+            btnOpenCheckout.Click += (s, e) => OpenCheckoutUrl();
+            btnCopyCheckout = new Button
+            {
+                Enabled = false,
+                Location = new Point(139, 358),
+                Name = "btnCopyCheckout",
+                Size = new Size(114, 28),
+                Text = "Copy link",
+                UseVisualStyleBackColor = true
+            };
+            btnCopyCheckout.Click += (s, e) => CopyCheckoutUrl();
+            lblWebhookStatus = new Label
+            {
+                AutoEllipsis = true,
+                ForeColor = Color.DimGray,
+                Location = new Point(15, 394),
+                Name = "lblWebhookStatus",
+                Size = new Size(370, 24),
+                Text = "Webhook: chờ PayOS gửi sự kiện PAID/CANCELLED về backend"
+            };
 
             groupBox2.Controls.Add(checkoutLabel);
             groupBox2.Controls.Add(txtCheckoutUrl);
             groupBox2.Controls.Add(lblPaymentStatus);
             groupBox2.Controls.Add(btnCheckStatus);
+            groupBox2.Controls.Add(btnCancelPayment);
+            groupBox1.Controls.Add(linkTitle);
+            groupBox1.Controls.Add(lnkCheckoutUrl);
+            groupBox1.Controls.Add(btnOpenCheckout);
+            groupBox1.Controls.Add(btnCopyCheckout);
+            groupBox1.Controls.Add(lblWebhookStatus);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -224,9 +327,12 @@ namespace ClinicManagementSystem.Winforms.Forms
 
             currentOrderCode = dataResult.data.orderCode == 0 ? orderCode : dataResult.data.orderCode;
             txtCheckoutUrl.Text = dataResult.data.checkoutUrl ?? "";
+            SetCheckoutLink(dataResult.data.checkoutUrl);
             RenderPaymentQr(dataResult.data);
             SetPaymentStatus($"Trạng thái: {dataResult.data.status ?? "PENDING"}", Color.DarkGoldenrod);
+            SetWebhookStatus("Webhook: đang chờ PayOS gửi PAID/CANCELLED về backend", Color.DarkGoldenrod);
             btnCheckStatus.Enabled = true;
+            btnCancelPayment.Enabled = true;
             paymentStatusTimer.Start();
         }
 
@@ -334,11 +440,21 @@ namespace ClinicManagementSystem.Winforms.Forms
                         : Color.DarkGoldenrod;
 
                 SetPaymentStatus($"Trạng thái: {status}", color);
+                SetWebhookStatus(BuildWebhookStatusText(status), color);
 
                 if (status.Equals("PAID", StringComparison.OrdinalIgnoreCase) ||
                     status.IndexOf("CANCEL", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     paymentStatusTimer.Stop();
+                    btnCancelPayment.Enabled = false;
+                }
+
+                if (status.Equals("PAID", StringComparison.OrdinalIgnoreCase))
+                {
+                    IsPaymentPaid = true;
+                    DialogResult = DialogResult.OK;
+                    Close();
+                    return;
                 }
 
                 if (showMessage)
@@ -394,6 +510,97 @@ namespace ClinicManagementSystem.Winforms.Forms
                 $"/v2/payment-requests/{orderCode}",
                 Method.Get,
                 null,
+                cancellationToken,
+                RequireSetting("PayOSClientId"),
+                RequireSetting("PayOSApiKey"));
+        }
+
+        private async Task CancelCurrentPaymentAsync()
+        {
+            if (currentOrderCode == null || isClosing || IsDisposed)
+            {
+                MessageBox.Show("Chưa có đơn PayOS để hủy.", "PayOS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                $"Hủy đơn PayOS {currentOrderCode.Value}?\nSau khi hủy, PayOS sẽ gửi webhook CANCELLED về backend nếu webhook đang chạy.",
+                "Hủy thanh toán PayOS",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm != DialogResult.Yes)
+            {
+                return;
+            }
+
+            btnCancelPayment.Enabled = false;
+            Cursor = Cursors.WaitCursor;
+            SetPaymentStatus("Đang hủy thanh toán...", Color.DimGray);
+            SetWebhookStatus("Webhook: đang chờ sự kiện hủy từ PayOS", Color.DimGray);
+
+            try
+            {
+                var response = await CancelPaymentAsync(currentOrderCode.Value, CancellationToken.None);
+                var status = response?.data?.status;
+                if (string.IsNullOrWhiteSpace(status))
+                {
+                    status = "CANCELLED";
+                }
+
+                SetPaymentStatus($"Trạng thái: {status}", Color.Firebrick);
+                SetWebhookStatus(BuildWebhookStatusText(status), Color.Firebrick);
+                paymentStatusTimer.Stop();
+                await CheckCurrentPaymentStatusAsync(false);
+            }
+            catch (Exception ex)
+            {
+                btnCancelPayment.Enabled = true;
+                SetPaymentStatus("Hủy thanh toán thất bại", Color.Firebrick);
+                SetWebhookStatus("Webhook: chưa nhận được sự kiện hủy", Color.Firebrick);
+                MessageBox.Show($"Không hủy được thanh toán PayOS.\n{ex.Message}", "PayOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
+        }
+
+        private async Task<PayOsApiResponse> CancelPaymentAsync(long orderCode, CancellationToken cancellationToken)
+        {
+            var backendBaseUrl = GetCleanBackendBaseUrl();
+            if (!string.IsNullOrWhiteSpace(backendBaseUrl))
+            {
+                try
+                {
+                    return await ExecuteJsonAsync(
+                        backendBaseUrl.TrimEnd('/'),
+                        $"/api/payos/payments/{orderCode}/cancel",
+                        Method.Post,
+                        new { cancellationReason = "Demo hủy thanh toán từ WinForms" },
+                        cancellationToken);
+                }
+                catch (InvalidOperationException ex) when (IsNotFoundResponse(ex))
+                {
+                    if (!AllowDirectPayOsFallback())
+                    {
+                        throw;
+                    }
+
+                    Debug.WriteLine($"Backend cancel route is not deployed yet, fallback to direct payOS: {ex.Message}");
+                }
+            }
+
+            if (!AllowDirectPayOsFallback())
+            {
+                throw new InvalidOperationException("Backend chưa có route hủy PayOS /api/payos/payments/{orderCode}/cancel hoặc chưa sẵn sàng.");
+            }
+
+            return await ExecuteJsonAsync(
+                "https://api-merchant.payos.vn",
+                $"/v2/payment-requests/{orderCode}/cancel",
+                Method.Post,
+                new { cancellationReason = "Demo hủy thanh toán từ WinForms" },
                 cancellationToken,
                 RequireSetting("PayOSClientId"),
                 RequireSetting("PayOSApiKey"));
@@ -494,6 +701,89 @@ namespace ClinicManagementSystem.Winforms.Forms
 
             lblPaymentStatus.Text = text;
             lblPaymentStatus.ForeColor = color;
+        }
+
+        private void SetWebhookStatus(string text, Color color)
+        {
+            if (lblWebhookStatus == null)
+            {
+                return;
+            }
+
+            lblWebhookStatus.Text = text;
+            lblWebhookStatus.ForeColor = color;
+        }
+
+        private void SetCheckoutLink(string checkoutUrl)
+        {
+            var hasUrl = !string.IsNullOrWhiteSpace(checkoutUrl);
+            if (lnkCheckoutUrl != null)
+            {
+                lnkCheckoutUrl.Text = hasUrl ? checkoutUrl : "Không có checkout URL";
+                lnkCheckoutUrl.Enabled = hasUrl;
+            }
+
+            if (btnOpenCheckout != null)
+            {
+                btnOpenCheckout.Enabled = hasUrl;
+            }
+
+            if (btnCopyCheckout != null)
+            {
+                btnCopyCheckout.Enabled = hasUrl;
+            }
+        }
+
+        private void OpenCheckoutUrl()
+        {
+            var url = txtCheckoutUrl?.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                MessageBox.Show("Chưa có link PayOS để mở.", "PayOS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Không mở được link PayOS.\n{ex.Message}", "PayOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CopyCheckoutUrl()
+        {
+            var url = txtCheckoutUrl?.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                MessageBox.Show("Chưa có link PayOS để copy.", "PayOS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(url);
+            SetWebhookStatus("Đã copy link PayOS. Mở link rồi bấm hủy để demo webhook CANCELLED.", Color.RoyalBlue);
+        }
+
+        private static string BuildWebhookStatusText(string status)
+        {
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                return "Webhook: chưa có trạng thái từ PayOS";
+            }
+
+            if (status.Equals("PAID", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Webhook: backend đã nhận/đang xử lý sự kiện PAID";
+            }
+
+            if (status.IndexOf("CANCEL", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return "Webhook: backend đã nhận/đang xử lý sự kiện CANCELLED";
+            }
+
+            return $"Webhook: đang chờ sự kiện cuối, trạng thái hiện tại {status}";
         }
 
         private static long GenerateOrderCode()

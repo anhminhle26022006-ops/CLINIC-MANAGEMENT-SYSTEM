@@ -49,13 +49,13 @@
             btnBilling = new Button();
             btnFollowup = new Button();
             pnlContent = new Panel();
-            ucOverview1 = new ucOverview();
-            ucHistory1 = new ucHistory();
-            ucPrescription1 = new ucPrescription();
-            ucLab1 = new ucLab();
-            ucImaging1 = new ucImaging();
-            ucBilling1 = new ucBilling();
             ucFollowup1 = new ucFollowup();
+            ucBilling1 = new ucBilling();
+            ucImaging1 = new ucImaging();
+            ucLab1 = new ucLab();
+            ucPrescription1 = new ucPrescription();
+            ucHistory1 = new ucHistory();
+            ucOverview1 = new ucOverview();
             tableLayoutPanel1.SuspendLayout();
             pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picPatient).BeginInit();
@@ -222,10 +222,11 @@
             btnOverview.ImageAlign = ContentAlignment.MiddleLeft;
             btnOverview.Location = new Point(3, 3);
             btnOverview.Name = "btnOverview";
-            btnOverview.Size = new Size(238, 42);
+            btnOverview.Size = new Size(238, 39);
             btnOverview.TabIndex = 0;
             btnOverview.Text = "Tổng quan";
             btnOverview.UseVisualStyleBackColor = true;
+            btnOverview.Click += btnOverview_Click;
             // 
             // btnHistory
             // 
@@ -234,10 +235,11 @@
             btnHistory.ImageAlign = ContentAlignment.MiddleLeft;
             btnHistory.Location = new Point(247, 3);
             btnHistory.Name = "btnHistory";
-            btnHistory.Size = new Size(225, 42);
+            btnHistory.Size = new Size(225, 39);
             btnHistory.TabIndex = 1;
             btnHistory.Text = "Lịch sử khám";
             btnHistory.UseVisualStyleBackColor = true;
+            btnHistory.Click += btnHistory_Click;
             // 
             // btnPrescription
             // 
@@ -246,10 +248,11 @@
             btnPrescription.ImageAlign = ContentAlignment.MiddleLeft;
             btnPrescription.Location = new Point(478, 3);
             btnPrescription.Name = "btnPrescription";
-            btnPrescription.Size = new Size(193, 42);
+            btnPrescription.Size = new Size(193, 39);
             btnPrescription.TabIndex = 3;
             btnPrescription.Text = "Toa thuốc";
             btnPrescription.UseVisualStyleBackColor = true;
+            btnPrescription.Click += btnPrescription_Click;
             // 
             // btnLab
             // 
@@ -258,10 +261,11 @@
             btnLab.ImageAlign = ContentAlignment.MiddleLeft;
             btnLab.Location = new Point(677, 3);
             btnLab.Name = "btnLab";
-            btnLab.Size = new Size(204, 42);
+            btnLab.Size = new Size(204, 39);
             btnLab.TabIndex = 4;
             btnLab.Text = "Xét nghiệm";
             btnLab.UseVisualStyleBackColor = true;
+            btnLab.Click += btnLab_Click;
             // 
             // btnImaging
             // 
@@ -270,10 +274,11 @@
             btnImaging.ImageAlign = ContentAlignment.MiddleLeft;
             btnImaging.Location = new Point(887, 3);
             btnImaging.Name = "btnImaging";
-            btnImaging.Size = new Size(290, 42);
+            btnImaging.Size = new Size(290, 39);
             btnImaging.TabIndex = 5;
-            btnImaging.Text = "Chuẩn doán hình ảnh";
+            btnImaging.Text = "Chẩn đoán hình ảnh";
             btnImaging.UseVisualStyleBackColor = true;
+            btnImaging.Click += btnImaging_Click;
             // 
             // btnBilling
             // 
@@ -282,22 +287,24 @@
             btnBilling.ImageAlign = ContentAlignment.MiddleLeft;
             btnBilling.Location = new Point(1183, 3);
             btnBilling.Name = "btnBilling";
-            btnBilling.Size = new Size(180, 42);
+            btnBilling.Size = new Size(180, 39);
             btnBilling.TabIndex = 6;
             btnBilling.Text = "Thanh toán";
             btnBilling.UseVisualStyleBackColor = true;
+            btnBilling.Click += btnBilling_Click;
             // 
             // btnFollowup
             // 
             btnFollowup.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFollowup.Image = Properties.Resources.Screenshot_2026_06_07_162425;
             btnFollowup.ImageAlign = ContentAlignment.MiddleLeft;
-            btnFollowup.Location = new Point(3, 51);
+            btnFollowup.Location = new Point(3, 48);
             btnFollowup.Name = "btnFollowup";
             btnFollowup.Size = new Size(178, 39);
             btnFollowup.TabIndex = 2;
             btnFollowup.Text = "Tái khám";
             btnFollowup.UseVisualStyleBackColor = true;
+            btnFollowup.Click += btnFollowup_Click;
             // 
             // pnlContent
             // 
@@ -314,21 +321,37 @@
             pnlContent.Size = new Size(1479, 498);
             pnlContent.TabIndex = 2;
             // 
-            // ucOverview1
+            // ucFollowup1
             // 
-            ucOverview1.Dock = DockStyle.Fill;
-            ucOverview1.Location = new Point(0, 0);
-            ucOverview1.Name = "ucOverview1";
-            ucOverview1.Size = new Size(1479, 498);
-            ucOverview1.TabIndex = 0;
+            ucFollowup1.Dock = DockStyle.Fill;
+            ucFollowup1.Location = new Point(0, 0);
+            ucFollowup1.Name = "ucFollowup1";
+            ucFollowup1.Size = new Size(1479, 498);
+            ucFollowup1.TabIndex = 6;
             // 
-            // ucHistory1
+            // ucBilling1
             // 
-            ucHistory1.Dock = DockStyle.Fill;
-            ucHistory1.Location = new Point(0, 0);
-            ucHistory1.Name = "ucHistory1";
-            ucHistory1.Size = new Size(1479, 498);
-            ucHistory1.TabIndex = 1;
+            ucBilling1.Dock = DockStyle.Fill;
+            ucBilling1.Location = new Point(0, 0);
+            ucBilling1.Name = "ucBilling1";
+            ucBilling1.Size = new Size(1479, 498);
+            ucBilling1.TabIndex = 5;
+            // 
+            // ucImaging1
+            // 
+            ucImaging1.Dock = DockStyle.Fill;
+            ucImaging1.Location = new Point(0, 0);
+            ucImaging1.Name = "ucImaging1";
+            ucImaging1.Size = new Size(1479, 498);
+            ucImaging1.TabIndex = 4;
+            // 
+            // ucLab1
+            // 
+            ucLab1.Dock = DockStyle.Fill;
+            ucLab1.Location = new Point(0, 0);
+            ucLab1.Name = "ucLab1";
+            ucLab1.Size = new Size(1479, 498);
+            ucLab1.TabIndex = 3;
             // 
             // ucPrescription1
             // 
@@ -339,37 +362,21 @@
             ucPrescription1.Size = new Size(1479, 498);
             ucPrescription1.TabIndex = 2;
             // 
-            // ucLab1
+            // ucHistory1
             // 
-            ucLab1.Dock = DockStyle.Fill;
-            ucLab1.Location = new Point(0, 0);
-            ucLab1.Name = "ucLab1";
-            ucLab1.Size = new Size(1479, 498);
-            ucLab1.TabIndex = 3;
+            ucHistory1.Dock = DockStyle.Fill;
+            ucHistory1.Location = new Point(0, 0);
+            ucHistory1.Name = "ucHistory1";
+            ucHistory1.Size = new Size(1479, 498);
+            ucHistory1.TabIndex = 1;
             // 
-            // ucImaging1
+            // ucOverview1
             // 
-            ucImaging1.Dock = DockStyle.Fill;
-            ucImaging1.Location = new Point(0, 0);
-            ucImaging1.Name = "ucImaging1";
-            ucImaging1.Size = new Size(1479, 498);
-            ucImaging1.TabIndex = 4;
-            // 
-            // ucBilling1
-            // 
-            ucBilling1.Dock = DockStyle.Fill;
-            ucBilling1.Location = new Point(0, 0);
-            ucBilling1.Name = "ucBilling1";
-            ucBilling1.Size = new Size(1479, 498);
-            ucBilling1.TabIndex = 5;
-            // 
-            // ucFollowup1
-            // 
-            ucFollowup1.Dock = DockStyle.Fill;
-            ucFollowup1.Location = new Point(0, 0);
-            ucFollowup1.Name = "ucFollowup1";
-            ucFollowup1.Size = new Size(1479, 498);
-            ucFollowup1.TabIndex = 6;
+            ucOverview1.Dock = DockStyle.Fill;
+            ucOverview1.Location = new Point(0, 0);
+            ucOverview1.Name = "ucOverview1";
+            ucOverview1.Size = new Size(1479, 498);
+            ucOverview1.TabIndex = 0;
             // 
             // ERMform
             // 

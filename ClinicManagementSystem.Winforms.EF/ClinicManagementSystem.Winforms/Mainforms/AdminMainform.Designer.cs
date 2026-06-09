@@ -184,7 +184,7 @@
             btnAdvancedAnalysis.Padding = new Padding(18, 0, 0, 0);
             btnAdvancedAnalysis.Size = new Size(282, 65);
             btnAdvancedAnalysis.TabIndex = 8;
-            btnAdvancedAnalysis.Text = "Phân tích nâng cao";
+            btnAdvancedAnalysis.Text = "Quản lý tài khoản";
             btnAdvancedAnalysis.TextAlign = ContentAlignment.MiddleLeft;
             btnAdvancedAnalysis.UseVisualStyleBackColor = false;
             // 
@@ -581,7 +581,7 @@
             Font = new Font("Segoe UI", 9F);
             Margin = new Padding(3, 4, 3, 4);
             Name = "AdminMainform";
-            Load += ucTechnicianDashboard_Load;
+            Load += AdminMainform_Load;
             panelSidebar.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             panel10.ResumeLayout(false);

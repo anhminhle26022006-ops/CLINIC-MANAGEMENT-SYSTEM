@@ -198,6 +198,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnReminder.Text = "Nhắc lịch tái khám";
             btnReminder.TextAlign = ContentAlignment.MiddleLeft;
             btnReminder.UseVisualStyleBackColor = false;
+            btnReminder.Click += btnReminder_Click;
             // 
             // panel7
             // 
@@ -255,6 +256,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnToday.Text = "Lịch khám hôm nay";
             btnToday.TextAlign = ContentAlignment.MiddleLeft;
             btnToday.UseVisualStyleBackColor = false;
+            btnToday.Click += btnToday_Click;
             // 
             // panel5
             // 
@@ -457,6 +459,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnLogout.TabIndex = 8;
             btnLogout.Text = "Đăng xuất";
             btnLogout.UseVisualStyleBackColor = false;
+            btnLogout.Click += btnLogout_Click;
             // 
             // panelTopbar
             // 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DAL.Repositories;
 using DTO;
 
@@ -22,6 +23,11 @@ namespace BUS.Services
             return dal.Authenticate(username.Trim(), password);
         }
 
+        public List<UserDTO> GetAllUsers()
+        {
+            return dal.GetAllUsers();
+        }
+
         public bool CreateUser(UserDTO user)
         {
             if (user == null) return false;
@@ -30,6 +36,26 @@ namespace BUS.Services
                 return false;
             }
             return dal.AddUser(user);
+        }
+
+        public bool UpdateUser(UserDTO user)
+        {
+            if (user == null || user.UserID <= 0)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Password) || string.IsNullOrWhiteSpace(user.Role))
+            {
+                return false;
+            }
+
+            return dal.UpdateUser(user);
+        }
+
+        public bool SetActive(int userId, bool isActive)
+        {
+            return userId > 0 && dal.SetActive(userId, isActive);
         }
     }
 }

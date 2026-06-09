@@ -218,7 +218,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             this.cboCategory.SelectedIndex = 0;
             this.cboStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboStatus.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.cboStatus.Items.AddRange(new object[] { "Tất cả trạng thái", "Kháng sinh", "Giảm đau", "Kháng viêm", "Vitamin" });
+            this.cboStatus.Items.AddRange(new object[] {
+            "Tất cả trạng thái",
+            "Còn hàng",
+            "Sắp hết",
+            "Hết hàng"});
             this.cboStatus.Location = new System.Drawing.Point(790, 24);
             this.cboStatus.Size = new System.Drawing.Size(360, 31);
             this.cboStatus.SelectedIndex = 0;

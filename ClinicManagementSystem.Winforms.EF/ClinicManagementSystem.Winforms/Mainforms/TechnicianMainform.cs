@@ -6,6 +6,8 @@ using System.Linq;
 using System.Windows.Forms;
 using ClinicManagementSystem.Winforms;
 using BUS.Services;
+using CMS.Core.Identity;
+using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
 using DTO;
 using DAL;
 using ClinicManagementSystem.Winforms.UserControls.Technician;
@@ -130,7 +132,7 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
             lblPageTitle.Text = "Ca làm việc";
             lblPageSubtitle.Text = "Quản lý lịch trình làm việc và lịch trực";
             SetActiveNav(btnNavShifts);
-            LoadContentView(new ucTechnicianShifts());
+            LoadContentControl(new RoleShiftCalendar(currentUser, Role.Technician));
         }
 
         private void ShowRecords(int preselectedRequestId = 0)
@@ -158,6 +160,15 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
             view.Dock = DockStyle.Fill;
             view.NavigateRequested += ContentView_NavigateRequested;
 
+            contentPanel.Controls.Add(view);
+            contentPanel.ResumeLayout();
+        }
+
+        private void LoadContentControl(UserControl view)
+        {
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+            view.Dock = DockStyle.Fill;
             contentPanel.Controls.Add(view);
             contentPanel.ResumeLayout();
         }

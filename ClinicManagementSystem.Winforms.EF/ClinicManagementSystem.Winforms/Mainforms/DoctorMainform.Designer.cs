@@ -56,6 +56,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnClose = new Button();
             lblBrandSub = new Label();
             panelTopbar = new Panel();
+            btnSyncCloud = new Button();
             tableLayoutPanel2 = new TableLayoutPanel();
             panel11 = new Panel();
             lblPageTitle = new Label();
@@ -406,12 +407,30 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             panelTopbar.BackColor = Color.White;
             panelTopbar.BorderStyle = BorderStyle.FixedSingle;
             panelTopbar.Controls.Add(tableLayoutPanel2);
+            panelTopbar.Controls.Add(btnSyncCloud);
             panelTopbar.Dock = DockStyle.Top;
             panelTopbar.Location = new Point(290, 0);
             panelTopbar.Margin = new Padding(3, 4, 3, 4);
             panelTopbar.Name = "panelTopbar";
             panelTopbar.Size = new Size(1370, 101);
             panelTopbar.TabIndex = 1;
+            // 
+            // btnSyncCloud
+            // 
+            btnSyncCloud.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnSyncCloud.BackColor = Color.FromArgb(47, 94, 240);
+            btnSyncCloud.Cursor = Cursors.Hand;
+            btnSyncCloud.FlatAppearance.BorderSize = 0;
+            btnSyncCloud.FlatStyle = FlatStyle.Flat;
+            btnSyncCloud.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnSyncCloud.ForeColor = Color.White;
+            btnSyncCloud.Location = new Point(856, 29);
+            btnSyncCloud.Name = "btnSyncCloud";
+            btnSyncCloud.Size = new Size(156, 42);
+            btnSyncCloud.TabIndex = 1;
+            btnSyncCloud.Text = "Đồng bộ Cloud";
+            btnSyncCloud.UseVisualStyleBackColor = false;
+            btnSyncCloud.Click += btnSyncCloud_Click;
             // 
             // tableLayoutPanel2
             // 
@@ -634,6 +653,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private Button btnQueue;
         private Button btnPharmacy;
         private Panel panel14;
+        private Button btnSyncCloud;
     }
 }
 

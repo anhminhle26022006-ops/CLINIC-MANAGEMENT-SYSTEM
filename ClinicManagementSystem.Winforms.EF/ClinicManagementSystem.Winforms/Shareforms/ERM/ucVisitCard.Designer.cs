@@ -108,7 +108,7 @@
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(120, 25);
             lblTitle.TabIndex = 0;
-            lblTitle.Text = "Chuẩn đoán";
+            lblTitle.Text = "Chẩn đoán";
             // 
             // lblDiagnosis
             // 

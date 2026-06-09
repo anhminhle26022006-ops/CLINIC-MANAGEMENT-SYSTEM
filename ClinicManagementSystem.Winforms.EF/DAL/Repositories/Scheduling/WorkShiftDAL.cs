@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
 using DAL.DataContext;
 using DAL.Interfaces;
 using DTO;
-using Microsoft.EntityFrameworkCore;
-using Models;
+using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
@@ -13,41 +12,43 @@ namespace DAL.Repositories
     {
         public List<WorkShiftDTO> GetAll()
         {
-            using ClinicDbContext context = new ClinicDbContext();
-            return context.Shifts
-                .AsNoTracking()
-                .OrderBy(s => s.StartTime)
-                .Select(s => Map(s))
-                .ToList();
+            if (!SchemaHelper.TableExists("Shifts"))
+            {
+                return new List<WorkShiftDTO>();
+            }
+
+            string query = "SELECT ShiftID, Name AS ShiftName, StartTime, EndTime FROM Shifts ORDER BY StartTime";
+            return Map(DatabaseHelper.ExecuteQuery(query));
         }
 
         public WorkShiftDTO GetById(int shiftId)
         {
-            if (shiftId <= 0)
+            if (!SchemaHelper.TableExists("Shifts") || shiftId <= 0)
             {
                 return null;
             }
 
-            using ClinicDbContext context = new ClinicDbContext();
-            Shift shift = context.Shifts
-                .AsNoTracking()
-                .FirstOrDefault(s => s.ShiftID == shiftId);
-            return shift == null ? null : Map(shift);
+            string query = "SELECT ShiftID, Name AS ShiftName, StartTime, EndTime FROM Shifts WHERE ShiftID = @ShiftID";
+            List<WorkShiftDTO> list = Map(DatabaseHelper.ExecuteQuery(query, new[]
+            {
+                new SqlParameter("@ShiftID", shiftId)
+            }));
+            return list.Count > 0 ? list[0] : null;
         }
 
         public WorkShiftDTO GetByName(string shiftName)
         {
-            if (string.IsNullOrWhiteSpace(shiftName))
+            if (!SchemaHelper.TableExists("Shifts") || string.IsNullOrWhiteSpace(shiftName))
             {
                 return null;
             }
 
-            string name = shiftName.Trim();
-            using ClinicDbContext context = new ClinicDbContext();
-            Shift shift = context.Shifts
-                .AsNoTracking()
-                .FirstOrDefault(s => s.Name == name);
-            return shift == null ? null : Map(shift);
+            string query = "SELECT ShiftID, Name AS ShiftName, StartTime, EndTime FROM Shifts WHERE Name = @ShiftName";
+            List<WorkShiftDTO> list = Map(DatabaseHelper.ExecuteQuery(query, new[]
+            {
+                new SqlParameter("@ShiftName", shiftName.Trim())
+            }));
+            return list.Count > 0 ? list[0] : null;
         }
 
         public int GetOrCreateShiftId(string shiftName)
@@ -58,26 +59,31 @@ namespace DAL.Repositories
                 return existing.ShiftID;
             }
 
+            if (!SchemaHelper.TableExists("Shifts"))
+            {
+                return 0;
+            }
+
             TimeSpan start;
             TimeSpan end;
             GetDefaultTime(shiftName, out start, out end);
 
-            using ClinicDbContext context = new ClinicDbContext();
-            Shift shift = new Shift
+            string query = @"
+                INSERT INTO Shifts(Name, StartTime, EndTime)
+                OUTPUT inserted.ShiftID
+                VALUES(@ShiftName, @StartTime, @EndTime)";
+            object result = DatabaseHelper.ExecuteScalar(query, new[]
             {
-                Name = shiftName.Trim(),
-                StartTime = start,
-                EndTime = end
-            };
-            context.Shifts.Add(shift);
-            context.SaveChanges();
-            return shift.ShiftID;
+                new SqlParameter("@ShiftName", shiftName.Trim()),
+                new SqlParameter("@StartTime", start),
+                new SqlParameter("@EndTime", end)
+            });
+            return Convert.ToInt32(result);
         }
 
         public bool Exists(int shiftId)
         {
-            using ClinicDbContext context = new ClinicDbContext();
-            return shiftId > 0 && context.Shifts.Any(s => s.ShiftID == shiftId);
+            return GetById(shiftId) != null;
         }
 
         private static void GetDefaultTime(string shiftName, out TimeSpan start, out TimeSpan end)
@@ -101,15 +107,20 @@ namespace DAL.Repositories
             end = new TimeSpan(11, 30, 0);
         }
 
-        private static WorkShiftDTO Map(Shift shift)
+        private static List<WorkShiftDTO> Map(DataTable table)
         {
-            return new WorkShiftDTO
+            List<WorkShiftDTO> list = new List<WorkShiftDTO>();
+            foreach (DataRow row in table.Rows)
             {
-                ShiftID = shift.ShiftID,
-                ShiftName = shift.Name,
-                StartTime = shift.StartTime ?? TimeSpan.Zero,
-                EndTime = shift.EndTime ?? TimeSpan.Zero
-            };
+                list.Add(new WorkShiftDTO
+                {
+                    ShiftID = Convert.ToInt32(row["ShiftID"]),
+                    ShiftName = row["ShiftName"].ToString(),
+                    StartTime = row["StartTime"] != DBNull.Value ? (TimeSpan)row["StartTime"] : TimeSpan.Zero,
+                    EndTime = row["EndTime"] != DBNull.Value ? (TimeSpan)row["EndTime"] : TimeSpan.Zero
+                });
+            }
+            return list;
         }
     }
 }

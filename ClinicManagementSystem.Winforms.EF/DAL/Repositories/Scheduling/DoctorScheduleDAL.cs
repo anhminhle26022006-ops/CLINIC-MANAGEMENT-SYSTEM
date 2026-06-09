@@ -1,129 +1,159 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using DTO;
+using System.Text;
+using System.Threading.Tasks;
 using DAL.DataContext;
-using Models;
-using Microsoft.EntityFrameworkCore;
+using DTO;
+using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
     public class DoctorScheduleDAL
     {
-        public List<DoctorScheduleDTO> GetSchedules(int doctorId, DateTime date)
-        {
-            using (var context = new ClinicDbContext())
-            {
-                var day = date.Date;
-                return context.DoctorSchedules
-                    .AsNoTracking()
-                    .Where(s => s.DoctorID == doctorId && s.WorkDate == day)
-                    .Select(s => new DoctorScheduleDTO
-                    {
-                        ScheduleID = s.ScheduleID,
-                        DoctorID = s.DoctorID ?? 0,
-                        WorkDate = s.WorkDate ?? DateTime.MinValue,
-                        StartTime = s.StartTime ?? TimeSpan.Zero,
-                        EndTime = s.EndTime ?? TimeSpan.Zero,
-                        RoomID = s.RoomID ?? 0
-                    })
-                    .ToList();
-            }
-        }
-
         public int? GetRoomIdByDoctor(int doctorId)
         {
-            using (var context = new ClinicDbContext())
+            string query = @"
+        SELECT TOP 1 RoomID
+        FROM DoctorSchedules
+        WHERE DoctorID = @DoctorID";
+
+            SqlParameter[] parameters =
             {
-                return context.DoctorSchedules
-                    .AsNoTracking()
-                    .Where(s => s.DoctorID == doctorId)
-                    .Select(s => s.RoomID)
-                    .FirstOrDefault();
-            }
+        new("@DoctorID", doctorId)
+    };
+
+            object result =
+                DatabaseHelper.ExecuteScalar(
+                    query,
+                    parameters);
+
+            if (result == null ||
+                result == DBNull.Value)
+                return null;
+
+            return Convert.ToInt32(result);
         }
 
-        public DoctorScheduleDTO GetSchedule(int doctorId, DateTime workDate)
+        public DoctorScheduleDTO GetSchedule(
+    int doctorId,
+    DateTime workDate)
         {
-            using (var context = new ClinicDbContext())
+            string query = @"
+        SELECT TOP 1 *
+        FROM DoctorSchedules
+        WHERE DoctorID = @DoctorID
+          AND CAST(WorkDate AS DATE) =
+              CAST(@WorkDate AS DATE)";
+
+            SqlParameter[] parameters =
             {
-                var targetDate = workDate.Date;
-                var s = context.DoctorSchedules
-                    .AsNoTracking()
-                    .FirstOrDefault(x => x.DoctorID == doctorId && x.WorkDate == targetDate);
+        new("@DoctorID", doctorId),
+        new("@WorkDate", workDate)
+    };
 
-                if (s == null) return null;
+            DataTable dt =
+                DatabaseHelper.ExecuteQuery(
+                    query,
+                    parameters);
 
-                return new DoctorScheduleDTO
-                {
-                    ScheduleID = s.ScheduleID,
-                    DoctorID = s.DoctorID ?? 0,
-                    WorkDate = s.WorkDate ?? DateTime.MinValue,
-                    StartTime = s.StartTime ?? TimeSpan.Zero,
-                    EndTime = s.EndTime ?? TimeSpan.Zero,
-                    RoomID = s.RoomID ?? 0
-                };
-            }
+            if (dt.Rows.Count == 0)
+                return null;
+
+            DataRow row = dt.Rows[0];
+
+            return new DoctorScheduleDTO
+            {
+                ScheduleID =
+                    Convert.ToInt32(
+                        row["ScheduleID"]),
+
+                DoctorID =
+                    Convert.ToInt32(
+                        row["DoctorID"]),
+
+                WorkDate =
+                    Convert.ToDateTime(
+                        row["WorkDate"]),
+
+                StartTime =
+                    (TimeSpan)row["StartTime"],
+
+                EndTime =
+                    (TimeSpan)row["EndTime"],
+
+                RoomID =
+                    Convert.ToInt32(
+                        row["RoomID"])
+            };
         }
 
         public int CountActiveRoomsToday()
         {
-            using (var context = new ClinicDbContext())
-            {
-                var today = DateTime.Today;
-                return context.DoctorSchedules
-                    .AsNoTracking()
-                    .Where(s => s.WorkDate == today && s.RoomID != null)
-                    .Select(s => s.RoomID)
-                    .Distinct()
-                    .Count();
-            }
+            string query = @"
+        SELECT COUNT(DISTINCT RoomID)
+        FROM DoctorSchedules
+        WHERE WorkDate = CAST(GETDATE() AS DATE)";
+
+            object result = DatabaseHelper.ExecuteScalar(query);
+
+            return result == null
+                ? 0
+                : Convert.ToInt32(result);
         }
 
         public List<DoctorQueueDTO> GetDoctorQueues()
         {
-            using (var context = new ClinicDbContext())
+            string query = @"
+    SELECT
+    e.EmployeeID,
+    e.FullName,
+    d.DepartmentName,
+    ISNULL(r.RoomCode, '-') AS RoomCode
+FROM Employees e
+INNER JOIN Departments d
+    ON d.DepartmentID = e.DepartmentID
+LEFT JOIN DoctorSchedules ds
+    ON ds.DoctorID = e.EmployeeID
+    AND CAST(ds.WorkDate AS DATE)
+        = CAST(GETDATE() AS DATE)
+LEFT JOIN Rooms r
+    ON r.RoomID = ds.RoomID
+WHERE e.RoleID =
+(
+    SELECT RoleID
+    FROM Roles
+    WHERE RoleName = 'Doctor'
+)";
+
+            DataTable dt =
+                DatabaseHelper.ExecuteQuery(query);
+
+            List<DoctorQueueDTO> list = new();
+
+            foreach (DataRow row in dt.Rows)
             {
-                var today = DateTime.Today;
-
-                var doctorRoleId = context.Roles
-                    .AsNoTracking()
-                    .Where(r => r.RoleName == "Doctor")
-                    .Select(r => r.RoleID)
-                    .FirstOrDefault();
-
-                if (doctorRoleId == 0) return new List<DoctorQueueDTO>();
-
-                var query = from e in context.Employees
-                            join d in context.Departments on e.DepartmentID equals d.DepartmentID
-                            join ds in context.DoctorSchedules.Where(s => s.WorkDate == today) on e.EmployeeID equals ds.DoctorID into dsGroup
-                            from ds in dsGroup.DefaultIfEmpty()
-                            join r in context.Rooms on ds.RoomID equals r.RoomID into rGroup
-                            from r in rGroup.DefaultIfEmpty()
-                            where e.RoleID == doctorRoleId
-                            select new
-                            {
-                                e.EmployeeID,
-                                e.FullName,
-                                d.DepartmentName,
-                                RoomCode = r != null ? r.RoomCode : "-"
-                            };
-
-                var list = new List<DoctorQueueDTO>();
-                foreach (var item in query.ToList())
+                list.Add(new DoctorQueueDTO
                 {
-                    list.Add(new DoctorQueueDTO
-                    {
-                        DoctorId = item.EmployeeID,
-                        DoctorName = item.FullName ?? "",
-                        DepartmentName = item.DepartmentName ?? "",
-                        RoomCode = item.RoomCode ?? "-",
-                        Shift = "Cả ngày"
-                    });
-                }
+                    DoctorId =
+                        Convert.ToInt32(
+                            row["EmployeeID"]),
 
-                return list;
+                    DoctorName =
+                        row["FullName"].ToString(),
+
+                    DepartmentName =
+                        row["DepartmentName"].ToString(),
+
+                    RoomCode =
+                        row["RoomCode"].ToString(),
+
+                    Shift = "Cả ngày"
+                });
             }
+
+            return list;
         }
     }
 }

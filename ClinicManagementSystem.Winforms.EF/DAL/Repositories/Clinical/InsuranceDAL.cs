@@ -1,8 +1,11 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using DAL.DataContext;
 using DTO;
-using Models;
+using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
@@ -10,19 +13,40 @@ namespace DAL.Repositories
     {
         public bool Add(PatientInsuranceDTO insurance)
         {
-            using (var context = new ClinicDbContext())
+            string query = @"
+                INSERT INTO PatientInsurance
+                (
+                    PatientID,
+                    InsuranceNumber,
+                    Provider,
+                    EffectiveDate,
+                    ExpiryDate
+                )
+                VALUES
+                (
+                    @PatientID,
+                    @InsuranceNumber,
+                    @Provider,
+                    @EffectiveDate,
+                    @ExpiryDate
+                )";
+
+            SqlParameter[] parameters =
             {
-                var pi = new PatientInsurance
-                {
-                    PatientID = insurance.PatientID,
-                    InsuranceNumber = insurance.InsuranceNumber,
-                    Provider = insurance.Provider,
-                    EffectiveDate = insurance.EffectiveDate,
-                    ExpiryDate = insurance.ExpiryDate
-                };
-                context.PatientInsurances.Add(pi);
-                return context.SaveChanges() > 0;
-            }
+                new SqlParameter("@PatientID", insurance.PatientID),
+                new SqlParameter("@InsuranceNumber",
+                    (object)insurance.InsuranceNumber ?? DBNull.Value),
+                new SqlParameter("@Provider",
+                    (object)insurance.Provider ?? DBNull.Value),
+                new SqlParameter("@EffectiveDate",
+                    insurance.EffectiveDate),
+                new SqlParameter("@ExpiryDate",
+                    insurance.ExpiryDate)
+            };
+
+            return DatabaseHelper.ExecuteNonQuery(
+                query,
+                parameters) > 0;
         }
     }
 }

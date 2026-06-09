@@ -5,8 +5,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-﻿using BUS.Services;
+using BUS.Services;
+using CMS.Core.Identity;
 using ClinicManagementSystem.Winforms;
+using ClinicManagementSystem.Winforms.Controllers;
+using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
 using ClinicManagementSystem.Winforms.UserControls;
 using ClinicManagementSystem.Winforms.UserControls.reception;
 using DAL;
@@ -41,7 +44,9 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         {
             InitializeComponent();
             layoutReady = true;
-            
+            btnNavOverview.Click += btnNavOverview_Click;
+            btnNavShifts.Click += btnNavShifts_Click;
+
         }
 
         public ReceptionistMainform(UserDTO user) : this()
@@ -58,6 +63,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             try
             {
                 await apiSyncBUS.SyncAsync();
+                ReceptionDemoDataSeeder.EnsureSeeded();
             }
             catch (Exception ex)
             {
@@ -73,6 +79,8 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             {
                 CloseRequested?.Invoke(this, EventArgs.Empty);
             };
+
+            LoadContent(new ReceptionOverview());
         }
 
         private Button CreateSidebarButton(string text, Point location, EventHandler onClick)
@@ -115,13 +123,35 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             control.Dock = DockStyle.Fill;
             contentPanel.Controls.Add(control);
 
+            lblPageTitle.Text = control switch
+            {
+                ReceptionOverview => "Tổng quan",
+                PatientManagement => "Quản lý bệnh nhân",
+                CreateAppointment => "Đặt lịch khám",
+                Payment => "Thanh toán",
+                ScheduleToday => "Lịch khám hôm nay",
+                WaitingList => "Hàng chờ khám",
+                RemindingList => "Nhắc lịch tái khám",
+                RoleShiftCalendar => "Ca làm việc",
+                _ => "Clinic Management System"
+            };
+
             lblPageSubtitle.Text = control switch
             {
+                ReceptionOverview => "Tình hình tiếp nhận trong ngày",
                 PatientManagement => "Quản lý bệnh nhân",
                 CreateAppointment => "Tạo lịch hẹn",
                 ScheduleToday => "Lịch hẹn hôm nay",
+                Payment => "Thanh toán viện phí và PayOS",
+                RemindingList => "Nhắc lịch tái khám",
+                RoleShiftCalendar => "Ca làm việc lễ tân",
                 _ => "Clinic Management System"
             };
+        }
+
+        private void btnNavOverview_Click(object sender, EventArgs e)
+        {
+            LoadContent(new ReceptionOverview());
         }
 
         private void btnPatientManagement_Click(object sender, EventArgs e)
@@ -155,6 +185,11 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         }
 
         private void btnNavShifts_Click(object sender, EventArgs e)
+        {
+            LoadContent(new RoleShiftCalendar(currentUser, Role.Receptionist));
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
         {
 
         }

@@ -1,8 +1,7 @@
 using System;
-using System.Linq;
-using DTO;
 using DAL.DataContext;
-using Models;
+using DTO;
+using Microsoft.Data.SqlClient;
 
 namespace DAL
 {
@@ -10,22 +9,57 @@ namespace DAL
     {
         public bool InsertVitalSigns(VitalSignsDTO vital)
         {
-            using (var context = new ClinicDbContext())
+            string query = @"
+                INSERT INTO VitalSigns
+                (
+                    EncounterID,
+                    Temperature,
+                    BloodPressure,
+                    HeartRate,
+                    SPO2,
+                    Weight,
+                    Notes
+                )
+                VALUES
+                (
+                    @EncounterID,
+                    @Temperature,
+                    @BloodPressure,
+                    @HeartRate,
+                    @SPO2,
+                    @Weight,
+                    @Notes
+                )";
+
+            SqlParameter[] parameters =
             {
-                var vs = new VitalSign
-                {
-                    EncounterID = BitConverter.ToInt32(vital.EncounterID.ToByteArray(), 0),
-                    Temperature = (decimal?)vital.Temperature,
-                    BloodPressure = vital.BloodPressure,
-                    HeartRate = vital.HeartRate,
-                    SPO2 = vital.SPO2,
-                    Weight = (decimal?)vital.Weight,
-                    Notes = vital.Notes,
-                    CreatedAt = DateTime.Now
-                };
-                context.VitalSigns.Add(vs);
-                return context.SaveChanges() > 0;
-            }
+                new SqlParameter("@EncounterID", vital.EncounterID),
+                new SqlParameter("@Temperature", vital.Temperature),
+                new SqlParameter("@BloodPressure", vital.BloodPressure),
+                new SqlParameter("@HeartRate", vital.HeartRate),
+                new SqlParameter("@SPO2", vital.SPO2),
+                new SqlParameter("@Weight", vital.Weight),
+                new SqlParameter("@Notes", (object)vital.Notes ?? DBNull.Value)
+            };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
+
+        public int? GetLatestEncounterIdByPatient(int patientId)
+        {
+            string query = @"
+                SELECT TOP 1 EncounterID
+                FROM Encounters
+                WHERE PatientID = @PatientID
+                ORDER BY CreatedAt DESC, EncounterID DESC";
+
+            object result = DatabaseHelper.ExecuteScalar(
+                query,
+                new[] { new SqlParameter("@PatientID", patientId) });
+
+            return result == null || result == DBNull.Value
+                ? null
+                : Convert.ToInt32(result);
         }
     }
 }

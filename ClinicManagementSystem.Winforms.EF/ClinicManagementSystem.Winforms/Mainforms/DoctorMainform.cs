@@ -1,7 +1,15 @@
 ﻿﻿using BUS.Services;
+using CMS.Core.Identity;
 using ClinicManagementSystem.Winforms;
+using ClinicManagementSystem.Winforms.Shareforms;
+using ClinicManagementSystem.Winforms.Shareforms.ERM;
+using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
+using ClinicManagementSystem.Winforms.UserControls.Doctor;
+using ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh;
+using ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription;
 using DAL;
 using DTO;
+using DTO.Clinical.erm;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -10,7 +18,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using ClinicManagementSystem.Winforms.Shareforms;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
@@ -22,18 +29,18 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
+        private ucMedicalRecordSidebar ucERM;
+
         private readonly PatientBUS patientBUS = new PatientBUS();
         private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
         private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
+        private readonly ApiSyncBUS apiSyncBUS = new ApiSyncBUS();
         private UserDTO currentUser;
         private bool layoutReady;
 
-        private Shift shiftControl;
+        private RoleShiftCalendar shiftControl;
 
-        // Custom Navigation Buttons
         private Button btnERM;
-
-        // Active request for processing transitions
 
         public event EventHandler LogoutRequested;
         public event EventHandler CloseRequested;
@@ -63,35 +70,80 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
 
             btnNavOverview.Click += (s, ev) => ShowOverview();
-            btnSchedule.Click += (s, ev) => ShowSection(
-                "Lịch khám",
-                "Danh sách lịch hẹn và bệnh nhân được phân công.",
-                btnSchedule,
-                "Lịch hẹn hôm nay: đang cập nhật",
-                "Bệnh nhân sắp tới: đang cập nhật");
-            btnQueue.Click += (s, ev) => ShowSection(
-                "Khám bệnh",
-                "Khu vực xử lý hàng đợi khám và encounter của bác sĩ.",
-                btnQueue,
-                "Bệnh nhân chờ khám: đang cập nhật",
-                "Ca đang khám: đang cập nhật");
-            btnERM.Click += (s, ev) => ShowSection(
-                "Bệnh án",
-                "Tra cứu và cập nhật hồ sơ bệnh án của bệnh nhân.",
-                btnERM,
-                "Bệnh án cần cập nhật: đang cập nhật",
-                "Kết luận chờ hoàn tất: đang cập nhật");
-            btnPharmacy.Click += (s, ev) => ShowSection(
-                "Toa thuốc",
-                "Theo dõi chỉ định thuốc và trạng thái cấp phát.",
-                btnPharmacy,
-                "Toa thuốc mới: đang cập nhật",
-                "Toa đã cấp phát: đang cập nhật");
+            btnSchedule.Click += (s, ev) => ShowAppointments();
+            btnQueue.Click += (s, ev) => ShowExamination();
+            btnERM.Click += (s, ev) => ShowERM();
+            btnPharmacy.Click += (s, ev) => ShowPrescriptions();
             btnNavShifts.Click += (s, ev) => ShowShiftScreen();
 
             ShowOverview();
         }
 
+        private async void btnSyncCloud_Click(object sender, EventArgs e)
+        {
+            await RunCloudSyncAsync();
+        }
+
+        private async System.Threading.Tasks.Task RunCloudSyncAsync()
+        {
+            btnSyncCloud.Enabled = false;
+            string oldText = btnSyncCloud.Text;
+            btnSyncCloud.Text = "Đang đồng bộ...";
+
+            try
+            {
+                string resultMessage = await apiSyncBUS.SyncRequestsFromSupabaseAsync();
+                MessageBox.Show(resultMessage, "Đồng bộ Doctor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                if (contentPanel.Controls.Count > 0)
+                {
+                    Control current = contentPanel.Controls[0];
+                    if (current == ucERM)
+                    {
+                        ucERM = null;
+                        ShowERM();
+                    }
+                    else if (current == shiftControl)
+                    {
+                        shiftControl = null;
+                        ShowShiftScreen();
+                    }
+                    else
+                    {
+                        ShowOverview();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Đồng bộ thất bại: " + ex.Message, "Đồng bộ Doctor", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnSyncCloud.Text = oldText;
+                btnSyncCloud.Enabled = true;
+            }
+        }
+        private void ShowERM()
+        {
+            lblPageTitle.Text = "Bệnh án";
+            lblPageSubtitle.Text = "Tra cứu và cập nhật hồ sơ bệnh án của bệnh nhân";
+
+            SetActiveNav(btnERM);
+
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+
+            if (ucERM == null)
+            {
+                ucERM = new ucMedicalRecordSidebar(currentUser);
+                ucERM.Dock = DockStyle.Fill;
+            }
+
+            contentPanel.Controls.Add(ucERM);
+
+            contentPanel.ResumeLayout();
+        }
         private void ShowShiftScreen()
         {
             lblPageTitle.Text = "Ca làm việc";
@@ -104,7 +156,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
             if (shiftControl == null)
             {
-                shiftControl = new Shift();
+                shiftControl = new RoleShiftCalendar(currentUser, Role.Doctor);
                 shiftControl.Dock = DockStyle.Fill;
             }
 
@@ -141,6 +193,47 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         }
 
         private void ShowOverview()
+        {
+            lblPageTitle.Text = "Tổng quan";
+            lblPageSubtitle.Text = "Xin chào, " + (currentUser != null ? currentUser.Name : "Bác sĩ");
+            SetActiveNav(btnNavOverview);
+            ShowControl(new doctordashboard(currentUser));
+        }
+
+        private void ShowAppointments()
+        {
+            lblPageTitle.Text = "Lịch khám";
+            lblPageSubtitle.Text = "Danh sách lịch hẹn và bệnh nhân được phân công.";
+            SetActiveNav(btnSchedule);
+            ShowControl(new ucAppointmentSidebar(currentUser));
+        }
+
+        private void ShowExamination()
+        {
+            lblPageTitle.Text = "Khám bệnh";
+            lblPageSubtitle.Text = "Xử lý hàng đợi khám, bệnh án, chỉ định và toa thuốc.";
+            SetActiveNav(btnQueue);
+            ShowControl(new ucDoctorExaminationSidebar(currentUser));
+        }
+
+        private void ShowPrescriptions()
+        {
+            lblPageTitle.Text = "Toa thuốc";
+            lblPageSubtitle.Text = "Theo dõi toa thuốc đã kê và trạng thái cấp phát.";
+            SetActiveNav(btnPharmacy);
+            ShowControl(new ucPrescriptionSidebar(currentUser));
+        }
+
+        private void ShowControl(Control control)
+        {
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+            control.Dock = DockStyle.Fill;
+            contentPanel.Controls.Add(control);
+            contentPanel.ResumeLayout();
+        }
+
+        private void ShowOverviewPlaceholder()
         {
             ShowSection(
                 "Tổng quan",

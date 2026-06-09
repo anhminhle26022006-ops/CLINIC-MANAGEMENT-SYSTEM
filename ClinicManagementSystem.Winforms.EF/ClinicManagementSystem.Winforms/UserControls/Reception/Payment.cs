@@ -15,9 +15,16 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
         public Payment()
         {
             InitializeComponent();
+            ClinicManagementSystem.Winforms.Controllers.ReceptionDemoDataSeeder.EnsureSeeded();
+            LoadPaymentContent();
         }
 
         private void button1_Click(object sender, EventArgs e)
+        {
+            LoadPaymentContent();
+        }
+
+        private void LoadPaymentContent()
         {
             pnlContent.Controls.Clear();
 

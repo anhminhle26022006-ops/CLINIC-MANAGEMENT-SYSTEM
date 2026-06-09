@@ -83,6 +83,7 @@
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(795, 546);
             dataGridView1.TabIndex = 1;
+            dataGridView1.CellFormatting += DataGridView1_CellFormatting;
             // 
             // HistoryPayment
             // 

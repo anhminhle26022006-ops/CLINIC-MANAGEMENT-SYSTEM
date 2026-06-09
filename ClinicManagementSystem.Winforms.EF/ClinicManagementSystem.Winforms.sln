@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.37216.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicManagementSystem.Winforms", "ClinicManagementSystem.Winforms\ClinicManagementSystem.Winforms.csproj", "{8C135B22-A11C-4B74-8AB4-8924DA19CAE7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicManagementSystem.Winforms.EF", "ClinicManagementSystem.Winforms\ClinicManagementSystem.Winforms.EF.csproj", "{8C135B22-A11C-4B74-8AB4-8924DA19CAE7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BUS", "BUS\BUS.csproj", "{9542E912-0238-4E55-8DCF-44355A101536}"
 EndProject

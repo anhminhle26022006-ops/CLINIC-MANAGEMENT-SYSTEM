@@ -237,7 +237,7 @@
             btnQR.Name = "btnQR";
             btnQR.Size = new Size(183, 48);
             btnQR.TabIndex = 1;
-            btnQR.Text = "Chuyển khoản";
+            btnQR.Text = "PayOS QR";
             btnQR.UseVisualStyleBackColor = false;
             btnQR.Click += btnQR_Click;
             // 

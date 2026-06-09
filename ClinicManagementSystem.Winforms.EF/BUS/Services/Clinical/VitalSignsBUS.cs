@@ -17,9 +17,25 @@ namespace BUS
                 dto);
         }
 
+        public int? GetLatestEncounterIdByPatient(int patientId)
+        {
+            if (patientId <= 0)
+            {
+                return null;
+            }
+
+            return vitalDAL.GetLatestEncounterIdByPatient(patientId);
+        }
+
         private void ValidateVitalSigns(
             VitalSignsDTO dto)
         {
+            if (dto.EncounterID <= 0)
+            {
+                throw new Exception(
+                    "Encounter is required.");
+            }
+
             if (dto.Temperature < 35 ||
                 dto.Temperature > 42)
             {

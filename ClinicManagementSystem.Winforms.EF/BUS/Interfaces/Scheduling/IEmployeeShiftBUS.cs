@@ -13,5 +13,8 @@ namespace BUS.Interfaces
         List<EmployeeShiftDTO> GetByRole(string roleName);
         bool RegisterShift(EmployeeShiftDTO shift);
         bool RegisterLegacyShift(TechnicianShiftDTO shift);
+        bool UpdateShift(EmployeeShiftDTO shift);
+        bool SetStatus(int employeeShiftId, string status);
+        int EnsureMonthlySchedule(string roleName, int employeeId, DateTime startDate, int dayCount = 30);
     }
 }

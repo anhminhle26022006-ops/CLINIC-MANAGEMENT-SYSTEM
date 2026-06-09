@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
 using CMS.Core.Constants;
 using DAL.DataContext;
 using DAL.Interfaces;
 using DTO;
-using Microsoft.EntityFrameworkCore;
-using Models;
+using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
@@ -17,196 +16,195 @@ namespace DAL.Repositories
 
         public List<ServiceRequestDTO> GetAll()
         {
-            using ClinicDbContext context = new ClinicDbContext();
-            return BuildRequests(context)
-                .OrderByDescending(r => r.RequestedAt)
-                .ToList();
+            return Map(DatabaseHelper.ExecuteQuery(GetBaseSelect() + " ORDER BY RequestedAt DESC"));
         }
 
         public List<ServiceRequestDTO> GetByStatus(string status)
         {
-            using ClinicDbContext context = new ClinicDbContext();
-            return BuildRequests(context)
-                .Where(r => r.Status == status)
-                .OrderByDescending(r => r.RequestedAt)
-                .ToList();
+            string query = GetBaseSelect() + " WHERE Status = @Status ORDER BY RequestedAt DESC";
+            return Map(DatabaseHelper.ExecuteQuery(query, new[]
+            {
+                new SqlParameter("@Status", status)
+            }));
         }
 
         public List<ServiceRequestDTO> GetByRequester(int employeeId)
         {
-            using ClinicDbContext context = new ClinicDbContext();
-            return BuildRequests(context)
-                .Where(r => r.RequestedByEmployeeID == employeeId)
-                .OrderByDescending(r => r.RequestedAt)
-                .ToList();
+            string query = GetBaseSelect() + " WHERE RequestedByEmployeeID = @EmployeeID ORDER BY RequestedAt DESC";
+            return Map(DatabaseHelper.ExecuteQuery(query, new[]
+            {
+                new SqlParameter("@EmployeeID", employeeId)
+            }));
         }
 
         public bool Add(ServiceRequestDTO request)
         {
-            using ClinicDbContext context = new ClinicDbContext();
             string requestType = string.IsNullOrWhiteSpace(request.RequestType)
                 ? InferRequestType(request.ServiceType)
                 : request.RequestType;
 
             if (requestType == ServiceRequestType.Imaging)
             {
-                int serviceId = GetOrCreateImagingServiceId(context, request.ServiceType);
-                context.ImagingRequests.Add(new ImagingRequest
+                int serviceId = GetOrCreateImagingServiceId(request.ServiceType);
+                string query = @"
+                    INSERT INTO ImagingRequests (EncounterID, DoctorID, ImagingServiceID, BodyPart, CreatedAt, Priority, Status)
+                    VALUES (NULL, @DoctorID, @ImagingServiceID, @BodyPart, @CreatedAt, @Priority, @Status)";
+                return DatabaseHelper.ExecuteNonQuery(query, new[]
                 {
-                    ImagingRequestUUID = Guid.NewGuid(),
-                    DoctorID = request.RequestedByEmployeeID,
-                    ImagingServiceID = serviceId,
-                    BodyPart = request.RequestNote,
-                    CreatedAt = request.RequestedAt == default ? DateTime.Now : request.RequestedAt,
-                    Priority = request.Priority,
-                    Status = string.IsNullOrWhiteSpace(request.Status) ? "Chờ xử lý" : request.Status
-                });
-                return context.SaveChanges() > 0;
+                    new SqlParameter("@DoctorID", request.RequestedByEmployeeID),
+                    new SqlParameter("@ImagingServiceID", serviceId),
+                    new SqlParameter("@BodyPart", (object)request.RequestNote ?? DBNull.Value),
+                    new SqlParameter("@CreatedAt", request.RequestedAt == default ? DateTime.Now : request.RequestedAt),
+                    new SqlParameter("@Priority", (object)request.Priority ?? DBNull.Value),
+                    new SqlParameter("@Status", string.IsNullOrWhiteSpace(request.Status) ? "Chờ xử lý" : request.Status)
+                }) > 0;
             }
 
-            context.LabRequests.Add(new LabRequest
+            string labQuery = @"
+                INSERT INTO LabRequests (EncounterID, DoctorID, TestType, Status, CreatedAt)
+                VALUES (NULL, @DoctorID, @TestType, @Status, @CreatedAt)";
+            return DatabaseHelper.ExecuteNonQuery(labQuery, new[]
             {
-                LabRequestUUID = Guid.NewGuid(),
-                DoctorID = request.RequestedByEmployeeID,
-                TestType = request.ServiceType,
-                Status = string.IsNullOrWhiteSpace(request.Status) ? "Chờ xử lý" : request.Status,
-                CreatedAt = request.RequestedAt == default ? DateTime.Now : request.RequestedAt
-            });
-            return context.SaveChanges() > 0;
+                new SqlParameter("@DoctorID", request.RequestedByEmployeeID),
+                new SqlParameter("@TestType", request.ServiceType),
+                new SqlParameter("@Status", string.IsNullOrWhiteSpace(request.Status) ? "Chờ xử lý" : request.Status),
+                new SqlParameter("@CreatedAt", request.RequestedAt == default ? DateTime.Now : request.RequestedAt)
+            }) > 0;
         }
 
         public bool UpdateStatus(int requestId, string status)
         {
-            using ClinicDbContext context = new ClinicDbContext();
             RequestKey key = DecodeRequestKey(requestId);
-
-            if (key.SourceTable == ImagingSource)
+            string table = key.SourceTable == ImagingSource ? "ImagingRequests" : "LabRequests";
+            string idColumn = key.SourceTable == ImagingSource ? "ImagingRequestID" : "LabID";
+            string query = $"UPDATE {table} SET Status = @Status WHERE {idColumn} = @SourceID";
+            return DatabaseHelper.ExecuteNonQuery(query, new[]
             {
-                ImagingRequest request = context.ImagingRequests.FirstOrDefault(r => r.ImagingRequestID == key.SourceID);
-                if (request == null)
-                {
-                    return false;
-                }
-
-                request.Status = status;
-                return context.SaveChanges() > 0;
-            }
-
-            LabRequest labRequest = context.LabRequests.FirstOrDefault(r => r.LabID == key.SourceID);
-            if (labRequest == null)
-            {
-                return false;
-            }
-
-            labRequest.Status = status;
-            return context.SaveChanges() > 0;
+                new SqlParameter("@Status", status),
+                new SqlParameter("@SourceID", key.SourceID)
+            }) > 0;
         }
 
-        private static List<ServiceRequestDTO> BuildRequests(ClinicDbContext context)
+        private static string GetBaseSelect()
         {
-            List<ServiceRequestDTO> labRequests = (
-                from lab in context.LabRequests.AsNoTracking()
-                join encounter in context.Encounters.AsNoTracking()
-                    on lab.EncounterID equals encounter.EncounterID into encounters
-                from encounter in encounters.DefaultIfEmpty()
-                join patient in context.Patients.AsNoTracking()
-                    on encounter.PatientID equals patient.PatientID into patients
-                from patient in patients.DefaultIfEmpty()
-                join employee in context.Employees.AsNoTracking()
-                    on lab.DoctorID equals employee.EmployeeID into employees
-                from employee in employees.DefaultIfEmpty()
-                join result in context.LabResults.AsNoTracking()
-                    on lab.LabID equals result.LabID into results
-                from result in results.DefaultIfEmpty()
-                select new ServiceRequestDTO
-                {
-                    RequestID = lab.LabID,
-                    SourceID = lab.LabID,
-                    SourceTable = LabSource,
-                    RequestCode = "LAB-" + lab.LabID,
-                    PatientID = encounter != null && encounter.PatientID.HasValue ? encounter.PatientID.Value : 0,
-                    PatientName = patient != null ? patient.FullName : "",
-                    PatientCode = patient != null ? patient.PatientCode : "",
-                    RequestedByEmployeeID = lab.DoctorID ?? 0,
-                    RequestedByEmployeeName = employee != null ? employee.FullName : "",
-                    AssignedToEmployeeID = null,
-                    AssignedToEmployeeName = "",
-                    ServiceType = lab.TestType,
-                    RequestType = ServiceRequestType.Lab,
-                    RequestNote = "",
-                    Priority = "",
-                    RequestedAt = lab.CreatedAt,
-                    Status = lab.Status ?? "",
-                    ResultFile = "",
-                    ResultPDF = result != null ? result.FileURL : "",
-                    LabValues = result != null ? result.ResultText : ""
-                }).ToList();
+            return @"
+                SELECT *
+                FROM (
+                    SELECT
+                        lr.LabID AS SourceID,
+                        'LabRequests' AS SourceTable,
+                        lr.LabID AS RequestID,
+                        CONCAT('LAB-', lr.LabID) AS RequestCode,
+                        en.PatientID,
+                        ISNULL(p.FullName, '') AS PatientName,
+                        ISNULL(p.PatientCode, '') AS PatientCode,
+                        lr.DoctorID AS RequestedByEmployeeID,
+                        ISNULL(e.FullName, '') AS RequestedByEmployeeName,
+                        CAST(NULL AS int) AS AssignedToEmployeeID,
+                        CAST('' AS nvarchar(255)) AS AssignedToEmployeeName,
+                        lr.TestType AS ServiceType,
+                        'Lab' AS RequestType,
+                        CAST('' AS nvarchar(max)) AS RequestNote,
+                        CAST('' AS nvarchar(50)) AS Priority,
+                        lr.CreatedAt AS RequestedAt,
+                        lr.Status,
+                        CAST('' AS nvarchar(max)) AS ResultFile,
+                        ISNULL(lres.FileURL, '') AS ResultPDF,
+                        ISNULL(lres.ResultText, '') AS LabValues
+                    FROM LabRequests lr
+                    LEFT JOIN Encounters en ON lr.EncounterID = en.EncounterID
+                    LEFT JOIN Patients p ON en.PatientID = p.PatientID
+                    LEFT JOIN Employees e ON lr.DoctorID = e.EmployeeID
+                    LEFT JOIN LabResults lres ON lr.LabID = lres.LabID
 
-            List<ServiceRequestDTO> imagingRequests = (
-                from imaging in context.ImagingRequests.AsNoTracking()
-                join encounter in context.Encounters.AsNoTracking()
-                    on imaging.EncounterID equals encounter.EncounterID into encounters
-                from encounter in encounters.DefaultIfEmpty()
-                join patient in context.Patients.AsNoTracking()
-                    on encounter.PatientID equals patient.PatientID into patients
-                from patient in patients.DefaultIfEmpty()
-                join employee in context.Employees.AsNoTracking()
-                    on imaging.DoctorID equals employee.EmployeeID into employees
-                from employee in employees.DefaultIfEmpty()
-                join service in context.ImagingServices.AsNoTracking()
-                    on imaging.ImagingServiceID equals service.ImagingServiceID into services
-                from service in services.DefaultIfEmpty()
-                join result in context.ImagingResults.AsNoTracking()
-                    on imaging.ImagingRequestID equals result.ImagingRequestID into results
-                from result in results.DefaultIfEmpty()
-                select new ServiceRequestDTO
-                {
-                    RequestID = -imaging.ImagingRequestID,
-                    SourceID = imaging.ImagingRequestID,
-                    SourceTable = ImagingSource,
-                    RequestCode = "IMG-" + imaging.ImagingRequestID,
-                    PatientID = encounter != null && encounter.PatientID.HasValue ? encounter.PatientID.Value : 0,
-                    PatientName = patient != null ? patient.FullName : "",
-                    PatientCode = patient != null ? patient.PatientCode : "",
-                    RequestedByEmployeeID = imaging.DoctorID ?? 0,
-                    RequestedByEmployeeName = employee != null ? employee.FullName : "",
-                    AssignedToEmployeeID = null,
-                    AssignedToEmployeeName = "",
-                    ServiceType = service != null
-                        ? (service.ServiceName ?? service.Modality ?? imaging.BodyPart ?? "Chẩn đoán hình ảnh")
-                        : (imaging.BodyPart ?? "Chẩn đoán hình ảnh"),
-                    RequestType = ServiceRequestType.Imaging,
-                    RequestNote = result != null ? (result.TechnicianNote ?? imaging.BodyPart ?? "") : (imaging.BodyPart ?? ""),
-                    Priority = imaging.Priority ?? "",
-                    RequestedAt = imaging.CreatedAt,
-                    Status = imaging.Status ?? "",
-                    ResultFile = result != null ? result.ImageURL : "",
-                    ResultPDF = result != null ? result.PDFURL : "",
-                    LabValues = result != null ? result.ResultText : ""
-                }).ToList();
+                    UNION ALL
 
-            return labRequests.Concat(imagingRequests).ToList();
+                    SELECT
+                        ir.ImagingRequestID AS SourceID,
+                        'ImagingRequests' AS SourceTable,
+                        -ir.ImagingRequestID AS RequestID,
+                        CONCAT('IMG-', ir.ImagingRequestID) AS RequestCode,
+                        en.PatientID,
+                        ISNULL(p.FullName, '') AS PatientName,
+                        ISNULL(p.PatientCode, '') AS PatientCode,
+                        ir.DoctorID AS RequestedByEmployeeID,
+                        ISNULL(e.FullName, '') AS RequestedByEmployeeName,
+                        CAST(NULL AS int) AS AssignedToEmployeeID,
+                        CAST('' AS nvarchar(255)) AS AssignedToEmployeeName,
+                        COALESCE(s.ServiceName, s.Modality, ir.BodyPart, N'Chẩn đoán hình ảnh') AS ServiceType,
+                        'Imaging' AS RequestType,
+                        ISNULL(ires.TechnicianNote, ir.BodyPart) AS RequestNote,
+                        ISNULL(ir.Priority, '') AS Priority,
+                        ir.CreatedAt AS RequestedAt,
+                        ir.Status,
+                        ISNULL(ires.ImageURL, '') AS ResultFile,
+                        ISNULL(ires.PDFURL, '') AS ResultPDF,
+                        ISNULL(ires.ResultText, '') AS LabValues
+                    FROM ImagingRequests ir
+                    LEFT JOIN Encounters en ON ir.EncounterID = en.EncounterID
+                    LEFT JOIN Patients p ON en.PatientID = p.PatientID
+                    LEFT JOIN Employees e ON ir.DoctorID = e.EmployeeID
+                    LEFT JOIN ImagingServices s ON ir.ImagingServiceID = s.ImagingServiceID
+                    LEFT JOIN ImagingResults ires ON ir.ImagingRequestID = ires.ImagingRequestID
+                ) requests";
         }
 
-        private static int GetOrCreateImagingServiceId(ClinicDbContext context, string serviceName)
+        private static List<ServiceRequestDTO> Map(DataTable table)
         {
-            serviceName = string.IsNullOrWhiteSpace(serviceName) ? "Chẩn đoán hình ảnh" : serviceName.Trim();
-            ImagingService existing = context.ImagingServices.FirstOrDefault(s => s.ServiceName == serviceName);
-            if (existing != null)
+            List<ServiceRequestDTO> list = new List<ServiceRequestDTO>();
+            foreach (DataRow row in table.Rows)
             {
-                return existing.ImagingServiceID;
+                string serviceType = row["ServiceType"].ToString();
+                list.Add(new ServiceRequestDTO
+                {
+                    RequestID = Convert.ToInt32(row["RequestID"]),
+                    SourceID = Convert.ToInt32(row["SourceID"]),
+                    SourceTable = row["SourceTable"].ToString(),
+                    RequestCode = row["RequestCode"].ToString(),
+                    PatientID = row["PatientID"] != DBNull.Value ? Convert.ToInt32(row["PatientID"]) : 0,
+                    PatientName = row["PatientName"].ToString(),
+                    PatientCode = row["PatientCode"].ToString(),
+                    RequestedByEmployeeID = row["RequestedByEmployeeID"] != DBNull.Value ? Convert.ToInt32(row["RequestedByEmployeeID"]) : 0,
+                    RequestedByEmployeeName = row["RequestedByEmployeeName"].ToString(),
+                    AssignedToEmployeeID = row["AssignedToEmployeeID"] != DBNull.Value ? Convert.ToInt32(row["AssignedToEmployeeID"]) : (int?)null,
+                    AssignedToEmployeeName = row["AssignedToEmployeeName"].ToString(),
+                    ServiceType = serviceType,
+                    RequestType = row["RequestType"].ToString(),
+                    RequestNote = row["RequestNote"] != DBNull.Value ? row["RequestNote"].ToString() : "",
+                    Priority = row["Priority"] != DBNull.Value ? row["Priority"].ToString() : "",
+                    RequestedAt = row["RequestedAt"] != DBNull.Value ? Convert.ToDateTime(row["RequestedAt"]) : DateTime.MinValue,
+                    Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : "",
+                    ResultFile = row["ResultFile"] != DBNull.Value ? row["ResultFile"].ToString() : "",
+                    ResultPDF = row["ResultPDF"] != DBNull.Value ? row["ResultPDF"].ToString() : "",
+                    LabValues = row["LabValues"] != DBNull.Value ? row["LabValues"].ToString() : ""
+                });
             }
 
-            ImagingService service = new ImagingService
+            return list;
+        }
+
+        private static int GetOrCreateImagingServiceId(string serviceName)
+        {
+            object existing = DatabaseHelper.ExecuteScalar(
+                "SELECT TOP 1 ImagingServiceID FROM ImagingServices WHERE ServiceName = @ServiceName",
+                new[] { new SqlParameter("@ServiceName", serviceName) });
+
+            if (existing != null && existing != DBNull.Value)
             {
-                ServiceName = serviceName,
-                Modality = InferModality(serviceName),
-                Price = 0,
-                IsActive = true
-            };
-            context.ImagingServices.Add(service);
-            context.SaveChanges();
-            return service.ImagingServiceID;
+                return Convert.ToInt32(existing);
+            }
+
+            DatabaseHelper.ExecuteNonQuery(
+                "INSERT INTO ImagingServices (ServiceName, Modality, Price, IsActive) VALUES (@ServiceName, @Modality, 0, 1)",
+                new[]
+                {
+                    new SqlParameter("@ServiceName", serviceName),
+                    new SqlParameter("@Modality", InferModality(serviceName))
+                });
+
+            return Convert.ToInt32(DatabaseHelper.ExecuteScalar(
+                "SELECT TOP 1 ImagingServiceID FROM ImagingServices WHERE ServiceName = @ServiceName ORDER BY ImagingServiceID DESC",
+                new[] { new SqlParameter("@ServiceName", serviceName) }));
         }
 
         private static RequestKey DecodeRequestKey(int requestId)

@@ -85,20 +85,37 @@ namespace ClinicManagementSystem.Winforms.Controllers
                             followUp.Status,
 
                         PatientCode =
-                            patient?.PatientCode,
+                            OrFallback(
+                                patient?.PatientCode,
+                                $"FU{followUp.FollowUpID:0000}"),
 
                         PatientName =
-                            patient?.Name,
+                            OrFallback(
+                                patient?.Name,
+                                $"Bệnh nhân #{encounter.PatientID}"),
 
                         DoctorName =
-                            doctor?.FullName,
+                            OrFallback(
+                                doctor?.FullName,
+                                $"Bác sĩ #{encounter.DoctorID}"),
 
                         Diagnosis =
-                            record?.Diagnosis
+                            OrFallback(
+                                record?.Diagnosis,
+                                "Chưa có chẩn đoán")
                     });
             }
 
             return result;
+        }
+
+        private static string OrFallback(
+            string value,
+            string fallback)
+        {
+            return string.IsNullOrWhiteSpace(value)
+                ? fallback
+                : value;
         }
 
         public bool UpdateStatus(

@@ -29,6 +29,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
         public CreateAppointment()
         {
             InitializeComponent();
+            ReceptionDemoDataSeeder.EnsureSeeded();
         }
 
         private void CreateAppointment_Load(
@@ -42,24 +43,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
 
             dtpDate.MinDate =
                 DateTime.Today;
-
-            btn0800.Tag = "08:00";
-            btn0830.Tag = "08:30";
-            btn0900.Tag = "09:00";
-            btn0930.Tag = "09:30";
-            btn1000.Tag = "10:00";
-            btn1030.Tag = "10:30";
-            btn1100.Tag = "11:00";
-            btn1130.Tag = "11:30";
-
-            btn0800.Click += TimeSlot_Click;
-            btn0830.Click += TimeSlot_Click;
-            btn0900.Click += TimeSlot_Click;
-            btn0930.Click += TimeSlot_Click;
-            btn1000.Click += TimeSlot_Click;
-            btn1030.Click += TimeSlot_Click;
-            btn1100.Click += TimeSlot_Click;
-            btn1130.Click += TimeSlot_Click;
+            selectedDate = dtpDate.Value.Date;
+            InitializeTimeSlots();
+            SelectTimeSlot(btn0800);
         }
 
         private void TimeSlot_Click(
@@ -72,54 +58,73 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
             if (btn == null)
                 return;
 
-            Button[] buttons =
-            {
-        btn0800,
-        btn0830,
-        btn0900,
-        btn0930,
-        btn1000,
-        btn1030,
-        btn1100,
-        btn1130
-    };
-
-            foreach (Button b in buttons)
-            {
-                b.BackColor = Color.White;
-                b.ForeColor = Color.Black;
-            }
-
-            btn.BackColor =
-                Color.FromArgb(59, 130, 246);
-
-            btn.ForeColor =
-                Color.White;
-
-            selectedTime =
-                TimeSpan.Parse(
-                    btn.Tag.ToString());
+            SelectTimeSlot(btn);
 
             if (selectedDepartmentId > 0)
             {
                 LoadDoctors(
                     selectedDepartmentId,
-                    dtpDate.Value.Date,
+                    selectedDate,
                     selectedTime.Value);
                 UpdateAppointmentInfo();
             }
+        }
+
+        private void InitializeTimeSlots()
+        {
+            foreach (Button button in GetTimeSlotButtons())
+            {
+                button.Tag = button.Text.Trim().PadLeft(5, '0');
+                button.BackColor = Color.White;
+                button.ForeColor = Color.Black;
+            }
+        }
+
+        private Button[] GetTimeSlotButtons()
+        {
+            return new[]
+            {
+                btn0800, btn0830, btn0900, btn0930,
+                btn1000, btn1030, btn1100, btn1130,
+                btn1330, btn1400, btn1430, btn1500,
+                btn1530, btn1600, btn1630, btn1700
+            };
+        }
+
+        private void SelectTimeSlot(Button btn)
+        {
+            foreach (Button b in GetTimeSlotButtons())
+            {
+                b.BackColor = Color.White;
+                b.ForeColor = Color.Black;
+            }
+
+            btn.BackColor = Color.FromArgb(59, 130, 246);
+            btn.ForeColor = Color.White;
+
+            string timeText = btn.Tag?.ToString();
+            if (string.IsNullOrWhiteSpace(timeText))
+            {
+                timeText = btn.Text.Trim();
+            }
+
+            selectedTime = TimeSpan.Parse(timeText);
+            selectedDoctorId = -1;
+            selectedDoctor = null;
+            panelInf.Visible = false;
         }
 
         private void dtpDate_ValueChanged(
     object sender,
     EventArgs e)
         {
+            selectedDate = dtpDate.Value.Date;
             if (selectedDepartmentId > 0
                 && selectedTime.HasValue)
             {
                 LoadDoctors(
                     selectedDepartmentId,
-                    dtpDate.Value.Date,
+                    selectedDate,
                     selectedTime.Value);
                 UpdateAppointmentInfo();
             }
@@ -146,7 +151,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
             flpDepartments.Controls.Clear();
 
             var departments =
-                controller.GetDepartments();
+                controller.GetDepartments()
+                    .Where(d => controller.GetDoctorsByDepartment(d.DepartmentID).Any())
+                    .ToList();
 
             foreach (var department in departments)
             {
@@ -180,7 +187,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
                 return;
             }
 
-            if (selectedTime == TimeSpan.Zero)
+            if (!selectedTime.HasValue)
             {
                 panelInf.Visible = false;
                 return;
@@ -304,13 +311,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
             selectedDepartmentId =
                 department.DepartmentID;
 
-            if (selectedTime.HasValue)
-            {
-                LoadDoctors(
-                    selectedDepartmentId,
-                    dtpDate.Value.Date,
-                    selectedTime.Value);
-            }
+            selectedDoctorId = -1;
+            selectedDoctor = null;
+            LoadDoctors(
+                selectedDepartmentId,
+                selectedDate,
+                selectedTime.Value);
         }
 
         private void LoadDoctors(
@@ -325,6 +331,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
                     departmentId,
                     selectedDate,
                     selectedTime);
+
+            if (doctors.Count == 0)
+            {
+                flpDoctors.Controls.Add(CreateEmptyDoctorPanel());
+                return;
+            }
 
             foreach (var doctor in doctors)
             {
@@ -561,6 +573,28 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
             return card;
         }
 
+        private Control CreateEmptyDoctorPanel()
+        {
+            Panel panel = new Panel
+            {
+                Width = Math.Max(420, flpDoctors.ClientSize.Width - 30),
+                Height = 90,
+                BackColor = Color.White,
+                Margin = new Padding(10)
+            };
+
+            Label label = new Label
+            {
+                Text = "Không có bác sĩ phù hợp với khoa và khung giờ đã chọn.",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(107, 114, 128)
+            };
+            panel.Controls.Add(label);
+            return panel;
+        }
+
         private void Doctor_Click(
     object sender,
     EventArgs e)
@@ -602,6 +636,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
 
             selectedDoctorId =
                 doctor.DoctorID;
+            selectedDoctor = doctor;
             UpdateAppointmentInfo();
         }
 
@@ -614,10 +649,13 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
             selectedDepartmentId = -1;
 
             selectedDoctorId = -1;
+            selectedDoctor = null;
 
             selectedTime = null;
 
             flpDoctors.Controls.Clear();
+            panelInf.Visible = false;
+            InitializeTimeSlots();
         }
 
         private void button2_Click(object sender, EventArgs e)

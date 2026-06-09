@@ -37,6 +37,22 @@ namespace ClinicManagementSystem.Winforms.Forms
                 return;
             }
 
+            if (currentUser != null)
+            {
+                string role = RoleNormalizer.Normalize(currentUser.Role);
+                string roleText = role switch
+                {
+                    Role.Admin => "Quản trị viên",
+                    Role.Doctor => "Bác sĩ",
+                    Role.Nurse => "Điều dưỡng",
+                    Role.Pharmacist => "Dược sĩ",
+                    Role.Receptionist => "Tiếp tân",
+                    Role.Technician => "Kỹ thuật viên",
+                    _ => role
+                };
+                this.Text = "HealthCare+ - " + roleText;
+            }
+
             dashboard.Dock = DockStyle.Fill;
 
             // Wire up events dynamically

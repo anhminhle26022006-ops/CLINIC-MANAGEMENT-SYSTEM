@@ -1,8 +1,12 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using DAL.DataContext;
 using DTO;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
@@ -10,50 +14,80 @@ namespace DAL.Repositories
     {
         public int CountRooms()
         {
-            using (var context = new ClinicDbContext())
-            {
-                return context.Rooms.Count();
-            }
+            string query =
+                "SELECT COUNT(*) FROM Rooms";
+
+            object result =
+                DatabaseHelper.ExecuteScalar(query);
+
+            return Convert.ToInt32(result);
         }
 
         public Room_RecepDTO GetRoomByDepartment(int departmentId)
         {
-            using (var context = new ClinicDbContext())
+            string query = @"
+    SELECT TOP 1 *
+    FROM Rooms
+    WHERE DepartmentID = @DepartmentID";
+
+            SqlParameter[] parameters =
             {
-                var r = context.Rooms
-                    .AsNoTracking()
-                    .FirstOrDefault(x => x.DepartmentID == departmentId);
+        new SqlParameter("@DepartmentID", departmentId)
+    };
 
-                if (r == null) return null;
+            DataTable dt =
+                DatabaseHelper.ExecuteQuery(query, parameters);
 
-                return new Room_RecepDTO
-                {
-                    RoomID = r.RoomID,
-                    RoomCode = r.RoomCode,
-                    DepartmentID = r.DepartmentID ?? 0,
-                    Status = r.Status
-                };
-            }
+            if (dt.Rows.Count == 0)
+                return null;
+
+            DataRow row = dt.Rows[0];
+
+            return new Room_RecepDTO
+            {
+                RoomID = Convert.ToInt32(row["RoomID"]),
+                RoomCode = row["RoomCode"].ToString(),
+                DepartmentID = Convert.ToInt32(row["DepartmentID"]),
+                Status = row["Status"].ToString()
+            };
         }
 
         public Room_RecepDTO GetById(int roomId)
         {
-            using (var context = new ClinicDbContext())
+            string query = @"
+        SELECT *
+        FROM Rooms
+        WHERE RoomID = @RoomID";
+
+            SqlParameter[] parameters =
             {
-                var r = context.Rooms
-                    .AsNoTracking()
-                    .FirstOrDefault(x => x.RoomID == roomId);
+        new SqlParameter("@RoomID", roomId)
+    };
 
-                if (r == null) return null;
+            DataTable dt =
+                DatabaseHelper.ExecuteQuery(
+                    query,
+                    parameters);
 
-                return new Room_RecepDTO
-                {
-                    RoomID = r.RoomID,
-                    RoomCode = r.RoomCode,
-                    DepartmentID = r.DepartmentID ?? 0,
-                    Status = r.Status
-                };
-            }
+            if (dt.Rows.Count == 0)
+                return null;
+
+            DataRow row = dt.Rows[0];
+
+            return new Room_RecepDTO
+            {
+                RoomID =
+                    Convert.ToInt32(row["RoomID"]),
+
+                RoomCode =
+                    row["RoomCode"].ToString(),
+
+                DepartmentID =
+                    Convert.ToInt32(row["DepartmentID"]),
+
+                Status =
+                    row["Status"].ToString()
+            };
         }
     }
 }

@@ -1,10 +1,10 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
 using DAL.DataContext;
 using DAL.Interfaces;
 using DTO;
-using Microsoft.EntityFrameworkCore;
-using Models;
+using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
@@ -12,42 +12,105 @@ namespace DAL.Repositories
     {
         public List<DepartmentDTO> GetAll()
         {
-            using ClinicDbContext context = new ClinicDbContext();
-            return context.Departments
-                .AsNoTracking()
-                .OrderBy(d => d.DepartmentName)
-                .Select(d => Map(d))
-                .ToList();
+            if (!SchemaHelper.TableExists("Departments"))
+            {
+                return new List<DepartmentDTO>();
+            }
+
+            string descriptionExpression = SchemaHelper.ColumnExists("Departments", "Description")
+                ? "Description"
+                : "CAST('' AS nvarchar(255)) AS Description";
+            string activeExpression = SchemaHelper.ColumnExists("Departments", "IsActive")
+                ? "IsActive"
+                : "CAST(1 AS bit) AS IsActive";
+            string query = $"SELECT DepartmentID, DepartmentName, {descriptionExpression}, {activeExpression} FROM Departments ORDER BY DepartmentName";
+            return Map(DatabaseHelper.ExecuteQuery(query));
         }
 
         public DepartmentDTO GetById(int departmentId)
         {
-            if (departmentId <= 0)
+            if (!SchemaHelper.TableExists("Departments") || departmentId <= 0)
             {
                 return null;
             }
 
-            using ClinicDbContext context = new ClinicDbContext();
-            Department department = context.Departments
-                .AsNoTracking()
-                .FirstOrDefault(d => d.DepartmentID == departmentId);
-            return department == null ? null : Map(department);
+            string descriptionExpression = SchemaHelper.ColumnExists("Departments", "Description")
+                ? "Description"
+                : "CAST('' AS nvarchar(255)) AS Description";
+            string activeExpression = SchemaHelper.ColumnExists("Departments", "IsActive")
+                ? "IsActive"
+                : "CAST(1 AS bit) AS IsActive";
+            string query = $"SELECT DepartmentID, DepartmentName, {descriptionExpression}, {activeExpression} FROM Departments WHERE DepartmentID = @DepartmentID";
+            List<DepartmentDTO> list = Map(DatabaseHelper.ExecuteQuery(query, new[]
+            {
+                new SqlParameter("@DepartmentID", departmentId)
+            }));
+            return list.Count > 0 ? list[0] : null;
         }
 
         public bool Exists(int departmentId)
         {
-            using ClinicDbContext context = new ClinicDbContext();
-            return departmentId > 0 && context.Departments.Any(d => d.DepartmentID == departmentId);
+            return GetById(departmentId) != null;
         }
 
-        private static DepartmentDTO Map(Department department)
+        private static List<DepartmentDTO> Map(DataTable table)
         {
-            return new DepartmentDTO
+            List<DepartmentDTO> list = new List<DepartmentDTO>();
+            foreach (DataRow row in table.Rows)
             {
-                DepartmentID = department.DepartmentID,
-                DepartmentName = department.DepartmentName,
-                IsActive = true
+                list.Add(new DepartmentDTO
+                {
+                    DepartmentID = Convert.ToInt32(row["DepartmentID"]),
+                    DepartmentName = row["DepartmentName"].ToString(),
+                    Description = row.Table.Columns.Contains("Description") ? row["Description"].ToString() : "",
+                    IsActive = !row.Table.Columns.Contains("IsActive") || row["IsActive"] == DBNull.Value || Convert.ToBoolean(row["IsActive"])
+                });
+            }
+            return list;
+        }
+
+        public bool Add(DepartmentDTO department)
+        {
+            string query = "INSERT INTO Departments(DepartmentName) VALUES(@DepartmentName)";
+            return DatabaseHelper.ExecuteNonQuery(query, new[]
+            {
+                new SqlParameter("@DepartmentName", department.DepartmentName)
+            }) > 0;
+        }
+
+        public bool Update(DepartmentDTO department)
+        {
+            string query = "UPDATE Departments SET DepartmentName = @DepartmentName WHERE DepartmentID = @DepartmentID";
+            return DatabaseHelper.ExecuteNonQuery(query, new[]
+            {
+                new SqlParameter("@DepartmentName", department.DepartmentName),
+                new SqlParameter("@DepartmentID", department.DepartmentID)
+            }) > 0;
+        }
+
+        public bool SetActive(int id, bool isActive)
+        {
+            if (SchemaHelper.ColumnExists("Departments", "IsActive"))
+            {
+                return DatabaseHelper.ExecuteNonQuery(
+                    "UPDATE Departments SET IsActive = @IsActive WHERE DepartmentID = @DepartmentID",
+                    new[]
+                    {
+                        new SqlParameter("@IsActive", isActive),
+                        new SqlParameter("@DepartmentID", id)
+                    }) > 0;
+            }
+
+            return false;
+        }
+
+        public bool Delete(int id)
+        {
+            string query = "DELETE FROM Departments WHERE DepartmentID = @DepartmentID";
+            SqlParameter[] parameters = {
+                new SqlParameter("@DepartmentID", id)
             };
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
     }
 }

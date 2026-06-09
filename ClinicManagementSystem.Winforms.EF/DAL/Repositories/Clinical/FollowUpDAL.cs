@@ -1,10 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using DAL.DataContext;
 using DTO;
-using Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
@@ -12,40 +14,68 @@ namespace DAL.Repositories
     {
         public List<FollowUpDTO> GetAll()
         {
-            using (var context = new ClinicDbContext())
+            string query = @"
+            SELECT
+                FollowUpID,
+                EncounterID,
+                FollowUpDate,
+                Status
+            FROM FollowUps";
+
+            DataTable dt =
+                DatabaseHelper.ExecuteQuery(query);
+
+            List<FollowUpDTO> list = new();
+
+            foreach (DataRow row in dt.Rows)
             {
-                return context.FollowUps
-                    .AsNoTracking()
-                    .Select(f => new FollowUpDTO
-                    {
-                        FollowUpID = f.FollowUpID,
-                        EncounterID = f.EncounterID ?? 0,
-                        FollowUpDate = f.FollowUpDate ?? DateTime.MinValue,
-                        Status = f.Status
-                    })
-                    .ToList();
+                list.Add(new FollowUpDTO
+                {
+                    FollowUpID =
+                        Convert.ToInt32(row["FollowUpID"]),
+
+                    EncounterID =
+                        Convert.ToInt32(row["EncounterID"]),
+
+                    FollowUpDate =
+                        Convert.ToDateTime(row["FollowUpDate"]),
+
+                    Status =
+                        row["Status"].ToString()
+                });
             }
+
+            return list;
         }
 
-        public List<FollowUpDTO> GetByStatus(params string[] statuses)
+        public List<FollowUpDTO>
+            GetByStatus(params string[] statuses)
         {
             return GetAll()
                 .Where(x => statuses.Contains(x.Status))
                 .ToList();
         }
 
-        public bool UpdateStatus(int followUpId, string status)
+        public bool UpdateStatus(
+    int followUpId,
+    string status)
         {
-            using (var context = new ClinicDbContext())
+            string query = @"
+UPDATE FollowUps
+SET Status = @Status
+WHERE FollowUpID = @FollowUpID";
+
+            SqlParameter[] parameters =
             {
-                var f = context.FollowUps.FirstOrDefault(x => x.FollowUpID == followUpId);
-                if (f != null)
-                {
-                    f.Status = status;
-                    return context.SaveChanges() > 0;
-                }
-                return false;
-            }
+        new("@Status", status),
+        new("@FollowUpID", followUpId)
+    };
+
+            return DatabaseHelper
+                .ExecuteNonQuery(
+                    query,
+                    parameters) > 0;
         }
+
     }
 }

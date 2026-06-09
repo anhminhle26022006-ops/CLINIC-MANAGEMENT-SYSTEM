@@ -1,78 +1,99 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
+using DAL.DataContext;
 using DTO;
+using Microsoft.Data.SqlClient;
 
 namespace DAL
 {
     public class SupplierDAL
     {
-        private static readonly List<SupplierDTO> _suppliers = new List<SupplierDTO>
-        {
-            new SupplierDTO 
-            { 
-                SupplierID = Guid.Parse("00000000-0000-0000-0000-000000000001"), 
-                SupplierName = "Dược Hậu Giang", 
-                Address = "Cần Thơ", 
-                Phone = "02923891433",
-                Email = "info@dhgpharma.com.vn"
-            },
-            new SupplierDTO 
-            { 
-                SupplierID = Guid.Parse("00000000-0000-0000-0000-000000000002"), 
-                SupplierName = "Traphaco", 
-                Address = "Hà Nội", 
-                Phone = "02436811610",
-                Email = "info@traphaco.com.vn"
-            },
-            new SupplierDTO 
-            { 
-                SupplierID = Guid.Parse("00000000-0000-0000-0000-000000000003"), 
-                SupplierName = "Imexpharm", 
-                Address = "Đồng Tháp", 
-                Phone = "02773851941",
-                Email = "imexpharm@imexpharm.com"
-            }
-        };
-
         public List<SupplierDTO> GetAllSuppliers()
         {
-            return _suppliers.ToList();
+            DataTable dt = DatabaseHelper.ExecuteQuery(
+                "SELECT SupplierID, SupplierName, Phone, Email, Address FROM Suppliers");
+
+            List<SupplierDTO> list = new List<SupplierDTO>();
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(MapRow(row));
+            }
+
+            return list;
         }
 
         public bool InsertSupplier(SupplierDTO supplier)
         {
-            if (supplier.SupplierID == Guid.Empty)
-            {
-                supplier.SupplierID = Guid.NewGuid();
-            }
-            _suppliers.Add(supplier);
-            return true;
+            string query = @"
+                INSERT INTO Suppliers
+                (
+                    SupplierName,
+                    Phone,
+                    Email,
+                    Address
+                )
+                VALUES
+                (
+                    @SupplierName,
+                    @Phone,
+                    @Email,
+                    @Address
+                )";
+
+            return DatabaseHelper.ExecuteNonQuery(query, BuildSupplierParameters(supplier)) > 0;
         }
 
         public bool UpdateSupplier(SupplierDTO supplier)
         {
-            var existing = _suppliers.FirstOrDefault(s => s.SupplierID == supplier.SupplierID);
-            if (existing != null)
+            string query = @"
+                UPDATE Suppliers
+                SET SupplierName = @SupplierName,
+                    Phone = @Phone,
+                    Email = @Email,
+                    Address = @Address
+                WHERE SupplierID = @SupplierID";
+
+            SqlParameter[] parameters =
             {
-                existing.SupplierName = supplier.SupplierName;
-                existing.Phone = supplier.Phone;
-                existing.Email = supplier.Email;
-                existing.Address = supplier.Address;
-                return true;
-            }
-            return false;
+                new SqlParameter("@SupplierID", supplier.SupplierID),
+                new SqlParameter("@SupplierName", supplier.SupplierName),
+                new SqlParameter("@Phone", (object)supplier.Phone ?? DBNull.Value),
+                new SqlParameter("@Email", (object)supplier.Email ?? DBNull.Value),
+                new SqlParameter("@Address", (object)supplier.Address ?? DBNull.Value)
+            };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
 
         public bool DeleteSupplier(Guid supplierId)
         {
-            var existing = _suppliers.FirstOrDefault(s => s.SupplierID == supplierId);
-            if (existing != null)
+            return DatabaseHelper.ExecuteNonQuery(
+                "DELETE FROM Suppliers WHERE SupplierID = @SupplierID",
+                new[] { new SqlParameter("@SupplierID", supplierId) }) > 0;
+        }
+
+        private static SqlParameter[] BuildSupplierParameters(SupplierDTO supplier)
+        {
+            return new[]
             {
-                _suppliers.Remove(existing);
-                return true;
-            }
-            return false;
+                new SqlParameter("@SupplierName", supplier.SupplierName),
+                new SqlParameter("@Phone", (object)supplier.Phone ?? DBNull.Value),
+                new SqlParameter("@Email", (object)supplier.Email ?? DBNull.Value),
+                new SqlParameter("@Address", (object)supplier.Address ?? DBNull.Value)
+            };
+        }
+
+        private static SupplierDTO MapRow(DataRow row)
+        {
+            return new SupplierDTO
+            {
+                SupplierID = row["SupplierID"] == DBNull.Value ? Guid.Empty : Guid.Parse(row["SupplierID"].ToString()),
+                SupplierName = row["SupplierName"]?.ToString(),
+                Phone = row["Phone"] == DBNull.Value ? "" : row["Phone"].ToString(),
+                Email = row["Email"] == DBNull.Value ? "" : row["Email"].ToString(),
+                Address = row.Table.Columns.Contains("Address") && row["Address"] != DBNull.Value ? row["Address"].ToString() : ""
+            };
         }
     }
 }

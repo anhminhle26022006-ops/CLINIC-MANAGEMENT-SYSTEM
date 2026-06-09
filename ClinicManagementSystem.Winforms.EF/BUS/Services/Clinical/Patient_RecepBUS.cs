@@ -43,6 +43,11 @@ namespace BUS.Services
             return patientDAL.GetById(id);
         }
 
+        public bool DeletePatient(int id)
+        {
+            return id > 0 && patientDAL.Delete(id);
+        }
+
         public bool UpdatePatient(PatientDTO patient)
         {
             if (patient == null)
