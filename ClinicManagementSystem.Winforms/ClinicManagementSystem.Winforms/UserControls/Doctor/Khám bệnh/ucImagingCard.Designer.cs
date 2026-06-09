@@ -46,7 +46,7 @@
             pnlMain.Location = new Point(0, 0);
             pnlMain.Name = "pnlMain";
             pnlMain.Padding = new Padding(12);
-            pnlMain.Size = new Size(300, 220);
+            pnlMain.Size = new Size(346, 220);
             pnlMain.TabIndex = 0;
             // 
             // lblTitle
@@ -73,7 +73,7 @@
             picThumbnail.BorderStyle = BorderStyle.FixedSingle;
             picThumbnail.Location = new Point(12, 60);
             picThumbnail.Name = "picThumbnail";
-            picThumbnail.Size = new Size(260, 90);
+            picThumbnail.Size = new Size(317, 90);
             picThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
             picThumbnail.TabIndex = 2;
             picThumbnail.TabStop = false;
@@ -82,7 +82,7 @@
             // 
             lblContent.Location = new Point(12, 165);
             lblContent.Name = "lblContent";
-            lblContent.Size = new Size(260, 45);
+            lblContent.Size = new Size(317, 45);
             lblContent.TabIndex = 3;
             lblContent.Text = "Phổi trong, tim bình thường";
             // 
@@ -92,7 +92,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(pnlMain);
             Name = "ucImagingCard";
-            Size = new Size(300, 220);
+            Size = new Size(346, 220);
             pnlMain.ResumeLayout(false);
             pnlMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picThumbnail).EndInit();

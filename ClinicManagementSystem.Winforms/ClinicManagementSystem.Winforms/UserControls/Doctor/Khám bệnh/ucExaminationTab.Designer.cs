@@ -74,7 +74,7 @@
             txtSymptom.Location = new Point(10, 35);
             txtSymptom.Multiline = true;
             txtSymptom.Name = "txtSymptom";
-            txtSymptom.Size = new Size(730, 87);
+            txtSymptom.Size = new Size(574, 87);
             txtSymptom.TabIndex = 1;
             // 
             // txtDiagnosis
@@ -82,7 +82,7 @@
             txtDiagnosis.Location = new Point(10, 150);
             txtDiagnosis.Multiline = true;
             txtDiagnosis.Name = "txtDiagnosis";
-            txtDiagnosis.Size = new Size(730, 87);
+            txtDiagnosis.Size = new Size(574, 87);
             txtDiagnosis.TabIndex = 3;
             // 
             // txtConclusion
@@ -90,15 +90,15 @@
             txtConclusion.Location = new Point(10, 265);
             txtConclusion.Multiline = true;
             txtConclusion.Name = "txtConclusion";
-            txtConclusion.Size = new Size(730, 87);
+            txtConclusion.Size = new Size(574, 87);
             txtConclusion.TabIndex = 5;
             // 
             // txtNote
             // 
-            txtNote.Location = new Point(10, 393);
+            txtNote.Location = new Point(10, 381);
             txtNote.Multiline = true;
             txtNote.Name = "txtNote";
-            txtNote.Size = new Size(730, 80);
+            txtNote.Size = new Size(574, 80);
             txtNote.TabIndex = 7;
             // 
             // ucExaminationTab
@@ -114,7 +114,7 @@
             Controls.Add(lblNote);
             Controls.Add(txtNote);
             Name = "ucExaminationTab";
-            Size = new Size(754, 492);
+            Size = new Size(613, 492);
             ResumeLayout(false);
             PerformLayout();
         }

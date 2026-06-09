@@ -1,302 +1,311 @@
-﻿using ClinicManagementSystem.Winforms.Shareforms.ERM;
+﻿using BUS.Services.Doctor;
+using ClinicManagementSystem.Winforms.Shareforms.ERM;
+using DAL.Repositories.Doctor;
+using DTO.Doctor;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System.Configuration;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
 {
     public partial class ucDoctorExaminationSidebar : UserControl
     {
+        // ================= SERVICES =================
+        private readonly PatientQueueService _queueService;
+        private readonly VitalSignsService _vitalService;
+        private readonly MedicalHistoryService _historyService;
+        private readonly LabResultService _labService;
+        private readonly ImagingResultService _imagingService;
+
+        // ================= STATE =================
+        private PatientQueueDto _selectedPatient;
+
+        // ================= TABS =================
         private ucExaminationTab _examTab;
-
         private ucPrescriptionTab _prescriptionTab;
-
         private ucLabTab _labTab;
-
         private ucImagingTab _imagingTab;
-        private ucWaitingPatient _selectedPatient;
+
         public ucDoctorExaminationSidebar()
         {
             InitializeComponent();
-            pnlTabContent.Dock = DockStyle.Fill;
 
+            string conn = ConfigurationManager
+                .ConnectionStrings["DbConnection"]
+                .ConnectionString;
+
+            _queueService = new PatientQueueService(new PatientQueueRepository(conn));
+            _vitalService = new VitalSignsService(new VitalSignsRepository(conn));
+            _historyService = new MedicalHistoryService();
+            _labService = new LabResultService(new LabResultRepository(conn));
+            _imagingService = new ImagingResultService(new ImagingResultRepository(conn));
+
+            InitLayout();
+            InitTabs();
+            InitEvents();
+
+            LoadWaitingPatients();
+        }
+
+        // ================= INIT =================
+        private void InitLayout()
+        {
+            pnlTabContent.Dock = DockStyle.Fill;
             flpVitalSigns.Dock = DockStyle.Fill;
             flpWaitingPatients.Dock = DockStyle.Fill;
             flpHistory.Dock = DockStyle.Fill;
-
-            InitializeTabs();
-
-            LoadVitalSigns();
-
-            LoadWaitingPatients();
-
-            LoadHistory();
-            btnExamination.Click += btnExam_Click;
-
-            btnPrescription.Click += btnPrescription_Click;
-
-            btnLab.Click += btnLab_Click;
-
-            btnImaging.Click += btnImaging_Click;
-            btnFollowUp.Click += BtnFollowUp_Click;
-
         }
-        private void LoadHistory()
+        public void LoadPatient(string patientName, string patientInfo, string appointmentTime, string status)
         {
-            flpHistory.Controls.Clear();
+            lblPatientName.Text = patientName;
+            lblPatientInfo.Text = $"{patientInfo} • {appointmentTime}";
 
-            var visit =
-                new ucPreviousVisitCard();
-
-            visit.lblDate.Text =
-                "15/05/2026";
-
-            visit.lblDiagnosis.Text =
-                "Tăng huyết áp độ I";
-
-            visit.lblDoctor.Text =
-                "BS Nguyễn Thành Nam";
-
-            visit.lblMedicine.Text =
-                "Amlodipine 5mg";
-
-            flpHistory.Controls.Add(visit);
-            var lab =
-        new ucLabResultCard();
-
-            lab.lblDate.Text =
-                "15/05/2026";
-
-            lab.lblStatus.Text =
-                "Hoàn thành";
-
-            lab.lblWBC.Text =
-                "WBC : 7.2";
-
-            lab.lblRBC.Text =
-                "RBC : 5.1";
-
-            lab.lblHGB.Text =
-                "HGB : 15.2";
-
-            flpHistory.Controls.Add(lab);
-            var imaging =
-       new ucImagingCard();
-
-            imaging.lblTitle.Text =
-                "X-Ray phổi";
-
-            imaging.lblDate.Text =
-                "14/05/2026";
-
-            imaging.lblContent.Text =
-                "Phổi trong, tim bình thường";
-
-            imaging.picThumbnail.Click +=
-                Imaging_Click;
-
-            flpHistory.Controls.Add(imaging);
+            // optional status
+            // bạn có thể thêm color theo status nếu muốn
         }
-        private void InitializeTabs()
+        private void InitTabs()
         {
             _examTab = new ucExaminationTab();
             _prescriptionTab = new ucPrescriptionTab();
             _labTab = new ucLabTab();
             _imagingTab = new ucImagingTab();
 
-            _examTab.Dock = DockStyle.Fill;
-            _prescriptionTab.Dock = DockStyle.Fill;
-            _labTab.Dock = DockStyle.Fill;
-            _imagingTab.Dock = DockStyle.Fill;
-
             ShowTab(_examTab);
         }
+
+        private void InitEvents()
+        {
+            btnExamination.Click += (_, __) => ShowTab(_examTab);
+            btnPrescription.Click += (_, __) => ShowTab(_prescriptionTab);
+            btnLab.Click += (_, __) => ShowTab(_labTab);
+            btnImaging.Click += (_, __) => ShowTab(_imagingTab);
+            btnFollowUp.Click += BtnFollowUp_Click;
+        }
+
+        // ================= TAB CONTROL =================
         private void ShowTab(UserControl tab)
         {
             pnlTabContent.SuspendLayout();
-
             pnlTabContent.Controls.Clear();
 
             tab.Dock = DockStyle.Fill;
-
-            tab.Margin = Padding.Empty;
-
             pnlTabContent.Controls.Add(tab);
 
             pnlTabContent.ResumeLayout();
         }
-        private void LoadVitalSigns()
-        {
-            flpVitalSigns.Controls.Clear();
 
-            AddVital(
-                "Huyết áp",
-                "118/75",
-                "mmHg");
-
-            AddVital(
-                "Nhiệt độ",
-                "36.5",
-                "°C");
-
-            AddVital(
-                "Nhịp tim",
-                "72",
-                "bpm");
-
-            AddVital(
-                "Chiều cao",
-                "160",
-                "cm");
-
-            AddVital(
-                "Cân nặng",
-                "55",
-                "kg");
-        }
-        private void AddVital(
-    string name,
-    string value,
-    string unit)
-        {
-            var card =
-                new ucVitalSignCard1();
-
-            card.lblTitle.Text =
-                name;
-
-            card.lblValue.Text =
-                value;
-
-            card.lblUnit.Text =
-                unit;
-
-            flpVitalSigns.Controls.Add(card);
-        }
+        // ================= WAITING LIST =================
         private void LoadWaitingPatients()
         {
             flpWaitingPatients.Controls.Clear();
 
-            for (int i = 1; i <= 10; i++)
+            int doctorId = 3; // TODO: replace auth later
+            var list = _queueService.GetTodayQueue(doctorId);
+
+            lblQueueCount.Text = $"Hàng chờ khám ({list.Count})";
+
+            foreach (var item in list)
             {
-                var patient =
-                    new ucWaitingPatient();
+                var uc = new ucWaitingPatient();
 
-                patient.lblPatientName.Text =
-                    $"Bệnh nhân {i}";
+                uc.lblPatientName.Text = item.PatientName;
+                uc.lblAppointmentTime.Text = item.AppointmentTime.ToString("HH:mm");
+                uc.lblAgeGender.Text = item.AgeGender;
+                uc.lblAllergy.Text = item.Allergy;
 
-                patient.lblAppointmentTime.Text =
-                    "08:30";
+                uc.Tag = item;
+                uc.Click += WaitingPatient_Click;
 
-                patient.lblAgeGender.Text =
-                    "32 tuổi • Nữ"; 
-
-                patient.lblAllergy.Text =
-                    "Dị ứng: Penicillin";
-
-                patient.Click += WaitingPatient_Click;
-
-                flpWaitingPatients.Controls.Add(
-                    patient);
+                flpWaitingPatients.Controls.Add(uc);
             }
         }
-        private void Imaging_Click(
-    object sender,
-    EventArgs e)
-        {
-            var viewer =
-                new frmPacsViewer();
 
-            viewer.ShowDialog();
-        }
-        private void btnExam_Click(
-    object sender,
-    EventArgs e)
+        // ================= SELECT PATIENT =================
+        private void WaitingPatient_Click(object sender, EventArgs e)
         {
-            ShowTab(_examTab);
-        }
+            var uc = sender as ucWaitingPatient;
+            var data = uc?.Tag as PatientQueueDto;
 
-        private void btnPrescription_Click(
-            object sender,
-            EventArgs e)
-        {
-            ShowTab(_prescriptionTab);
+            if (data == null) return;
+
+            _selectedPatient = data;
+
+            HighlightSelected(uc);
+
+            LoadPatientInfo(data);
         }
 
-        private void btnLab_Click(
-            object sender,
-            EventArgs e)
+        private void HighlightSelected(ucWaitingPatient selected)
         {
-            ShowTab(_labTab);
+            foreach (Control c in flpWaitingPatients.Controls)
+                c.BackColor = Color.White;
+
+            selected.BackColor = Color.FromArgb(219, 234, 254);
         }
 
-        private void btnImaging_Click(
-            object sender,
-            EventArgs e)
+        // ================= PATIENT LOAD =================
+        private void LoadPatientInfo(PatientQueueDto p)
         {
-            ShowTab(_imagingTab);
+            lblPatientName.Text = p.PatientName;
+            lblPatientInfo.Text = $"{p.PatientCode} • {p.AgeGender} • STT: {p.QueueNumber}";
+
+            LoadVitalSigns(p.EncounterID);
+            LoadHistory(p.EncounterID);
+            LoadLab(p.EncounterID);
+            LoadImaging(p.EncounterID);
         }
-        private void WaitingPatient_Click(
-    object sender,
-    EventArgs e)
+        public void LoadPatientByEncounter(int encounterId)
         {
-            if (_selectedPatient != null)
+            var p = _queueService.GetTodayQueue(3)
+                .FirstOrDefault(x => x.EncounterID == encounterId);
+
+            if (p == null) return;
+
+            _selectedPatient = p;
+
+            lblPatientName.Text = p.PatientName;
+            lblPatientInfo.Text = $"{p.PatientCode} • {p.AgeGender} • STT {p.QueueNumber}";
+
+            LoadVitalSigns(p.EncounterID);
+            LoadHistory(p.EncounterID);
+            LoadLab(p.EncounterID);
+            LoadImaging(p.EncounterID);
+        }
+        public void LoadPatientByAppointment(int appointmentId)
+        {
+            // query DB để lấy EncounterID từ AppointmentID
+            var queue = _queueService.GetTodayQueue(3)
+                                      .FirstOrDefault(x => x.EncounterID > 0);
+
+            if (queue == null) return;
+
+            LoadPatientInfo(queue);
+        }
+
+        // ================= VITAL =================
+        private void LoadVitalSigns(int encounterId)
+        {
+            flpVitalSigns.Controls.Clear();
+
+            var vital = _vitalService.Get(encounterId);
+            if (vital == null) return;
+
+            AddVital("BMI", CalculateBMI(vital.Weight, vital.Height).ToString("0.0"), "");
+        }
+
+        private void AddVital(string name, string value, string unit)
+        {
+            var card = new ucVitalSignCard1();
+            card.lblTitle.Text = name;
+            card.lblValue.Text = value;
+            card.lblUnit.Text = unit;
+
+            flpVitalSigns.Controls.Add(card);
+        }
+
+        // ================= HISTORY =================
+        private void LoadHistory(int encounterId)
+        {
+            flpHistory.Controls.Clear();
+
+            var list = _historyService.GetHistory(encounterId);
+
+            foreach (var item in list)
             {
-                _selectedPatient.BackColor =
-                    Color.White;
+                var card = new ucPreviousVisitCard();
+
+                card.lblDate.Text =
+                    item.Date.ToString("dd/MM/yyyy");
+
+                card.lblDiagnosis.Text =
+                    item.Diagnosis;
+
+                card.lblDoctor.Text =
+                    item.Doctor;
+
+                card.lblMedicine.Text =
+                    item.Status;
+
+                flpHistory.Controls.Add(card);
             }
-
-            _selectedPatient =
-                sender as ucWaitingPatient;
-
-            _selectedPatient.BackColor =
-                Color.FromArgb(
-                    219,
-                    234,
-                    254);
-
-            LoadPatientInfo();
         }
-        private void LoadPatientInfo()
+
+        // ================= LAB =================
+        private void LoadLab(int encounterId)
         {
-            lblPatientName.Text =
-                "Trần Thị B";
+            var list = _labService.GetByEncounter(encounterId);
 
-            lblPatientInfo.Text =
-                "BN001235 • 32 tuổi • Nữ • STT: A007";
+            foreach (var lab in list)
+            {
+                var card = new ucLabResultCard();
 
-            lblBMI.Text =
-                "21.5";
+                card.lblTitle.Text = "Xét nghiệm";
+                card.lblStatus.Text = lab.Status;
+                card.lblDate.Text = lab.CompletedAt.ToString("dd/MM/yyyy");
+
+                card.lblWBC.Text = $"WBC: {lab.WBC}";
+                card.lblRBC.Text = $"RBC: {lab.RBC}";
+                card.lblHGB.Text = $"HGB: {lab.HGB}";
+
+                flpHistory.Controls.Add(card);
+            }
         }
+
+        // ================= IMAGING =================
+        private void LoadImaging(int encounterId)
+        {
+            var list = _imagingService.GetByEncounter(encounterId);
+
+            foreach (var img in list)
+            {
+                var card = new ucImagingCard();
+
+                card.lblTitle.Text = img.ServiceName;
+                card.lblDate.Text = img.CompletedAt.ToString("dd/MM/yyyy");
+                card.lblContent.Text = img.ResultText;
+
+                if (!string.IsNullOrEmpty(img.ImageURL))
+                    card.picThumbnail.Load(img.ImageURL);
+
+                card.picThumbnail.Click += Imaging_Click;
+
+                flpHistory.Controls.Add(card);
+            }
+        }
+
+        private void Imaging_Click(object sender, EventArgs e)
+        {
+            new frmPacsViewer().ShowDialog();
+        }
+
+        // ================= FOLLOW UP =================
         private void BtnFollowUp_Click(object sender, EventArgs e)
         {
             if (_selectedPatient == null)
             {
-                MessageBox.Show(
-                    "Vui lòng chọn bệnh nhân trước khi tạo lịch tái khám!",
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-
+                MessageBox.Show("Vui lòng chọn bệnh nhân trước!");
                 return;
             }
 
-            var form = new frmFollowUpSchedule();
+            var form = new frmFollowUpSchedule
+            {
+                StartPosition = FormStartPosition.CenterParent
+            };
 
-            // truyền dữ liệu sang form (nếu bạn muốn)
             form.lblPatientName.Text = lblPatientName.Text;
-            form.lblPatientCode.Text = lblPatientInfo.Text;
-
-            form.StartPosition = FormStartPosition.CenterParent;
+            form.lblPatientCode.Text = _selectedPatient.PatientCode;
 
             form.ShowDialog();
         }
 
+        // ================= UTIL =================
+        private double CalculateBMI(decimal weight, decimal heightCm)
+        {
+            if (heightCm <= 0) return 0;
+
+            double h = (double)heightCm / 100.0;
+            return (double)weight / (h * h);
+        }
     }
 }

@@ -312,7 +312,7 @@
             // 
             btnImaging.Location = new Point(517, 8);
             btnImaging.Name = "btnImaging";
-            btnImaging.Size = new Size(188, 34);
+            btnImaging.Size = new Size(164, 34);
             btnImaging.TabIndex = 3;
             btnImaging.Text = "CĐHA";
             // 

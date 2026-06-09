@@ -1,4 +1,5 @@
-﻿using DTO.Clinical.erm;
+﻿using ClinicManagementSystem.Winforms.Controllers;
+using DTO.Clinical.erm;
 using System;
 using System.Windows.Forms;
 
@@ -6,75 +7,163 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
 {
     public partial class ucMedicalRecordSidebar : UserControl
     {
+        private readonly MedicalRecordController _controller;
+        private List<MedicalRecordDto> _data;
         public ucMedicalRecordSidebar()
         {
             InitializeComponent();
-            LoadMockData();
-        
+            _controller = new MedicalRecordController();
+
+            InitializeGrid();
+
+            LoadData();
+
         }
-        private void LoadMockData()
-        {
-            _data = new List<MedicalRecordDto>
-    {
-        new()
-        {
-            Code = "BA001",
-            Date = DateTime.Today,
-            Patient = "Nguyễn Văn A",
-            Diagnosis = "Viêm họng",
-            Doctor = "BS. Trịnh Hồng My",
-            Status = "Hoàn thành"
-        },
+       
 
-        new()
+        private void LoadData()
         {
-            Code = "BA002",
-            Date = DateTime.Today.AddDays(-1),
-            Patient = "Trần Thị B",
-            Diagnosis = "Tăng huyết áp",
-            Doctor = "BS. Tô Cẩm Anh",
-            Status = "Đang theo dõi"
-        },
-
-        new()
-        {
-            Code = "BA003",
-            Date = DateTime.Today.AddDays(-2),
-            Patient = "Lê Văn C",
-            Diagnosis = "Tiểu đường",
-            Doctor = "BS. Tạ Anh Khôi",
-            Status = "Hoàn thành"
-        },
-
-        new()
-        {
-            Code = "BA004",
-            Date = DateTime.Today.AddDays(-3),
-            Patient = "Phạm Thị D",
-            Diagnosis = "Hen phế quản",
-            Doctor = "BS. Nguyễn Minh",
-            Status = "Đang theo dõi"
-        }
-    };
+            _data = _controller.GetAll();
 
             LoadGrid(_data);
 
-            lblTotal.Text = _data.Count.ToString();
+            UpdateDashboard();
+        }
+        private void UpdateDashboard()
+        {
+            lblTotal.Text =
+                _data.Count.ToString();
 
             lblToday.Text =
-                _data.Count(x => x.Date.Date == DateTime.Today)
+                _data.Count(x =>
+                    x.Date.Date == DateTime.Today)
                 .ToString();
 
             lblWeek.Text =
-                _data.Count(x => x.Date >= DateTime.Today.AddDays(-7))
+                _data.Count(x =>
+                    x.Date >= DateTime.Today.AddDays(-7))
                 .ToString();
 
             lblTracking.Text =
-                _data.Count(x => x.Status == "Đang theo dõi")
+                _data.Count(x =>
+                    x.Status == "Đang theo dõi")
                 .ToString();
-
-            cboStatus.SelectedIndex = 0;
         }
+        private void InitializeGrid()
+        {
+            dgvRecords.Rows.Clear();
+            dgvRecords.Columns.Clear();
+
+            dgvRecords.AutoGenerateColumns = false;
+
+            dgvRecords.EnableHeadersVisualStyles = false;
+
+            dgvRecords.ColumnHeadersDefaultCellStyle.BackColor =
+                Color.FromArgb(37, 99, 235);
+
+            dgvRecords.ColumnHeadersDefaultCellStyle.ForeColor =
+                Color.White;
+
+            dgvRecords.ColumnHeadersDefaultCellStyle.Font =
+                new Font("Segoe UI", 10, FontStyle.Bold);
+
+            dgvRecords.DefaultCellStyle.Font =
+                new Font("Segoe UI", 10);
+
+            dgvRecords.RowTemplate.Height = 40;
+
+            dgvRecords.Columns.Add("Code", "Mã bệnh án");
+            dgvRecords.Columns.Add("Date", "Ngày khám");
+            dgvRecords.Columns.Add("Patient", "Bệnh nhân");
+            dgvRecords.Columns.Add("Diagnosis", "Chuẩn đoán");
+            dgvRecords.Columns.Add("Doctor", "Bác sĩ");
+            dgvRecords.Columns.Add("Status", "Trạng thái");
+
+            DataGridViewButtonColumn btnView =
+                new DataGridViewButtonColumn();
+
+            btnView.Name = "btnView";
+            btnView.HeaderText = "Thao tác";
+            btnView.Text = "Xem ERM";
+            btnView.UseColumnTextForButtonValue = true;
+
+            dgvRecords.Columns.Add(btnView);
+        }
+        private void LoadGrid(List<MedicalRecordDto> records)
+        {
+            dgvRecords.Rows.Clear();
+
+            foreach (var item in records)
+            {
+                dgvRecords.Rows.Add(
+                    item.Code,
+                    item.Date.ToString("dd/MM/yyyy"),
+                    item.Patient,
+                    item.Diagnosis,
+                    item.Doctor,
+                    item.Status
+                );
+            }
+        }
+        private void dgvRecords_CellFormatting(
+    object sender,
+    DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvRecords.Columns[e.ColumnIndex].Name != "Status")
+                return;
+
+            string status = e.Value?.ToString();
+
+            if (status == "Hoàn thành")
+            {
+                e.CellStyle.BackColor = Color.SeaGreen;
+                e.CellStyle.ForeColor = Color.White;
+            }
+            else if (status == "Đang theo dõi")
+            {
+                e.CellStyle.BackColor = Color.DarkOrange;
+                e.CellStyle.ForeColor = Color.White;
+            }
+        }
+        private void ApplyFilter()
+        {
+            IEnumerable<MedicalRecordDto> query = _data;
+
+            if (!string.IsNullOrWhiteSpace(txtSearch.Text))
+            {
+                query = query.Where(x =>
+                    x.Code.Contains(txtSearch.Text) ||
+                    x.Patient.Contains(txtSearch.Text));
+            }
+
+            if (cboStatus.SelectedIndex == 1)
+                query = query.Where(x =>
+                    x.Status == "Hoàn thành");
+
+            if (cboStatus.SelectedIndex == 2)
+                query = query.Where(x =>
+                    x.Status == "Đang theo dõi");
+
+            query = query.Where(x =>
+                x.Date.Date >= dtFrom.Value.Date &&
+                x.Date.Date <= dtTo.Value.Date);
+
+            LoadGrid(query.ToList());
+        }
+        private void dgvRecords_CellClick(
+    object sender,
+    DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+                return;
+
+            if (dgvRecords.Columns[e.ColumnIndex].Name == "btnView")
+            {
+                ERMform frm = new ERMform();
+                frm.ShowDialog();
+            }
+        }
+        
         private Label CreateStatusChip(string status)
         {
             var lbl = new Label();
@@ -94,24 +183,7 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
             return lbl;
         }
 
-        private void dgvRecords_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            if (dgvRecords.Columns[e.ColumnIndex].Name == "Status" && e.Value != null)
-            {
-                string status = e.Value.ToString();
-
-                e.CellStyle.ForeColor = Color.White;
-
-                if (status == "Hoàn thành")
-                    e.CellStyle.BackColor = Color.SeaGreen;
-
-                else if (status == "Đang theo dõi")
-                    e.CellStyle.BackColor = Color.DarkOrange;
-
-                else
-                    e.CellStyle.BackColor = Color.Gray;
-            }
-        }
+        
         private void AddHoverEffect(Panel pnl)
         {
             pnl.MouseEnter += (s, e) =>
@@ -126,63 +198,14 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
             };
         }
 
-        private void dgvRecords_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-
-            if (dgvRecords.Columns[e.ColumnIndex] is DataGridViewButtonColumn)
-            {
-                var frm = new ERMform();
-                frm.ShowDialog();
-            }
-        }
-        private List<MedicalRecordDto> _data;
+        
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             ApplyFilter();
         }
-        private void ApplyFilter()
-        {
-            var query = _data.AsEnumerable();
-
-            // search text
-            if (!string.IsNullOrWhiteSpace(txtSearch.Text))
-            {
-                query = query.Where(x =>
-                    x.Code.Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase) ||
-                    x.Patient.Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase));
-            }
-
-            // status
-            if (cboStatus.SelectedIndex == 1)
-                query = query.Where(x => x.Status == "Hoàn thành");
-
-            if (cboStatus.SelectedIndex == 2)
-                query = query.Where(x => x.Status == "Đang theo dõi");
-
-            // date filter
-            query = query.Where(x =>
-                x.Date >= dtFrom.Value.Date &&
-                x.Date <= dtTo.Value.Date);
-
-            LoadGrid(query.ToList());
-        }
-        private void LoadGrid(List<MedicalRecordDto> list)
-        {
-            dgvRecords.Rows.Clear();
-
-            foreach (var x in list)
-            {
-                dgvRecords.Rows.Add(
-                    x.Code,
-                    x.Date.ToString("dd/MM/yyyy"),
-                    x.Patient,
-                    x.Diagnosis,
-                    x.Doctor,
-                    x.Status
-                );
-            }
-        }
+       
+        
+        
     }
 }
