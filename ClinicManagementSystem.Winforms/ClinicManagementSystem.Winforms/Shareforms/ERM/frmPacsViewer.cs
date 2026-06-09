@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,12 +37,20 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
             lblTechnicianValue.Text = _data.DoctorName;
             lblStudyDate.Text = _data.CreatedAt.ToString("dd/MM/yyyy");
 
-            if (!string.IsNullOrEmpty(_data.ImageUrl))
+            if (!string.IsNullOrWhiteSpace(_data.ImageUrl) && File.Exists(_data.ImageUrl))
             {
-                picImage.Image = Image.FromFile(_data.ImageUrl);
-            } else { 
-                MessageBox.Show("Không có ảnh để hiển thị");
+                try
+                {
+                    picImage.Image = Image.FromFile(_data.ImageUrl);
+                    return;
+                }
+                catch
+                {
+                    // Fall through to the user-facing message below.
+                }
             }
+
+            MessageBox.Show("Không có ảnh để hiển thị");
         }
     }
 }

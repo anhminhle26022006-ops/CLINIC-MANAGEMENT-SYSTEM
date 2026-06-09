@@ -276,7 +276,7 @@
             btnImaging.Name = "btnImaging";
             btnImaging.Size = new Size(290, 39);
             btnImaging.TabIndex = 5;
-            btnImaging.Text = "Chuẩn doán hình ảnh";
+            btnImaging.Text = "Chẩn đoán hình ảnh";
             btnImaging.UseVisualStyleBackColor = true;
             btnImaging.Click += btnImaging_Click;
             // 

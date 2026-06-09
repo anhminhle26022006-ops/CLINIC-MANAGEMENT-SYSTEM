@@ -1646,5 +1646,250 @@ WHERE PaymentID IN
     ORDER BY PaymentID DESC
 );
 
+-- =========================================================
+-- GP1 ERM DEMO DATA
+-- Hồ sơ bệnh án đầy đủ để demo ERM: lịch sử khám, sinh hiệu,
+-- toa thuốc, xét nghiệm, CĐHA có ảnh, hóa đơn và tái khám.
+-- =========================================================
+DECLARE @GP1DoctorID INT = (SELECT EmployeeID FROM Employees WHERE EmployeeCode = 'DOC_GP1');
+DECLARE @GP1DepartmentID INT = (SELECT DepartmentID FROM Departments WHERE DepartmentName = N'Khám tổng quát');
+DECLARE @GP1RoomID INT = (SELECT RoomID FROM Rooms WHERE RoomCode = 'GP-01');
+
+IF @GP1DoctorID IS NOT NULL
+BEGIN
+    DECLARE @ErmDemo TABLE
+    (
+        PatientCode VARCHAR(50),
+        FullName NVARCHAR(255),
+        Gender NVARCHAR(20),
+        DOB DATE,
+        Phone VARCHAR(20),
+        Address NVARCHAR(500),
+        BloodType NVARCHAR(10),
+        Allergy NVARCHAR(MAX),
+        InsuranceNumber VARCHAR(100),
+        VisitDate DATETIME,
+        AppointmentStatus NVARCHAR(50),
+        ChiefComplaint NVARCHAR(MAX),
+        Symptoms NVARCHAR(MAX),
+        Diagnosis NVARCHAR(MAX),
+        ICDCode NVARCHAR(50),
+        Conclusion NVARCHAR(MAX),
+        Notes NVARCHAR(MAX),
+        Temperature DECIMAL(4,1),
+        BloodPressure VARCHAR(20),
+        HeartRate INT,
+        SPO2 INT,
+        Weight DECIMAL(5,2),
+        Height DECIMAL(5,2),
+        LabType NVARCHAR(255),
+        LabResult NVARCHAR(MAX),
+        ImagingCode VARCHAR(50),
+        BodyPart NVARCHAR(500),
+        ImagingResult NVARCHAR(MAX),
+        ImageURL NVARCHAR(MAX),
+        InvoiceTotal DECIMAL(18,2),
+        InvoiceStatus NVARCHAR(50),
+        PaymentMethod NVARCHAR(50),
+        FollowUpDate DATETIME,
+        FollowUpStatus NVARCHAR(50)
+    );
+
+    INSERT INTO @ErmDemo
+    VALUES
+    ('ERMGP1001', N'Nguyễn Văn An', N'Nam', '1981-04-12', '0912001001', N'Quận 1, TP.HCM', N'O+', N'Dị ứng penicillin', 'HC-GP1-0001', '2026-06-10T08:00:00', N'Completed', N'Ho kéo dài, đau họng', N'Ho khan 5 ngày, đau rát họng, mệt, không khó thở', N'Viêm họng cấp', 'J02.9', N'Điều trị ngoại trú, uống thuốc đúng toa, tái khám nếu sốt cao', N'Dặn uống nhiều nước, hạn chế đồ lạnh', 37.2, '125/80', 82, 98, 68.50, 171.00, N'Công thức máu', 'WBC=8.2;RBC=4.72;HGB=143;PLT=268', 'XR-CHEST', N'Phổi', N'Phế trường hai bên thông khí tốt, không ghi nhận tổn thương cấp tính', N'Resources\Screenshot 2026-06-08 132926.png', 430000, 'Paid', N'Cash', '2026-06-17T08:30:00', N'Đã hẹn'),
+    ('ERMGP1001', N'Nguyễn Văn An', N'Nam', '1981-04-12', '0912001001', N'Quận 1, TP.HCM', N'O+', N'Dị ứng penicillin', 'HC-GP1-0001', '2026-05-20T09:10:00', N'Completed', N'Đau thượng vị', N'Ợ nóng, đau âm ỉ vùng thượng vị sau ăn', N'Viêm dạ dày', 'K29.7', N'Triệu chứng nhẹ, điều chỉnh ăn uống và dùng thuốc 7 ngày', N'Tránh rượu bia, cà phê, đồ cay', 36.8, '120/78', 76, 99, 69.20, 171.00, N'Sinh hóa máu', 'WBC=6.8;RBC=4.65;HGB=140;PLT=245', 'US-ABDOMEN', N'Ổ bụng', N'Gan mật tụy lách chưa ghi nhận bất thường, dạ dày hơi tăng hơi', N'Resources\Screenshot 2026-06-08 131408.png', 520000, 'Paid', N'Banking', '2026-06-03T09:00:00', N'Hoàn thành'),
+    ('ERMGP1002', N'Trần Thị Bình', N'Nữ', '1990-09-25', '0912001002', N'Thủ Đức, TP.HCM', N'A+', N'Không có', 'HC-GP1-0002', '2026-06-10T08:30:00', N'Completed', N'Sốt nhẹ, đau đầu', N'Sốt 38 độ, đau đầu vùng trán, nghẹt mũi', N'Cảm cúm mùa', 'J11.1', N'Theo dõi ngoại trú, nghỉ ngơi 2 ngày', N'Hướng dẫn dấu hiệu cần quay lại: khó thở, sốt trên 39 độ', 38.0, '118/76', 88, 97, 55.00, 160.00, N'Công thức máu', 'WBC=9.4;RBC=4.21;HGB=128;PLT=230', 'XR-CHEST', N'Phổi', N'Không thấy hình ảnh viêm phổi, tim không to', N'Resources\Screenshot 2026-06-08 131240.png', 390000, 'Paid', N'Cash', '2026-06-14T10:00:00', N'Đã hẹn'),
+    ('ERMGP1002', N'Trần Thị Bình', N'Nữ', '1990-09-25', '0912001002', N'Thủ Đức, TP.HCM', N'A+', N'Không có', 'HC-GP1-0002', '2026-04-16T14:20:00', N'Completed', N'Mệt, chóng mặt', N'Mệt sau tăng ca, ăn uống thất thường, chóng mặt nhẹ', N'Thiếu máu nhẹ nghi do thiếu sắt', 'D50.9', N'Bổ sung dinh dưỡng, kiểm tra lại công thức máu', N'Tư vấn ăn uống giàu sắt', 36.7, '110/70', 80, 99, 54.20, 160.00, N'Công thức máu', 'WBC=6.1;RBC=3.95;HGB=112;PLT=290', 'US-ABDOMEN', N'Ổ bụng', N'Không phát hiện dịch ổ bụng, cấu trúc gan mật bình thường', N'Resources\Screenshot 2026-06-08 130949.png', 470000, 'Paid', N'Momo', '2026-05-16T14:00:00', N'Hoàn thành'),
+    ('ERMGP1003', N'Lê Minh Châu', N'Nữ', '1975-12-02', '0912001003', N'Quận 7, TP.HCM', N'B+', N'Dị ứng hải sản', 'HC-GP1-0003', '2026-06-10T09:00:00', N'Completed', N'Đau ngực thoáng qua', N'Đau tức ngực trái từng cơn ngắn, không lan tay, hồi hộp', N'Đau ngực không đặc hiệu', 'R07.4', N'Chưa ghi nhận dấu hiệu cấp cứu, theo dõi huyết áp và tái khám tim mạch nếu tái diễn', N'Tư vấn giảm stress, ngủ đủ giấc', 36.9, '138/86', 92, 98, 61.00, 158.00, N'Men tim và công thức máu', 'WBC=7.0;RBC=4.40;HGB=134;PLT=251', 'CT-HEAD', N'Sọ não', N'Không ghi nhận tổn thương nội sọ cấp, cấu trúc đường giữa không lệch', N'Resources\Screenshot 2026-06-08 130721.png', 950000, 'Paid', N'Banking', '2026-06-20T09:00:00', N'Đã hẹn'),
+    ('ERMGP1003', N'Lê Minh Châu', N'Nữ', '1975-12-02', '0912001003', N'Quận 7, TP.HCM', N'B+', N'Dị ứng hải sản', 'HC-GP1-0003', '2026-03-02T10:15:00', N'Completed', N'Tăng huyết áp kiểm tra định kỳ', N'Đôi lúc đau đầu, huyết áp tại nhà 140/90', N'Tăng huyết áp độ 1', 'I10', N'Duy trì theo dõi huyết áp, giảm muối, vận động nhẹ', N'Ghi nhật ký huyết áp mỗi sáng', 36.6, '142/88', 84, 99, 62.50, 158.00, N'Sinh hóa máu', 'WBC=6.4;RBC=4.38;HGB=132;PLT=240', 'US-ABDOMEN', N'Ổ bụng', N'Gan nhiễm mỡ nhẹ, chưa thấy bất thường đường mật', N'Resources\Screenshot 2026-06-08 125828.png', 610000, 'Paid', N'Cash', '2026-04-02T10:00:00', N'Hoàn thành'),
+    ('ERMGP1004', N'Phạm Quốc Dũng', N'Nam', '1968-07-18', '0912001004', N'Bình Thạnh, TP.HCM', N'AB+', N'Không có', 'HC-GP1-0004', '2026-06-10T09:30:00', N'Completed', N'Đau lưng dưới', N'Đau vùng thắt lưng sau khi khuân đồ, không tê chân', N'Căng cơ thắt lưng', 'M54.5', N'Điều trị giảm đau, nghỉ ngơi, tập giãn cơ nhẹ', N'Tránh mang vác nặng trong 1 tuần', 36.5, '130/82', 78, 99, 74.00, 169.00, N'Công thức máu', 'WBC=7.5;RBC=4.80;HGB=148;PLT=260', 'XR-CHEST', N'Cột sống thắt lưng', N'Không thấy tổn thương xương cấp, đường cong sinh lý còn', N'Resources\Screenshot 2026-06-08 125648.png', 410000, 'Paid', N'Cash', '2026-06-24T09:00:00', N'Đã hẹn'),
+    ('ERMGP1004', N'Phạm Quốc Dũng', N'Nam', '1968-07-18', '0912001004', N'Bình Thạnh, TP.HCM', N'AB+', N'Không có', 'HC-GP1-0004', '2026-02-11T08:45:00', N'Completed', N'Khám sức khỏe định kỳ', N'Không triệu chứng cấp, muốn kiểm tra tổng quát', N'Rối loạn lipid máu', 'E78.5', N'Tư vấn chế độ ăn, vận động và tái kiểm tra mỡ máu sau 3 tháng', N'Tăng rau xanh, giảm thức ăn chiên xào', 36.4, '128/80', 72, 99, 75.30, 169.00, N'Sinh hóa máu', 'WBC=6.9;RBC=4.76;HGB=146;PLT=238', 'US-ABDOMEN', N'Ổ bụng', N'Gan tăng âm nhẹ phù hợp gan nhiễm mỡ độ I', N'Resources\Screenshot 2026-06-08 124114.png', 680000, 'Paid', N'Banking', '2026-05-11T08:30:00', N'Hoàn thành');
+
+    INSERT INTO Patients(PatientCode, FullName, Gender, DOB, Phone, Address, BloodType, Allergy)
+    SELECT PatientCode, FullName, Gender, DOB, Phone, Address, BloodType, Allergy
+    FROM (
+        SELECT *, ROW_NUMBER() OVER (PARTITION BY PatientCode ORDER BY VisitDate DESC) AS rn
+        FROM @ErmDemo
+    ) p
+    WHERE p.rn = 1
+      AND NOT EXISTS (SELECT 1 FROM Patients existing WHERE existing.PatientCode = p.PatientCode);
+
+    INSERT INTO PatientInsurance(PatientID, InsuranceNumber, Provider, EffectiveDate, ExpiryDate)
+    SELECT p.PatientID, d.InsuranceNumber, N'BHYT Việt Nam', '2026-01-01', '2026-12-31'
+    FROM (
+        SELECT PatientCode, InsuranceNumber, ROW_NUMBER() OVER (PARTITION BY PatientCode ORDER BY VisitDate DESC) AS rn
+        FROM @ErmDemo
+    ) d
+    INNER JOIN Patients p ON p.PatientCode = d.PatientCode
+    WHERE d.rn = 1
+      AND NOT EXISTS (SELECT 1 FROM PatientInsurance pi WHERE pi.PatientID = p.PatientID);
+
+    INSERT INTO Appointments(PatientID, DoctorID, DepartmentID, RoomID, AppointmentDate, Status)
+    SELECT p.PatientID, @GP1DoctorID, @GP1DepartmentID, @GP1RoomID, d.VisitDate, d.AppointmentStatus
+    FROM @ErmDemo d
+    INNER JOIN Patients p ON p.PatientCode = d.PatientCode
+    WHERE NOT EXISTS
+    (
+        SELECT 1
+        FROM Appointments a
+        WHERE a.PatientID = p.PatientID
+          AND a.DoctorID = @GP1DoctorID
+          AND a.AppointmentDate = d.VisitDate
+    );
+
+    INSERT INTO Encounters(AppointmentID, PatientID, DoctorID, StartTime, EndTime, Status)
+    SELECT a.AppointmentID,
+           a.PatientID,
+           a.DoctorID,
+           a.AppointmentDate,
+           DATEADD(MINUTE, 25, a.AppointmentDate),
+           a.Status
+    FROM Appointments a
+    INNER JOIN Patients p ON p.PatientID = a.PatientID
+    INNER JOIN @ErmDemo d ON d.PatientCode = p.PatientCode AND d.VisitDate = a.AppointmentDate
+    WHERE NOT EXISTS (SELECT 1 FROM Encounters e WHERE e.AppointmentID = a.AppointmentID);
+
+    INSERT INTO VitalSigns(EncounterID, Temperature, BloodPressure, HeartRate, SPO2, Weight, Notes, Height)
+    SELECT e.EncounterID, d.Temperature, d.BloodPressure, d.HeartRate, d.SPO2, d.Weight, N'Sinh hiệu đã kiểm tra trước khám', d.Height
+    FROM Encounters e
+    INNER JOIN Appointments a ON a.AppointmentID = e.AppointmentID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN @ErmDemo d ON d.PatientCode = p.PatientCode AND d.VisitDate = a.AppointmentDate
+    WHERE NOT EXISTS (SELECT 1 FROM VitalSigns vs WHERE vs.EncounterID = e.EncounterID);
+
+    INSERT INTO MedicalRecords(EncounterID, ChiefComplaint, Symptoms, Diagnosis, ICDCode, Conclusion, Notes)
+    SELECT e.EncounterID, d.ChiefComplaint, d.Symptoms, d.Diagnosis, d.ICDCode, d.Conclusion, d.Notes
+    FROM Encounters e
+    INNER JOIN Appointments a ON a.AppointmentID = e.AppointmentID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN @ErmDemo d ON d.PatientCode = p.PatientCode AND d.VisitDate = a.AppointmentDate
+    WHERE NOT EXISTS (SELECT 1 FROM MedicalRecords mr WHERE mr.EncounterID = e.EncounterID);
+
+    INSERT INTO MedicalRecordFiles(RecordID, FileType, FileURL)
+    SELECT mr.RecordID, N'Phiếu khám', N'Resources\Screenshot 2026-06-08 132926.png'
+    FROM MedicalRecords mr
+    INNER JOIN Encounters e ON e.EncounterID = mr.EncounterID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    WHERE p.PatientCode LIKE 'ERMGP1%'
+      AND NOT EXISTS (SELECT 1 FROM MedicalRecordFiles f WHERE f.RecordID = mr.RecordID);
+
+    INSERT INTO Prescriptions(EncounterID, DoctorID, Status)
+    SELECT e.EncounterID, @GP1DoctorID, N'Issued'
+    FROM Encounters e
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    WHERE p.PatientCode LIKE 'ERMGP1%'
+      AND NOT EXISTS (SELECT 1 FROM Prescriptions pr WHERE pr.EncounterID = e.EncounterID);
+
+    INSERT INTO PrescriptionDetails(PrescriptionID, MedicineID, Quantity, Dosage, Frequency, Instruction)
+    SELECT pr.PrescriptionID, m.MedicineID, meds.Quantity, meds.Dosage, meds.Frequency, meds.Instruction
+    FROM Prescriptions pr
+    INNER JOIN Encounters e ON e.EncounterID = pr.EncounterID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    CROSS APPLY
+    (
+        VALUES
+        (N'Paracetamol 500mg', 10, N'1 viên/lần', N'2 lần/ngày', N'Uống sau ăn khi đau hoặc sốt'),
+        (N'Vitamin C', 14, N'1 viên/lần', N'1 lần/ngày', N'Uống buổi sáng sau ăn'),
+        (N'Omeprazole 20mg', 7, N'1 viên/lần', N'1 lần/ngày', N'Uống trước ăn sáng')
+    ) meds(MedicineName, Quantity, Dosage, Frequency, Instruction)
+    INNER JOIN Medicines m ON m.Name = meds.MedicineName
+    WHERE p.PatientCode LIKE 'ERMGP1%'
+      AND NOT EXISTS (SELECT 1 FROM PrescriptionDetails pd WHERE pd.PrescriptionID = pr.PrescriptionID);
+
+    INSERT INTO LabRequests(EncounterID, DoctorID, TestType, Status)
+    SELECT e.EncounterID, @GP1DoctorID, d.LabType, N'Completed'
+    FROM Encounters e
+    INNER JOIN Appointments a ON a.AppointmentID = e.AppointmentID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN @ErmDemo d ON d.PatientCode = p.PatientCode AND d.VisitDate = a.AppointmentDate
+    WHERE NOT EXISTS (SELECT 1 FROM LabRequests lr WHERE lr.EncounterID = e.EncounterID AND lr.TestType = d.LabType);
+
+    INSERT INTO LabResults(LabID, ResultText, FileURL, CompletedAt)
+    SELECT lr.LabID, d.LabResult, N'Resources\Screenshot 2026-06-08 131408.png', DATEADD(MINUTE, 40, d.VisitDate)
+    FROM LabRequests lr
+    INNER JOIN Encounters e ON e.EncounterID = lr.EncounterID
+    INNER JOIN Appointments a ON a.AppointmentID = e.AppointmentID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN @ErmDemo d ON d.PatientCode = p.PatientCode AND d.VisitDate = a.AppointmentDate
+    WHERE NOT EXISTS (SELECT 1 FROM LabResults res WHERE res.LabID = lr.LabID);
+
+    INSERT INTO ImagingRequests(EncounterID, DoctorID, ImagingServiceID, BodyPart, Priority, Status)
+    SELECT e.EncounterID, @GP1DoctorID, ims.ImagingServiceID, d.BodyPart, N'Thường', N'Completed'
+    FROM Encounters e
+    INNER JOIN Appointments a ON a.AppointmentID = e.AppointmentID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN @ErmDemo d ON d.PatientCode = p.PatientCode AND d.VisitDate = a.AppointmentDate
+    INNER JOIN ImagingServices ims ON ims.ServiceCode = d.ImagingCode
+    WHERE NOT EXISTS (SELECT 1 FROM ImagingRequests ir WHERE ir.EncounterID = e.EncounterID AND ir.ImagingServiceID = ims.ImagingServiceID);
+
+    INSERT INTO ImagingResults(ImagingRequestID, ResultText, ImageURL, PDFURL, TechnicianNote, CompletedAt)
+    SELECT ir.ImagingRequestID, d.ImagingResult, d.ImageURL, N'docs\resources\khung_pdf.pdf', N'Ảnh demo đã kiểm tra chất lượng', DATEADD(MINUTE, 55, d.VisitDate)
+    FROM ImagingRequests ir
+    INNER JOIN Encounters e ON e.EncounterID = ir.EncounterID
+    INNER JOIN Appointments a ON a.AppointmentID = e.AppointmentID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN @ErmDemo d ON d.PatientCode = p.PatientCode AND d.VisitDate = a.AppointmentDate
+    WHERE NOT EXISTS (SELECT 1 FROM ImagingResults res WHERE res.ImagingRequestID = ir.ImagingRequestID);
+
+    INSERT INTO ImagingFiles(ImagingResultID, FileType, FileURL)
+    SELECT res.ImagingResultID, N'Image', res.ImageURL
+    FROM ImagingResults res
+    INNER JOIN ImagingRequests ir ON ir.ImagingRequestID = res.ImagingRequestID
+    INNER JOIN Encounters e ON e.EncounterID = ir.EncounterID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    WHERE p.PatientCode LIKE 'ERMGP1%'
+      AND NOT EXISTS (SELECT 1 FROM ImagingFiles f WHERE f.ImagingResultID = res.ImagingResultID);
+
+    INSERT INTO Invoices(EncounterID, PatientID, Total, Status)
+    SELECT e.EncounterID, e.PatientID, d.InvoiceTotal, d.InvoiceStatus
+    FROM Encounters e
+    INNER JOIN Appointments a ON a.AppointmentID = e.AppointmentID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN @ErmDemo d ON d.PatientCode = p.PatientCode AND d.VisitDate = a.AppointmentDate
+    WHERE NOT EXISTS (SELECT 1 FROM Invoices inv WHERE inv.EncounterID = e.EncounterID);
+
+    INSERT INTO InvoiceDetails(InvoiceID, ServiceID, Quantity, Price)
+    SELECT inv.InvoiceID, svc.ServiceID, 1, svc.Price
+    FROM Invoices inv
+    INNER JOIN Encounters e ON e.EncounterID = inv.EncounterID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN Services svc ON svc.ServiceName = N'Khám tổng quát'
+    WHERE p.PatientCode LIKE 'ERMGP1%'
+      AND NOT EXISTS (SELECT 1 FROM InvoiceDetails id WHERE id.InvoiceID = inv.InvoiceID);
+
+    INSERT INTO Payments(EncounterID, Amount, Method, Status, PaidAt, PatientID)
+    SELECT e.EncounterID, d.InvoiceTotal, d.PaymentMethod, N'Paid', DATEADD(MINUTE, 70, d.VisitDate), e.PatientID
+    FROM Encounters e
+    INNER JOIN Appointments a ON a.AppointmentID = e.AppointmentID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN @ErmDemo d ON d.PatientCode = p.PatientCode AND d.VisitDate = a.AppointmentDate
+    WHERE NOT EXISTS (SELECT 1 FROM Payments pay WHERE pay.EncounterID = e.EncounterID);
+
+    INSERT INTO PaymentDetails(PaymentID, ItemType, ItemID, Description, Quantity, UnitPrice, Amount)
+    SELECT pay.PaymentID, N'Service', svc.ServiceID, svc.ServiceName, 1, svc.Price, svc.Price
+    FROM Payments pay
+    INNER JOIN Encounters e ON e.EncounterID = pay.EncounterID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN Services svc ON svc.ServiceName = N'Khám tổng quát'
+    WHERE p.PatientCode LIKE 'ERMGP1%'
+      AND NOT EXISTS (SELECT 1 FROM PaymentDetails pd WHERE pd.PaymentID = pay.PaymentID);
+
+    INSERT INTO FollowUps(EncounterID, FollowUpDate, Status)
+    SELECT e.EncounterID, d.FollowUpDate, d.FollowUpStatus
+    FROM Encounters e
+    INNER JOIN Appointments a ON a.AppointmentID = e.AppointmentID
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    INNER JOIN @ErmDemo d ON d.PatientCode = p.PatientCode AND d.VisitDate = a.AppointmentDate
+    WHERE NOT EXISTS (SELECT 1 FROM FollowUps fu WHERE fu.EncounterID = e.EncounterID);
+
+    INSERT INTO PatientQueues(EncounterID, Priority, Status, CurrentStep)
+    SELECT e.EncounterID, N'Normal', N'Completed', N'Hoàn thành'
+    FROM Encounters e
+    INNER JOIN Patients p ON p.PatientID = e.PatientID
+    WHERE p.PatientCode LIKE 'ERMGP1%'
+      AND NOT EXISTS (SELECT 1 FROM PatientQueues pq WHERE pq.EncounterID = e.EncounterID);
+END;
+
 
 

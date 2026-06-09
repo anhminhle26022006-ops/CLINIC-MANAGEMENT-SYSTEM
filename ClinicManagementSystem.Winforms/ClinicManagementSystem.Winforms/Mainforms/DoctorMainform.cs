@@ -4,6 +4,9 @@ using ClinicManagementSystem.Winforms;
 using ClinicManagementSystem.Winforms.Shareforms;
 using ClinicManagementSystem.Winforms.Shareforms.ERM;
 using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
+using ClinicManagementSystem.Winforms.UserControls.Doctor;
+using ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh;
+using ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription;
 using DAL;
 using DTO;
 using DTO.Clinical.erm;
@@ -37,10 +40,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private RoleShiftCalendar shiftControl;
 
-        // Custom Navigation Buttons
         private Button btnERM;
-
-        // Active request for processing transitions
 
         public event EventHandler LogoutRequested;
         public event EventHandler CloseRequested;
@@ -70,25 +70,10 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
 
             btnNavOverview.Click += (s, ev) => ShowOverview();
-            btnSchedule.Click += (s, ev) => ShowSection(
-                "Lịch khám",
-                "Danh sách lịch hẹn và bệnh nhân được phân công.",
-                btnSchedule,
-                "Lịch hẹn hôm nay: đang cập nhật",
-                "Bệnh nhân sắp tới: đang cập nhật");
-            btnQueue.Click += (s, ev) => ShowSection(
-                "Khám bệnh",
-                "Khu vực xử lý hàng đợi khám và encounter của bác sĩ.",
-                btnQueue,
-                "Bệnh nhân chờ khám: đang cập nhật",
-                "Ca đang khám: đang cập nhật");
+            btnSchedule.Click += (s, ev) => ShowAppointments();
+            btnQueue.Click += (s, ev) => ShowExamination();
             btnERM.Click += (s, ev) => ShowERM();
-            btnPharmacy.Click += (s, ev) => ShowSection(
-                "Toa thuốc",
-                "Theo dõi chỉ định thuốc và trạng thái cấp phát.",
-                btnPharmacy,
-                "Toa thuốc mới: đang cập nhật",
-                "Toa đã cấp phát: đang cập nhật");
+            btnPharmacy.Click += (s, ev) => ShowPrescriptions();
             btnNavShifts.Click += (s, ev) => ShowShiftScreen();
 
             ShowOverview();
@@ -208,6 +193,47 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         }
 
         private void ShowOverview()
+        {
+            lblPageTitle.Text = "Tổng quan";
+            lblPageSubtitle.Text = "Xin chào, " + (currentUser != null ? currentUser.Name : "Bác sĩ");
+            SetActiveNav(btnNavOverview);
+            ShowControl(new doctordashboard(currentUser));
+        }
+
+        private void ShowAppointments()
+        {
+            lblPageTitle.Text = "Lịch khám";
+            lblPageSubtitle.Text = "Danh sách lịch hẹn và bệnh nhân được phân công.";
+            SetActiveNav(btnSchedule);
+            ShowControl(new ucAppointmentSidebar(currentUser));
+        }
+
+        private void ShowExamination()
+        {
+            lblPageTitle.Text = "Khám bệnh";
+            lblPageSubtitle.Text = "Xử lý hàng đợi khám, bệnh án, chỉ định và toa thuốc.";
+            SetActiveNav(btnQueue);
+            ShowControl(new ucDoctorExaminationSidebar(currentUser));
+        }
+
+        private void ShowPrescriptions()
+        {
+            lblPageTitle.Text = "Toa thuốc";
+            lblPageSubtitle.Text = "Theo dõi toa thuốc đã kê và trạng thái cấp phát.";
+            SetActiveNav(btnPharmacy);
+            ShowControl(new ucPrescriptionSidebar(currentUser));
+        }
+
+        private void ShowControl(Control control)
+        {
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+            control.Dock = DockStyle.Fill;
+            contentPanel.Controls.Add(control);
+            contentPanel.ResumeLayout();
+        }
+
+        private void ShowOverviewPlaceholder()
         {
             ShowSection(
                 "Tổng quan",

@@ -9,6 +9,8 @@ namespace DTO
         public int MedicineID { get; set; }
         public int Quantity { get; set; }
         public string Dosage { get; set; }
+        public string Frequency { get; set; }
+        public string Instruction { get; set; }
 
         // UI-bound properties populated via joins
         public string MedicineName { get; set; }

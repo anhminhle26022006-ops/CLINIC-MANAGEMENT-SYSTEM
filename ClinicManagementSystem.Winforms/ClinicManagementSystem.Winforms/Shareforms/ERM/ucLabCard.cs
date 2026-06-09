@@ -19,6 +19,7 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
         }
         public void Bind(LabHistoryDto dto)
         {
+            lblTestType.Text = dto.TestType;
             lblDate.Text = dto.CreatedAt.ToString("dd/MM/yyyy");
             lblDoctor.Text = dto.DoctorName;
             lblStatus.Text = dto.Status;

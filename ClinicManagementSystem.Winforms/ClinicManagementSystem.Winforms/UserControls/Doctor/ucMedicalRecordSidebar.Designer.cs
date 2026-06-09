@@ -60,13 +60,13 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
             dtTo = new DateTimePicker();
             cboStatus = new ComboBox();
             dgvRecords = new DataGridView();
-            btnView = new DataGridViewButtonColumn();
             dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn3 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn4 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn5 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn6 = new DataGridViewTextBoxColumn();
+            btnView = new DataGridViewButtonColumn();
             pnlHeader.SuspendLayout();
             pnlFilter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvRecords).BeginInit();
@@ -232,14 +232,6 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
             dgvRecords.CellClick += dgvRecords_CellClick;
             dgvRecords.CellFormatting += dgvRecords_CellFormatting;
             // 
-            // btnView
-            // 
-            btnView.HeaderText = "Thao tác";
-            btnView.MinimumWidth = 6;
-            btnView.Name = "btnView";
-            btnView.Text = "Xem ERM";
-            btnView.UseColumnTextForButtonValue = true;
-            // 
             // dataGridViewTextBoxColumn1
             // 
             dataGridViewTextBoxColumn1.HeaderText = "Mã bệnh án";
@@ -260,7 +252,7 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
             // 
             // dataGridViewTextBoxColumn4
             // 
-            dataGridViewTextBoxColumn4.HeaderText = "Chuẩn đoán";
+            dataGridViewTextBoxColumn4.HeaderText = "Chẩn đoán";
             dataGridViewTextBoxColumn4.MinimumWidth = 6;
             dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
             // 
@@ -276,6 +268,14 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
             dataGridViewTextBoxColumn6.MinimumWidth = 6;
             dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
             // 
+            // btnView
+            // 
+            btnView.HeaderText = "Thao tác";
+            btnView.MinimumWidth = 6;
+            btnView.Name = "btnView";
+            btnView.Text = "Xem ERM";
+            btnView.UseColumnTextForButtonValue = true;
+            // 
             // ucMedicalRecordSidebar
             // 
             Controls.Add(dgvRecords);
@@ -290,6 +290,7 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
             pnlFilter.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvRecords).EndInit();
             ResumeLayout(false);
+
             pnlStats.Controls.Add(
     CreateCard(pnlTotal, "Tổng bệnh án", lblTotal));
 
@@ -297,7 +298,7 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
                 CreateCard(pnlToday, "Hôm nay", lblToday));
 
             pnlStats.Controls.Add(
-                CreateCard(pnlWeek, "Tuần này", lblWeek));
+                CreateCard(pnlWeek, "7 ngày gần đây", lblWeek));
 
             pnlStats.Controls.Add(
                 CreateCard(pnlTracking, "Đang theo dõi", lblTracking));

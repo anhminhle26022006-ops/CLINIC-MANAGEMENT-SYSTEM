@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,8 +32,17 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
             lblConclusion.Text = item.Conclusion;
 
             // preview nếu có ảnh
-            if (item.ImageUrl != null)
-                picPreview.Image = Image.FromFile(item.ImageUrl);
+            if (!string.IsNullOrWhiteSpace(item.ImageUrl) && File.Exists(item.ImageUrl))
+            {
+                try
+                {
+                    picPreview.Image = Image.FromFile(item.ImageUrl);
+                }
+                catch
+                {
+                    picPreview.Image = null;
+                }
+            }
         }
 
         private void BtnViewImage_Click(object sender, EventArgs e)
