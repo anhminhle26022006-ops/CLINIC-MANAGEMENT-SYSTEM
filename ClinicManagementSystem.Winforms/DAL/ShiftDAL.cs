@@ -8,10 +8,10 @@ namespace DAL
         private string connectionString =
             "Data Source=DESKTOP-KF6OV10;Database=CMS;Integrated Security=True;Trust Server Certificate=True";
 
-        public List<ShiftDTO> GetAllShifts()
+        public List<EmployeeShiftDTO> GetAllShifts()
         {
-            List<ShiftDTO> list =
-                new List<ShiftDTO>();
+            List<EmployeeShiftDTO> list =
+                new List<EmployeeShiftDTO>();
 
             using (SqlConnection conn =
                 new SqlConnection(connectionString))
@@ -28,8 +28,8 @@ namespace DAL
 
                 while (reader.Read())
                 {
-                    ShiftDTO dto =
-                        new ShiftDTO();
+                    EmployeeShiftDTO dto =
+                        new EmployeeShiftDTO;
 
                     dto.ShiftID =
                     Convert.ToInt32(reader["ShiftID"]);
@@ -47,7 +47,7 @@ namespace DAL
             return list;
         }
 
-        public bool InsertShift(ShiftDTO shift)
+        public bool InsertShift(EmployeeShiftDTO shift)
         {
             using (SqlConnection conn =
                 new SqlConnection(connectionString))

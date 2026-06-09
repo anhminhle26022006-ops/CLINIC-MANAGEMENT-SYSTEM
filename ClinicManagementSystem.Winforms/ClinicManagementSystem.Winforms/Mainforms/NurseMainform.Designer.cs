@@ -610,6 +610,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private Panel panel13;
         private Button btnVitalSigns;
         private Panel panel14;
+        private Button btnERM;
     }
 }
 
