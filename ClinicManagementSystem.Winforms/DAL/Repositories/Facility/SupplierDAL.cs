@@ -6,7 +6,7 @@ namespace DAL
     public class SupplierDAL
     {
         private string connectionString =
-            "Data Source=DESKTOP-KF6OV10;Integrated Security=True;Trust Server Certificate=True";
+            "Data Source=localhost\\SQLEXPRESS;\r\nInitial Catalog=CMS;\r\nIntegrated Security=True;\r\nTrustServerCertificate=True;";
 
         public List<SupplierDTO> GetAllSuppliers()
         {

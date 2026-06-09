@@ -15,7 +15,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Nurse
         public ucVitalSigns()
         {
             InitializeComponent();
-            button1.ImageList = imageList1;
             button1.ImageIndex = 0;
         }
     }

@@ -9,5 +9,8 @@ namespace BUS.Interfaces
         EmployeeDTO FindByName(string fullName);
         Task<List<ApiEmployeeDTO>> GetAllAsync();
         Task<ApiEmployeeDTO> AddAsync(ApiEmployeeDTO dto);
+        bool Insert(EmployeeDTO emp);
+        bool Update(EmployeeDTO emp);
+        bool Delete(int employeeId);
     }
 }

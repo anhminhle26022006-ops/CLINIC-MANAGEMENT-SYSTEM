@@ -106,6 +106,82 @@ namespace DAL.Repositories
                 new[] { new SqlParameter("@EmployeeID", employeeId) });
             return Convert.ToInt32(result) > 0;
         }
+        public bool Insert(EmployeeDTO emp)
+        {
+            string query = @"
+        INSERT INTO Employees 
+            (EmployeeCode, FullName, DateOfBirth, Gender, CitizenId, 
+             Address, Phone, Email, HireDate, Salary, RoleID, DepartmentID, Status)
+        VALUES 
+            (@EmployeeCode, @FullName, @DateOfBirth, @Gender, @CitizenId,
+             @Address, @Phone, @Email, @HireDate, @Salary, @RoleID, @DepartmentID, @Status)";
+
+            SqlParameter[] parameters =
+            {
+        new("@EmployeeCode",  emp.EmployeeCode),
+        new("@FullName",      emp.FullName),
+        new("@DateOfBirth",   (object)emp.DateOfBirth ?? DBNull.Value),
+        new("@Gender",        (object)emp.Gender      ?? DBNull.Value),
+        new("@CitizenId",     (object)emp.CitizenId   ?? DBNull.Value),
+        new("@Address",       (object)emp.Address     ?? DBNull.Value),
+        new("@Phone",         (object)emp.Phone       ?? DBNull.Value),
+        new("@Email",         (object)emp.Email       ?? DBNull.Value),
+        new("@HireDate",      (object)emp.HireDate    ?? DBNull.Value),
+        new("@Salary",        (object)emp.Salary      ?? DBNull.Value),
+        new("@RoleID",        emp.RoleID),
+        new("@DepartmentID",  emp.DepartmentID),
+        new("@Status",        emp.Status ?? "Active")
+    };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
+
+        public bool Update(EmployeeDTO emp)
+        {
+            string query = @"
+        UPDATE Employees SET
+            FullName     = @FullName,
+            DateOfBirth  = @DateOfBirth,
+            Gender       = @Gender,
+            CitizenId    = @CitizenId,
+            Address      = @Address,
+            Phone        = @Phone,
+            Email        = @Email,
+            HireDate     = @HireDate,
+            Salary       = @Salary,
+            RoleID       = @RoleID,
+            DepartmentID = @DepartmentID,
+            Status       = @Status
+        WHERE EmployeeID = @EmployeeID";
+
+            SqlParameter[] parameters =
+            {
+        new("@EmployeeID",    emp.EmployeeID),
+        new("@FullName",      emp.FullName),
+        new("@DateOfBirth",   (object)emp.DateOfBirth ?? DBNull.Value),
+        new("@Gender",        (object)emp.Gender      ?? DBNull.Value),
+        new("@CitizenId",     (object)emp.CitizenId   ?? DBNull.Value),
+        new("@Address",       (object)emp.Address     ?? DBNull.Value),
+        new("@Phone",         (object)emp.Phone       ?? DBNull.Value),
+        new("@Email",         (object)emp.Email       ?? DBNull.Value),
+        new("@HireDate",      (object)emp.HireDate    ?? DBNull.Value),
+        new("@Salary",        (object)emp.Salary      ?? DBNull.Value),
+        new("@RoleID",        emp.RoleID),
+        new("@DepartmentID",  emp.DepartmentID),
+        new("@Status",        emp.Status ?? "Active")
+    };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
+
+        public bool Delete(int employeeId)
+        {
+            string query = "DELETE FROM Employees WHERE EmployeeID = @EmployeeID";
+            return DatabaseHelper.ExecuteNonQuery(query, new[]
+            {
+        new SqlParameter("@EmployeeID", employeeId)
+    }) > 0;
+        }
 
         private static string BaseSelect()
         {
