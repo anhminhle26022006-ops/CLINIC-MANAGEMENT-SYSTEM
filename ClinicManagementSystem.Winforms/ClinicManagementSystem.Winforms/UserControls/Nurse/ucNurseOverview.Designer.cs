@@ -695,7 +695,7 @@
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "ucNurseOverview";
-            Size = new Size(1595, 1666);
+            Size = new Size(1595, 2280);
             Load += ucNurseOverview_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();

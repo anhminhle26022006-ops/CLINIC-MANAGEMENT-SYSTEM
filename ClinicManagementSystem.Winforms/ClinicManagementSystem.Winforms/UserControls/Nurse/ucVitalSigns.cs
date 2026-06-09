@@ -10,16 +10,13 @@ using System.Windows.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Nurse
 {
-    public partial class ucQueueManagement : UserControl
+    public partial class ucVitalSigns : UserControl
     {
-        public ucQueueManagement()
+        public ucVitalSigns()
         {
             InitializeComponent();
-        }
-
-        private void panel9_Paint(object sender, PaintEventArgs e)
-        {
-
+            button1.ImageList = imageList1;
+            button1.ImageIndex = 0;
         }
     }
 }

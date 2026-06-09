@@ -202,5 +202,25 @@ namespace ClinicManagementSystem.Winforms.UserControls.Technician
 
             pnlListPanel.ResumeLayout();
         }
+
+        private void pnlDaysContainer_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblDayDate1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblDayDate2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnShift3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
