@@ -17,6 +17,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         private readonly MedicalHistoryService _historyService;
         private readonly LabResultService _labService;
         private readonly ImagingResultService _imagingService;
+        private readonly int _doctorId = 3;
 
         // ================= STATE =================
         private PatientQueueDto _selectedPatient;
@@ -174,9 +175,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         }
         public void LoadPatientByAppointment(int appointmentId)
         {
-            // query DB để lấy EncounterID từ AppointmentID
-            var queue = _queueService.GetTodayQueue(3)
-                                      .FirstOrDefault(x => x.EncounterID > 0);
+            // use AppointmentID that we now populate in DTO
+            var queue = _queueService.GetTodayQueue(_doctorId)
+                                      .FirstOrDefault(x => x.AppointmentID == appointmentId);
 
             if (queue == null) return;
 
@@ -234,7 +235,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         // ================= LAB =================
         private void LoadLab(int encounterId)
         {
+            flpHistory.Controls.Clear(); // ensure lab panel cleared
+
             var list = _labService.GetByEncounter(encounterId);
+            if (list == null || list.Count == 0) return;
 
             foreach (var lab in list)
             {
@@ -255,7 +259,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         // ================= IMAGING =================
         private void LoadImaging(int encounterId)
         {
+            flpHistory.Controls.Clear();
             var list = _imagingService.GetByEncounter(encounterId);
+            if (list == null || list.Count == 0) return;
 
             foreach (var img in list)
             {

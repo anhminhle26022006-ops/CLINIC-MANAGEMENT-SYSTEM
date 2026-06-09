@@ -163,6 +163,269 @@ namespace DAL.Repositories.Doctor
 
             return records;
         }
+        public PatientERMDto GetPatientERM(Guid patientUuid)
+        {
+            PatientERMDto patient = null;
+
+            using SqlConnection conn = new SqlConnection(_connectionString);
+
+            conn.Open();
+
+            #region Patient Info
+
+            string patientSql = @"
+    SELECT *
+    FROM Patients
+    WHERE PatientUUID = @uuid";
+
+            using (SqlCommand cmd = new SqlCommand(patientSql, conn))
+            {
+                cmd.Parameters.AddWithValue("@uuid", patientUuid);
+
+                using SqlDataReader rd = cmd.ExecuteReader();
+
+                if (rd.Read())
+                {
+                    patient = new PatientERMDto
+                    {
+                        PatientUUID = Guid.Parse(rd["PatientUUID"].ToString()),
+                        PatientCode = rd["PatientCode"].ToString(),
+                        FullName = rd["FullName"].ToString(),
+                        Gender = rd["Gender"].ToString(),
+                        DOB = Convert.ToDateTime(rd["DOB"]),
+                        BloodType = rd["BloodType"]?.ToString(),
+                        Phone = rd["Phone"]?.ToString(),
+                        Email = rd["Email"]?.ToString(),
+                        Address = rd["Address"]?.ToString(),
+                        InsuranceNumber = rd["InsuranceNumber"]?.ToString(),
+                        EmergencyContact = rd["EmergencyContact"]?.ToString(),
+                        Allergy = rd["Allergy"]?.ToString(),
+
+                        Encounters = new(),
+                        Prescriptions = new(),
+                        LabResults = new(),
+                        ImagingResults = new(),
+                        Invoices = new(),
+                        FollowUps = new()
+                    };
+                }
+            }
+
+            #endregion
+
+            if (patient == null)
+                return null;
+
+            patient.Encounters = GetEncounters(conn, patientUuid);
+
+            return patient;
+        }
+        private List<EncounterHistoryDto> GetEncounters(
+    SqlConnection conn,
+    Guid patientUuid)
+        {
+            List<EncounterHistoryDto> list = new();
+
+            string sql = @"
+    SELECT
+        E.EncounterID,
+        E.EncounterUUID,
+        E.CheckInTime,
+
+        D.FullName DoctorName,
+        DP.DepartmentName,
+
+        MR.Symptoms,
+        MR.Diagnosis,
+        MR.Conclusion
+
+    FROM Encounters E
+
+    LEFT JOIN MedicalRecords MR
+        ON MR.EncounterID = E.EncounterID
+
+    LEFT JOIN Employees D
+        ON D.EmployeeID = E.DoctorID
+
+    LEFT JOIN Departments DP
+        ON DP.DepartmentID = E.DepartmentID
+
+    INNER JOIN Patients P
+        ON P.PatientID = E.PatientID
+
+    WHERE P.PatientUUID = @uuid
+
+    ORDER BY E.CheckInTime DESC";
+
+            using SqlCommand cmd = new(sql, conn);
+
+            cmd.Parameters.AddWithValue("@uuid", patientUuid);
+
+            using SqlDataReader rd = cmd.ExecuteReader();
+
+            while (rd.Read())
+            {
+                list.Add(new EncounterHistoryDto
+                {
+                    EncounterId = Convert.ToInt32(rd["EncounterID"]),
+                    EncounterUUID = Guid.Parse(rd["EncounterUUID"].ToString()),
+
+                    VisitDate =
+                        Convert.ToDateTime(rd["CheckInTime"]),
+
+                    DoctorName =
+                        rd["DoctorName"]?.ToString(),
+
+                    DepartmentName =
+                        rd["DepartmentName"]?.ToString(),
+
+                    Symptoms =
+                        rd["Symptoms"]?.ToString(),
+
+                    Diagnosis =
+                        rd["Diagnosis"]?.ToString(),
+
+                    Conclusion =
+                        rd["Conclusion"]?.ToString()
+                });
+            }
+
+            return list;
+        }
+        private List<PrescriptionHistoryDto>
+GetPrescriptions(
+    SqlConnection conn,
+    int encounterId)
+        {
+            List<PrescriptionHistoryDto> list = new();
+
+            string sql = @"
+    SELECT
+        PrescriptionUUID,
+        PrescriptionCode,
+        CreatedAt
+    FROM Prescriptions
+    WHERE EncounterID = @id";
+
+            using SqlCommand cmd = new(sql, conn);
+
+            cmd.Parameters.AddWithValue("@id", encounterId);
+
+            using SqlDataReader rd = cmd.ExecuteReader();
+
+            while (rd.Read())
+            {
+                list.Add(new PrescriptionHistoryDto
+                {
+                    PrescriptionUUID =
+                        Guid.Parse(rd["PrescriptionUUID"].ToString()),
+
+                    PrescriptionCode =
+                        rd["PrescriptionCode"].ToString(),
+
+                    CreatedAt =
+                        Convert.ToDateTime(rd["CreatedAt"])
+                });
+            }
+
+            return list;
+        }
+        private List<LabHistoryDto>
+GetLabs(
+    SqlConnection conn,
+    int encounterId)
+        {
+            List<LabHistoryDto> list = new();
+
+            string sql = @"
+    SELECT
+        LabRequestUUID,
+        TestType,
+        CreatedAt,
+        Status
+    FROM LabRequests
+    WHERE EncounterID=@id";
+
+            using SqlCommand cmd = new(sql, conn);
+
+            cmd.Parameters.AddWithValue("@id", encounterId);
+
+            using SqlDataReader rd = cmd.ExecuteReader();
+
+            while (rd.Read())
+            {
+                list.Add(new LabHistoryDto
+                {
+                    LabRequestUUID =
+                        Guid.Parse(rd["LabRequestUUID"].ToString()),
+
+                    TestType =
+                        rd["TestType"].ToString(),
+
+                    CreatedAt =
+                        Convert.ToDateTime(rd["CreatedAt"]),
+
+                    Status =
+                        rd["Status"].ToString()
+                });
+            }
+
+            return list;
+        }
+        private List<ImagingHistoryDto>
+GetImaging(
+    SqlConnection conn,
+    int encounterId)
+        {
+            List<ImagingHistoryDto> list = new();
+
+            string sql = @"
+    SELECT
+        ImagingRequestUUID,
+        Modality,
+        BodyPart,
+        CreatedAt,
+        Conclusion,
+        ImageUrl,
+        PdfUrl
+    FROM ImagingRequests
+    WHERE EncounterID=@id";
+
+            using SqlCommand cmd = new(sql, conn);
+
+            cmd.Parameters.AddWithValue("@id", encounterId);
+
+            using SqlDataReader rd = cmd.ExecuteReader();
+
+            while (rd.Read())
+            {
+                list.Add(new ImagingHistoryDto
+                {
+                    ImagingRequestUUID =
+                        Guid.Parse(rd["ImagingRequestUUID"].ToString()),
+
+                    Modality =
+                        rd["Modality"].ToString(),
+
+                    BodyPart =
+                        rd["BodyPart"].ToString(),
+
+                    CreatedAt =
+                        Convert.ToDateTime(rd["CreatedAt"]),
+
+                    Conclusion =
+                        rd["Conclusion"]?.ToString(),
+
+                    ImageUrl =
+                        rd["ImageUrl"]?.ToString(),
+
+                    PdfUrl =
+                        rd["PdfUrl"]?.ToString()
+                });
+            }
+
+            return list;
+        }
     }
     
 }
