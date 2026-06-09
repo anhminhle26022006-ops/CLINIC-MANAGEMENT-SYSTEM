@@ -39,7 +39,7 @@ namespace DAL.Repositories.Doctor
             using var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@id", encounterId);
 
-            using var r = cmd.ExecuteReader();
+             using var r = cmd.ExecuteReader();
 
             while (r.Read())
             {

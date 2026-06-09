@@ -24,5 +24,9 @@ namespace ClinicManagementSystem.Winforms.Controllers
             return _service.GetDashboard(
                 doctorId);
         }
+        public void ChangeShift(int doctorId, int newShiftId)
+        {
+            _service.ChangeShift(doctorId, newShiftId);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BUS.Services.Doctor;
 using ClinicManagementSystem.Winforms.Shareforms.ERM;
+using CMS.Core.Session;
 using DAL.Repositories.Doctor;
 using DTO.Doctor;
 using System;
@@ -17,7 +18,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         private readonly MedicalHistoryService _historyService;
         private readonly LabResultService _labService;
         private readonly ImagingResultService _imagingService;
-        private readonly int _doctorId = 3;
+        private int _doctorId => UserSession.EmployeeID;
 
         // ================= STATE =================
         private PatientQueueDto _selectedPatient;
@@ -47,6 +48,15 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
             InitEvents();
 
             LoadWaitingPatients();
+
+            LoadHeaderInfo();
+        }
+        private void LoadHeaderInfo()
+        {
+            lblClinic.Text = $"PHÒNG KHÁM - {UserSession.DepartmentName}";
+            lblDoctor.Text = $"BS. {UserSession.FullName}";
+            lblDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
+            lblProgress.Text = "Đã khám: ..."; // bạn có thể tính sau
         }
 
         // ================= INIT =================
@@ -87,11 +97,24 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         // ================= TAB CONTROL =================
         private void ShowTab(UserControl tab)
         {
+            if (tab == null)
+            {
+                MessageBox.Show("Tab chưa được khởi tạo.", "Lỗi");
+                return;
+            }
+
             pnlTabContent.SuspendLayout();
             pnlTabContent.Controls.Clear();
 
-            tab.Dock = DockStyle.Fill;
-            pnlTabContent.Controls.Add(tab);
+            try
+            {
+                tab.Dock = DockStyle.Fill;
+                pnlTabContent.Controls.Add(tab);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi hiển thị tab: {ex.Message}", "Lỗi");
+            }
 
             pnlTabContent.ResumeLayout();
         }
