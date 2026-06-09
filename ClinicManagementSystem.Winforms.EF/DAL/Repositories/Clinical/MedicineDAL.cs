@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
+using DAL.Models;
 using DTO;
-using Microsoft.Data.SqlClient;
-using DAL.DataContext;
 
 namespace DAL
 {
@@ -11,118 +7,123 @@ namespace DAL
     {
         public List<MedicineDTO> GetAllMedicines()
         {
-            List<MedicineDTO> list = new List<MedicineDTO>();
-            string query = "SELECT * FROM Medicines";
+            using var db = new CMSDbContext();
 
-            DataTable dt = DatabaseHelper.ExecuteQuery(query);
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(new MedicineDTO
+            return db.Medicines
+                .Select(m => new MedicineDTO
                 {
-                    MedicineID = Convert.ToInt32(row["MedicineID"]),
-                    Name = row["Name"].ToString(),
-                    Unit = row["Unit"].ToString(),
-                    Price = Convert.ToDecimal(row["Price"]),
-                    Stock = Convert.ToInt32(row["Stock"]),
-                    BatchNumber = row["BatchNumber"] != DBNull.Value ? row["BatchNumber"].ToString() : "",
-                    ExpiryDate = row["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(row["ExpiryDate"]) : DateTime.MinValue
-                });
-            }
-            return list;
+                    MedicineID = m.MedicineId,
+                    Name = m.Name,
+                    Unit = m.Unit,
+                    Price = m.Price ?? 0,
+                    Stock = m.Stock ?? 0,
+                    BatchNumber = m.BatchNumber ?? "",
+                    ExpiryDate = m.ExpiryDate.HasValue
+                        ? m.ExpiryDate.Value.ToDateTime(TimeOnly.MinValue)
+                        : DateTime.MinValue
+                })
+                .ToList();
         }
 
         public bool InsertMedicine(MedicineDTO medicine)
         {
-            string query = @"
-                INSERT INTO Medicines (Name, Unit, Price, Stock, BatchNumber, ExpiryDate)
-                VALUES (@Name, @Unit, @Price, @Stock, @BatchNumber, @ExpiryDate)";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters = {
-                new SqlParameter("@Name", medicine.Name),
-                new SqlParameter("@Unit", medicine.Unit),
-                new SqlParameter("@Price", medicine.Price),
-                new SqlParameter("@Stock", medicine.Stock),
-                new SqlParameter("@BatchNumber", medicine.BatchNumber ?? (object)DBNull.Value),
-                new SqlParameter("@ExpiryDate", medicine.ExpiryDate == DateTime.MinValue ? (object)DBNull.Value : medicine.ExpiryDate)
-            };
+            db.Medicines.Add(new Medicine
+            {
+                Name = medicine.Name,
+                Unit = medicine.Unit,
+                Price = medicine.Price,
+                Stock = medicine.Stock,
+                BatchNumber = medicine.BatchNumber,
+                ExpiryDate = medicine.ExpiryDate == DateTime.MinValue
+                    ? null
+                    : DateOnly.FromDateTime(medicine.ExpiryDate)
+            });
 
-            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+            return db.SaveChanges() > 0;
         }
 
         public bool UpdateMedicine(MedicineDTO medicine)
         {
-            string query = @"
-                UPDATE Medicines
-                SET Name = @Name,
-                    Unit = @Unit,
-                    Price = @Price,
-                    Stock = @Stock,
-                    BatchNumber = @BatchNumber,
-                    ExpiryDate = @ExpiryDate
-                WHERE MedicineID = @MedicineID";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters = {
-                new SqlParameter("@MedicineID", medicine.MedicineID),
-                new SqlParameter("@Name", medicine.Name),
-                new SqlParameter("@Unit", medicine.Unit),
-                new SqlParameter("@Price", medicine.Price),
-                new SqlParameter("@Stock", medicine.Stock),
-                new SqlParameter("@BatchNumber", string.IsNullOrWhiteSpace(medicine.BatchNumber) ? DBNull.Value : (object)medicine.BatchNumber),
-                new SqlParameter("@ExpiryDate", medicine.ExpiryDate == DateTime.MinValue ? DBNull.Value : (object)medicine.ExpiryDate)
-            };
+            var entity = db.Medicines
+                .FirstOrDefault(x => x.MedicineId == medicine.MedicineID);
 
-            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+            if (entity == null)
+                return false;
+
+            entity.Name = medicine.Name;
+            entity.Unit = medicine.Unit;
+            entity.Price = medicine.Price;
+            entity.Stock = medicine.Stock;
+            entity.BatchNumber = medicine.BatchNumber;
+            entity.ExpiryDate = medicine.ExpiryDate == DateTime.MinValue
+                ? null
+                : DateOnly.FromDateTime(medicine.ExpiryDate);
+
+            return db.SaveChanges() > 0;
         }
 
         public bool UpdateStock(int medicineId, int qty)
         {
-            string query = @"
-                UPDATE Medicines
-                SET Stock = Stock - @Qty
-                WHERE MedicineID = @MedicineID";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters = {
-                new SqlParameter("@Qty", qty),
-                new SqlParameter("@MedicineID", medicineId)
-            };
+            var medicine = db.Medicines
+                .FirstOrDefault(x => x.MedicineId == medicineId);
 
-            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+            if (medicine == null)
+                return false;
+
+            medicine.Stock = (medicine.Stock ?? 0) - qty;
+
+            return db.SaveChanges() > 0;
         }
 
         public bool AdjustStock(int medicineId, int quantityDelta)
         {
-            string query = @"
-                UPDATE Medicines
-                SET Stock = Stock + @QuantityDelta
-                WHERE MedicineID = @MedicineID
-                  AND Stock + @QuantityDelta >= 0";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters = {
-                new SqlParameter("@QuantityDelta", quantityDelta),
-                new SqlParameter("@MedicineID", medicineId)
-            };
+            var medicine = db.Medicines
+                .FirstOrDefault(x => x.MedicineId == medicineId);
 
-            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+            if (medicine == null)
+                return false;
+
+            int newStock = (medicine.Stock ?? 0) + quantityDelta;
+
+            if (newStock < 0)
+                return false;
+
+            medicine.Stock = newStock;
+
+            return db.SaveChanges() > 0;
         }
 
         public int GetStock(int medicineId)
         {
-            string query = "SELECT Stock FROM Medicines WHERE MedicineID = @MedicineID";
-            SqlParameter[] parameters = {
-                new SqlParameter("@MedicineID", medicineId)
-            };
+            using var db = new CMSDbContext();
 
-            object result = DatabaseHelper.ExecuteScalar(query, parameters);
-            return result != null && result != DBNull.Value ? Convert.ToInt32(result) : 0;
+            return db.Medicines
+                .Where(x => x.MedicineId == medicineId)
+                .Select(x => x.Stock ?? 0)
+                .FirstOrDefault();
         }
 
         public bool DeleteMedicine(int id)
         {
-            string query = "DELETE FROM Medicines WHERE MedicineID = @MedicineID";
-            SqlParameter[] parameters = {
-                new SqlParameter("@MedicineID", id)
-            };
-            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+            using var db = new CMSDbContext();
+
+            var medicine = db.Medicines
+                .FirstOrDefault(x => x.MedicineId == id);
+
+            if (medicine == null)
+                return false;
+
+            db.Medicines.Remove(medicine);
+
+            return db.SaveChanges() > 0;
         }
     }
 }

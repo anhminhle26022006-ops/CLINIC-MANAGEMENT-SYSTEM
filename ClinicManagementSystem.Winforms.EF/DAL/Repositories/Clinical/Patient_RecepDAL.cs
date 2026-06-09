@@ -1,248 +1,174 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using DTO;
-using DAL.DataContext;
+using System.Linq;
 using DAL.Interfaces;
+using DAL.Models;
+using DTO;
 
 namespace DAL.Repositories
 {
     public class Patient_RecepDAL : IPatientRepository
     {
-        private bool IsNewSchema()
-        {
-            string checkColumnQuery = "SELECT COUNT(*) FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Patients]') AND name = 'Name'";
-            int nameColumnExists = 0;
-            try
-            {
-                nameColumnExists = Convert.ToInt32(DatabaseHelper.ExecuteScalar(checkColumnQuery));
-            }
-            catch { }
-            return nameColumnExists == 0;
-        }
-
         public List<PatientDTO> GetAll()
         {
-            string query = @"
-SELECT
-    PatientID,
-    PatientCode,
-    FullName AS Name,
-    DOB AS BirthDate,
-    Gender,
-    Phone,
-    Address,
-    BloodType,
-    Allergy,
-    CreatedAt
-FROM Patients";
+            using var db = new CMSDbContext();
 
-            DataTable dt = DatabaseHelper.ExecuteQuery(query);
-            List<PatientDTO> list = new List<PatientDTO>();
-
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(MapRowToDTO(row));
-            }
-            return list;
+            return db.Patients
+                .Select(p => new PatientDTO
+                {
+                    PatientID = p.PatientId,
+                    PatientCode = p.PatientCode,
+                    Name = p.FullName,
+                    BirthDate = p.Dob.HasValue
+                        ? p.Dob.Value.ToDateTime(TimeOnly.MinValue)
+                        : DateTime.MinValue,
+                    Gender = p.Gender,
+                    Phone = p.Phone ?? "",
+                    Address = p.Address ?? "",
+                    BloodType = p.BloodType ?? "",
+                    Allergy = p.Allergy ?? ""
+                })
+                .ToList();
         }
 
         public List<PatientDTO> Search(string term)
         {
-            string query = @"
-SELECT
-    PatientID,
-    PatientCode,
-    FullName AS Name,
-    DOB AS BirthDate,
-    Gender,
-    Phone,
-    Address,
-    BloodType,
-    Allergy,
-    CreatedAt
-FROM Patients
-WHERE FullName LIKE @Term
-   OR PatientCode LIKE @Term
-   OR Phone LIKE @Term";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@Term", "%" + term + "%")
-            };
-
-            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
-            List<PatientDTO> list = new List<PatientDTO>();
-
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(MapRowToDTO(row));
-            }
-            return list;
+            return db.Patients
+                .Where(p =>
+                    (p.FullName != null &&
+                     p.FullName.Contains(term))
+                    ||
+                    (p.PatientCode != null &&
+                     p.PatientCode.Contains(term))
+                    ||
+                    (p.Phone != null &&
+                     p.Phone.Contains(term)))
+                .Select(p => new PatientDTO
+                {
+                    PatientID = p.PatientId,
+                    PatientCode = p.PatientCode,
+                    Name = p.FullName,
+                    BirthDate = p.Dob.HasValue
+                        ? p.Dob.Value.ToDateTime(TimeOnly.MinValue)
+                        : DateTime.MinValue,
+                    Gender = p.Gender,
+                    Phone = p.Phone ?? "",
+                    Address = p.Address ?? "",
+                    BloodType = p.BloodType ?? "",
+                    Allergy = p.Allergy ?? ""
+                })
+                .ToList();
         }
 
         public int Add(PatientDTO patient)
         {
-            string query = @"
-        INSERT INTO Patients
-        (
-            PatientCode,
-            FullName,
-            Gender,
-            DOB,
-            Phone,
-            Address,
-            BloodType,
-            Allergy
-        )
-        VALUES
-        (
-            @PatientCode,
-            @FullName,
-            @Gender,
-            @DOB,
-            @Phone,
-            @Address,
-            @BloodType,
-            @Allergy
-        );
+            using var db = new CMSDbContext();
 
-        SELECT CAST(SCOPE_IDENTITY() AS INT);";
-
-            SqlParameter[] parameters =
+            var entity = new Patient
             {
-        new SqlParameter("@PatientCode", patient.PatientCode),
-        new SqlParameter("@FullName", patient.Name),
-        new SqlParameter("@Gender", patient.Gender),
-        new SqlParameter("@DOB", patient.BirthDate),
-        new SqlParameter("@Phone", (object)patient.Phone ?? DBNull.Value),
-        new SqlParameter("@Address", (object)patient.Address ?? DBNull.Value),
-        new SqlParameter("@BloodType", (object)patient.BloodType ?? DBNull.Value),
-        new SqlParameter("@Allergy", (object)patient.Allergy ?? DBNull.Value)
-    };
-
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(query, parameters));
-        }
-
-        private PatientDTO MapRowToDTO(DataRow row)
-        {
-            return new PatientDTO
-            {
-                PatientID = Convert.ToInt32(row["PatientID"]),
-
-                PatientCode = row["PatientCode"]?.ToString() ?? "",
-
-                Name = row["Name"]?.ToString() ?? "",
-
-                BirthDate = row["BirthDate"] != DBNull.Value
-        ? Convert.ToDateTime(row["BirthDate"])
-        : DateTime.MinValue,
-
-                Gender = row["Gender"]?.ToString() ?? "",
-
-                Phone = row["Phone"] != DBNull.Value
-        ? row["Phone"].ToString()
-        : "",
-
-                Address = row["Address"]?.ToString() ?? "",
-
-                BloodType = row["BloodType"]?.ToString() ?? "",
-
-                Allergy = row["Allergy"]?.ToString() ?? ""
+                PatientCode = patient.PatientCode,
+                FullName = patient.Name,
+                Gender = patient.Gender,
+                Dob = patient.BirthDate == null ||
+                      patient.BirthDate == DateTime.MinValue
+                    ? null
+                    : DateOnly.FromDateTime(patient.BirthDate.Value),
+                Phone = patient.Phone,
+                Address = patient.Address,
+                BloodType = patient.BloodType,
+                Allergy = patient.Allergy
             };
+
+            db.Patients.Add(entity);
+
+            db.SaveChanges();
+
+            return entity.PatientId;
         }
 
         public PatientDTO GetById(int id)
         {
-            string query = @"
-SELECT
-    PatientID,
-    PatientCode,
-    FullName AS Name,
-    DOB AS BirthDate,
-    Gender,
-    Phone,
-    Address,
-    BloodType,
-    Allergy,
-    CreatedAt
-FROM Patients
-WHERE PatientID = @PatientID";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters =
-            {
-        new SqlParameter("@PatientID", id)
-    };
-
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(query, parameters);
-
-            if (dt.Rows.Count == 0)
-                return null;
-
-            return MapRowToDTO(dt.Rows[0]);
+            return db.Patients
+                .Where(p => p.PatientId == id)
+                .Select(p => new PatientDTO
+                {
+                    PatientID = p.PatientId,
+                    PatientCode = p.PatientCode,
+                    Name = p.FullName,
+                    BirthDate = p.Dob.HasValue
+                        ? p.Dob.Value.ToDateTime(TimeOnly.MinValue)
+                        : DateTime.MinValue,
+                    Gender = p.Gender,
+                    Phone = p.Phone ?? "",
+                    Address = p.Address ?? "",
+                    BloodType = p.BloodType ?? "",
+                    Allergy = p.Allergy ?? ""
+                })
+                .FirstOrDefault();
         }
 
         public bool Update(PatientDTO patient)
         {
-            string query = @"
-    UPDATE Patients
-    SET FullName = @FullName,
-        DOB = @DOB,
-        Gender = @Gender,
-        Phone = @Phone,
-        Address = @Address,
-        BloodType = @BloodType,
-        Allergy = @Allergy
-    WHERE PatientID = @PatientID";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters =
-            {
-        new SqlParameter("@PatientID", patient.PatientID),
-        new SqlParameter("@FullName", patient.Name),
-        new SqlParameter("@DOB", patient.BirthDate),
-        new SqlParameter("@Gender", patient.Gender),
-        new SqlParameter("@Phone", patient.Phone),
-        new SqlParameter("@Address", patient.Address),
-        new SqlParameter("@BloodType", patient.BloodType),
-        new SqlParameter("@Allergy", patient.Allergy)
-    };
+            var entity = db.Patients
+                .FirstOrDefault(p =>
+                    p.PatientId == patient.PatientID);
 
-            return DatabaseHelper.ExecuteNonQuery(
-                query,
-                parameters) > 0;
+            if (entity == null)
+                return false;
+
+            entity.FullName = patient.Name;
+            entity.Gender = patient.Gender;
+            entity.Phone = patient.Phone;
+            entity.Address = patient.Address;
+            entity.BloodType = patient.BloodType;
+            entity.Allergy = patient.Allergy;
+
+            entity.Dob =
+                patient.BirthDate == null ||
+                patient.BirthDate == DateTime.MinValue
+                    ? null
+                    : DateOnly.FromDateTime(
+                        patient.BirthDate.Value);
+
+            return db.SaveChanges() > 0;
         }
 
         public bool Delete(int id)
         {
-            string query = "DELETE FROM Patients WHERE PatientID = @PatientID";
-            SqlParameter[] parameters =
-            {
-                new SqlParameter("@PatientID", id)
-            };
+            using var db = new CMSDbContext();
 
-            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+            var entity = db.Patients
+                .FirstOrDefault(p =>
+                    p.PatientId == id);
+
+            if (entity == null)
+                return false;
+
+            db.Patients.Remove(entity);
+
+            return db.SaveChanges() > 0;
         }
 
         public int CountPatients()
         {
-            string query = "SELECT COUNT(*) FROM Patients";
+            using var db = new CMSDbContext();
 
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(query));
+            return db.Patients.Count();
         }
 
         public int GetNextPatientId()
         {
-            string query = @"
-        SELECT ISNULL(MAX(PatientID),0) + 1
-        FROM Patients";
+            using var db = new CMSDbContext();
 
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(query));
+            return (db.Patients
+                       .Max(p => (int?)p.PatientId) ?? 0)
+                   + 1;
         }
     }
 }
-
