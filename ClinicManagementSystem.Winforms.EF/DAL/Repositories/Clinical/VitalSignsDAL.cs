@@ -1,7 +1,6 @@
-using System;
-using DAL.DataContext;
+using System.Linq;
+using DAL.Models;
 using DTO;
-using Microsoft.Data.SqlClient;
 
 namespace DAL
 {
@@ -9,57 +8,38 @@ namespace DAL
     {
         public bool InsertVitalSigns(VitalSignsDTO vital)
         {
-            string query = @"
-                INSERT INTO VitalSigns
-                (
-                    EncounterID,
-                    Temperature,
-                    BloodPressure,
-                    HeartRate,
-                    SPO2,
-                    Weight,
-                    Notes
-                )
-                VALUES
-                (
-                    @EncounterID,
-                    @Temperature,
-                    @BloodPressure,
-                    @HeartRate,
-                    @SPO2,
-                    @Weight,
-                    @Notes
-                )";
+            using var db = new CMSDbContext();
 
-            SqlParameter[] parameters =
+            db.VitalSigns.Add(new VitalSign
             {
-                new SqlParameter("@EncounterID", vital.EncounterID),
-                new SqlParameter("@Temperature", vital.Temperature),
-                new SqlParameter("@BloodPressure", vital.BloodPressure),
-                new SqlParameter("@HeartRate", vital.HeartRate),
-                new SqlParameter("@SPO2", vital.SPO2),
-                new SqlParameter("@Weight", vital.Weight),
-                new SqlParameter("@Notes", (object)vital.Notes ?? DBNull.Value)
-            };
+                EncounterId = vital.EncounterID,
 
-            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+                Temperature = (decimal)vital.Temperature,
+
+                BloodPressure = vital.BloodPressure,
+
+                HeartRate = vital.HeartRate,
+
+                Spo2 = vital.SPO2,
+
+                Weight = (decimal)vital.Weight,
+
+                Notes = vital.Notes
+            });
+
+            return db.SaveChanges() > 0;
         }
 
         public int? GetLatestEncounterIdByPatient(int patientId)
         {
-            string query = @"
-                SELECT TOP 1 EncounterID
-                FROM Encounters
-                WHERE PatientID = @PatientID
-                ORDER BY CreatedAt DESC, EncounterID DESC";
+            using var db = new CMSDbContext();
 
-            object result = DatabaseHelper.ExecuteScalar(
-                query,
-                new[] { new SqlParameter("@PatientID", patientId) });
-
-            return result == null || result == DBNull.Value
-                ? null
-                : Convert.ToInt32(result);
+            return db.Encounters
+                .Where(e => e.PatientId == patientId)
+                .OrderByDescending(e => e.CreatedAt)
+                .ThenByDescending(e => e.EncounterId)
+                .Select(e => (int?)e.EncounterId)
+                .FirstOrDefault();
         }
     }
 }
