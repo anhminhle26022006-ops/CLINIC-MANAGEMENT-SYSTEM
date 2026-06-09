@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ClinicManagementSystem.Winforms.EF.Properties {
+namespace ClinicManagementSystem.Winforms.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ClinicManagementSystem.Winforms.EF.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ClinicManagementSystem.Winforms.EF.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ClinicManagementSystem.Winforms.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
