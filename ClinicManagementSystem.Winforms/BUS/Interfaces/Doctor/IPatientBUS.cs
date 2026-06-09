@@ -9,7 +9,7 @@ namespace BUS.Interfaces.Doctor
 {
     public interface IPatientBUS
     {
-        Task<List<ApiPatientDTO>> GetAllAsync();
-        Task<ApiPatientDTO> AddAsync(ApiPatientDTO dto);
+        List<PatientDTO> GetAll();
+        int Add(PatientDTO p);
     }
 }

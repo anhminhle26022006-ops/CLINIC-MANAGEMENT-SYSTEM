@@ -9,13 +9,8 @@ namespace DAL.Interfaces.Doctor
 {
     public interface IPatientRepository
     {
-        Task<List<ApiPatientDTO>> GetAllAsync();
-        Task<ApiPatientDTO> GetByCodeAsync(string code);
-        Task<int?> GetIdByCodeAsync(string code);
-
-        Task<ApiPatientDTO> InsertAsync(ApiPatientDTO dto);
-        Task<ApiPatientDTO> UpdateAsync(ApiPatientDTO dto);
-
-        Task UpsertAsync(ApiPatientDTO dto);
+        List<PatientDTO> GetAll();
+        PatientDTO GetById(int id);
+        int Add(PatientDTO patient);
     }
 }

@@ -18,14 +18,10 @@ namespace BUS.Services.Doctor
             _repo = repo;
         }
 
-        public async Task<List<ApiPatientDTO>> GetAllAsync()
-        {
-            return await _repo.GetAllAsync();
-        }
+        public List<PatientDTO> GetAll()
+            => _repo.GetAll();
 
-        public async Task<ApiPatientDTO> AddAsync(ApiPatientDTO dto)
-        {
-            return await _repo.InsertAsync(dto);
-        }
+        public int Add(PatientDTO p)
+            => _repo.Add(p);
     }
 }

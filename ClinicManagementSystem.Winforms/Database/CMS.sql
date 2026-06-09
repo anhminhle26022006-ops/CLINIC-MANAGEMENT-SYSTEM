@@ -201,6 +201,8 @@ CREATE TABLE PatientQueues (
    Priority NVARCHAR(50),
    Status NVARCHAR(50),
    CurrentStep NVARCHAR(50),
+   QueueNumber INT,
+    QueueTime DATETIME NOT NULL DEFAULT GETDATE(),
 
    FOREIGN KEY (EncounterID)
       REFERENCES Encounters(EncounterID)
@@ -1185,6 +1187,23 @@ VALUES
 ('BN20094',N'Đặng Thị Ngọc Mai',N'Nữ','2000-12-12','0901000044',N'Thủ Đức, TP.HCM','A+',N'Không có'),
 ('BN20095',N'Hoàng Văn Khoa',N'Nam','1993-03-23','0901000045',N'Quận 12, TP.HCM','O+',N'Sulfa');
 
+INSERT INTO Appointments
+(PatientID, DoctorID, DepartmentID, RoomID, AppointmentDate, Status)
+SELECT TOP 50
+P.PatientID,
+D.EmployeeID,
+(SELECT DepartmentID FROM Departments WHERE DepartmentName = N'Khám tổng quát'),
+1,
+DATEADD(MINUTE, ABS(CHECKSUM(NEWID())) % 600, CAST(GETDATE() AS DATETIME)),
+'Scheduled'
+FROM Patients P
+CROSS APPLY (
+    SELECT TOP 1 EmployeeID
+    FROM Employees E
+    WHERE E.RoleID = (SELECT RoleID FROM Roles WHERE RoleName = 'Doctor')
+    ORDER BY NEWID()
+) D;
+
 INSERT INTO Encounters
 (AppointmentID, PatientID, DoctorID, StartTime, EndTime, Status)
 SELECT 
@@ -1201,6 +1220,17 @@ CROSS APPLY (
     WHERE E.RoleID = (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
     ORDER BY NEWID()
 ) D;
+
+INSERT INTO Encounters
+(AppointmentID, PatientID, DoctorID, StartTime, EndTime, Status)
+SELECT 
+A.AppointmentID,
+A.PatientID,
+A.DoctorID,
+A.AppointmentDate,
+NULL,
+'InProgress'
+FROM Appointments A;
 
 INSERT INTO VitalSigns (EncounterID, Temperature, BloodPressure, HeartRate, SPO2, Weight, Height, Notes)
 SELECT 
@@ -1262,18 +1292,32 @@ FROM LabRequests;
 WITH Ranked AS (
     SELECT 
         E.EncounterID,
-        E.DoctorID,
-        ROW_NUMBER() OVER (PARTITION BY E.DoctorID ORDER BY NEWID()) rn
+        A.AppointmentDate,
+        A.DoctorID,
+        ROW_NUMBER() OVER (
+            PARTITION BY A.DoctorID, CAST(A.AppointmentDate AS DATE)
+            ORDER BY A.AppointmentDate ASC
+        ) AS rn
     FROM Encounters E
+    JOIN Appointments A ON A.AppointmentID = E.AppointmentID
 )
-INSERT INTO PatientQueues (EncounterID, Priority, Status, CurrentStep)
-SELECT 
-EncounterID,
-'Normal',
-'Waiting',
-N'Chờ khám'
-FROM Ranked
-WHERE rn <= 5;
+INSERT INTO PatientQueues
+(
+    EncounterID,
+    Priority,
+    Status,
+    CurrentStep,
+    QueueNumber,
+    QueueTime
+)
+SELECT
+    EncounterID,
+    'Normal',
+    'Waiting',
+    N'Chờ khám',
+    rn,
+    AppointmentDate
+FROM Ranked;
 
 INSERT INTO Invoices (EncounterID, PatientID, Total, Status)
 SELECT 
