@@ -9,19 +9,11 @@ namespace BUS.Services
     {
         private readonly DepartmentDAL dal = new DepartmentDAL();
 
-        public List<DepartmentDTO> GetAll()
-        {
-            return dal.GetAll();
-        }
-
-        public DepartmentDTO GetById(int departmentId)
-        {
-            return dal.GetById(departmentId);
-        }
-
-        public bool Exists(int departmentId)
-        {
-            return dal.Exists(departmentId);
-        }
+        public List<DepartmentDTO> GetAll() => dal.GetAll();
+        public DepartmentDTO GetById(int id) => dal.GetById(id);
+        public bool Exists(int id) => dal.Exists(id);
+        public bool Insert(string name) => dal.Insert(name);
+        public bool Update(int id, string name) => dal.Update(id, name);
+        public bool Delete(int id) => dal.Delete(id);
     }
 }

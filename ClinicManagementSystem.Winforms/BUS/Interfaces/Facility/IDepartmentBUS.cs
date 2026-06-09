@@ -1,8 +1,15 @@
+using System.Collections.Generic;
 using DTO;
 
 namespace BUS.Interfaces
 {
-    public interface IDepartmentBUS : IReadOnlyService<DepartmentDTO, int>
+    public interface IDepartmentBUS
     {
+        List<DepartmentDTO> GetAll();
+        DepartmentDTO GetById(int departmentId);
+        bool Exists(int departmentId);
+        bool Insert(string departmentName);
+        bool Update(int departmentId, string departmentName);
+        bool Delete(int departmentId);
     }
 }

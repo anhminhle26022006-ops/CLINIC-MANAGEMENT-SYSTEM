@@ -12,5 +12,7 @@ namespace DAL.Interfaces
         List<EmployeeShiftDTO> GetByDate(DateTime workDate);
         List<EmployeeShiftDTO> GetByRole(string roleName);
         bool HasConflict(int employeeId, DateTime workDate, int shiftId);
+        bool Update(int employeeShiftId, int shiftId, DateTime workDate);
+        bool Delete(int employeeShiftId);
     }
 }

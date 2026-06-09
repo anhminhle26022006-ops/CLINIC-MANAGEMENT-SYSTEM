@@ -320,15 +320,13 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             if (btnAddShift != null)
                 btnAddShift.Location = new Point(panelHeader.Width - btnAddShift.Width, 19);
         }
-
-        private void PanelRoundedBorder(object sender, System.Windows.Forms.PaintEventArgs e)
+        private void PanelRoundedBorder(object sender, PaintEventArgs e)
         {
-            var p = sender as Panel;
-            using (var pen = new System.Drawing.Pen(Color.FromArgb(229, 231, 235), 1))
-            {
-                e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
-            }
+            if (sender is not Control c) return;
+            using var pen = new Pen(Color.FromArgb(229, 231, 235), 1);
+            e.Graphics.DrawRectangle(pen, 0, 0, c.Width - 1, c.Height - 1);
         }
+
 
         // ── Fields ────────────────────────────────────────────────────
         private Panel panelHeader, panelKPI, panelFilter, panelViewBtns, cardGrid, panelPaging;
