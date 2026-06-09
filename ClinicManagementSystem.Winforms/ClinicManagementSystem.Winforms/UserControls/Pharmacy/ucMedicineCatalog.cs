@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using BUS;
 using DTO;
-using DAL;
 using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 {
     public partial class ucMedicineCatalog : PharmacyDashboardViewBase
     {
-        private readonly MedicineDAL medicineDAL = new MedicineDAL();
+        private readonly InventoryBUS inventoryBUS = new InventoryBUS();
         private List<MedicineDTO> allMedicines = new List<MedicineDTO>();
 
         public ucMedicineCatalog()
@@ -25,7 +26,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             txtMedicineSearch.TextChanged += (s, ev) => FilterMedicines();
             cboCategory.SelectedIndexChanged += (s, ev) => FilterMedicines();
             cboStatus.SelectedIndexChanged += (s, ev) => FilterMedicines();
+            btnAddMedicine.Click -= btnAddMedicine_Click;
             btnAddMedicine.Click += btnAddMedicine_Click;
+            dgvMedicines.CellClick -= dgvMedicines_CellClick;
+            dgvMedicines.CellClick += dgvMedicines_CellClick;
 
             LoadMedicines();
         }
@@ -52,7 +56,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
         {
             try
             {
-                allMedicines = medicineDAL.GetAllMedicines();
+                allMedicines = inventoryBUS.GetAllMedicines();
             }
             catch (Exception ex)
             {
@@ -100,15 +104,90 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             {
                 string cat = GetCategory(m.Name);
                 string stat = m.Stock == 0 ? "Hết hàng" : (m.Stock <= 100 ? "Sắp hết" : "Còn hàng");
-                dgvMedicines.Rows.Add(
+                int rowIndex = dgvMedicines.Rows.Add(
                     "MED" + m.MedicineID.ToString("D3"),
                     m.Name,
                     cat,
                     m.Stock + " " + m.Unit,
                     m.Price.ToString("N0") + "đ",
                     stat,
-                    "Xem | Sửa"
+                    "Xem | Sửa | Xóa"
                 );
+                dgvMedicines.Rows[rowIndex].Tag = m;
+            }
+        }
+
+        private void dgvMedicines_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex < 0 || dgvMedicines.Rows[e.RowIndex].Tag is not MedicineDTO medicine)
+            {
+                return;
+            }
+
+            if (IsActionColumn(e.ColumnIndex))
+            {
+                ShowMedicineActionMenu(medicine);
+            }
+        }
+
+        private bool IsActionColumn(int columnIndex)
+        {
+            if (columnIndex < 0 || columnIndex >= dgvMedicines.Columns.Count)
+            {
+                return false;
+            }
+
+            DataGridViewColumn column = dgvMedicines.Columns[columnIndex];
+            string columnName = column.Name ?? string.Empty;
+            string headerText = column.HeaderText ?? string.Empty;
+
+            return string.Equals(columnName, "colActions", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(columnName, "colAction", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(headerText, "THAO TÁC", StringComparison.OrdinalIgnoreCase)
+                || columnIndex == dgvMedicines.Columns.Count - 1;
+        }
+
+        private void ShowMedicineActionMenu(MedicineDTO medicine)
+        {
+            ContextMenuStrip menu = new ContextMenuStrip();
+            menu.Items.Add("Xem", null, (s, e) => OpenMedicineForm(medicine, true));
+            menu.Items.Add("Sửa", null, (s, e) => OpenMedicineForm(medicine, false));
+            menu.Items.Add("Xóa", null, (s, e) => DeleteMedicine(medicine));
+            menu.Show(Cursor.Position);
+        }
+
+        private void OpenMedicineForm(MedicineDTO medicine, bool viewOnly)
+        {
+            using AddMedicineForm form = new AddMedicineForm(medicine, viewOnly);
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                LoadMedicines();
+            }
+        }
+
+        private void DeleteMedicine(MedicineDTO medicine)
+        {
+            DialogResult confirm = MessageBox.Show(
+                $"Xóa thuốc {medicine.Name}?",
+                "Xóa thuốc",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                if (inventoryBUS.DeleteMedicine(medicine.MedicineID))
+                {
+                    LoadMedicines();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không thể xóa thuốc này vì đã có dữ liệu liên quan.\n" + ex.Message, "Xóa thuốc", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

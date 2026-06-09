@@ -52,5 +52,50 @@ namespace BUS.Services
         {
             return dal.InsertAsync(dto);
         }
+
+        public bool Add(EmployeeDTO employee)
+        {
+            if (employee == null || string.IsNullOrWhiteSpace(employee.FullName))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(employee.RoleName) && employee.RoleID <= 0)
+            {
+                return false;
+            }
+
+            if (employee.DepartmentID <= 0)
+            {
+                return false;
+            }
+
+            return dal.Add(employee);
+        }
+
+        public bool UpdateBasic(EmployeeDTO employee)
+        {
+            if (employee == null || employee.EmployeeID <= 0 || string.IsNullOrWhiteSpace(employee.FullName))
+            {
+                return false;
+            }
+
+            return dal.UpdateBasic(employee);
+        }
+
+        public bool SetStatus(int id, string status)
+        {
+            if (id <= 0 || string.IsNullOrWhiteSpace(status))
+            {
+                return false;
+            }
+
+            return dal.SetStatus(id, status.Trim());
+        }
+
+        public bool Delete(int id)
+        {
+            return dal.Delete(id);
+        }
     }
 }

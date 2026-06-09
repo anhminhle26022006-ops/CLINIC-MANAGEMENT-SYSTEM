@@ -49,6 +49,31 @@ namespace DAL
             return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
 
+        public bool UpdateMedicine(MedicineDTO medicine)
+        {
+            string query = @"
+                UPDATE Medicines
+                SET Name = @Name,
+                    Unit = @Unit,
+                    Price = @Price,
+                    Stock = @Stock,
+                    BatchNumber = @BatchNumber,
+                    ExpiryDate = @ExpiryDate
+                WHERE MedicineID = @MedicineID";
+
+            SqlParameter[] parameters = {
+                new SqlParameter("@MedicineID", medicine.MedicineID),
+                new SqlParameter("@Name", medicine.Name),
+                new SqlParameter("@Unit", medicine.Unit),
+                new SqlParameter("@Price", medicine.Price),
+                new SqlParameter("@Stock", medicine.Stock),
+                new SqlParameter("@BatchNumber", string.IsNullOrWhiteSpace(medicine.BatchNumber) ? DBNull.Value : (object)medicine.BatchNumber),
+                new SqlParameter("@ExpiryDate", medicine.ExpiryDate == DateTime.MinValue ? DBNull.Value : (object)medicine.ExpiryDate)
+            };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
+
         public bool UpdateStock(int medicineId, int qty)
         {
             string query = @"
@@ -64,6 +89,22 @@ namespace DAL
             return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
 
+        public bool AdjustStock(int medicineId, int quantityDelta)
+        {
+            string query = @"
+                UPDATE Medicines
+                SET Stock = Stock + @QuantityDelta
+                WHERE MedicineID = @MedicineID
+                  AND Stock + @QuantityDelta >= 0";
+
+            SqlParameter[] parameters = {
+                new SqlParameter("@QuantityDelta", quantityDelta),
+                new SqlParameter("@MedicineID", medicineId)
+            };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
+
         public int GetStock(int medicineId)
         {
             string query = "SELECT Stock FROM Medicines WHERE MedicineID = @MedicineID";
@@ -73,6 +114,15 @@ namespace DAL
 
             object result = DatabaseHelper.ExecuteScalar(query, parameters);
             return result != null && result != DBNull.Value ? Convert.ToInt32(result) : 0;
+        }
+
+        public bool DeleteMedicine(int id)
+        {
+            string query = "DELETE FROM Medicines WHERE MedicineID = @MedicineID";
+            SqlParameter[] parameters = {
+                new SqlParameter("@MedicineID", id)
+            };
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
     }
 }

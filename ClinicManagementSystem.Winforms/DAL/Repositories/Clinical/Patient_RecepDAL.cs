@@ -215,6 +215,17 @@ WHERE PatientID = @PatientID";
                 parameters) > 0;
         }
 
+        public bool Delete(int id)
+        {
+            string query = "DELETE FROM Patients WHERE PatientID = @PatientID";
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@PatientID", id)
+            };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
+
         public int CountPatients()
         {
             string query = "SELECT COUNT(*) FROM Patients";

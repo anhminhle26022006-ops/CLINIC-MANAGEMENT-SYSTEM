@@ -1,5 +1,7 @@
 ﻿﻿using BUS.Services;
+using CMS.Core.Identity;
 using ClinicManagementSystem.Winforms;
+using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
 using DAL;
 using DTO;
 using Newtonsoft.Json.Linq;
@@ -22,9 +24,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
-        private readonly PatientBUS patientBUS = new PatientBUS();
-        private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
-        private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
+        private readonly ApiSyncBUS apiSyncBUS = new ApiSyncBUS();
         private UserDTO currentUser;
         private bool layoutReady;
 
@@ -39,6 +39,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         public NurseMainform()
         {
             InitializeComponent();
+            Text = "HealthCare+ - Y tá";
             layoutReady = true;
         }
 
@@ -65,13 +66,65 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
             btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
 
-            btnNavOverview.Click += (s, ev) => ShowNurseControl(new ucNurseOverview(), "Tổng quan", btnNavOverview);
+            btnNavOverview.Click += (s, ev) => ShowNurseControl(new ucNurseOverview(currentUser), "Tổng quan", btnNavOverview);
             btnQueue.Click += (s, ev) => ShowNurseControl(new ucQueueManagement(), "Hàng chờ khám", btnQueue);
             btnVitalSigns.Click += (s, ev) => ShowNurseControl(new ucNurseVitalSigns(), "Chỉ số sinh hiệu", btnVitalSigns);
-            btnERM.Click += (s, ev) => ShowPlaceholder("Bệnh án", "Theo dõi hồ sơ bệnh án và ghi chú điều dưỡng.", btnERM);
-            btnNavShifts.Click += (s, ev) => ShowNurseControl(new ucNurseShift(), "Ca làm việc", btnNavShifts);
+            btnERM.Click += (s, ev) => ShowNurseControl(new ucNurseMedicalRecords(currentUser), "Bệnh án", btnERM);
+            btnNavShifts.Click += (s, ev) => ShowNurseControl(new RoleShiftCalendar(currentUser, Role.Nurse), "Ca làm việc", btnNavShifts);
 
-            ShowNurseControl(new ucNurseOverview(), "Tổng quan", btnNavOverview);
+            ShowNurseControl(new ucNurseOverview(currentUser), "Tổng quan", btnNavOverview);
+        }
+
+        private async void btnSyncCloud_Click(object sender, EventArgs e)
+        {
+            await RunCloudSyncAsync();
+        }
+
+        private async System.Threading.Tasks.Task RunCloudSyncAsync()
+        {
+            btnSyncCloud.Enabled = false;
+            string oldText = btnSyncCloud.Text;
+            btnSyncCloud.Text = "Đang đồng bộ...";
+
+            try
+            {
+                string resultMessage = await apiSyncBUS.SyncRequestsFromSupabaseAsync();
+                MessageBox.Show(resultMessage, "Đồng bộ Nurse", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                if (contentPanel.Controls.Count > 0)
+                {
+                    Control current = contentPanel.Controls[0];
+                    if (current is ucNurseOverview)
+                    {
+                        ShowNurseControl(new ucNurseOverview(currentUser), "Tổng quan", btnNavOverview);
+                    }
+                    else if (current is ucQueueManagement)
+                    {
+                        ShowNurseControl(new ucQueueManagement(), "Hàng chờ khám", btnQueue);
+                    }
+                    else if (current is ucNurseVitalSigns)
+                    {
+                        ShowNurseControl(new ucNurseVitalSigns(), "Chỉ số sinh hiệu", btnVitalSigns);
+                    }
+                    else if (current is ucNurseMedicalRecords)
+                    {
+                        ShowNurseControl(new ucNurseMedicalRecords(currentUser), "Bệnh án", btnERM);
+                    }
+                    else if (current is RoleShiftCalendar)
+                    {
+                        ShowNurseControl(new RoleShiftCalendar(currentUser, Role.Nurse), "Ca làm việc", btnNavShifts);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Đồng bộ thất bại: " + ex.Message, "Đồng bộ Nurse", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnSyncCloud.Text = oldText;
+                btnSyncCloud.Enabled = true;
+            }
         }
 
         private Button CreateSidebarButton(string text, Point location, EventHandler onClick)

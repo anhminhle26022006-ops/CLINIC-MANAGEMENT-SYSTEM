@@ -4,14 +4,13 @@ using System.Linq;
 using System.Windows.Forms;
 using DTO;
 using BUS;
-using DAL;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 {
     public partial class ucPharmacyOverview : PharmacyDashboardViewBase
     {
         private readonly PrescriptionBUS prescriptionBUS = new PrescriptionBUS();
-        private readonly MedicineDAL medicineDAL = new MedicineDAL();
+        private readonly InventoryBUS inventoryBUS = new InventoryBUS();
 
         public ucPharmacyOverview()
         {
@@ -46,7 +45,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             {
                 // 1. Fetch data from DB
                 var pendingPrescs = prescriptionBUS.GetPendingPrescriptions();
-                var medicines = medicineDAL.GetAllMedicines();
+                var medicines = inventoryBUS.GetAllMedicines();
 
                 // 2. Set stats
                 int pendingCount = pendingPrescs.Count;

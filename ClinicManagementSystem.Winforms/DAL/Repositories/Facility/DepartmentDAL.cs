@@ -17,7 +17,13 @@ namespace DAL.Repositories
                 return new List<DepartmentDTO>();
             }
 
-            string query = "SELECT DepartmentID, DepartmentName FROM Departments ORDER BY DepartmentName";
+            string descriptionExpression = SchemaHelper.ColumnExists("Departments", "Description")
+                ? "Description"
+                : "CAST('' AS nvarchar(255)) AS Description";
+            string activeExpression = SchemaHelper.ColumnExists("Departments", "IsActive")
+                ? "IsActive"
+                : "CAST(1 AS bit) AS IsActive";
+            string query = $"SELECT DepartmentID, DepartmentName, {descriptionExpression}, {activeExpression} FROM Departments ORDER BY DepartmentName";
             return Map(DatabaseHelper.ExecuteQuery(query));
         }
 
@@ -28,7 +34,13 @@ namespace DAL.Repositories
                 return null;
             }
 
-            string query = "SELECT DepartmentID, DepartmentName FROM Departments WHERE DepartmentID = @DepartmentID";
+            string descriptionExpression = SchemaHelper.ColumnExists("Departments", "Description")
+                ? "Description"
+                : "CAST('' AS nvarchar(255)) AS Description";
+            string activeExpression = SchemaHelper.ColumnExists("Departments", "IsActive")
+                ? "IsActive"
+                : "CAST(1 AS bit) AS IsActive";
+            string query = $"SELECT DepartmentID, DepartmentName, {descriptionExpression}, {activeExpression} FROM Departments WHERE DepartmentID = @DepartmentID";
             List<DepartmentDTO> list = Map(DatabaseHelper.ExecuteQuery(query, new[]
             {
                 new SqlParameter("@DepartmentID", departmentId)
@@ -50,10 +62,55 @@ namespace DAL.Repositories
                 {
                     DepartmentID = Convert.ToInt32(row["DepartmentID"]),
                     DepartmentName = row["DepartmentName"].ToString(),
-                    IsActive = true
+                    Description = row.Table.Columns.Contains("Description") ? row["Description"].ToString() : "",
+                    IsActive = !row.Table.Columns.Contains("IsActive") || row["IsActive"] == DBNull.Value || Convert.ToBoolean(row["IsActive"])
                 });
             }
             return list;
+        }
+
+        public bool Add(DepartmentDTO department)
+        {
+            string query = "INSERT INTO Departments(DepartmentName) VALUES(@DepartmentName)";
+            return DatabaseHelper.ExecuteNonQuery(query, new[]
+            {
+                new SqlParameter("@DepartmentName", department.DepartmentName)
+            }) > 0;
+        }
+
+        public bool Update(DepartmentDTO department)
+        {
+            string query = "UPDATE Departments SET DepartmentName = @DepartmentName WHERE DepartmentID = @DepartmentID";
+            return DatabaseHelper.ExecuteNonQuery(query, new[]
+            {
+                new SqlParameter("@DepartmentName", department.DepartmentName),
+                new SqlParameter("@DepartmentID", department.DepartmentID)
+            }) > 0;
+        }
+
+        public bool SetActive(int id, bool isActive)
+        {
+            if (SchemaHelper.ColumnExists("Departments", "IsActive"))
+            {
+                return DatabaseHelper.ExecuteNonQuery(
+                    "UPDATE Departments SET IsActive = @IsActive WHERE DepartmentID = @DepartmentID",
+                    new[]
+                    {
+                        new SqlParameter("@IsActive", isActive),
+                        new SqlParameter("@DepartmentID", id)
+                    }) > 0;
+            }
+
+            return false;
+        }
+
+        public bool Delete(int id)
+        {
+            string query = "DELETE FROM Departments WHERE DepartmentID = @DepartmentID";
+            SqlParameter[] parameters = {
+                new SqlParameter("@DepartmentID", id)
+            };
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
     }
 }

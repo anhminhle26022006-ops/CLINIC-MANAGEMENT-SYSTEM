@@ -28,7 +28,32 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             lblMonth = new Label();
             dtpMonth = new DateTimePicker();
             btnRefresh = new Button();
-            kpiFlow = new FlowLayoutPanel();
+            kpiFlow = new Panel();
+            cardPatients = new Panel();
+            lblTotalPatientsTitle = new Label();
+            lblTotalPatientsValue = new Label();
+            lblPatientTrend = new Label();
+            lblPatientsIcon = new Label();
+            cardAppointments = new Panel();
+            lblMonthlyAppointmentsTitle = new Label();
+            lblMonthlyAppointmentsValue = new Label();
+            lblAppointmentTrend = new Label();
+            lblAppointmentsIcon = new Label();
+            cardRevenue = new Panel();
+            lblMonthlyRevenueTitle = new Label();
+            lblMonthlyRevenueValue = new Label();
+            lblRevenueTrend = new Label();
+            lblRevenueIcon = new Label();
+            cardToday = new Panel();
+            lblTodayAppointmentsTitle = new Label();
+            lblTodayAppointmentsValue = new Label();
+            lblTodayStatus = new Label();
+            lblTodayIcon = new Label();
+            cardStaff = new Panel();
+            lblActiveStaffTitle = new Label();
+            lblActiveStaffValue = new Label();
+            lblMedicineStatus = new Label();
+            lblStaffIcon = new Label();
             chartFlow = new FlowLayoutPanel();
             patientChartCard = new Panel();
             lblPatientChartTitle = new Label();
@@ -38,31 +63,32 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             pnlRevenueChart = new Panel();
             insightFlow = new FlowLayoutPanel();
             appointmentCard = new Panel();
-            lblAppointmentTitle = new Label();
             dgvAppointments = new DataGridView();
             colTime = new DataGridViewTextBoxColumn();
             colPatient = new DataGridViewTextBoxColumn();
             colDoctor = new DataGridViewTextBoxColumn();
             colDepartment = new DataGridViewTextBoxColumn();
             colStatus = new DataGridViewTextBoxColumn();
+            lblAppointmentTitle = new Label();
             sidePanel = new Panel();
-            queueCard = new Panel();
-            lblQueueTitle = new Label();
-            queueFlow = new FlowLayoutPanel();
-            departmentCard = new Panel();
-            lblDepartmentTitle = new Label();
-            departmentFlow = new FlowLayoutPanel();
             medicineCard = new Panel();
-            lblMedicineTitle = new Label();
             medicineFlow = new FlowLayoutPanel();
-            cardPatients = CreateKpiCard("Tổng bệnh nhân", "BN", Color.FromArgb(37, 99, 235), Color.FromArgb(239, 246, 255), out lblTotalPatientsValue, out lblPatientTrend);
-            cardAppointments = CreateKpiCard("Lịch khám tháng này", "LK", Color.FromArgb(5, 150, 105), Color.FromArgb(236, 253, 245), out lblMonthlyAppointmentsValue, out lblAppointmentTrend);
-            cardRevenue = CreateKpiCard("Doanh thu tháng này", "DT", Color.FromArgb(147, 51, 234), Color.FromArgb(250, 245, 255), out lblMonthlyRevenueValue, out lblRevenueTrend);
-            cardToday = CreateKpiCard("Lịch khám hôm nay", "HN", Color.FromArgb(234, 88, 12), Color.FromArgb(255, 247, 237), out lblTodayAppointmentsValue, out lblTodayStatus);
-            cardStaff = CreateKpiCard("Nhân sự hoạt động", "NS", Color.FromArgb(15, 118, 110), Color.FromArgb(240, 253, 250), out lblActiveStaffValue, out lblMedicineStatus);
+            lblMedicineTitle = new Label();
+            departmentCard = new Panel();
+            departmentFlow = new FlowLayoutPanel();
+            lblDepartmentTitle = new Label();
+            queueCard = new Panel();
+            queueFlow = new FlowLayoutPanel();
+            lblQueueTitle = new Label();
             outerScroll.SuspendLayout();
             contentFlow.SuspendLayout();
             headerPanel.SuspendLayout();
+            kpiFlow.SuspendLayout();
+            cardPatients.SuspendLayout();
+            cardAppointments.SuspendLayout();
+            cardRevenue.SuspendLayout();
+            cardToday.SuspendLayout();
+            cardStaff.SuspendLayout();
             chartFlow.SuspendLayout();
             patientChartCard.SuspendLayout();
             revenueChartCard.SuspendLayout();
@@ -70,9 +96,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             appointmentCard.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvAppointments).BeginInit();
             sidePanel.SuspendLayout();
-            queueCard.SuspendLayout();
-            departmentCard.SuspendLayout();
             medicineCard.SuspendLayout();
+            departmentCard.SuspendLayout();
+            queueCard.SuspendLayout();
             SuspendLayout();
             // 
             // outerScroll
@@ -101,7 +127,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             contentFlow.Location = new Point(0, 0);
             contentFlow.Name = "contentFlow";
             contentFlow.Padding = new Padding(28, 24, 28, 32);
-            contentFlow.Size = new Size(1263, 1090);
+            contentFlow.Size = new Size(1259, 1090);
             contentFlow.TabIndex = 0;
             contentFlow.WrapContents = false;
             // 
@@ -126,7 +152,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             lblTitle.ForeColor = Color.FromArgb(17, 24, 39);
             lblTitle.Location = new Point(0, -3);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(186, 54);
+            lblTitle.Size = new Size(197, 54);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Thống kê";
             // 
@@ -137,7 +163,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             lblSubtitle.ForeColor = Color.FromArgb(107, 114, 128);
             lblSubtitle.Location = new Point(4, 50);
             lblSubtitle.Name = "lblSubtitle";
-            lblSubtitle.Size = new Size(333, 25);
+            lblSubtitle.Size = new Size(350, 25);
             lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "Tổng quan số liệu hoạt động phòng khám";
             // 
@@ -196,7 +222,286 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             kpiFlow.Name = "kpiFlow";
             kpiFlow.Size = new Size(1200, 150);
             kpiFlow.TabIndex = 1;
-            kpiFlow.WrapContents = true;
+            // 
+            // cardPatients
+            // 
+            cardPatients.BackColor = Color.FromArgb(239, 246, 255);
+            cardPatients.Controls.Add(lblTotalPatientsTitle);
+            cardPatients.Controls.Add(lblTotalPatientsValue);
+            cardPatients.Controls.Add(lblPatientTrend);
+            cardPatients.Controls.Add(lblPatientsIcon);
+            cardPatients.Location = new Point(0, 0);
+            cardPatients.Margin = new Padding(0, 0, 16, 16);
+            cardPatients.Name = "cardPatients";
+            cardPatients.Size = new Size(224, 134);
+            cardPatients.TabIndex = 0;
+            cardPatients.Paint += Card_Paint;
+            // 
+            // lblTotalPatientsTitle
+            // 
+            lblTotalPatientsTitle.Font = new Font("Segoe UI", 9F);
+            lblTotalPatientsTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblTotalPatientsTitle.Location = new Point(16, 14);
+            lblTotalPatientsTitle.Name = "lblTotalPatientsTitle";
+            lblTotalPatientsTitle.Size = new Size(135, 24);
+            lblTotalPatientsTitle.TabIndex = 0;
+            lblTotalPatientsTitle.Text = "Tổng bệnh nhân";
+            // 
+            // lblTotalPatientsValue
+            // 
+            lblTotalPatientsValue.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            lblTotalPatientsValue.ForeColor = Color.FromArgb(37, 99, 235);
+            lblTotalPatientsValue.Location = new Point(16, 46);
+            lblTotalPatientsValue.Name = "lblTotalPatientsValue";
+            lblTotalPatientsValue.Size = new Size(120, 57);
+            lblTotalPatientsValue.TabIndex = 1;
+            lblTotalPatientsValue.Text = "0";
+            // 
+            // lblPatientTrend
+            // 
+            lblPatientTrend.Font = new Font("Segoe UI", 8.5F);
+            lblPatientTrend.ForeColor = Color.FromArgb(100, 116, 139);
+            lblPatientTrend.Location = new Point(16, 103);
+            lblPatientTrend.Name = "lblPatientTrend";
+            lblPatientTrend.Size = new Size(190, 22);
+            lblPatientTrend.TabIndex = 2;
+            lblPatientTrend.Text = "Đang cập nhật";
+            // 
+            // lblPatientsIcon
+            // 
+            lblPatientsIcon.BackColor = Color.White;
+            lblPatientsIcon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblPatientsIcon.ForeColor = Color.FromArgb(37, 99, 235);
+            lblPatientsIcon.Location = new Point(162, 22);
+            lblPatientsIcon.Name = "lblPatientsIcon";
+            lblPatientsIcon.Size = new Size(46, 46);
+            lblPatientsIcon.TabIndex = 3;
+            lblPatientsIcon.Text = "BN";
+            lblPatientsIcon.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // cardAppointments
+            // 
+            cardAppointments.BackColor = Color.FromArgb(236, 253, 245);
+            cardAppointments.Controls.Add(lblMonthlyAppointmentsTitle);
+            cardAppointments.Controls.Add(lblMonthlyAppointmentsValue);
+            cardAppointments.Controls.Add(lblAppointmentTrend);
+            cardAppointments.Controls.Add(lblAppointmentsIcon);
+            cardAppointments.Location = new Point(240, 0);
+            cardAppointments.Margin = new Padding(0, 0, 16, 16);
+            cardAppointments.Name = "cardAppointments";
+            cardAppointments.Size = new Size(224, 134);
+            cardAppointments.TabIndex = 1;
+            cardAppointments.Paint += Card_Paint;
+            // 
+            // lblMonthlyAppointmentsTitle
+            // 
+            lblMonthlyAppointmentsTitle.Font = new Font("Segoe UI", 9F);
+            lblMonthlyAppointmentsTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblMonthlyAppointmentsTitle.Location = new Point(16, 14);
+            lblMonthlyAppointmentsTitle.Name = "lblMonthlyAppointmentsTitle";
+            lblMonthlyAppointmentsTitle.Size = new Size(145, 24);
+            lblMonthlyAppointmentsTitle.TabIndex = 0;
+            lblMonthlyAppointmentsTitle.Text = "Lịch khám tháng này";
+            // 
+            // lblMonthlyAppointmentsValue
+            // 
+            lblMonthlyAppointmentsValue.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            lblMonthlyAppointmentsValue.ForeColor = Color.FromArgb(5, 150, 105);
+            lblMonthlyAppointmentsValue.Location = new Point(16, 46);
+            lblMonthlyAppointmentsValue.Name = "lblMonthlyAppointmentsValue";
+            lblMonthlyAppointmentsValue.Size = new Size(120, 57);
+            lblMonthlyAppointmentsValue.TabIndex = 1;
+            lblMonthlyAppointmentsValue.Text = "0";
+            // 
+            // lblAppointmentTrend
+            // 
+            lblAppointmentTrend.Font = new Font("Segoe UI", 8.5F);
+            lblAppointmentTrend.ForeColor = Color.FromArgb(100, 116, 139);
+            lblAppointmentTrend.Location = new Point(16, 103);
+            lblAppointmentTrend.Name = "lblAppointmentTrend";
+            lblAppointmentTrend.Size = new Size(190, 22);
+            lblAppointmentTrend.TabIndex = 2;
+            lblAppointmentTrend.Text = "Đang cập nhật";
+            // 
+            // lblAppointmentsIcon
+            // 
+            lblAppointmentsIcon.BackColor = Color.White;
+            lblAppointmentsIcon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblAppointmentsIcon.ForeColor = Color.FromArgb(5, 150, 105);
+            lblAppointmentsIcon.Location = new Point(162, 22);
+            lblAppointmentsIcon.Name = "lblAppointmentsIcon";
+            lblAppointmentsIcon.Size = new Size(46, 46);
+            lblAppointmentsIcon.TabIndex = 3;
+            lblAppointmentsIcon.Text = "LK";
+            lblAppointmentsIcon.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // cardRevenue
+            // 
+            cardRevenue.BackColor = Color.FromArgb(250, 245, 255);
+            cardRevenue.Controls.Add(lblMonthlyRevenueTitle);
+            cardRevenue.Controls.Add(lblMonthlyRevenueValue);
+            cardRevenue.Controls.Add(lblRevenueTrend);
+            cardRevenue.Controls.Add(lblRevenueIcon);
+            cardRevenue.Location = new Point(480, 0);
+            cardRevenue.Margin = new Padding(0, 0, 16, 16);
+            cardRevenue.Name = "cardRevenue";
+            cardRevenue.Size = new Size(224, 134);
+            cardRevenue.TabIndex = 2;
+            cardRevenue.Paint += Card_Paint;
+            // 
+            // lblMonthlyRevenueTitle
+            // 
+            lblMonthlyRevenueTitle.Font = new Font("Segoe UI", 9F);
+            lblMonthlyRevenueTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblMonthlyRevenueTitle.Location = new Point(16, 14);
+            lblMonthlyRevenueTitle.Name = "lblMonthlyRevenueTitle";
+            lblMonthlyRevenueTitle.Size = new Size(145, 24);
+            lblMonthlyRevenueTitle.TabIndex = 0;
+            lblMonthlyRevenueTitle.Text = "Doanh thu tháng này";
+            // 
+            // lblMonthlyRevenueValue
+            // 
+            lblMonthlyRevenueValue.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            lblMonthlyRevenueValue.ForeColor = Color.FromArgb(147, 51, 234);
+            lblMonthlyRevenueValue.Location = new Point(16, 46);
+            lblMonthlyRevenueValue.Name = "lblMonthlyRevenueValue";
+            lblMonthlyRevenueValue.Size = new Size(120, 57);
+            lblMonthlyRevenueValue.TabIndex = 1;
+            lblMonthlyRevenueValue.Text = "0";
+            // 
+            // lblRevenueTrend
+            // 
+            lblRevenueTrend.Font = new Font("Segoe UI", 8.5F);
+            lblRevenueTrend.ForeColor = Color.FromArgb(100, 116, 139);
+            lblRevenueTrend.Location = new Point(16, 103);
+            lblRevenueTrend.Name = "lblRevenueTrend";
+            lblRevenueTrend.Size = new Size(190, 22);
+            lblRevenueTrend.TabIndex = 2;
+            lblRevenueTrend.Text = "Đang cập nhật";
+            // 
+            // lblRevenueIcon
+            // 
+            lblRevenueIcon.BackColor = Color.White;
+            lblRevenueIcon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblRevenueIcon.ForeColor = Color.FromArgb(147, 51, 234);
+            lblRevenueIcon.Location = new Point(162, 22);
+            lblRevenueIcon.Name = "lblRevenueIcon";
+            lblRevenueIcon.Size = new Size(46, 46);
+            lblRevenueIcon.TabIndex = 3;
+            lblRevenueIcon.Text = "DT";
+            lblRevenueIcon.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // cardToday
+            // 
+            cardToday.BackColor = Color.FromArgb(255, 247, 237);
+            cardToday.Controls.Add(lblTodayAppointmentsTitle);
+            cardToday.Controls.Add(lblTodayAppointmentsValue);
+            cardToday.Controls.Add(lblTodayStatus);
+            cardToday.Controls.Add(lblTodayIcon);
+            cardToday.Location = new Point(720, 0);
+            cardToday.Margin = new Padding(0, 0, 16, 16);
+            cardToday.Name = "cardToday";
+            cardToday.Size = new Size(224, 134);
+            cardToday.TabIndex = 3;
+            cardToday.Paint += Card_Paint;
+            // 
+            // lblTodayAppointmentsTitle
+            // 
+            lblTodayAppointmentsTitle.Font = new Font("Segoe UI", 9F);
+            lblTodayAppointmentsTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblTodayAppointmentsTitle.Location = new Point(16, 14);
+            lblTodayAppointmentsTitle.Name = "lblTodayAppointmentsTitle";
+            lblTodayAppointmentsTitle.Size = new Size(145, 24);
+            lblTodayAppointmentsTitle.TabIndex = 0;
+            lblTodayAppointmentsTitle.Text = "Lịch khám hôm nay";
+            // 
+            // lblTodayAppointmentsValue
+            // 
+            lblTodayAppointmentsValue.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            lblTodayAppointmentsValue.ForeColor = Color.FromArgb(234, 88, 12);
+            lblTodayAppointmentsValue.Location = new Point(16, 46);
+            lblTodayAppointmentsValue.Name = "lblTodayAppointmentsValue";
+            lblTodayAppointmentsValue.Size = new Size(120, 57);
+            lblTodayAppointmentsValue.TabIndex = 1;
+            lblTodayAppointmentsValue.Text = "0";
+            // 
+            // lblTodayStatus
+            // 
+            lblTodayStatus.Font = new Font("Segoe UI", 8.5F);
+            lblTodayStatus.ForeColor = Color.FromArgb(100, 116, 139);
+            lblTodayStatus.Location = new Point(18, 103);
+            lblTodayStatus.Name = "lblTodayStatus";
+            lblTodayStatus.Size = new Size(190, 22);
+            lblTodayStatus.TabIndex = 2;
+            lblTodayStatus.Text = "Đang cập nhật";
+            // 
+            // lblTodayIcon
+            // 
+            lblTodayIcon.BackColor = Color.White;
+            lblTodayIcon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblTodayIcon.ForeColor = Color.FromArgb(234, 88, 12);
+            lblTodayIcon.Location = new Point(162, 22);
+            lblTodayIcon.Name = "lblTodayIcon";
+            lblTodayIcon.Size = new Size(46, 46);
+            lblTodayIcon.TabIndex = 3;
+            lblTodayIcon.Text = "HN";
+            lblTodayIcon.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // cardStaff
+            // 
+            cardStaff.BackColor = Color.FromArgb(240, 253, 250);
+            cardStaff.Controls.Add(lblActiveStaffTitle);
+            cardStaff.Controls.Add(lblActiveStaffValue);
+            cardStaff.Controls.Add(lblMedicineStatus);
+            cardStaff.Controls.Add(lblStaffIcon);
+            cardStaff.Location = new Point(960, 0);
+            cardStaff.Margin = new Padding(0, 0, 16, 16);
+            cardStaff.Name = "cardStaff";
+            cardStaff.Size = new Size(224, 134);
+            cardStaff.TabIndex = 4;
+            cardStaff.Paint += Card_Paint;
+            // 
+            // lblActiveStaffTitle
+            // 
+            lblActiveStaffTitle.Font = new Font("Segoe UI", 9F);
+            lblActiveStaffTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblActiveStaffTitle.Location = new Point(16, 14);
+            lblActiveStaffTitle.Name = "lblActiveStaffTitle";
+            lblActiveStaffTitle.Size = new Size(145, 24);
+            lblActiveStaffTitle.TabIndex = 0;
+            lblActiveStaffTitle.Text = "Nhân sự hoạt động";
+            // 
+            // lblActiveStaffValue
+            // 
+            lblActiveStaffValue.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            lblActiveStaffValue.ForeColor = Color.FromArgb(15, 118, 110);
+            lblActiveStaffValue.Location = new Point(16, 46);
+            lblActiveStaffValue.Name = "lblActiveStaffValue";
+            lblActiveStaffValue.Size = new Size(120, 57);
+            lblActiveStaffValue.TabIndex = 1;
+            lblActiveStaffValue.Text = "0";
+            // 
+            // lblMedicineStatus
+            // 
+            lblMedicineStatus.Font = new Font("Segoe UI", 8.5F);
+            lblMedicineStatus.ForeColor = Color.FromArgb(100, 116, 139);
+            lblMedicineStatus.Location = new Point(18, 103);
+            lblMedicineStatus.Name = "lblMedicineStatus";
+            lblMedicineStatus.Size = new Size(190, 22);
+            lblMedicineStatus.TabIndex = 2;
+            lblMedicineStatus.Text = "Đang cập nhật";
+            // 
+            // lblStaffIcon
+            // 
+            lblStaffIcon.BackColor = Color.White;
+            lblStaffIcon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblStaffIcon.ForeColor = Color.FromArgb(15, 118, 110);
+            lblStaffIcon.Location = new Point(162, 22);
+            lblStaffIcon.Name = "lblStaffIcon";
+            lblStaffIcon.Size = new Size(46, 46);
+            lblStaffIcon.TabIndex = 3;
+            lblStaffIcon.Text = "NS";
+            lblStaffIcon.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // chartFlow
             // 
@@ -208,7 +513,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             chartFlow.Name = "chartFlow";
             chartFlow.Size = new Size(1200, 330);
             chartFlow.TabIndex = 2;
-            chartFlow.WrapContents = true;
             // 
             // patientChartCard
             // 
@@ -238,10 +542,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             // 
             pnlPatientChart.BackColor = Color.White;
             pnlPatientChart.Dock = DockStyle.Fill;
-            pnlPatientChart.Location = new Point(0, 58);
+            pnlPatientChart.Location = new Point(0, 0);
             pnlPatientChart.Name = "pnlPatientChart";
             pnlPatientChart.Padding = new Padding(22, 0, 22, 16);
-            pnlPatientChart.Size = new Size(590, 272);
+            pnlPatientChart.Size = new Size(590, 330);
             pnlPatientChart.TabIndex = 1;
             pnlPatientChart.Paint += pnlPatientChart_Paint;
             // 
@@ -273,10 +577,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             // 
             pnlRevenueChart.BackColor = Color.White;
             pnlRevenueChart.Dock = DockStyle.Fill;
-            pnlRevenueChart.Location = new Point(0, 58);
+            pnlRevenueChart.Location = new Point(0, 0);
             pnlRevenueChart.Name = "pnlRevenueChart";
             pnlRevenueChart.Padding = new Padding(22, 0, 22, 16);
-            pnlRevenueChart.Size = new Size(590, 272);
+            pnlRevenueChart.Size = new Size(590, 330);
             pnlRevenueChart.TabIndex = 1;
             pnlRevenueChart.Paint += pnlRevenueChart_Paint;
             // 
@@ -290,7 +594,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             insightFlow.Name = "insightFlow";
             insightFlow.Size = new Size(1200, 416);
             insightFlow.TabIndex = 3;
-            insightFlow.WrapContents = true;
             // 
             // appointmentCard
             // 
@@ -303,18 +606,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             appointmentCard.Size = new Size(760, 416);
             appointmentCard.TabIndex = 0;
             appointmentCard.Paint += Card_Paint;
-            // 
-            // lblAppointmentTitle
-            // 
-            lblAppointmentTitle.Dock = DockStyle.Top;
-            lblAppointmentTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            lblAppointmentTitle.ForeColor = Color.FromArgb(17, 24, 39);
-            lblAppointmentTitle.Location = new Point(0, 0);
-            lblAppointmentTitle.Name = "lblAppointmentTitle";
-            lblAppointmentTitle.Padding = new Padding(24, 18, 0, 0);
-            lblAppointmentTitle.Size = new Size(760, 58);
-            lblAppointmentTitle.TabIndex = 0;
-            lblAppointmentTitle.Text = "Lịch khám hôm nay";
             // 
             // dgvAppointments
             // 
@@ -403,6 +694,18 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             colStatus.Name = "colStatus";
             colStatus.ReadOnly = true;
             // 
+            // lblAppointmentTitle
+            // 
+            lblAppointmentTitle.Dock = DockStyle.Top;
+            lblAppointmentTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            lblAppointmentTitle.ForeColor = Color.FromArgb(17, 24, 39);
+            lblAppointmentTitle.Location = new Point(0, 0);
+            lblAppointmentTitle.Name = "lblAppointmentTitle";
+            lblAppointmentTitle.Padding = new Padding(24, 18, 0, 0);
+            lblAppointmentTitle.Size = new Size(760, 58);
+            lblAppointmentTitle.TabIndex = 0;
+            lblAppointmentTitle.Text = "Lịch khám hôm nay";
+            // 
             // sidePanel
             // 
             sidePanel.BackColor = Color.FromArgb(247, 249, 252);
@@ -415,75 +718,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             sidePanel.Size = new Size(420, 416);
             sidePanel.TabIndex = 1;
             // 
-            // queueCard
-            // 
-            queueCard.BackColor = Color.White;
-            queueCard.Controls.Add(queueFlow);
-            queueCard.Controls.Add(lblQueueTitle);
-            queueCard.Location = new Point(0, 0);
-            queueCard.Name = "queueCard";
-            queueCard.Size = new Size(420, 124);
-            queueCard.TabIndex = 0;
-            queueCard.Paint += Card_Paint;
-            // 
-            // lblQueueTitle
-            // 
-            lblQueueTitle.Dock = DockStyle.Top;
-            lblQueueTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblQueueTitle.ForeColor = Color.FromArgb(17, 24, 39);
-            lblQueueTitle.Location = new Point(0, 0);
-            lblQueueTitle.Name = "lblQueueTitle";
-            lblQueueTitle.Padding = new Padding(18, 12, 0, 0);
-            lblQueueTitle.Size = new Size(420, 44);
-            lblQueueTitle.TabIndex = 0;
-            lblQueueTitle.Text = "Hàng đợi khám";
-            // 
-            // queueFlow
-            // 
-            queueFlow.BackColor = Color.White;
-            queueFlow.Dock = DockStyle.Fill;
-            queueFlow.Location = new Point(0, 44);
-            queueFlow.Name = "queueFlow";
-            queueFlow.Padding = new Padding(18, 0, 18, 12);
-            queueFlow.Size = new Size(420, 80);
-            queueFlow.TabIndex = 1;
-            queueFlow.WrapContents = false;
-            // 
-            // departmentCard
-            // 
-            departmentCard.BackColor = Color.White;
-            departmentCard.Controls.Add(departmentFlow);
-            departmentCard.Controls.Add(lblDepartmentTitle);
-            departmentCard.Location = new Point(0, 144);
-            departmentCard.Name = "departmentCard";
-            departmentCard.Size = new Size(420, 128);
-            departmentCard.TabIndex = 1;
-            departmentCard.Paint += Card_Paint;
-            // 
-            // lblDepartmentTitle
-            // 
-            lblDepartmentTitle.Dock = DockStyle.Top;
-            lblDepartmentTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblDepartmentTitle.ForeColor = Color.FromArgb(17, 24, 39);
-            lblDepartmentTitle.Location = new Point(0, 0);
-            lblDepartmentTitle.Name = "lblDepartmentTitle";
-            lblDepartmentTitle.Padding = new Padding(18, 12, 0, 0);
-            lblDepartmentTitle.Size = new Size(420, 44);
-            lblDepartmentTitle.TabIndex = 0;
-            lblDepartmentTitle.Text = "Chuyên khoa nổi bật";
-            // 
-            // departmentFlow
-            // 
-            departmentFlow.BackColor = Color.White;
-            departmentFlow.Dock = DockStyle.Fill;
-            departmentFlow.FlowDirection = FlowDirection.TopDown;
-            departmentFlow.Location = new Point(0, 44);
-            departmentFlow.Name = "departmentFlow";
-            departmentFlow.Padding = new Padding(18, 0, 18, 12);
-            departmentFlow.Size = new Size(420, 84);
-            departmentFlow.TabIndex = 1;
-            departmentFlow.WrapContents = false;
-            // 
             // medicineCard
             // 
             medicineCard.BackColor = Color.White;
@@ -494,6 +728,18 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             medicineCard.Size = new Size(420, 124);
             medicineCard.TabIndex = 2;
             medicineCard.Paint += Card_Paint;
+            // 
+            // medicineFlow
+            // 
+            medicineFlow.BackColor = Color.White;
+            medicineFlow.Dock = DockStyle.Fill;
+            medicineFlow.FlowDirection = FlowDirection.TopDown;
+            medicineFlow.Location = new Point(0, 44);
+            medicineFlow.Name = "medicineFlow";
+            medicineFlow.Padding = new Padding(18, 0, 18, 12);
+            medicineFlow.Size = new Size(420, 80);
+            medicineFlow.TabIndex = 1;
+            medicineFlow.WrapContents = false;
             // 
             // lblMedicineTitle
             // 
@@ -507,17 +753,74 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             lblMedicineTitle.TabIndex = 0;
             lblMedicineTitle.Text = "Thuốc sắp hết";
             // 
-            // medicineFlow
+            // departmentCard
             // 
-            medicineFlow.BackColor = Color.White;
-            medicineFlow.Dock = DockStyle.Fill;
-            medicineFlow.FlowDirection = FlowDirection.TopDown;
-            medicineFlow.Location = new Point(0, 44);
-            medicineFlow.Name = "medicineFlow";
-            medicineFlow.Padding = new Padding(18, 0, 18, 12);
-            medicineFlow.Size = new Size(420, 80);
-            medicineFlow.TabIndex = 1;
-            medicineFlow.WrapContents = false;
+            departmentCard.BackColor = Color.White;
+            departmentCard.Controls.Add(departmentFlow);
+            departmentCard.Controls.Add(lblDepartmentTitle);
+            departmentCard.Location = new Point(0, 144);
+            departmentCard.Name = "departmentCard";
+            departmentCard.Size = new Size(420, 128);
+            departmentCard.TabIndex = 1;
+            departmentCard.Paint += Card_Paint;
+            // 
+            // departmentFlow
+            // 
+            departmentFlow.BackColor = Color.White;
+            departmentFlow.Dock = DockStyle.Fill;
+            departmentFlow.FlowDirection = FlowDirection.TopDown;
+            departmentFlow.Location = new Point(0, 44);
+            departmentFlow.Name = "departmentFlow";
+            departmentFlow.Padding = new Padding(18, 0, 18, 12);
+            departmentFlow.Size = new Size(420, 84);
+            departmentFlow.TabIndex = 1;
+            departmentFlow.WrapContents = false;
+            // 
+            // lblDepartmentTitle
+            // 
+            lblDepartmentTitle.Dock = DockStyle.Top;
+            lblDepartmentTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblDepartmentTitle.ForeColor = Color.FromArgb(17, 24, 39);
+            lblDepartmentTitle.Location = new Point(0, 0);
+            lblDepartmentTitle.Name = "lblDepartmentTitle";
+            lblDepartmentTitle.Padding = new Padding(18, 12, 0, 0);
+            lblDepartmentTitle.Size = new Size(420, 44);
+            lblDepartmentTitle.TabIndex = 0;
+            lblDepartmentTitle.Text = "Chuyên khoa nổi bật";
+            // 
+            // queueCard
+            // 
+            queueCard.BackColor = Color.White;
+            queueCard.Controls.Add(queueFlow);
+            queueCard.Controls.Add(lblQueueTitle);
+            queueCard.Location = new Point(0, 0);
+            queueCard.Name = "queueCard";
+            queueCard.Size = new Size(420, 124);
+            queueCard.TabIndex = 0;
+            queueCard.Paint += Card_Paint;
+            // 
+            // queueFlow
+            // 
+            queueFlow.BackColor = Color.White;
+            queueFlow.Dock = DockStyle.Fill;
+            queueFlow.Location = new Point(0, 44);
+            queueFlow.Name = "queueFlow";
+            queueFlow.Padding = new Padding(18, 0, 18, 12);
+            queueFlow.Size = new Size(420, 80);
+            queueFlow.TabIndex = 1;
+            queueFlow.WrapContents = false;
+            // 
+            // lblQueueTitle
+            // 
+            lblQueueTitle.Dock = DockStyle.Top;
+            lblQueueTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblQueueTitle.ForeColor = Color.FromArgb(17, 24, 39);
+            lblQueueTitle.Location = new Point(0, 0);
+            lblQueueTitle.Name = "lblQueueTitle";
+            lblQueueTitle.Padding = new Padding(18, 12, 0, 0);
+            lblQueueTitle.Size = new Size(420, 44);
+            lblQueueTitle.TabIndex = 0;
+            lblQueueTitle.Text = "Hàng đợi khám";
             // 
             // ucAdminStatistics
             // 
@@ -534,6 +837,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             contentFlow.ResumeLayout(false);
             headerPanel.ResumeLayout(false);
             headerPanel.PerformLayout();
+            kpiFlow.ResumeLayout(false);
+            cardPatients.ResumeLayout(false);
+            cardAppointments.ResumeLayout(false);
+            cardRevenue.ResumeLayout(false);
+            cardToday.ResumeLayout(false);
+            cardStaff.ResumeLayout(false);
             chartFlow.ResumeLayout(false);
             patientChartCard.ResumeLayout(false);
             revenueChartCard.ResumeLayout(false);
@@ -541,70 +850,80 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             appointmentCard.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvAppointments).EndInit();
             sidePanel.ResumeLayout(false);
-            queueCard.ResumeLayout(false);
-            departmentCard.ResumeLayout(false);
             medicineCard.ResumeLayout(false);
+            departmentCard.ResumeLayout(false);
+            queueCard.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
 
-        private Panel CreateKpiCard(string title, string iconText, Color accentColor, Color backgroundColor, out Label valueLabel, out Label trendLabel)
+        private void AddQueueChip(string title, int value, Color valueColor, Color backgroundColor)
         {
-            Panel card = new Panel
+            Panel chip = new Panel
             {
                 BackColor = backgroundColor,
-                Margin = new Padding(0, 0, 16, 16),
-                Size = new Size(224, 134)
+                Margin = new Padding(0, 0, 10, 0),
+                Size = new Size(86, 58)
             };
-            card.Paint += Card_Paint;
 
-            Label icon = new Label
+            chip.Controls.Add(new Label
+            {
+                AutoSize = false,
+                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(75, 85, 99),
+                Location = new Point(8, 6),
+                Size = new Size(70, 18),
+                Text = title,
+                TextAlign = ContentAlignment.MiddleLeft
+            });
+
+            chip.Controls.Add(new Label
+            {
+                AutoSize = false,
+                Font = new Font("Segoe UI", 15F, FontStyle.Bold),
+                ForeColor = valueColor,
+                Location = new Point(8, 24),
+                Size = new Size(70, 28),
+                Text = FormatNumber(value),
+                TextAlign = ContentAlignment.MiddleLeft
+            });
+
+            queueFlow.Controls.Add(chip);
+        }
+
+        private Control CreateInfoRow(string title, string value)
+        {
+            Panel row = new Panel
             {
                 BackColor = Color.White,
+                Margin = new Padding(0, 0, 0, 6),
+                Size = new Size(360, 22)
+            };
+
+            row.Controls.Add(new Label
+            {
+                AutoEllipsis = true,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = accentColor,
-                Location = new Point(18, 18),
-                Size = new Size(46, 36),
-                Text = iconText,
-                TextAlign = ContentAlignment.MiddleCenter
-            };
+                ForeColor = Color.FromArgb(31, 41, 55),
+                Location = new Point(0, 0),
+                Size = new Size(230, 22),
+                Text = title,
+                TextAlign = ContentAlignment.MiddleLeft
+            });
 
-            valueLabel = new Label
+            row.Controls.Add(new Label
             {
-                AutoSize = false,
-                Font = new Font("Segoe UI", 20F, FontStyle.Bold),
-                ForeColor = accentColor,
-                Location = new Point(18, 60),
-                Size = new Size(188, 38),
-                Text = "0"
-            };
-
-            Label titleLabel = new Label
-            {
-                AutoSize = false,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(55, 65, 81),
-                Location = new Point(18, 98),
-                Size = new Size(188, 22),
-                Text = title
-            };
-
-            trendLabel = new Label
-            {
-                AutoSize = false,
+                AutoEllipsis = true,
                 Font = new Font("Segoe UI", 8.5F),
                 ForeColor = Color.FromArgb(107, 114, 128),
-                Location = new Point(18, 118),
-                Size = new Size(188, 20),
-                Text = "Đang cập nhật"
-            };
+                Location = new Point(235, 0),
+                Size = new Size(125, 22),
+                Text = value,
+                TextAlign = ContentAlignment.MiddleRight
+            });
 
-            card.Controls.Add(icon);
-            card.Controls.Add(valueLabel);
-            card.Controls.Add(titleLabel);
-            card.Controls.Add(trendLabel);
-            return card;
+            return row;
         }
 
         private Panel outerScroll;
@@ -615,17 +934,27 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         private Label lblMonth;
         private DateTimePicker dtpMonth;
         private Button btnRefresh;
-        private FlowLayoutPanel kpiFlow;
+        private Panel kpiFlow;
         private Panel cardPatients;
         private Panel cardAppointments;
         private Panel cardRevenue;
         private Panel cardToday;
         private Panel cardStaff;
+        private Label lblTotalPatientsTitle;
         private Label lblTotalPatientsValue;
+        private Label lblPatientsIcon;
+        private Label lblMonthlyAppointmentsTitle;
         private Label lblMonthlyAppointmentsValue;
+        private Label lblAppointmentsIcon;
+        private Label lblMonthlyRevenueTitle;
         private Label lblMonthlyRevenueValue;
+        private Label lblRevenueIcon;
+        private Label lblTodayAppointmentsTitle;
         private Label lblTodayAppointmentsValue;
+        private Label lblTodayIcon;
+        private Label lblActiveStaffTitle;
         private Label lblActiveStaffValue;
+        private Label lblStaffIcon;
         private Label lblPatientTrend;
         private Label lblAppointmentTrend;
         private Label lblRevenueTrend;

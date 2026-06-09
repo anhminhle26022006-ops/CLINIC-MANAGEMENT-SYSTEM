@@ -94,6 +94,37 @@ namespace BUS.Services
             return true;
         }
 
+        public bool UpdateShift(EmployeeShiftDTO shift)
+        {
+            ValidateForRegister(shift);
+            if (shift.EmployeeShiftID <= 0)
+            {
+                throw new ArgumentException("Ca làm việc không hợp lệ.");
+            }
+
+            return dal.Update(shift);
+        }
+
+        public bool SetStatus(int employeeShiftId, string status)
+        {
+            if (employeeShiftId <= 0 || string.IsNullOrWhiteSpace(status))
+            {
+                return false;
+            }
+
+            return dal.SetStatus(employeeShiftId, status.Trim());
+        }
+
+        public int EnsureMonthlySchedule(string roleName, int employeeId, DateTime startDate, int dayCount = 30)
+        {
+            if (string.IsNullOrWhiteSpace(roleName) && employeeId <= 0)
+            {
+                return 0;
+            }
+
+            return dal.EnsureMonthlySchedule(roleName?.Trim(), employeeId, startDate.Date, Math.Max(1, dayCount));
+        }
+
         private void ValidateForRegister(EmployeeShiftDTO shift)
         {
             if (shift == null)

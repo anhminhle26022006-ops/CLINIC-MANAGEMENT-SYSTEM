@@ -13,7 +13,6 @@ namespace BUS.Services
         {
             return dal.GetByStatus(
                 "Upcoming",
-                "Reminded",
                 "Overdue");
         }
 
@@ -21,6 +20,7 @@ namespace BUS.Services
             GetCompletedFollowUps()
         {
             return dal.GetByStatus(
+                "Reminded",
                 "Completed");
         }
 

@@ -23,5 +23,30 @@ namespace BUS.Services
         {
             return dal.Exists(departmentId);
         }
+
+        public bool Add(DepartmentDTO department)
+        {
+            if (department == null || string.IsNullOrWhiteSpace(department.DepartmentName))
+            {
+                return false;
+            }
+
+            return dal.Add(department);
+        }
+
+        public bool Update(DepartmentDTO department)
+        {
+            if (department == null || department.DepartmentID <= 0 || string.IsNullOrWhiteSpace(department.DepartmentName))
+            {
+                return false;
+            }
+
+            return dal.Update(department);
+        }
+
+        public bool SetActive(int id, bool isActive)
+        {
+            return id > 0 && dal.SetActive(id, isActive);
+        }
     }
 }

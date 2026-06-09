@@ -4,6 +4,7 @@
     {
         public int RecordID { get; set; }
         public Guid RecordUUID { get; set; }
+        public Guid PatientUUID { get; set; }
 
         public string Code { get; set; } // mapping từ RecordID hoặc custom format
         public DateTime Date { get; set; }

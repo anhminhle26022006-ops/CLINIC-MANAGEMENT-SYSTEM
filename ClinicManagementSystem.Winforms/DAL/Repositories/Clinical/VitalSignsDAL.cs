@@ -1,20 +1,15 @@
-﻿using DTO;
+using System;
+using DAL.DataContext;
+using DTO;
 using Microsoft.Data.SqlClient;
 
 namespace DAL
 {
     public class VitalSignsDAL
     {
-        private string connectionString =
-            "Data Source=DESKTOP-KF6OV10;Integrated Security=True;Trust Server Certificate=True";
-
-        public bool InsertVitalSigns(
-            VitalSignsDTO vital)
+        public bool InsertVitalSigns(VitalSignsDTO vital)
         {
-            using (SqlConnection conn =
-                new SqlConnection(connectionString))
-            {
-                string query = @"
+            string query = @"
                 INSERT INTO VitalSigns
                 (
                     EncounterID,
@@ -36,41 +31,35 @@ namespace DAL
                     @Notes
                 )";
 
-                SqlCommand cmd =
-                    new SqlCommand(query, conn);
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@EncounterID", vital.EncounterID),
+                new SqlParameter("@Temperature", vital.Temperature),
+                new SqlParameter("@BloodPressure", vital.BloodPressure),
+                new SqlParameter("@HeartRate", vital.HeartRate),
+                new SqlParameter("@SPO2", vital.SPO2),
+                new SqlParameter("@Weight", vital.Weight),
+                new SqlParameter("@Notes", (object)vital.Notes ?? DBNull.Value)
+            };
 
-                cmd.Parameters.AddWithValue(
-                    "@EncounterID",
-                    vital.EncounterID);
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
 
-                cmd.Parameters.AddWithValue(
-                    "@Temperature",
-                    vital.Temperature);
+        public int? GetLatestEncounterIdByPatient(int patientId)
+        {
+            string query = @"
+                SELECT TOP 1 EncounterID
+                FROM Encounters
+                WHERE PatientID = @PatientID
+                ORDER BY CreatedAt DESC, EncounterID DESC";
 
-                cmd.Parameters.AddWithValue(
-                    "@BloodPressure",
-                    vital.BloodPressure);
+            object result = DatabaseHelper.ExecuteScalar(
+                query,
+                new[] { new SqlParameter("@PatientID", patientId) });
 
-                cmd.Parameters.AddWithValue(
-                    "@HeartRate",
-                    vital.HeartRate);
-
-                cmd.Parameters.AddWithValue(
-                    "@SPO2",
-                    vital.SPO2);
-
-                cmd.Parameters.AddWithValue(
-                    "@Weight",
-                    vital.Weight);
-
-                cmd.Parameters.AddWithValue(
-                    "@Notes",
-                    vital.Notes);
-
-                conn.Open();
-
-                return cmd.ExecuteNonQuery() > 0;
-            }
+            return result == null || result == DBNull.Value
+                ? null
+                : Convert.ToInt32(result);
         }
     }
 }

@@ -20,6 +20,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         public ucAdminStatistics()
         {
             InitializeComponent();
+            AdminUiStyle.ApplyGrid(dgvAppointments);
             dtpMonth.Value = DateTime.Today;
         }
 
@@ -99,6 +100,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             if (currentStatistics.TodayAppointments.Count == 0)
             {
                 dgvAppointments.Rows.Add("--", "Chưa có lịch khám", string.Empty, string.Empty, "Trống");
+                dgvAppointments.ClearSelection();
                 return;
             }
 
@@ -111,6 +113,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
                     appointment.DepartmentName,
                     appointment.Status);
             }
+
+            dgvAppointments.ClearSelection();
         }
 
         private void BindQueueSummary()
@@ -157,74 +161,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             }
         }
 
-        private void AddQueueChip(string title, int value, Color valueColor, Color backgroundColor)
-        {
-            Panel chip = new Panel
-            {
-                BackColor = backgroundColor,
-                Margin = new Padding(0, 0, 10, 0),
-                Size = new Size(86, 58)
-            };
-
-            chip.Controls.Add(new Label
-            {
-                AutoSize = false,
-                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(75, 85, 99),
-                Location = new Point(8, 6),
-                Size = new Size(70, 18),
-                Text = title,
-                TextAlign = ContentAlignment.MiddleLeft
-            });
-
-            chip.Controls.Add(new Label
-            {
-                AutoSize = false,
-                Font = new Font("Segoe UI", 15F, FontStyle.Bold),
-                ForeColor = valueColor,
-                Location = new Point(8, 24),
-                Size = new Size(70, 28),
-                Text = FormatNumber(value),
-                TextAlign = ContentAlignment.MiddleLeft
-            });
-
-            queueFlow.Controls.Add(chip);
-        }
-
-        private Control CreateInfoRow(string title, string value)
-        {
-            Panel row = new Panel
-            {
-                BackColor = Color.White,
-                Margin = new Padding(0, 0, 0, 6),
-                Size = new Size(360, 22)
-            };
-
-            row.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(31, 41, 55),
-                Location = new Point(0, 0),
-                Size = new Size(230, 22),
-                Text = title,
-                TextAlign = ContentAlignment.MiddleLeft
-            });
-
-            row.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Font = new Font("Segoe UI", 8.5F),
-                ForeColor = Color.FromArgb(107, 114, 128),
-                Location = new Point(235, 0),
-                Size = new Size(125, 22),
-                Text = value,
-                TextAlign = ContentAlignment.MiddleRight
-            });
-
-            return row;
-        }
-
         private void ResizeLayout()
         {
             int contentWidth = Math.Max(700, outerScroll.ClientSize.Width - contentFlow.Padding.Horizontal - 24);
@@ -233,29 +169,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             chartFlow.Width = contentWidth;
             insightFlow.Width = contentWidth;
 
-            ResizeKpiCards(contentWidth);
             ResizeChartCards(contentWidth);
             ResizeInsightCards(contentWidth);
             ResizeInfoRows();
-        }
-
-        private void ResizeKpiCards(int contentWidth)
-        {
-            Panel[] cards = { cardPatients, cardAppointments, cardRevenue, cardToday, cardStaff };
-            const int gap = 16;
-            const int minWidth = 210;
-            int cardsPerRow = Math.Max(1, Math.Min(cards.Length, (contentWidth + gap) / (minWidth + gap)));
-            int cardWidth = (contentWidth - gap * (cardsPerRow - 1)) / cardsPerRow;
-            int rowCount = (int)Math.Ceiling(cards.Length / (double)cardsPerRow);
-
-            foreach (Panel card in cards)
-            {
-                card.Width = cardWidth;
-                card.Height = 134;
-                card.Margin = new Padding(0, 0, gap, 16);
-            }
-
-            kpiFlow.Height = rowCount * 150;
         }
 
         private void ResizeChartCards(int contentWidth)

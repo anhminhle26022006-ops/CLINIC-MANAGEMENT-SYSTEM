@@ -1,7 +1,9 @@
 ﻿﻿using BUS.Services;
+using CMS.Core.Identity;
 using ClinicManagementSystem.Winforms;
 using ClinicManagementSystem.Winforms.Shareforms;
 using ClinicManagementSystem.Winforms.Shareforms.ERM;
+using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
 using DAL;
 using DTO;
 using DTO.Clinical.erm;
@@ -29,10 +31,11 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly PatientBUS patientBUS = new PatientBUS();
         private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
         private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
+        private readonly ApiSyncBUS apiSyncBUS = new ApiSyncBUS();
         private UserDTO currentUser;
         private bool layoutReady;
 
-        private Shift shiftControl;
+        private RoleShiftCalendar shiftControl;
 
         // Custom Navigation Buttons
         private Button btnERM;
@@ -90,6 +93,52 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
             ShowOverview();
         }
+
+        private async void btnSyncCloud_Click(object sender, EventArgs e)
+        {
+            await RunCloudSyncAsync();
+        }
+
+        private async System.Threading.Tasks.Task RunCloudSyncAsync()
+        {
+            btnSyncCloud.Enabled = false;
+            string oldText = btnSyncCloud.Text;
+            btnSyncCloud.Text = "Đang đồng bộ...";
+
+            try
+            {
+                string resultMessage = await apiSyncBUS.SyncRequestsFromSupabaseAsync();
+                MessageBox.Show(resultMessage, "Đồng bộ Doctor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                if (contentPanel.Controls.Count > 0)
+                {
+                    Control current = contentPanel.Controls[0];
+                    if (current == ucERM)
+                    {
+                        ucERM = null;
+                        ShowERM();
+                    }
+                    else if (current == shiftControl)
+                    {
+                        shiftControl = null;
+                        ShowShiftScreen();
+                    }
+                    else
+                    {
+                        ShowOverview();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Đồng bộ thất bại: " + ex.Message, "Đồng bộ Doctor", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnSyncCloud.Text = oldText;
+                btnSyncCloud.Enabled = true;
+            }
+        }
         private void ShowERM()
         {
             lblPageTitle.Text = "Bệnh án";
@@ -102,7 +151,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
             if (ucERM == null)
             {
-                ucERM = new ucMedicalRecordSidebar();
+                ucERM = new ucMedicalRecordSidebar(currentUser);
                 ucERM.Dock = DockStyle.Fill;
             }
 
@@ -122,7 +171,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
             if (shiftControl == null)
             {
-                shiftControl = new Shift();
+                shiftControl = new RoleShiftCalendar(currentUser, Role.Doctor);
                 shiftControl.Dock = DockStyle.Fill;
             }
 

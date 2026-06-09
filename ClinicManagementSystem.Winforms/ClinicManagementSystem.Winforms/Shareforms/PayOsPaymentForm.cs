@@ -39,6 +39,8 @@ namespace ClinicManagementSystem.Winforms.Forms
         private TextBox txtCheckoutUrl;
         private Button btnCheckStatus;
 
+        public bool IsPaymentPaid { get; private set; }
+
         public PayOsPaymentForm(
             int encounterId,
             string customerName,
@@ -365,6 +367,14 @@ namespace ClinicManagementSystem.Winforms.Forms
                     status.IndexOf("CANCEL", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     paymentStatusTimer.Stop();
+                }
+
+                if (status.Equals("PAID", StringComparison.OrdinalIgnoreCase))
+                {
+                    IsPaymentPaid = true;
+                    DialogResult = DialogResult.OK;
+                    Close();
+                    return;
                 }
 
                 if (showMessage)

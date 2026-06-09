@@ -30,7 +30,8 @@ namespace DAL.Repositories
                 ON pa.PatientID = p.PatientID
             INNER JOIN Employees d
                 ON e.DoctorID = d.EmployeeID
-            WHERE pa.Status = 'Pending'
+            WHERE ISNULL(pa.Status, 'Pending') IN ('Pending', 'Unpaid', N'Chưa thanh toán')
+            ORDER BY pa.PaymentID DESC
             ";
 
             DataTable dt =
@@ -169,7 +170,47 @@ namespace DAL.Repositories
             List<PaymentDetailDTO> list =
                 new();
 
-            string query =
+            string paymentDetailQuery =
+            @"
+            SELECT
+                pa.FullName AS PatientName,
+                ISNULL(pd.ItemType, N'Payment') AS ItemType,
+                pd.Description,
+                ISNULL(pd.Quantity, 1) AS Quantity,
+                ISNULL(pd.UnitPrice, pd.Amount) AS UnitPrice,
+                pd.Amount
+            FROM Payments p
+            INNER JOIN Patients pa ON p.PatientID = pa.PatientID
+            INNER JOIN PaymentDetails pd ON p.PaymentID = pd.PaymentID
+            WHERE p.EncounterID = @EncounterID
+            ORDER BY pd.PaymentDetailID";
+
+            SqlParameter[] parameters =
+            {
+                new("@EncounterID", encounterId)
+            };
+
+            DataTable dt = DatabaseHelper.ExecuteQuery(paymentDetailQuery, parameters);
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(
+                    new PaymentDetailDTO
+                    {
+                        ItemType = row["ItemType"].ToString() ?? string.Empty,
+                        PatientName = row["PatientName"].ToString() ?? string.Empty,
+                        Description = row["Description"].ToString() ?? string.Empty,
+                        Quantity = Convert.ToInt32(row["Quantity"]),
+                        UnitPrice = Convert.ToDecimal(row["UnitPrice"]),
+                        Amount = Convert.ToDecimal(row["Amount"])
+                    });
+            }
+
+            if (list.Count > 0)
+            {
+                return list;
+            }
+
+            string serviceQuery =
             @"
             SELECT
     p.FullName AS PatientName,
@@ -187,16 +228,7 @@ INNER JOIN Patients p
 WHERE es.EncounterID = @EncounterID
             ";
 
-            SqlParameter[] parameters =
-            {
-                new("@EncounterID",
-                    encounterId)
-            };
-
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(
-                    query,
-                    parameters);
+            dt = DatabaseHelper.ExecuteQuery(serviceQuery, parameters);
 
             foreach (DataRow row in dt.Rows)
             {
@@ -227,6 +259,40 @@ WHERE es.EncounterID = @EncounterID
             Convert.ToDecimal(
                 row["Amount"])
     });
+            }
+
+            if (list.Count > 0)
+            {
+                return list;
+            }
+
+            string paymentFallbackQuery =
+            @"
+            SELECT
+                pa.FullName AS PatientName,
+                p.Amount
+            FROM Payments p
+            INNER JOIN Patients pa ON p.PatientID = pa.PatientID
+            WHERE p.EncounterID = @EncounterID";
+
+            dt = DatabaseHelper.ExecuteQuery(paymentFallbackQuery, parameters);
+            foreach (DataRow row in dt.Rows)
+            {
+                decimal amount = row["Amount"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Amount"]);
+                if (amount <= 0)
+                {
+                    continue;
+                }
+
+                list.Add(new PaymentDetailDTO
+                {
+                    ItemType = "Payment",
+                    PatientName = row["PatientName"].ToString() ?? string.Empty,
+                    Description = "Chi phí khám và dịch vụ",
+                    Quantity = 1,
+                    UnitPrice = amount,
+                    Amount = amount
+                });
             }
 
             return list;

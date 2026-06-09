@@ -42,10 +42,9 @@
             panel1.Controls.Add(tableLayoutPanel1);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(4);
             panel1.Name = "panel1";
-            panel1.Padding = new Padding(22);
-            panel1.Size = new Size(1246, 933);
+            panel1.Padding = new Padding(15);
+            panel1.Size = new Size(831, 622);
             panel1.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -55,24 +54,22 @@
             tableLayoutPanel1.Controls.Add(textBox1, 0, 0);
             tableLayoutPanel1.Controls.Add(dataGridView1, 0, 1);
             tableLayoutPanel1.Dock = DockStyle.Fill;
-            tableLayoutPanel1.Location = new Point(22, 22);
-            tableLayoutPanel1.Margin = new Padding(4);
+            tableLayoutPanel1.Location = new Point(15, 15);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 2;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(1202, 889);
+            tableLayoutPanel1.Size = new Size(801, 592);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // textBox1
             // 
             textBox1.Dock = DockStyle.Fill;
             textBox1.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            textBox1.Location = new Point(4, 4);
-            textBox1.Margin = new Padding(4);
+            textBox1.Location = new Point(3, 3);
             textBox1.Name = "textBox1";
             textBox1.PlaceholderText = "Tìm tên bệnh nhân, mã thanh toán, số hóa đơn";
-            textBox1.Size = new Size(1194, 40);
+            textBox1.Size = new Size(795, 30);
             textBox1.TabIndex = 0;
             textBox1.TextChanged += textBox1_TextChanged;
             // 
@@ -81,21 +78,19 @@
             dataGridView1.BackgroundColor = Color.White;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(4, 64);
-            dataGridView1.Margin = new Padding(4);
+            dataGridView1.Location = new Point(3, 43);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(1194, 821);
+            dataGridView1.Size = new Size(795, 546);
             dataGridView1.TabIndex = 1;
             // 
             // HistoryPayment
             // 
-            AutoScaleDimensions = new SizeF(12F, 30F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(panel1);
-            Margin = new Padding(4);
             Name = "HistoryPayment";
-            Size = new Size(1246, 933);
+            Size = new Size(831, 622);
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();

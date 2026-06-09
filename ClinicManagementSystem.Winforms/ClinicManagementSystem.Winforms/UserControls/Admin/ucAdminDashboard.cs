@@ -18,6 +18,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         public ucAdminDashboard()
         {
             InitializeComponent();
+            AdminUiStyle.ApplyGrid(dgvAppointments);
             LoadData();
         }
 
@@ -47,46 +48,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private void BindKpiCards()
         {
-            kpiFlow.Controls.Clear();
-            cardPatients = MakeKpi(
-                FormatNumber(currentStatistics.TotalPatients),
-                "Tổng bệnh nhân",
-                "BN",
-                Color.FromArgb(37, 99, 235),
-                Color.FromArgb(239, 246, 255));
-            cardAppointments = MakeKpi(
-                FormatNumber(currentStatistics.MonthlyAppointmentCount),
-                "Lịch khám tháng này",
-                "LK",
-                Color.FromArgb(5, 150, 105),
-                Color.FromArgb(236, 253, 245));
-            cardWaiting = MakeKpi(
-                FormatNumber(currentStatistics.QueueSummary?.Waiting ?? 0),
-                "Bệnh nhân đang chờ",
-                "CD",
-                Color.FromArgb(217, 119, 6),
-                Color.FromArgb(255, 251, 235));
-            cardEmployees = MakeKpi(
-                FormatNumber(currentStatistics.ActiveEmployeeCount),
-                "Nhân sự hoạt động",
-                "NS",
-                Color.FromArgb(15, 118, 110),
-                Color.FromArgb(240, 253, 250));
-            cardMedicine = MakeKpi(
-                FormatNumber(currentStatistics.LowStockMedicineCount),
-                "Thuốc sắp hết",
-                "TH",
-                Color.FromArgb(220, 38, 38),
-                Color.FromArgb(254, 242, 242));
-
-            kpiFlow.Controls.AddRange(new Control[]
-            {
-                cardPatients,
-                cardAppointments,
-                cardWaiting,
-                cardEmployees,
-                cardMedicine
-            });
+            lblPatientsValue.Text = FormatNumber(currentStatistics.TotalPatients);
+            lblAppointmentsValue.Text = FormatNumber(currentStatistics.MonthlyAppointmentCount);
+            lblWaitingValue.Text = FormatNumber(currentStatistics.QueueSummary?.Waiting ?? 0);
+            lblEmployeesValue.Text = FormatNumber(currentStatistics.ActiveEmployeeCount);
+            lblMedicineValue.Text = FormatNumber(currentStatistics.LowStockMedicineCount);
         }
 
         private void BindAppointments()
@@ -95,6 +61,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             if (!currentStatistics.TodayAppointments.Any())
             {
                 dgvAppointments.Rows.Add("--", "Chưa có lịch khám", string.Empty, string.Empty, "Trống");
+                dgvAppointments.ClearSelection();
                 return;
             }
 
@@ -107,6 +74,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
                     appointment.DepartmentName,
                     appointment.Status);
             }
+
+            dgvAppointments.ClearSelection();
         }
 
         private void BindMedicines()
@@ -146,76 +115,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private void BindQueueCards()
         {
-            panelQueueCards.Controls.Clear();
             AdminQueueSummaryDTO queue = currentStatistics.QueueSummary ?? new AdminQueueSummaryDTO();
-            cardWaitingQ = MakeQueue("Chờ khám", FormatNumber(queue.Waiting), Color.FromArgb(37, 99, 235), Color.FromArgb(239, 246, 255));
-            cardInProgressQ = MakeQueue("Đang khám", FormatNumber(queue.InProgress), Color.FromArgb(217, 119, 6), Color.FromArgb(255, 251, 235));
-            cardDoneQ = MakeQueue("Hoàn thành", FormatNumber(queue.Completed), Color.FromArgb(5, 150, 105), Color.FromArgb(236, 253, 245));
-            cardCancelledQ = MakeQueue("Đã hủy", FormatNumber(queue.Cancelled), Color.FromArgb(220, 38, 38), Color.FromArgb(254, 242, 242));
-            panelQueueCards.Controls.AddRange(new Control[] { cardWaitingQ, cardInProgressQ, cardDoneQ, cardCancelledQ });
-        }
-
-        private Control CreateLine(string title, string value)
-        {
-            Panel row = new Panel
-            {
-                BackColor = Color.White,
-                Margin = new Padding(0, 0, 0, 8),
-                Size = new Size(520, 28)
-            };
-
-            row.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(31, 41, 55),
-                Location = new Point(0, 2),
-                Size = new Size(340, 24),
-                Text = title
-            });
-
-            row.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Font = new Font("Segoe UI", 9F),
-                ForeColor = Color.FromArgb(107, 114, 128),
-                Location = new Point(348, 2),
-                Size = new Size(160, 24),
-                Text = value,
-                TextAlign = ContentAlignment.MiddleRight
-            });
-
-            return row;
-        }
-
-        private Control CreateMiniCard(string title, string value, Color accent)
-        {
-            Panel card = new Panel
-            {
-                BackColor = Color.FromArgb(249, 250, 251),
-                Margin = new Padding(0, 0, 12, 0),
-                Size = new Size(180, 96)
-            };
-            card.Paint += Card_Paint;
-            card.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(31, 41, 55),
-                Location = new Point(14, 14),
-                Size = new Size(150, 25),
-                Text = title
-            });
-            card.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
-                ForeColor = accent,
-                Location = new Point(14, 48),
-                Size = new Size(150, 30),
-                Text = value
-            });
-            return card;
+            lblWaitingQValue.Text = FormatNumber(queue.Waiting);
+            lblInProgressQValue.Text = FormatNumber(queue.InProgress);
+            lblDoneQValue.Text = FormatNumber(queue.Completed);
+            lblCancelledQValue.Text = FormatNumber(queue.Cancelled);
         }
 
         private string FormatNumber(int value)
@@ -244,7 +148,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
                 control.Width = inner;
             }
 
-            ResizeKpi(inner);
         }
 
         private void panelHeader_Resize(object sender, EventArgs e)
@@ -270,19 +173,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private void panelQueueCards_Resize(object sender, EventArgs e)
         {
-            Panel[] cards = { cardWaitingQ, cardInProgressQ, cardDoneQ, cardCancelledQ };
-            if (cards.Any(card => card == null)) return;
-
-            int availableWidth = panelQueueCards.ClientSize.Width - panelQueueCards.Padding.Horizontal;
-            int cardWidth = (availableWidth - 36) / 4;
-            if (cardWidth <= 0) return;
-
-            foreach (Panel card in cards)
-            {
-                card.Width = cardWidth;
-                card.Height = 120;
-                card.Margin = new Padding(0, 0, 12, 0);
-            }
+            // Cards are positioned in the Designer so they remain drag-editable.
         }
 
         private void Card_Paint(object sender, PaintEventArgs e)
@@ -295,6 +186,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         }
 
         private void mainFlow_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblPatientsValue_Click(object sender, EventArgs e)
         {
 
         }

@@ -20,6 +20,7 @@ namespace DTO
             set => Role = value;
         }
         public string Email { get; set; }
+        public bool IsActive { get; set; } = true;
         public int EmployeeID { get; set; }
         public Guid EmployeeUUID { get; set; }
         public int DepartmentID { get; set; }

@@ -22,7 +22,27 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             lblTitle = new Label();
             lblSubtitle = new Label();
             btnRefresh = new Button();
-            kpiFlow = new FlowLayoutPanel();
+            kpiFlow = new Panel();
+            cardPatients = new Panel();
+            lblPatientsTitle = new Label();
+            lblPatientsValue = new Label();
+            lblPatientsIcon = new Label();
+            cardAppointments = new Panel();
+            lblAppointmentsTitle = new Label();
+            lblAppointmentsValue = new Label();
+            lblAppointmentsIcon = new Label();
+            cardWaiting = new Panel();
+            lblWaitingTitle = new Label();
+            lblWaitingValue = new Label();
+            lblWaitingIcon = new Label();
+            cardEmployees = new Panel();
+            lblEmployeesTitle = new Label();
+            lblEmployeesValue = new Label();
+            lblEmployeesIcon = new Label();
+            cardMedicine = new Panel();
+            lblMedicineKpiTitle = new Label();
+            lblMedicineValue = new Label();
+            lblMedicineIcon = new Label();
             apptCard = new Panel();
             dgvAppointments = new DataGridView();
             colTime = new DataGridViewTextBoxColumn();
@@ -38,25 +58,39 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             panelDeptCards = new FlowLayoutPanel();
             lblDeptTitle = new Label();
             queueCard = new Panel();
-            panelQueueCards = new FlowLayoutPanel();
+            panelQueueCards = new Panel();
+            cardWaitingQ = new Panel();
+            lblWaitingQTitle = new Label();
+            lblWaitingQValue = new Label();
+            cardInProgressQ = new Panel();
+            lblInProgressQTitle = new Label();
+            lblInProgressQValue = new Label();
+            cardDoneQ = new Panel();
+            lblDoneQTitle = new Label();
+            lblDoneQValue = new Label();
+            cardCancelledQ = new Panel();
+            lblCancelledQTitle = new Label();
+            lblCancelledQValue = new Label();
             lblQueueTitle = new Label();
-            cardPatients = MakeKpi("0", "Tổng bệnh nhân", "BN", Color.FromArgb(37, 99, 235), Color.FromArgb(239, 246, 255));
-            cardAppointments = MakeKpi("0", "Lịch khám tháng này", "LK", Color.FromArgb(5, 150, 105), Color.FromArgb(236, 253, 245));
-            cardWaiting = MakeKpi("0", "Bệnh nhân đang chờ", "CD", Color.FromArgb(217, 119, 6), Color.FromArgb(255, 251, 235));
-            cardEmployees = MakeKpi("0", "Nhân sự hoạt động", "NS", Color.FromArgb(15, 118, 110), Color.FromArgb(240, 253, 250));
-            cardMedicine = MakeKpi("0", "Thuốc sắp hết", "TH", Color.FromArgb(220, 38, 38), Color.FromArgb(254, 242, 242));
-            cardWaitingQ = MakeQueue("Chờ khám", "0", Color.FromArgb(37, 99, 235), Color.FromArgb(239, 246, 255));
-            cardInProgressQ = MakeQueue("Đang khám", "0", Color.FromArgb(217, 119, 6), Color.FromArgb(255, 251, 235));
-            cardDoneQ = MakeQueue("Hoàn thành", "0", Color.FromArgb(5, 150, 105), Color.FromArgb(236, 253, 245));
-            cardCancelledQ = MakeQueue("Đã hủy", "0", Color.FromArgb(220, 38, 38), Color.FromArgb(254, 242, 242));
             outerScroll.SuspendLayout();
             mainFlow.SuspendLayout();
             panelHeader.SuspendLayout();
+            kpiFlow.SuspendLayout();
+            cardPatients.SuspendLayout();
+            cardAppointments.SuspendLayout();
+            cardWaiting.SuspendLayout();
+            cardEmployees.SuspendLayout();
+            cardMedicine.SuspendLayout();
             apptCard.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvAppointments).BeginInit();
             medCard.SuspendLayout();
             deptCard.SuspendLayout();
             queueCard.SuspendLayout();
+            panelQueueCards.SuspendLayout();
+            cardWaitingQ.SuspendLayout();
+            cardInProgressQ.SuspendLayout();
+            cardDoneQ.SuspendLayout();
+            cardCancelledQ.SuspendLayout();
             SuspendLayout();
             // 
             // outerScroll
@@ -66,7 +100,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             outerScroll.Controls.Add(mainFlow);
             outerScroll.Dock = DockStyle.Fill;
             outerScroll.Location = new Point(0, 0);
-            outerScroll.Margin = new Padding(2, 2, 2, 2);
+            outerScroll.Margin = new Padding(2);
             outerScroll.Name = "outerScroll";
             outerScroll.Size = new Size(1024, 720);
             outerScroll.TabIndex = 0;
@@ -86,10 +120,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             mainFlow.Dock = DockStyle.Top;
             mainFlow.FlowDirection = FlowDirection.TopDown;
             mainFlow.Location = new Point(0, 0);
-            mainFlow.Margin = new Padding(2, 2, 2, 2);
+            mainFlow.Margin = new Padding(2);
             mainFlow.Name = "mainFlow";
             mainFlow.Padding = new Padding(22, 19, 22, 26);
-            mainFlow.Size = new Size(1003, 1361);
+            mainFlow.Size = new Size(1003, 1293);
             mainFlow.TabIndex = 0;
             mainFlow.WrapContents = false;
             mainFlow.Paint += mainFlow_Paint;
@@ -139,10 +173,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Segoe UI", 9.5F);
             btnRefresh.ForeColor = Color.FromArgb(37, 99, 235);
-            btnRefresh.Location = new Point(842, 18);
-            btnRefresh.Margin = new Padding(2, 2, 2, 2);
+            btnRefresh.Location = new Point(815, 18);
+            btnRefresh.Margin = new Padding(2);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(101, 30);
+            btnRefresh.Size = new Size(128, 44);
             btnRefresh.TabIndex = 2;
             btnRefresh.Text = "🔄  Làm mới";
             btnRefresh.UseVisualStyleBackColor = false;
@@ -161,7 +195,237 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             kpiFlow.Name = "kpiFlow";
             kpiFlow.Size = new Size(960, 150);
             kpiFlow.TabIndex = 1;
-            kpiFlow.WrapContents = false;
+            // 
+            // cardPatients
+            // 
+            cardPatients.BackColor = Color.FromArgb(239, 246, 255);
+            cardPatients.Controls.Add(lblPatientsTitle);
+            cardPatients.Controls.Add(lblPatientsValue);
+            cardPatients.Controls.Add(lblPatientsIcon);
+            cardPatients.Location = new Point(0, 0);
+            cardPatients.Margin = new Padding(0, 0, 14, 0);
+            cardPatients.Name = "cardPatients";
+            cardPatients.Size = new Size(180, 128);
+            cardPatients.TabIndex = 0;
+            cardPatients.Paint += Card_Paint;
+            // 
+            // lblPatientsTitle
+            // 
+            lblPatientsTitle.AutoEllipsis = true;
+            lblPatientsTitle.Font = new Font("Segoe UI", 9F);
+            lblPatientsTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblPatientsTitle.Location = new Point(18, 16);
+            lblPatientsTitle.Name = "lblPatientsTitle";
+            lblPatientsTitle.Size = new Size(102, 24);
+            lblPatientsTitle.TabIndex = 0;
+            lblPatientsTitle.Text = "Tổng bệnh nhân";
+            // 
+            // lblPatientsValue
+            // 
+            lblPatientsValue.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            lblPatientsValue.ForeColor = Color.FromArgb(37, 99, 235);
+            lblPatientsValue.Location = new Point(18, 53);
+            lblPatientsValue.Name = "lblPatientsValue";
+            lblPatientsValue.Size = new Size(120, 58);
+            lblPatientsValue.TabIndex = 1;
+            lblPatientsValue.Text = "0";
+            lblPatientsValue.Click += lblPatientsValue_Click;
+            // 
+            // lblPatientsIcon
+            // 
+            lblPatientsIcon.BackColor = Color.White;
+            lblPatientsIcon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblPatientsIcon.ForeColor = Color.FromArgb(37, 99, 235);
+            lblPatientsIcon.Location = new Point(120, 16);
+            lblPatientsIcon.Name = "lblPatientsIcon";
+            lblPatientsIcon.Size = new Size(48, 48);
+            lblPatientsIcon.TabIndex = 2;
+            lblPatientsIcon.Text = "BN";
+            lblPatientsIcon.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // cardAppointments
+            // 
+            cardAppointments.BackColor = Color.FromArgb(236, 253, 245);
+            cardAppointments.Controls.Add(lblAppointmentsTitle);
+            cardAppointments.Controls.Add(lblAppointmentsValue);
+            cardAppointments.Controls.Add(lblAppointmentsIcon);
+            cardAppointments.Location = new Point(194, 0);
+            cardAppointments.Margin = new Padding(0, 0, 14, 0);
+            cardAppointments.Name = "cardAppointments";
+            cardAppointments.Size = new Size(180, 128);
+            cardAppointments.TabIndex = 1;
+            cardAppointments.Paint += Card_Paint;
+            // 
+            // lblAppointmentsTitle
+            // 
+            lblAppointmentsTitle.AutoEllipsis = true;
+            lblAppointmentsTitle.Font = new Font("Segoe UI", 9F);
+            lblAppointmentsTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblAppointmentsTitle.Location = new Point(18, 16);
+            lblAppointmentsTitle.Name = "lblAppointmentsTitle";
+            lblAppointmentsTitle.Size = new Size(102, 24);
+            lblAppointmentsTitle.TabIndex = 0;
+            lblAppointmentsTitle.Text = "Lịch khám tháng này";
+            // 
+            // lblAppointmentsValue
+            // 
+            lblAppointmentsValue.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            lblAppointmentsValue.ForeColor = Color.FromArgb(5, 150, 105);
+            lblAppointmentsValue.Location = new Point(18, 53);
+            lblAppointmentsValue.Name = "lblAppointmentsValue";
+            lblAppointmentsValue.Size = new Size(120, 58);
+            lblAppointmentsValue.TabIndex = 1;
+            lblAppointmentsValue.Text = "0";
+            // 
+            // lblAppointmentsIcon
+            // 
+            lblAppointmentsIcon.BackColor = Color.White;
+            lblAppointmentsIcon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblAppointmentsIcon.ForeColor = Color.FromArgb(5, 150, 105);
+            lblAppointmentsIcon.Location = new Point(120, 16);
+            lblAppointmentsIcon.Name = "lblAppointmentsIcon";
+            lblAppointmentsIcon.Size = new Size(48, 48);
+            lblAppointmentsIcon.TabIndex = 2;
+            lblAppointmentsIcon.Text = "LK";
+            lblAppointmentsIcon.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // cardWaiting
+            // 
+            cardWaiting.BackColor = Color.FromArgb(255, 251, 235);
+            cardWaiting.Controls.Add(lblWaitingTitle);
+            cardWaiting.Controls.Add(lblWaitingValue);
+            cardWaiting.Controls.Add(lblWaitingIcon);
+            cardWaiting.Location = new Point(388, 0);
+            cardWaiting.Margin = new Padding(0, 0, 14, 0);
+            cardWaiting.Name = "cardWaiting";
+            cardWaiting.Size = new Size(180, 128);
+            cardWaiting.TabIndex = 2;
+            cardWaiting.Paint += Card_Paint;
+            // 
+            // lblWaitingTitle
+            // 
+            lblWaitingTitle.AutoEllipsis = true;
+            lblWaitingTitle.Font = new Font("Segoe UI", 9F);
+            lblWaitingTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblWaitingTitle.Location = new Point(18, 16);
+            lblWaitingTitle.Name = "lblWaitingTitle";
+            lblWaitingTitle.Size = new Size(102, 24);
+            lblWaitingTitle.TabIndex = 0;
+            lblWaitingTitle.Text = "Bệnh nhân đang chờ";
+            // 
+            // lblWaitingValue
+            // 
+            lblWaitingValue.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            lblWaitingValue.ForeColor = Color.FromArgb(217, 119, 6);
+            lblWaitingValue.Location = new Point(18, 53);
+            lblWaitingValue.Name = "lblWaitingValue";
+            lblWaitingValue.Size = new Size(120, 58);
+            lblWaitingValue.TabIndex = 1;
+            lblWaitingValue.Text = "0";
+            // 
+            // lblWaitingIcon
+            // 
+            lblWaitingIcon.BackColor = Color.White;
+            lblWaitingIcon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblWaitingIcon.ForeColor = Color.FromArgb(217, 119, 6);
+            lblWaitingIcon.Location = new Point(120, 16);
+            lblWaitingIcon.Name = "lblWaitingIcon";
+            lblWaitingIcon.Size = new Size(48, 48);
+            lblWaitingIcon.TabIndex = 2;
+            lblWaitingIcon.Text = "CD";
+            lblWaitingIcon.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // cardEmployees
+            // 
+            cardEmployees.BackColor = Color.FromArgb(240, 253, 250);
+            cardEmployees.Controls.Add(lblEmployeesTitle);
+            cardEmployees.Controls.Add(lblEmployeesValue);
+            cardEmployees.Controls.Add(lblEmployeesIcon);
+            cardEmployees.Location = new Point(582, 0);
+            cardEmployees.Margin = new Padding(0, 0, 14, 0);
+            cardEmployees.Name = "cardEmployees";
+            cardEmployees.Size = new Size(180, 128);
+            cardEmployees.TabIndex = 3;
+            cardEmployees.Paint += Card_Paint;
+            // 
+            // lblEmployeesTitle
+            // 
+            lblEmployeesTitle.AutoEllipsis = true;
+            lblEmployeesTitle.Font = new Font("Segoe UI", 9F);
+            lblEmployeesTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblEmployeesTitle.Location = new Point(18, 16);
+            lblEmployeesTitle.Name = "lblEmployeesTitle";
+            lblEmployeesTitle.Size = new Size(102, 24);
+            lblEmployeesTitle.TabIndex = 0;
+            lblEmployeesTitle.Text = "Nhân sự hoạt động";
+            // 
+            // lblEmployeesValue
+            // 
+            lblEmployeesValue.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            lblEmployeesValue.ForeColor = Color.FromArgb(15, 118, 110);
+            lblEmployeesValue.Location = new Point(18, 53);
+            lblEmployeesValue.Name = "lblEmployeesValue";
+            lblEmployeesValue.Size = new Size(120, 58);
+            lblEmployeesValue.TabIndex = 1;
+            lblEmployeesValue.Text = "0";
+            // 
+            // lblEmployeesIcon
+            // 
+            lblEmployeesIcon.BackColor = Color.White;
+            lblEmployeesIcon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblEmployeesIcon.ForeColor = Color.FromArgb(15, 118, 110);
+            lblEmployeesIcon.Location = new Point(120, 16);
+            lblEmployeesIcon.Name = "lblEmployeesIcon";
+            lblEmployeesIcon.Size = new Size(48, 48);
+            lblEmployeesIcon.TabIndex = 2;
+            lblEmployeesIcon.Text = "NS";
+            lblEmployeesIcon.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // cardMedicine
+            // 
+            cardMedicine.BackColor = Color.FromArgb(254, 242, 242);
+            cardMedicine.Controls.Add(lblMedicineKpiTitle);
+            cardMedicine.Controls.Add(lblMedicineValue);
+            cardMedicine.Controls.Add(lblMedicineIcon);
+            cardMedicine.Location = new Point(776, 0);
+            cardMedicine.Margin = new Padding(0, 0, 14, 0);
+            cardMedicine.Name = "cardMedicine";
+            cardMedicine.Size = new Size(180, 128);
+            cardMedicine.TabIndex = 4;
+            cardMedicine.Paint += Card_Paint;
+            // 
+            // lblMedicineKpiTitle
+            // 
+            lblMedicineKpiTitle.AutoEllipsis = true;
+            lblMedicineKpiTitle.Font = new Font("Segoe UI", 9F);
+            lblMedicineKpiTitle.ForeColor = Color.FromArgb(107, 114, 128);
+            lblMedicineKpiTitle.Location = new Point(18, 16);
+            lblMedicineKpiTitle.Name = "lblMedicineKpiTitle";
+            lblMedicineKpiTitle.Size = new Size(102, 24);
+            lblMedicineKpiTitle.TabIndex = 0;
+            lblMedicineKpiTitle.Text = "Thuốc sắp hết";
+            // 
+            // lblMedicineValue
+            // 
+            lblMedicineValue.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            lblMedicineValue.ForeColor = Color.FromArgb(220, 38, 38);
+            lblMedicineValue.Location = new Point(20, 53);
+            lblMedicineValue.Name = "lblMedicineValue";
+            lblMedicineValue.Size = new Size(120, 58);
+            lblMedicineValue.TabIndex = 1;
+            lblMedicineValue.Text = "0";
+            // 
+            // lblMedicineIcon
+            // 
+            lblMedicineIcon.BackColor = Color.White;
+            lblMedicineIcon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblMedicineIcon.ForeColor = Color.FromArgb(220, 38, 38);
+            lblMedicineIcon.Location = new Point(120, 16);
+            lblMedicineIcon.Name = "lblMedicineIcon";
+            lblMedicineIcon.Size = new Size(48, 48);
+            lblMedicineIcon.TabIndex = 2;
+            lblMedicineIcon.Text = "TH";
+            lblMedicineIcon.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // apptCard
             // 
@@ -206,7 +470,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             dgvAppointments.EnableHeadersVisualStyles = false;
             dgvAppointments.GridColor = Color.FromArgb(243, 244, 246);
             dgvAppointments.Location = new Point(0, 43);
-            dgvAppointments.Margin = new Padding(2, 2, 2, 2);
+            dgvAppointments.Margin = new Padding(2);
             dgvAppointments.Name = "dgvAppointments";
             dgvAppointments.ReadOnly = true;
             dgvAppointments.RowHeadersVisible = false;
@@ -290,7 +554,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             panelMedicineList.Dock = DockStyle.Fill;
             panelMedicineList.FlowDirection = FlowDirection.TopDown;
             panelMedicineList.Location = new Point(0, 43);
-            panelMedicineList.Margin = new Padding(2, 2, 2, 2);
+            panelMedicineList.Margin = new Padding(2);
             panelMedicineList.Name = "panelMedicineList";
             panelMedicineList.Padding = new Padding(16, 3, 16, 10);
             panelMedicineList.Size = new Size(960, 177);
@@ -326,7 +590,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             panelDeptCards.BackColor = Color.White;
             panelDeptCards.Dock = DockStyle.Fill;
             panelDeptCards.Location = new Point(0, 43);
-            panelDeptCards.Margin = new Padding(2, 2, 2, 2);
+            panelDeptCards.Margin = new Padding(2);
             panelDeptCards.Name = "panelDeptCards";
             panelDeptCards.Padding = new Padding(16, 3, 16, 10);
             panelDeptCards.Size = new Size(960, 127);
@@ -367,13 +631,139 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             panelQueueCards.Controls.Add(cardCancelledQ);
             panelQueueCards.Dock = DockStyle.Fill;
             panelQueueCards.Location = new Point(0, 43);
-            panelQueueCards.Margin = new Padding(2, 2, 2, 2);
+            panelQueueCards.Margin = new Padding(2);
             panelQueueCards.Name = "panelQueueCards";
             panelQueueCards.Padding = new Padding(16, 3, 16, 10);
             panelQueueCards.Size = new Size(960, 127);
             panelQueueCards.TabIndex = 0;
-            panelQueueCards.WrapContents = false;
-            panelQueueCards.Resize += panelQueueCards_Resize;
+            // 
+            // cardWaitingQ
+            // 
+            cardWaitingQ.BackColor = Color.FromArgb(239, 246, 255);
+            cardWaitingQ.Controls.Add(lblWaitingQTitle);
+            cardWaitingQ.Controls.Add(lblWaitingQValue);
+            cardWaitingQ.Location = new Point(16, 3);
+            cardWaitingQ.Margin = new Padding(0, 0, 12, 0);
+            cardWaitingQ.Name = "cardWaitingQ";
+            cardWaitingQ.Size = new Size(216, 120);
+            cardWaitingQ.TabIndex = 0;
+            cardWaitingQ.Paint += Card_Paint;
+            // 
+            // lblWaitingQTitle
+            // 
+            lblWaitingQTitle.Font = new Font("Segoe UI", 10F);
+            lblWaitingQTitle.ForeColor = Color.FromArgb(37, 99, 235);
+            lblWaitingQTitle.Location = new Point(18, 18);
+            lblWaitingQTitle.Name = "lblWaitingQTitle";
+            lblWaitingQTitle.Size = new Size(160, 24);
+            lblWaitingQTitle.TabIndex = 0;
+            lblWaitingQTitle.Text = "Chờ khám";
+            // 
+            // lblWaitingQValue
+            // 
+            lblWaitingQValue.Font = new Font("Segoe UI", 28F, FontStyle.Bold);
+            lblWaitingQValue.ForeColor = Color.FromArgb(37, 99, 235);
+            lblWaitingQValue.Location = new Point(18, 50);
+            lblWaitingQValue.Name = "lblWaitingQValue";
+            lblWaitingQValue.Size = new Size(160, 58);
+            lblWaitingQValue.TabIndex = 1;
+            lblWaitingQValue.Text = "0";
+            // 
+            // cardInProgressQ
+            // 
+            cardInProgressQ.BackColor = Color.FromArgb(255, 251, 235);
+            cardInProgressQ.Controls.Add(lblInProgressQTitle);
+            cardInProgressQ.Controls.Add(lblInProgressQValue);
+            cardInProgressQ.Location = new Point(244, 3);
+            cardInProgressQ.Margin = new Padding(0, 0, 12, 0);
+            cardInProgressQ.Name = "cardInProgressQ";
+            cardInProgressQ.Size = new Size(216, 120);
+            cardInProgressQ.TabIndex = 1;
+            cardInProgressQ.Paint += Card_Paint;
+            // 
+            // lblInProgressQTitle
+            // 
+            lblInProgressQTitle.Font = new Font("Segoe UI", 10F);
+            lblInProgressQTitle.ForeColor = Color.FromArgb(217, 119, 6);
+            lblInProgressQTitle.Location = new Point(18, 18);
+            lblInProgressQTitle.Name = "lblInProgressQTitle";
+            lblInProgressQTitle.Size = new Size(160, 24);
+            lblInProgressQTitle.TabIndex = 0;
+            lblInProgressQTitle.Text = "Đang khám";
+            // 
+            // lblInProgressQValue
+            // 
+            lblInProgressQValue.Font = new Font("Segoe UI", 28F, FontStyle.Bold);
+            lblInProgressQValue.ForeColor = Color.FromArgb(217, 119, 6);
+            lblInProgressQValue.Location = new Point(18, 50);
+            lblInProgressQValue.Name = "lblInProgressQValue";
+            lblInProgressQValue.Size = new Size(160, 58);
+            lblInProgressQValue.TabIndex = 1;
+            lblInProgressQValue.Text = "0";
+            // 
+            // cardDoneQ
+            // 
+            cardDoneQ.BackColor = Color.FromArgb(236, 253, 245);
+            cardDoneQ.Controls.Add(lblDoneQTitle);
+            cardDoneQ.Controls.Add(lblDoneQValue);
+            cardDoneQ.Location = new Point(472, 3);
+            cardDoneQ.Margin = new Padding(0, 0, 12, 0);
+            cardDoneQ.Name = "cardDoneQ";
+            cardDoneQ.Size = new Size(216, 120);
+            cardDoneQ.TabIndex = 2;
+            cardDoneQ.Paint += Card_Paint;
+            // 
+            // lblDoneQTitle
+            // 
+            lblDoneQTitle.Font = new Font("Segoe UI", 10F);
+            lblDoneQTitle.ForeColor = Color.FromArgb(5, 150, 105);
+            lblDoneQTitle.Location = new Point(18, 18);
+            lblDoneQTitle.Name = "lblDoneQTitle";
+            lblDoneQTitle.Size = new Size(160, 24);
+            lblDoneQTitle.TabIndex = 0;
+            lblDoneQTitle.Text = "Hoàn thành";
+            // 
+            // lblDoneQValue
+            // 
+            lblDoneQValue.Font = new Font("Segoe UI", 28F, FontStyle.Bold);
+            lblDoneQValue.ForeColor = Color.FromArgb(5, 150, 105);
+            lblDoneQValue.Location = new Point(18, 50);
+            lblDoneQValue.Name = "lblDoneQValue";
+            lblDoneQValue.Size = new Size(160, 58);
+            lblDoneQValue.TabIndex = 1;
+            lblDoneQValue.Text = "0";
+            // 
+            // cardCancelledQ
+            // 
+            cardCancelledQ.BackColor = Color.FromArgb(254, 242, 242);
+            cardCancelledQ.Controls.Add(lblCancelledQTitle);
+            cardCancelledQ.Controls.Add(lblCancelledQValue);
+            cardCancelledQ.Location = new Point(700, 3);
+            cardCancelledQ.Margin = new Padding(0, 0, 12, 0);
+            cardCancelledQ.Name = "cardCancelledQ";
+            cardCancelledQ.Size = new Size(216, 120);
+            cardCancelledQ.TabIndex = 3;
+            cardCancelledQ.Paint += Card_Paint;
+            // 
+            // lblCancelledQTitle
+            // 
+            lblCancelledQTitle.Font = new Font("Segoe UI", 10F);
+            lblCancelledQTitle.ForeColor = Color.FromArgb(220, 38, 38);
+            lblCancelledQTitle.Location = new Point(18, 18);
+            lblCancelledQTitle.Name = "lblCancelledQTitle";
+            lblCancelledQTitle.Size = new Size(160, 24);
+            lblCancelledQTitle.TabIndex = 0;
+            lblCancelledQTitle.Text = "Đã hủy";
+            // 
+            // lblCancelledQValue
+            // 
+            lblCancelledQValue.Font = new Font("Segoe UI", 28F, FontStyle.Bold);
+            lblCancelledQValue.ForeColor = Color.FromArgb(220, 38, 38);
+            lblCancelledQValue.Location = new Point(18, 50);
+            lblCancelledQValue.Name = "lblCancelledQValue";
+            lblCancelledQValue.Size = new Size(160, 58);
+            lblCancelledQValue.TabIndex = 1;
+            lblCancelledQValue.Text = "0";
             // 
             // lblQueueTitle
             // 
@@ -394,7 +784,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(245, 247, 250);
             Controls.Add(outerScroll);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
             Name = "ucAdminDashboard";
             Size = new Size(1024, 720);
             outerScroll.ResumeLayout(false);
@@ -402,11 +792,22 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             mainFlow.ResumeLayout(false);
             panelHeader.ResumeLayout(false);
             panelHeader.PerformLayout();
+            kpiFlow.ResumeLayout(false);
+            cardPatients.ResumeLayout(false);
+            cardAppointments.ResumeLayout(false);
+            cardWaiting.ResumeLayout(false);
+            cardEmployees.ResumeLayout(false);
+            cardMedicine.ResumeLayout(false);
             apptCard.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvAppointments).EndInit();
             medCard.ResumeLayout(false);
             deptCard.ResumeLayout(false);
             queueCard.ResumeLayout(false);
+            panelQueueCards.ResumeLayout(false);
+            cardWaitingQ.ResumeLayout(false);
+            cardInProgressQ.ResumeLayout(false);
+            cardDoneQ.ResumeLayout(false);
+            cardCancelledQ.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -414,125 +815,93 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         //  Helpers
         // ════════════════════════════════════════════════════════════════
 
-        /// <summary>Resize KPI cards to fill available width equally.</summary>
-        private void ResizeKpi(int totalWidth)
+        private Control CreateLine(string title, string value)
         {
-            var cards = new[] { cardPatients, cardAppointments, cardWaiting, cardEmployees, cardMedicine };
-            int count = 0;
-            foreach (var card in cards)
+            Panel row = new Panel
             {
-                if (card != null) count++;
-            }
-            if (count == 0) return;
-
-            int gap = 14, w = (totalWidth - gap * (count - 1)) / count;
-            if (w <= 0) return;
-            kpiFlow.Height = 180;
-            foreach (var c in cards)
-            {
-                if (c == null) continue;
-                c.Width = w;
-                c.Height = 128;
-                c.Margin = new Padding(0, 0, gap, 0);
-            }
-        }
-
-        /// <summary>
-        /// KPI card: icon (top-left) → large number → title label (bottom).
-        /// Layout matches Figma: icon at top, value in middle, title at bottom.
-        /// </summary>
-        private Panel MakeKpi(string value, string title, string icon, Color fg, Color bg)
-        {
-            var p = new Panel { BackColor = bg, Size = new Size(180, 128), Margin = new Padding(0, 0, 14, 0) };
-            p.Paint += Card_Paint;
-
-            p.Controls.Add(new Label
-            {
-                Text = icon,
                 BackColor = Color.White,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = fg,
-                Location = new Point(18, 16),
-                Size = new Size(44, 34),
-                TextAlign = ContentAlignment.MiddleCenter
-            });
-            p.Controls.Add(new Label
+                Margin = new Padding(0, 0, 0, 8),
+                Size = new Size(520, 28)
+            };
+
+            row.Controls.Add(new Label
             {
+                AutoEllipsis = true,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(31, 41, 55),
+                Location = new Point(0, 2),
+                Size = new Size(340, 24),
+                Text = title
+            });
+
+            row.Controls.Add(new Label
+            {
+                AutoEllipsis = true,
+                Font = new Font("Segoe UI", 9F),
+                ForeColor = Color.FromArgb(107, 114, 128),
+                Location = new Point(348, 2),
+                Size = new Size(160, 24),
                 Text = value,
-                Tag = "value",
-                Font = new Font("Segoe UI", 22F, FontStyle.Bold),
-                ForeColor = fg,
-                Location = new Point(18, 54),
-                Size = new Size(145, 42),
-                AutoEllipsis = true
+                TextAlign = ContentAlignment.MiddleRight
             });
-            p.Controls.Add(new Label
-            {
-                Text = title,
-                Tag = "title",
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = fg,
-                Location = new Point(20, 98),
-                Size = new Size(145, 24),
-                AutoEllipsis = true
-            });
-            return p;
+
+            return row;
         }
 
-        /// <summary>
-        /// Queue card: title on top, large value below.
-        /// Matches Figma queue section.
-        /// </summary>
-        private Panel MakeQueue(string title, string value, Color fg, Color bg)
+        private Control CreateMiniCard(string title, string value, Color accent)
         {
-            var p = new Panel { BackColor = bg, Size = new Size(240, 106), Margin = new Padding(0, 0, 12, 0) };
-            p.Paint += Card_Paint;
-
-            p.Controls.Add(new Label
+            Panel card = new Panel
             {
-                Text = title,
-                Tag = "title",
-                Font = new Font("Segoe UI", 10.5F),
-                ForeColor = fg,
-                Location = new Point(20, 16),
-                Size = new Size(190, 24),
-                AutoEllipsis = true
-            });
-            p.Controls.Add(new Label
+                BackColor = Color.FromArgb(249, 250, 251),
+                Margin = new Padding(0, 0, 12, 0),
+                Size = new Size(180, 96)
+            };
+            card.Paint += Card_Paint;
+            card.Controls.Add(new Label
             {
-                Text = value,
-                Tag = "value",
-                Font = new Font("Segoe UI", 28F, FontStyle.Bold),
-                ForeColor = fg,
-                Location = new Point(20, 44),
-                Size = new Size(190, 50),
-                AutoEllipsis = true
+                AutoEllipsis = true,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(31, 41, 55),
+                Location = new Point(14, 14),
+                Size = new Size(150, 25),
+                Text = title
             });
-            return p;
-        }
-
-        /// <summary>
-        /// Adds a subtle border + very light box-shadow effect via Paint event.
-        /// WinForms has no built-in border-radius; this draws a 1px border.
-        /// </summary>
-        private void ApplyCardStyle(Panel p)
-        {
-            p.Paint += Card_Paint;
+            card.Controls.Add(new Label
+            {
+                AutoEllipsis = true,
+                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
+                ForeColor = accent,
+                Location = new Point(14, 48),
+                Size = new Size(150, 30),
+                Text = value
+            });
+            return card;
         }
 
         // ════════════════════════════════════════════════════════════════
         //  Fields
         // ════════════════════════════════════════════════════════════════
         private Panel outerScroll;
-        private FlowLayoutPanel mainFlow, kpiFlow;
+        private FlowLayoutPanel mainFlow;
+        private Panel kpiFlow;
         private Panel panelHeader;
         private Panel apptCard, medCard, deptCard, queueCard;
-        private FlowLayoutPanel panelMedicineList, panelDeptCards, panelQueueCards;
+        private FlowLayoutPanel panelMedicineList, panelDeptCards;
+        private Panel panelQueueCards;
         private Label lblTitle, lblSubtitle, lblApptTitle, lblMedTitle, lblDeptTitle, lblQueueTitle;
         private Button btnRefresh;
         private DataGridView dgvAppointments;
         private DataGridViewTextBoxColumn colTime, colPatient, colDoctor, colDept, colStatus;
         internal Panel cardPatients, cardAppointments, cardWaiting, cardEmployees, cardMedicine;
+        internal Label lblPatientsTitle, lblPatientsValue, lblPatientsIcon;
+        internal Label lblAppointmentsTitle, lblAppointmentsValue, lblAppointmentsIcon;
+        internal Label lblWaitingTitle, lblWaitingValue, lblWaitingIcon;
+        internal Label lblEmployeesTitle, lblEmployeesValue, lblEmployeesIcon;
+        internal Label lblMedicineKpiTitle, lblMedicineValue, lblMedicineIcon;
         internal Panel cardWaitingQ, cardInProgressQ, cardDoneQ, cardCancelledQ;
+        internal Label lblWaitingQTitle, lblWaitingQValue;
+        internal Label lblInProgressQTitle, lblInProgressQValue;
+        internal Label lblDoneQTitle, lblDoneQValue;
+        internal Label lblCancelledQTitle, lblCancelledQValue;
     }
 }

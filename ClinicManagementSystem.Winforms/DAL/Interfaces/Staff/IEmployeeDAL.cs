@@ -15,5 +15,9 @@ namespace DAL.Interfaces
         Task<ApiEmployeeDTO> UpdateAsync(ApiEmployeeDTO dto);
 
         Task UpsertAsync(ApiEmployeeDTO dto);
+        bool Add(EmployeeDTO employee);
+        bool UpdateBasic(EmployeeDTO employee);
+        bool SetStatus(int id, string status);
+        bool Delete(int id);
     }
 }

@@ -33,6 +33,16 @@ namespace ClinicManagementSystem.Controllers
             return patientBUS.UpdatePatient(patient);
         }
 
+        public PatientDTO GetPatientById(int id)
+        {
+            return patientBUS.GetById(id);
+        }
+
+        public bool DeletePatient(int id)
+        {
+            return patientBUS.DeletePatient(id);
+        }
+
         public int CountPatients()
         {
             return patientBUS.CountPatients();

@@ -6,7 +6,7 @@ namespace DTO
     {
         public Guid VitalID { get; set; }
 
-        public Guid EncounterID { get; set; }
+        public int EncounterID { get; set; }
 
         public double Temperature { get; set; }
 

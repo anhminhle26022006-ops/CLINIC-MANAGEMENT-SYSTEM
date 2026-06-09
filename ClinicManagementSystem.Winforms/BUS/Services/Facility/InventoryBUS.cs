@@ -1,4 +1,4 @@
-﻿using DTO;
+using DTO;
 using DAL;
 
 namespace BUS
@@ -20,6 +20,33 @@ namespace BUS
 
             return medicineDAL.InsertMedicine(
                 medicine);
+        }
+
+        public bool UpdateMedicine(MedicineDTO medicine)
+        {
+            if (medicine == null || medicine.MedicineID <= 0)
+            {
+                return false;
+            }
+
+            ValidateMedicine(medicine);
+            return medicineDAL.UpdateMedicine(medicine);
+        }
+
+        public bool AdjustStock(int medicineId, int quantityDelta)
+        {
+            if (medicineId <= 0 || quantityDelta == 0)
+            {
+                return false;
+            }
+
+            int currentStock = medicineDAL.GetStock(medicineId);
+            if (currentStock + quantityDelta < 0)
+            {
+                throw new Exception("Số lượng tồn kho không đủ để xuất.");
+            }
+
+            return medicineDAL.AdjustStock(medicineId, quantityDelta);
         }
 
         private void ValidateMedicine(
@@ -50,6 +77,11 @@ namespace BUS
                 throw new Exception(
                     "Medicine expired.");
             }
+        }
+
+        public bool DeleteMedicine(int id)
+        {
+            return medicineDAL.DeleteMedicine(id);
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using CMS.Core.Identity;
+using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
 using ClinicManagementSystem.Winforms.UserControls.Pharmacy;
 using DTO;
 
@@ -109,7 +111,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         {
             SetHeader("Ca làm việc", "Xem lịch làm việc và yêu cầu đổi ca");
             SetActiveNav(btnNavShifts);
-            LoadContentView(new ucPharmacyShifts());
+            LoadContentControl(new RoleShiftCalendar(currentUser, Role.Pharmacist));
         }
 
         private void SetHeader(string title, string subtitle)
@@ -134,6 +136,15 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             view.Dock = DockStyle.Fill;
             view.NavigateRequested += ContentView_NavigateRequested;
 
+            contentPanel.Controls.Add(view);
+            contentPanel.ResumeLayout();
+        }
+
+        private void LoadContentControl(UserControl view)
+        {
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+            view.Dock = DockStyle.Fill;
             contentPanel.Controls.Add(view);
             contentPanel.ResumeLayout();
         }

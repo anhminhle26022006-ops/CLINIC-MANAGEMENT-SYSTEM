@@ -45,12 +45,11 @@
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             tableLayoutPanel1.Location = new Point(0, 0);
-            tableLayoutPanel1.Margin = new Padding(4);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 2;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 90F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(948, 718);
+            tableLayoutPanel1.Size = new Size(632, 479);
             tableLayoutPanel1.TabIndex = 1;
             // 
             // panel3
@@ -58,20 +57,18 @@
             panel3.BackColor = Color.White;
             panel3.Controls.Add(textBox1);
             panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(4, 4);
-            panel3.Margin = new Padding(4);
+            panel3.Location = new Point(3, 3);
             panel3.Name = "panel3";
-            panel3.Padding = new Padding(15);
-            panel3.Size = new Size(940, 82);
+            panel3.Padding = new Padding(10);
+            panel3.Size = new Size(626, 54);
             panel3.TabIndex = 1;
             // 
             // textBox1
             // 
             textBox1.Dock = DockStyle.Fill;
-            textBox1.Location = new Point(15, 15);
-            textBox1.Margin = new Padding(4);
+            textBox1.Location = new Point(10, 10);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(910, 40);
+            textBox1.Size = new Size(606, 30);
             textBox1.TabIndex = 0;
             // 
             // panel14
@@ -79,21 +76,19 @@
             panel14.BackColor = Color.White;
             panel14.Dock = DockStyle.Fill;
             panel14.ForeColor = Color.White;
-            panel14.Location = new Point(4, 94);
-            panel14.Margin = new Padding(4);
+            panel14.Location = new Point(3, 63);
             panel14.Name = "panel14";
-            panel14.Padding = new Padding(15);
-            panel14.Size = new Size(940, 620);
+            panel14.Padding = new Padding(10);
+            panel14.Size = new Size(626, 413);
             panel14.TabIndex = 2;
             // 
             // HistoryAppointment
             // 
-            AutoScaleDimensions = new SizeF(12F, 30F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(tableLayoutPanel1);
-            Margin = new Padding(4);
             Name = "HistoryAppointment";
-            Size = new Size(948, 718);
+            Size = new Size(632, 479);
             tableLayoutPanel1.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();

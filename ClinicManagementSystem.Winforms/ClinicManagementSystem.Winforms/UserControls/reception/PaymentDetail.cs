@@ -165,6 +165,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
             dataGridView1.DataSource = details;
 
             totalAmount = details.Sum(x => x.Amount);
+            controller.UpdateAmount(encounterId, totalAmount);
 
             lblTotal.Text =
                 totalAmount.ToString("N0") + " đ";
@@ -199,18 +200,27 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
     object sender,
     EventArgs e)
         {
+            if (totalAmount <= 0)
+            {
+                MessageBox.Show("Chưa có chi phí thanh toán cho bệnh nhân này.", "PayOS", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             paymentMethod = "Chuyển khoản";
 
             lblPaymentMethod.Text =
                 "Phương thức thanh toán: Chuyển khoản";
 
-            PayOsPaymentForm frm =
+            using PayOsPaymentForm frm =
                 new PayOsPaymentForm(
                     encounterId,
                     patientName,
                     totalAmount);
 
-            frm.ShowDialog();
+            if (frm.ShowDialog() == DialogResult.OK && frm.IsPaymentPaid)
+            {
+                CompletePayment("Chuyển khoản", "Thanh toán PayOS thành công");
+            }
         }
 
         private void button2_Click(
@@ -226,15 +236,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.reception
                 return;
             }
 
+            CompletePayment(paymentMethod, "Thanh toán thành công");
+        }
+
+        private void CompletePayment(string method, string successMessage)
+        {
             bool result =
                 controller.UpdatePaymentStatus(
                     encounterId,
-                    paymentMethod);
+                    method);
 
             if (result)
             {
                 MessageBox.Show(
-                    "Thanh toán thành công");
+                    successMessage);
 
                 this.Dispose();
             }

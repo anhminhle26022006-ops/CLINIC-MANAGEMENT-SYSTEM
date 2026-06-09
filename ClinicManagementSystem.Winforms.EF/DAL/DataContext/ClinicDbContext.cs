@@ -67,11 +67,47 @@ namespace DAL.DataContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Appointment>().ToTable("Appointments").HasKey(e => e.AppointmentID);
+            modelBuilder.Entity<AuditLog>().ToTable("AuditLogs").HasKey(e => e.LogID);
+            modelBuilder.Entity<AuditLogDetail>().ToTable("AuditLogDetails").HasKey(e => e.DetailID);
             modelBuilder.Entity<ClinicalFile>().ToTable("Files").HasKey(e => e.FileID);
             modelBuilder.Entity<ClinicalService>().ToTable("Services").HasKey(e => e.ServiceID);
+            modelBuilder.Entity<Department>().ToTable("Departments").HasKey(e => e.DepartmentID);
             modelBuilder.Entity<Dispense>().ToTable("Dispense").HasKey(e => e.DispenseID);
+            modelBuilder.Entity<DoctorSchedule>().ToTable("DoctorSchedules").HasKey(e => e.ScheduleID);
+            modelBuilder.Entity<Employee>().ToTable("Employees").HasKey(e => e.EmployeeID);
+            modelBuilder.Entity<EmployeeShift>().ToTable("EmployeeShifts").HasKey(e => e.ID);
+            modelBuilder.Entity<Encounter>().ToTable("Encounters").HasKey(e => e.EncounterID);
+            modelBuilder.Entity<EncounterService>().ToTable("EncounterServices").HasKey(e => e.EncounterServiceID);
+            modelBuilder.Entity<FollowUp>().ToTable("FollowUps").HasKey(e => e.FollowUpID);
+            modelBuilder.Entity<ImagingFile>().ToTable("ImagingFiles").HasKey(e => e.FileID);
+            modelBuilder.Entity<ImagingRequest>().ToTable("ImagingRequests").HasKey(e => e.ImagingRequestID);
+            modelBuilder.Entity<ImagingResult>().ToTable("ImagingResults").HasKey(e => e.ImagingResultID);
+            modelBuilder.Entity<ImagingService>().ToTable("ImagingServices").HasKey(e => e.ImagingServiceID);
+            modelBuilder.Entity<Invoice>().ToTable("Invoices").HasKey(e => e.InvoiceID);
+            modelBuilder.Entity<InvoiceDetail>().ToTable("InvoiceDetails").HasKey(e => e.DetailID);
+            modelBuilder.Entity<LabRequest>().ToTable("LabRequests").HasKey(e => e.LabID);
+            modelBuilder.Entity<LabResult>().ToTable("LabResults").HasKey(e => e.ResultID);
+            modelBuilder.Entity<MedicalRecord>().ToTable("MedicalRecords").HasKey(e => e.RecordID);
+            modelBuilder.Entity<MedicalRecordFile>().ToTable("MedicalRecordFiles").HasKey(e => e.FileID);
+            modelBuilder.Entity<Medicine>().ToTable("Medicines").HasKey(e => e.MedicineID);
+            modelBuilder.Entity<Notification>().ToTable("Notifications").HasKey(e => e.NotificationID);
+            modelBuilder.Entity<Patient>().ToTable("Patients").HasKey(e => e.PatientID);
+            modelBuilder.Entity<PatientIdentifier>().ToTable("PatientIdentifiers").HasKey(e => e.IdentifierID);
             modelBuilder.Entity<PatientInsurance>().ToTable("PatientInsurance").HasKey(e => e.InsuranceID);
+            modelBuilder.Entity<PatientQueue>().ToTable("PatientQueues").HasKey(e => e.QueueID);
+            modelBuilder.Entity<Payment>().ToTable("Payments").HasKey(e => e.PaymentID);
+            modelBuilder.Entity<PaymentDetail>().ToTable("PaymentDetails").HasKey(e => e.PaymentDetailID);
+            modelBuilder.Entity<Prescription>().ToTable("Prescriptions").HasKey(e => e.PrescriptionID);
+            modelBuilder.Entity<PrescriptionDetail>().ToTable("PrescriptionDetails").HasKey(e => e.DetailID);
             modelBuilder.Entity<QueueHistory>().ToTable("QueueHistory").HasKey(e => e.HistoryID);
+            modelBuilder.Entity<Role>().ToTable("Roles").HasKey(e => e.RoleID);
+            modelBuilder.Entity<Room>().ToTable("Rooms").HasKey(e => e.RoomID);
+            modelBuilder.Entity<Session>().ToTable("Sessions").HasKey(e => e.SessionID);
+            modelBuilder.Entity<Shift>().ToTable("Shifts").HasKey(e => e.ShiftID);
+            modelBuilder.Entity<Transfer>().ToTable("Transfers").HasKey(e => e.TransferID);
+            modelBuilder.Entity<User>().ToTable("Users").HasKey(e => e.UserID);
+            modelBuilder.Entity<VitalSign>().ToTable("VitalSigns").HasKey(e => e.VitalID);
 
             // Precision mapping for EF Core
             modelBuilder.Entity<Dispense>().Property(e => e.TotalAmount).HasColumnType("decimal(18,2)");
