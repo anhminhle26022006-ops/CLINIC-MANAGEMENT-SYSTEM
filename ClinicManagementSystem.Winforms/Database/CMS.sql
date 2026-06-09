@@ -1012,68 +1012,26 @@ VALUES
 
 INSERT INTO DoctorSchedules
 (
-DoctorID,
-WorkDate,
-StartTime,
-EndTime,
-RoomID
+    DoctorID,
+    WorkDate,
+    StartTime,
+    EndTime,
+    RoomID
 )
-VALUES
-
+SELECT
+    E.EmployeeID,
+    CAST(GETDATE() AS DATE),
+    '08:00',
+    '17:00',
+    R.RoomID
+FROM Employees E
+JOIN Rooms R
+ON R.DepartmentID = E.DepartmentID
+WHERE E.RoleID =
 (
-3,
-GETDATE(),
-'08:00',
-'17:00',
-1
-),
-
-(
-4,
-GETDATE(),
-'08:00',
-'17:00',
-2
-),
-
-(
-5,
-GETDATE(),
-'08:00',
-'17:00',
-3
-),
-
-(
-6,
-GETDATE(),
-'08:00',
-'17:00',
-4
-),
-
-(
-7,
-GETDATE(),
-'08:00',
-'17:00',
-5
-),
-
-(
-8,
-GETDATE(),
-'08:00',
-'17:00',
-6
-),
-
-(
-9,
-GETDATE(),
-'08:00',
-'17:00',
-7
+    SELECT RoleID
+    FROM Roles
+    WHERE RoleName='Doctor'
 );
 
 -- ADMIN
@@ -1205,32 +1163,22 @@ CROSS APPLY (
 ) D;
 
 INSERT INTO Encounters
-(AppointmentID, PatientID, DoctorID, StartTime, EndTime, Status)
-SELECT 
-NULL,
-P.PatientID,
-D.EmployeeID,
-DATEADD(MINUTE, ABS(CHECKSUM(NEWID())) % 480, GETDATE()),
-NULL,
-'Completed'
-FROM Patients P
-CROSS APPLY (
-    SELECT TOP 1 EmployeeID
-    FROM Employees E
-    WHERE E.RoleID = (SELECT RoleID FROM Roles WHERE RoleName='Doctor')
-    ORDER BY NEWID()
-) D;
-
-INSERT INTO Encounters
-(AppointmentID, PatientID, DoctorID, StartTime, EndTime, Status)
-SELECT 
-A.AppointmentID,
-A.PatientID,
-A.DoctorID,
-A.AppointmentDate,
-NULL,
-'InProgress'
-FROM Appointments A;
+(
+    AppointmentID,
+    PatientID,
+    DoctorID,
+    StartTime,
+    EndTime,
+    Status
+)
+SELECT
+    AppointmentID,
+    PatientID,
+    DoctorID,
+    AppointmentDate,
+    NULL,
+    'Waiting'
+FROM Appointments;
 
 INSERT INTO VitalSigns (EncounterID, Temperature, BloodPressure, HeartRate, SPO2, Weight, Height, Notes)
 SELECT 
@@ -1242,22 +1190,34 @@ E.EncounterID,
 50 + ABS(CHECKSUM(NEWID())) % 40,
 150 + ABS(CHECKSUM(NEWID())) % 40,
 N'Sinh hiệu ổn định'
-FROM Encounters E;
+FROM Encounters E
+WHERE Status IN ('InProgress','Completed');
 
-INSERT INTO MedicalRecords (EncounterID, ChiefComplaint, Symptoms, Diagnosis, ICDCode, Conclusion, Notes)
-SELECT 
-EncounterID,
-N'Đau đầu',
-N'Chóng mặt, mệt mỏi',
-N'Viêm đường hô hấp nhẹ',
-'J06.9',
-N'Theo dõi ngoại trú',
-N'Không biến chứng'
-FROM Encounters;
+INSERT INTO MedicalRecords
+(
+    EncounterID,
+    ChiefComplaint,
+    Symptoms,
+    Diagnosis,
+    ICDCode,
+    Conclusion,
+    Notes
+)
+SELECT
+    EncounterID,
+    N'Đau đầu',
+    N'Chóng mặt',
+    N'Viêm đường hô hấp nhẹ',
+    'J06.9',
+    N'Theo dõi',
+    N'Không biến chứng'
+FROM Encounters
+WHERE Status='Completed';
 
 INSERT INTO Prescriptions (EncounterID, DoctorID, Status)
 SELECT EncounterID, DoctorID, 'Issued'
-FROM Encounters;
+FROM Encounters
+WHERE Status='Completed';
 
 INSERT INTO PrescriptionDetails (PrescriptionID, MedicineID, Quantity, Dosage, Frequency, Instruction)
 SELECT 
@@ -1274,13 +1234,20 @@ CROSS APPLY (
     ORDER BY NEWID()
 ) M;
 
-INSERT INTO LabRequests (EncounterID, DoctorID, TestType, Status)
-SELECT 
-EncounterID,
-DoctorID,
-N'Xét nghiệm máu tổng quát',
-'Completed'
-FROM Encounters;
+INSERT INTO LabRequests
+(
+    EncounterID,
+    DoctorID,
+    TestType,
+    Status
+)
+SELECT TOP 30 PERCENT
+    EncounterID,
+    DoctorID,
+    N'Xét nghiệm máu tổng quát',
+    'Completed'
+FROM Encounters
+ORDER BY NEWID();
 
 INSERT INTO LabResults (LabID, ResultText, CompletedAt)
 SELECT 
@@ -1319,13 +1286,29 @@ SELECT
     AppointmentDate
 FROM Ranked;
 
-INSERT INTO Invoices (EncounterID, PatientID, Total, Status)
-SELECT 
+INSERT INTO Invoices
+(
+    EncounterID,
+    PatientID,
+    Total,
+    Status
+)
+SELECT
+    E.EncounterID,
+    E.PatientID,
+    100000 +
+    ISNULL(SUM(M.Price * PD.Quantity),0),
+    'Paid'
+FROM Encounters E
+LEFT JOIN Prescriptions P
+ON E.EncounterID=P.EncounterID
+LEFT JOIN PrescriptionDetails PD
+ON P.PrescriptionID=PD.PrescriptionID
+LEFT JOIN Medicines M
+ON PD.MedicineID=M.MedicineID
+GROUP BY
 E.EncounterID,
-E.PatientID,
-500000,
-'Unpaid'
-FROM Encounters E;
+E.PatientID;
 
 INSERT INTO Payments (EncounterID, Amount, Method, Status, PaidAt, PatientID)
 SELECT 
@@ -1337,6 +1320,58 @@ GETDATE(),
 PatientID
 FROM Encounters;
 
+INSERT INTO QueueHistory
+(
+    QueueID,
+    StepName,
+    StartTime,
+    EndTime,
+    EmployeeID
+)
+SELECT
+    QueueID,
+    N'Tiếp nhận',
+    DATEADD(MINUTE,-15,QueueTime),
+    QueueTime,
+    (
+        SELECT TOP 1 EmployeeID
+        FROM Employees
+        WHERE RoleID=
+        (
+            SELECT RoleID
+            FROM Roles
+            WHERE RoleName='Receptionist'
+        )
+    )
+FROM PatientQueues;
+
+INSERT INTO PatientInsurance
+(
+    PatientID,
+    InsuranceNumber,
+    Provider,
+    EffectiveDate,
+    ExpiryDate
+)
+SELECT TOP 30
+    PatientID,
+    CONCAT('BHYT',PatientID),
+    N'Bảo hiểm y tế',
+    '2025-01-01',
+    '2027-12-31'
+FROM Patients;
+
+INSERT INTO ImagingServices
+(
+    ServiceCode,
+    ServiceName,
+    Modality,
+    Price
+)
+VALUES
+('XR001',N'X-Quang phổi','XRay',200000),
+('US001',N'Siêu âm bụng','Ultrasound',250000),
+('CT001',N'CT Scan đầu','CT',1200000);
 
 
 

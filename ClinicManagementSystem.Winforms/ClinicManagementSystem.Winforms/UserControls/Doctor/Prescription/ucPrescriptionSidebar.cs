@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BUS.Services.Doctor;
+using DAL.Repositories.Doctor;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -7,29 +9,80 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
 {
     public partial class ucPrescriptionSidebar : UserControl
     {
+        private readonly PrescriptionService _service;
         public ucPrescriptionSidebar()
         {
             InitializeComponent();
-            BuildStats();
+            string connectionString =
+        System.Configuration.ConfigurationManager
+        .ConnectionStrings["DbConnection"]
+        .ConnectionString;
+
+            var repo =
+                new PrescriptionRepository(connectionString);
+
+            _service =
+                new PrescriptionService(repo);
 
             Load += UcPrescriptionSidebar_Load;
-            dgvPrescriptions.CellClick += dgvPrescriptions_CellClick;
+           
         }
-        private void BuildStats()
+
+        private void UcPrescriptionSidebar_Load(
+    object sender,
+    EventArgs e)
         {
+            LoadData();
+            LoadStatistics();
+        }
+        private void LoadData()
+        {
+            dgvPrescriptions.Rows.Clear();
+
+            var list = _service.GetAll();
+
+            foreach (var item in list)
+            {
+                dgvPrescriptions.Rows.Add(
+                    item.CreatedAt.ToString("dd/MM/yyyy"),
+                    item.PatientName,
+                    item.MedicineCount,
+                    item.Note,
+                    "👁"
+                );
+
+                dgvPrescriptions.Rows[
+                    dgvPrescriptions.Rows.Count - 1
+                ].Tag = item.PrescriptionId;
+            }
+        }
+        private void LoadStatistics()
+        {
+            var stat = _service.GetStatistics();
+
             flpStats.Controls.Clear();
 
-            // Tổng toa thuốc
-            Panel pnlTotal = CreateStatPanel("Tổng toa thuốc", "135");
-            Panel pnlToday = CreateStatPanel("Hôm nay", "3");
-            Panel pnlWeek = CreateStatPanel("Tuần này", "21");
-            Panel pnlTracking = CreateStatPanel("Đang theo", "11");
+            flpStats.Controls.Add(
+                CreateStatPanel(
+                    "Tổng toa thuốc",
+                    stat.Total.ToString()));
 
-            flpStats.Controls.Add(pnlTotal);
-            flpStats.Controls.Add(pnlToday);
-            flpStats.Controls.Add(pnlWeek);
-            flpStats.Controls.Add(pnlTracking);
+            flpStats.Controls.Add(
+                CreateStatPanel(
+                    "Hôm nay",
+                    stat.Today.ToString()));
+
+            flpStats.Controls.Add(
+                CreateStatPanel(
+                    "Tuần này",
+                    stat.ThisWeek.ToString()));
+
+            flpStats.Controls.Add(
+                CreateStatPanel(
+                    "Đang theo",
+                    stat.Processing.ToString()));
         }
+        
         private Panel CreateStatPanel(string title, string value)
         {
             Panel panel = new Panel
@@ -62,100 +115,59 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
             return panel;
         }
 
-        // ================= FAKE DATA MODEL =================
-        public class PrescriptionDto
-        {
-            public DateTime Date { get; set; }
-            public string PatientName { get; set; }
-            public int MedicineCount { get; set; }
-            public string Note { get; set; }
-
-            public string Medicines { get; set; }
-        }
-
-        private List<PrescriptionDto> _data;
-
-        // ================= LOAD FAKE DATA =================
-        private void UcPrescriptionSidebar_Load(object sender, EventArgs e)
-        {
-            _data = new List<PrescriptionDto>
-            {
-                new PrescriptionDto
-                {
-                    Date = new DateTime(2026, 5, 17),
-                    PatientName = "Nguyễn Văn A",
-                    MedicineCount = 2,
-                    Note = "Uống sau ăn, tái khám 5 ngày",
-                    Medicines =
-@"Amoxicillin 500mg
-Liều dùng: 2 viên/ngày
-Số lượng: 20 viên
-
-Paracetamol 500mg
-Liều dùng: 3 viên/ngày khi sốt
-Số lượng: 10 viên"
-                },
-                new PrescriptionDto
-                {
-                    Date = new DateTime(2026, 5, 18),
-                    PatientName = "Trần Thị B",
-                    MedicineCount = 3,
-                    Note = "Theo dõi huyết áp",
-                    Medicines =
-@"Amlodipine 5mg
-Liều dùng: 1 viên/ngày
-Số lượng: 30 viên"
-                },
-                new PrescriptionDto
-                {
-                    Date = DateTime.Now,
-                    PatientName = "Lê Văn C",
-                    MedicineCount = 1,
-                    Note = "Kháng sinh nhẹ",
-                    Medicines =
-@"Cefixime 200mg
-Liều dùng: 2 viên/ngày
-Số lượng: 14 viên"
-                }
-            };
-
-            BindGrid();
-        }
-
-        // ================= BIND GRID =================
-        private void BindGrid()
-        {
-            dgvPrescriptions.Rows.Clear();
-
-            foreach (var item in _data)
-            {
-                dgvPrescriptions.Rows.Add(
-                    item.Date.ToString("dd/MM/yyyy"),
-                    item.PatientName,
-                    item.MedicineCount,
-                    item.Note
-                );
-            }
-        }
+       
 
         // ================= CLICK VIEW =================
-        private void dgvPrescriptions_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvPrescriptions_CellClick(
+    object sender,
+    DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
+            if (e.RowIndex < 0)
+                return;
 
-            if (dgvPrescriptions.Columns[e.ColumnIndex].Name == "btnView")
+            if (dgvPrescriptions.Columns[e.ColumnIndex].Name != "btnView")
+                return;
+
+            int prescriptionId =
+                Convert.ToInt32(
+                    dgvPrescriptions.Rows[e.RowIndex].Tag);
+
+            var detail =
+                _service.GetDetail(prescriptionId);
+
+            frmPrescriptionDetail frm =
+                new frmPrescriptionDetail();
+
+            frm.lblPatientName.Text =
+                detail.PatientName;
+
+            frm.lblPrescriptionDate.Text =
+                detail.CreatedAt.ToString("dd/MM/yyyy");
+
+            frm.rtbMedicines.Clear();
+
+            foreach (var med in detail.Medicines)
             {
-                var item = _data[e.RowIndex];
+                frm.rtbMedicines.AppendText(
+        $@"{med.MedicineName}
 
-                frmPrescriptionDetail frm = new frmPrescriptionDetail();
+Liều dùng: {med.Dosage}
 
-                frm.lblPatientName.Text = item.PatientName;
-                frm.lblPrescriptionDate.Text = item.Date.ToString("dd/MM/yyyy");
-                frm.rtbMedicines.Text = item.Medicines;
-                frm.rtbNote.Text = item.Note;
+Tần suất: {med.Frequency}
 
-                frm.ShowDialog();
+Số lượng: {med.Quantity}
+
+Hướng dẫn: {med.Instruction}
+
+----------------------------
+
+");
             }
+
+            frm.rtbNote.Text =
+                detail.Status;
+
+            frm.ShowDialog();
         }
     }
 }
