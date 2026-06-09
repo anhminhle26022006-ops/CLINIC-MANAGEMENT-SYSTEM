@@ -21,39 +21,43 @@ namespace DAL.Repositories.Doctor
         {
             var list = new List<PatientQueueDto>();
 
+            System.Diagnostics.Debug.WriteLine($"[GetTodayQueue] connStr='{_connStr}', doctorId={doctorId}");
+
             using var conn = new SqlConnection(_connStr);
             conn.Open();
 
             string sql = @"
-    SELECT 
-        q.QueueID,
-        q.EncounterID,
-        p.FullName,
-        p.PatientCode,
-        a.AppointmentDate,
-        p.DOB,
-        p.Gender,
-        p.Allergy,
-        q.QueueNumber,
-        q.Status,
-        q.CurrentStep
-    FROM PatientQueues q
-    JOIN Encounters e ON q.EncounterID = e.EncounterID
-    JOIN Patients p ON e.PatientID = p.PatientID
-    JOIN Appointments a ON e.AppointmentID = a.AppointmentID
-    WHERE e.DoctorID = @DoctorID
-      AND CAST(a.AppointmentDate AS DATE) = CAST(GETDATE() AS DATE)
-    ORDER BY q.QueueNumber";
+SELECT 
+    q.QueueID,
+    q.EncounterID,
+    a.AppointmentID, 
+    p.FullName,
+    p.PatientCode,
+    a.AppointmentDate,
+    p.DOB,
+    p.Gender,
+    p.Allergy,
+    q.QueueNumber,
+    q.Status,
+    q.CurrentStep
+FROM PatientQueues q
+JOIN Encounters e ON q.EncounterID = e.EncounterID
+JOIN Patients p ON e.PatientID = p.PatientID
+JOIN Appointments a ON e.AppointmentID = a.AppointmentID
+WHERE e.DoctorID = @DoctorID
+  AND CAST(a.AppointmentDate AS DATE) = CAST(GETDATE() AS DATE)
+ORDER BY q.QueueNumber";
 
             using var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@DoctorID", doctorId);
 
             using var reader = cmd.ExecuteReader();
 
+            int rows = 0;
             while (reader.Read())
             {
+                rows++;
                 DateTime dob = Convert.ToDateTime(reader["DOB"]);
-
                 int age = DateTime.Today.Year - dob.Year;
                 if (dob.Date > DateTime.Today.AddYears(-age)) age--;
 
@@ -61,6 +65,7 @@ namespace DAL.Repositories.Doctor
                 {
                     QueueID = (int)reader["QueueID"],
                     EncounterID = (int)reader["EncounterID"],
+                    AppointmentID = reader["AppointmentID"] != DBNull.Value ? (int)reader["AppointmentID"] : 0,
                     PatientName = reader["FullName"].ToString(),
                     PatientCode = reader["PatientCode"].ToString(),
                     AppointmentTime = Convert.ToDateTime(reader["AppointmentDate"]),
@@ -72,6 +77,7 @@ namespace DAL.Repositories.Doctor
                 });
             }
 
+            System.Diagnostics.Debug.WriteLine($"[GetTodayQueue] rowsRead={rows}, list.Count={list.Count}");
             return list;
         }
         public PatientQueueDto GetByEncounterId(int encounterId)
