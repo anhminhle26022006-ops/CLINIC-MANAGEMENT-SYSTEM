@@ -27,6 +27,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
         private readonly Color textMuted = Color.FromArgb(107, 114, 128);
 
+        private doctordashboard ucDashboard;
         private ucMedicalRecordSidebar ucERM;
         private ucAppointmentSidebar ucAppointment;
         private ucDoctorExaminationSidebar ucExamination;
@@ -212,13 +213,23 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void ShowOverview()
         {
-            ShowSection(
-                "Tổng quan",
-                "Xin chào, " + (currentUser != null ? currentUser.Name : "Bác sĩ"),
-                btnNavOverview,
-                "Bệnh nhân chờ khám: đang cập nhật",
-                "Lịch khám hôm nay: đang cập nhật",
-                "Hồ sơ cần cập nhật: đang cập nhật");
+            lblPageTitle.Text = "Tổng quan";
+            lblPageSubtitle.Text = "Dashboard bác sĩ";
+
+            SetActiveNav(btnNavOverview);
+
+            contentPanel.SuspendLayout();
+            contentPanel.Controls.Clear();
+
+            if (ucDashboard == null)
+            {
+                ucDashboard = new doctordashboard();
+                ucDashboard.Dock = DockStyle.Fill;
+            }
+
+            contentPanel.Controls.Add(ucDashboard);
+
+            contentPanel.ResumeLayout();
         }
 
         private void ShowSection(string title, string subtitle, Button activeButton, params string[] lines)

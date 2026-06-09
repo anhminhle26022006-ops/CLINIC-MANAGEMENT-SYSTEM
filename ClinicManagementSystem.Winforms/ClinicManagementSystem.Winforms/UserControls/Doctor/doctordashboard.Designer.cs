@@ -33,7 +33,7 @@
             lblActionsTitle = new Label();
             pnlShift = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
             lblShiftFooter = new Label();
-            btnRegisterShift = new Button();
+            btnChangeShift = new Button();
             btnViewWeek = new Button();
             pnlShiftBox = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
             lblShiftDept = new Label();
@@ -45,7 +45,7 @@
             pnlStatsGrid = new TableLayoutPanel();
             pnlStatLab = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
             lblStatLabNum = new Label();
-            lblStatLabTitle = new Label();
+            lblTodayAppointment = new Label();
             pnlStatScan = new ClinicManagementSystem.Winforms.Forms.RoundedPanel();
             lblStatScanNum = new Label();
             lblPatientWaiting = new Label();
@@ -290,7 +290,7 @@
             pnlShift.BorderColor = Color.FromArgb(229, 231, 235);
             pnlShift.BorderWidth = 1;
             pnlShift.Controls.Add(lblShiftFooter);
-            pnlShift.Controls.Add(btnRegisterShift);
+            pnlShift.Controls.Add(btnChangeShift);
             pnlShift.Controls.Add(btnViewWeek);
             pnlShift.Controls.Add(pnlShiftBox);
             pnlShift.Controls.Add(lblShiftBadge);
@@ -315,22 +315,22 @@
             lblShiftFooter.Text = "Quản lý ca làm việc nhanh chóng";
             lblShiftFooter.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // btnRegisterShift
+            // btnChangeShift
             // 
-            btnRegisterShift.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnRegisterShift.BackColor = Color.FromArgb(243, 244, 246);
-            btnRegisterShift.Cursor = Cursors.Hand;
-            btnRegisterShift.FlatAppearance.BorderSize = 0;
-            btnRegisterShift.FlatStyle = FlatStyle.Flat;
-            btnRegisterShift.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            btnRegisterShift.ForeColor = Color.FromArgb(17, 24, 39);
-            btnRegisterShift.Location = new Point(699, 232);
-            btnRegisterShift.Margin = new Padding(3, 4, 3, 4);
-            btnRegisterShift.Name = "btnRegisterShift";
-            btnRegisterShift.Size = new Size(640, 48);
-            btnRegisterShift.TabIndex = 4;
-            btnRegisterShift.Text = "Đăng ký ca mới";
-            btnRegisterShift.UseVisualStyleBackColor = false;
+            btnChangeShift.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnChangeShift.BackColor = Color.FromArgb(243, 244, 246);
+            btnChangeShift.Cursor = Cursors.Hand;
+            btnChangeShift.FlatAppearance.BorderSize = 0;
+            btnChangeShift.FlatStyle = FlatStyle.Flat;
+            btnChangeShift.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnChangeShift.ForeColor = Color.FromArgb(17, 24, 39);
+            btnChangeShift.Location = new Point(699, 232);
+            btnChangeShift.Margin = new Padding(3, 4, 3, 4);
+            btnChangeShift.Name = "btnChangeShift";
+            btnChangeShift.Size = new Size(640, 48);
+            btnChangeShift.TabIndex = 4;
+            btnChangeShift.Text = "Đổi ca";
+            btnChangeShift.UseVisualStyleBackColor = false;
             // 
             // btnViewWeek
             // 
@@ -457,7 +457,7 @@
             pnlStatLab.BorderColor = Color.FromArgb(233, 213, 255);
             pnlStatLab.BorderWidth = 1;
             pnlStatLab.Controls.Add(lblStatLabNum);
-            pnlStatLab.Controls.Add(lblStatLabTitle);
+            pnlStatLab.Controls.Add(lblTodayAppointment);
             pnlStatLab.CornerRadius = 12;
             pnlStatLab.Dock = DockStyle.Fill;
             pnlStatLab.FillColor = Color.FromArgb(250, 245, 255);
@@ -477,15 +477,15 @@
             lblStatLabNum.TabIndex = 1;
             lblStatLabNum.Text = "0";
             // 
-            // lblStatLabTitle
+            // lblTodayAppointment
             // 
-            lblStatLabTitle.Font = new Font("Segoe UI", 9.5F);
-            lblStatLabTitle.ForeColor = Color.FromArgb(126, 34, 206);
-            lblStatLabTitle.Location = new Point(27, 157);
-            lblStatLabTitle.Name = "lblStatLabTitle";
-            lblStatLabTitle.Size = new Size(297, 32);
-            lblStatLabTitle.TabIndex = 0;
-            lblStatLabTitle.Text = "Yêu cầu XN chờ";
+            lblTodayAppointment.Font = new Font("Segoe UI", 9.5F);
+            lblTodayAppointment.ForeColor = Color.FromArgb(126, 34, 206);
+            lblTodayAppointment.Location = new Point(27, 157);
+            lblTodayAppointment.Name = "lblTodayAppointment";
+            lblTodayAppointment.Size = new Size(297, 32);
+            lblTodayAppointment.TabIndex = 0;
+            lblTodayAppointment.Text = "Lịch hẹn hôm nay";
             // 
             // pnlStatScan
             // 
@@ -626,7 +626,7 @@
         private System.Windows.Forms.TableLayoutPanel pnlStatsGrid;
         private ClinicManagementSystem.Winforms.Forms.RoundedPanel pnlStatLab;
         private System.Windows.Forms.Label lblStatLabNum;
-        private System.Windows.Forms.Label lblStatLabTitle;
+        private System.Windows.Forms.Label lblTodayAppointment;
         private ClinicManagementSystem.Winforms.Forms.RoundedPanel pnlStatScan;
         private System.Windows.Forms.Label lblStatScanNum;
         private System.Windows.Forms.Label lblPatientWaiting;
@@ -645,7 +645,7 @@
         private System.Windows.Forms.Label lblShiftRoom;
         private System.Windows.Forms.Label lblShiftDept;
         private System.Windows.Forms.Button btnViewWeek;
-        private System.Windows.Forms.Button btnRegisterShift;
+        private System.Windows.Forms.Button btnChangeShift;
         private System.Windows.Forms.Label lblShiftFooter;
         private ClinicManagementSystem.Winforms.Forms.RoundedPanel pnlQuickActions;
         private System.Windows.Forms.Label lblActionsTitle;

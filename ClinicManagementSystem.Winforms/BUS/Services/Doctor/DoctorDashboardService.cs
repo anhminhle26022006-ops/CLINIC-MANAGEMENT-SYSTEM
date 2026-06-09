@@ -23,5 +23,9 @@ namespace BUS.Services.Doctor
         {
             return _repo.GetDashboard(doctorId);
         }
+        public void ChangeShift(int doctorId, int newShiftId)
+        {
+            _repo.ChangeShiftToday(doctorId, newShiftId);
+        }
     }
 }
