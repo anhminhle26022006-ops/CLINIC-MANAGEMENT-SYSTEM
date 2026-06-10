@@ -1,24 +1,30 @@
+using BUS.Services;
+using ClinicManagementSystem.Winforms;
+using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
+using ClinicManagementSystem.Winforms.UserControls.Technician;
+using CMS.Core.Identity;
+using DAL;
+using DAL.Models;
+using DTO;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using ClinicManagementSystem.Winforms;
-using BUS.Services;
-using CMS.Core.Identity;
-using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
-using DTO;
-using DAL;
-using ClinicManagementSystem.Winforms.UserControls.Technician;
-using Newtonsoft.Json.Linq;
-using System.Diagnostics;
+// Alias để tránh nhầm lẫn Role
+using RoleConst = CMS.Core.Identity.Role;
 
 namespace ClinicManagementSystem.Winforms.UserControls
 {
     public partial class TechnicianMainform : Form
     {
-private readonly Color primary = Color.FromArgb(47, 94, 240);
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+
+        private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;
         private readonly Color pageBack = Color.FromArgb(247, 249, 252);
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
@@ -44,9 +50,10 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
             layoutReady = true;
         }
 
-        public TechnicianMainform(UserDTO user) : this()
+        public TechnicianMainform(CMSDbContext context, UserDTO user) : this()
         {
-            this.currentUser = user;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = user ?? throw new ArgumentNullException(nameof(user));
             lblUserName.Text = user.Name;
             lblUserEmail.Text = user.Email ?? user.Username;
             lblAvatar.Text = string.IsNullOrEmpty(user.Name) ? "K" : user.Name.Substring(0, 1).ToUpper();
@@ -132,7 +139,7 @@ private readonly Color primary = Color.FromArgb(47, 94, 240);
             lblPageTitle.Text = "Ca làm việc";
             lblPageSubtitle.Text = "Quản lý lịch trình làm việc và lịch trực";
             SetActiveNav(btnNavShifts);
-            LoadContentControl(new RoleShiftCalendar(currentUser, Role.Technician));
+            LoadContentControl(new RoleShiftCalendar(_currentUser, RoleConst.Technician));
         }
 
         private void ShowRecords(int preselectedRequestId = 0)

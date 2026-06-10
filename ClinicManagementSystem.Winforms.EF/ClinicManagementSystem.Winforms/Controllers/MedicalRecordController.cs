@@ -8,9 +8,6 @@ namespace ClinicManagementSystem.Winforms.Controllers
     {
         private readonly MedicalRecordBUS bus = new();
 
-        public List<MedicalRecordDto> GetAll()
-        {
-            return bus.GetAllErmRecords();
-        }
+        
     }
 }

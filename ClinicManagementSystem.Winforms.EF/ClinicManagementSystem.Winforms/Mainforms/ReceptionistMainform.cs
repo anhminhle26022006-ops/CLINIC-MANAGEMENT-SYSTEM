@@ -13,13 +13,22 @@ using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
 using ClinicManagementSystem.Winforms.UserControls;
 using ClinicManagementSystem.Winforms.UserControls.reception;
 using DAL;
+using DAL.Models;
 using DTO;
 using Newtonsoft.Json.Linq;
+
+// Alias
+using RoleConst = CMS.Core.Identity.Role;
+// Alias cho UserControl ReceptionPayment để tránh nhầm với DAL.Models.Payment
+using ReceptionPayment = ClinicManagementSystem.Winforms.UserControls.reception.Payment;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
     public partial class ReceptionistMainform : Form
     {
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+
         private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;
         private readonly Color pageBack = Color.FromArgb(247, 249, 252);
@@ -29,13 +38,9 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private readonly PatientBUS patientBUS = new PatientBUS();
         private readonly TechnicianRequestBUS requestBUS = new TechnicianRequestBUS();
         private readonly TechnicianShiftBUS shiftBUS = new TechnicianShiftBUS();
-        private UserDTO currentUser;
-        private bool layoutReady;
         private readonly ApiSyncBUS apiSyncBUS = new ApiSyncBUS();
 
-        // Custom Navigation Buttons
-
-        // Active request for processing transitions
+        private bool layoutReady;
 
         public event EventHandler LogoutRequested;
         public event EventHandler CloseRequested;
@@ -46,12 +51,13 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             layoutReady = true;
             btnNavOverview.Click += btnNavOverview_Click;
             btnNavShifts.Click += btnNavShifts_Click;
-
         }
 
-        public ReceptionistMainform(UserDTO user) : this()
+        public ReceptionistMainform(CMSDbContext context, UserDTO user) : this()
         {
-            this.currentUser = user;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = user ?? throw new ArgumentNullException(nameof(user));
+
             lblUserName.Text = user.Name;
             lblUserEmail.Text = user.Email ?? user.Username;
             lblAvatar.Text = string.IsNullOrEmpty(user.Name) ? "K" : user.Name.Substring(0, 1).ToUpper();
@@ -70,51 +76,15 @@ namespace ClinicManagementSystem.Winforms.Mainforms
                 MessageBox.Show(ex.Message);
             }
 
-            btnLogout.Click += (s, ev) =>
-            {
-                LogoutRequested?.Invoke(this, EventArgs.Empty);
-            };
-
-            btnClose.Click += (s, ev) =>
-            {
-                CloseRequested?.Invoke(this, EventArgs.Empty);
-            };
+            btnLogout.Click += (s, ev) => LogoutRequested?.Invoke(this, EventArgs.Empty);
+            btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
 
             LoadContent(new ReceptionOverview());
-        }
-
-        private Button CreateSidebarButton(string text, Point location, EventHandler onClick)
-        {
-            Button btn = new Button
-            {
-                Text = text,
-                Location = location,
-                Size = new Size(214, 44),
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                FlatStyle = FlatStyle.Flat,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(16, 0, 0, 0),
-                Cursor = Cursors.Hand,
-                BackColor = Color.White,
-                ForeColor = Color.FromArgb(55, 65, 81),
-                UseVisualStyleBackColor = false
-            };
-            btn.FlatAppearance.BorderSize = 0;
-            btn.Click += onClick;
-            panelSidebar.Controls.Add(btn);
-            return btn;
         }
 
         private void contentPanel_Resize(object sender, EventArgs e)
         {
             if (!layoutReady || contentPanel.Width < 400) return;
-        }
-
-        private void LoadUserControl(UserControl userControl)
-        {
-            contentPanel.Controls.Clear();
-            userControl.Dock = DockStyle.Fill;
-            contentPanel.Controls.Add(userControl);
         }
 
         private void LoadContent(UserControl control)
@@ -128,7 +98,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
                 ReceptionOverview => "Tổng quan",
                 PatientManagement => "Quản lý bệnh nhân",
                 CreateAppointment => "Đặt lịch khám",
-                Payment => "Thanh toán",
+                ReceptionPayment => "Thanh toán",
                 ScheduleToday => "Lịch khám hôm nay",
                 WaitingList => "Hàng chờ khám",
                 RemindingList => "Nhắc lịch tái khám",
@@ -142,7 +112,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
                 PatientManagement => "Quản lý bệnh nhân",
                 CreateAppointment => "Tạo lịch hẹn",
                 ScheduleToday => "Lịch hẹn hôm nay",
-                Payment => "Thanh toán viện phí và PayOS",
+                ReceptionPayment => "Thanh toán viện phí và PayOS",
                 RemindingList => "Nhắc lịch tái khám",
                 RoleShiftCalendar => "Ca làm việc lễ tân",
                 _ => "Clinic Management System"
@@ -166,7 +136,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void btnPayment_Click(object sender, EventArgs e)
         {
-            LoadContent(new Payment());
+            LoadContent(new ReceptionPayment());
         }
 
         private void btnToday_Click(object sender, EventArgs e)
@@ -186,14 +156,9 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void btnNavShifts_Click(object sender, EventArgs e)
         {
-            LoadContent(new RoleShiftCalendar(currentUser, Role.Receptionist));
-        }
-
-        private void btnLogout_Click(object sender, EventArgs e)
-        {
-
+            // RoleShiftCalendar chỉ có constructor (UserDTO, string role)
+            var shiftControl = new RoleShiftCalendar(_currentUser, RoleConst.Receptionist);
+            LoadContent(shiftControl);
         }
     }
 }
-
-

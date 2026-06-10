@@ -1,21 +1,30 @@
+using BUS;
+using ClinicManagementSystem.Winforms.Forms;
+using DAL.Models;
+using DTO;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BUS;
-using DTO;
-using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 {
     public partial class ucInventoryManagement : PharmacyDashboardViewBase
     {
-        private readonly InventoryBUS inventoryBUS = new InventoryBUS();
+        private readonly InventoryBUS _inventoryBUS;
         private List<MedicineDTO> allMedicines = new List<MedicineDTO>();
 
+        // Constructor mặc định (cho designer)
         public ucInventoryManagement()
         {
             InitializeComponent();
+        }
+
+        // Constructor chính (dùng khi runtime)
+        public ucInventoryManagement(CMSDbContext context, UserDTO currentUser) : this()
+        {
+            _inventoryBUS = new InventoryBUS(context);
         }
 
         private void ucInventoryManagement_Load(object sender, EventArgs e)
@@ -53,7 +62,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
         {
             try
             {
-                allMedicines = inventoryBUS.GetAllMedicines();
+                allMedicines = _inventoryBUS.GetAllMedicines();
             }
             catch (Exception ex)
             {
@@ -63,7 +72,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 
             // Calculate stats
             decimal totalValueVal = allMedicines.Sum(m => m.Price * m.Stock);
-            string totalValueStr = totalValueVal >= 1000000 
+            string totalValueStr = totalValueVal >= 1000000
                 ? (totalValueVal / 1000000m).ToString("N1") + "M"
                 : totalValueVal.ToString("N0");
 
@@ -87,9 +96,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 
             var filtered = allMedicines.Where(m =>
             {
-                bool matchesSearch = string.IsNullOrEmpty(term) || 
-                                     m.Name.ToLower().Contains(term) || 
-                                     m.BatchNumber.ToLower().Contains(term);
+                bool matchesSearch = string.IsNullOrEmpty(term) ||
+                                     m.Name.ToLower().Contains(term) ||
+                                     (m.BatchNumber?.ToLower().Contains(term) ?? false);
 
                 string cat = GetCategory(m.Name);
                 bool matchesCategory = category == "Tất cả danh mục" || cat == category;
@@ -120,22 +129,16 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
         private void dgvInventory_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0 || dgvInventory.Rows[e.RowIndex].Tag is not MedicineDTO medicine)
-            {
                 return;
-            }
 
             if (IsActionColumn(e.ColumnIndex))
-            {
                 ShowInventoryActionMenu(medicine);
-            }
         }
 
         private bool IsActionColumn(int columnIndex)
         {
             if (columnIndex < 0 || columnIndex >= dgvInventory.Columns.Count)
-            {
                 return false;
-            }
 
             DataGridViewColumn column = dgvInventory.Columns[columnIndex];
             string columnName = column.Name ?? string.Empty;
@@ -161,18 +164,13 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
         private void AdjustStock(MedicineDTO medicine, bool increase)
         {
             int quantity = PromptQuantity(increase ? "Nhập kho" : "Xuất kho", medicine);
-            if (quantity <= 0)
-            {
-                return;
-            }
+            if (quantity <= 0) return;
 
             try
             {
                 int delta = increase ? quantity : -quantity;
-                if (inventoryBUS.AdjustStock(medicine.MedicineID, delta))
-                {
+                if (_inventoryBUS.AdjustStock(medicine.MedicineID, delta))
                     LoadInventory();
-                }
             }
             catch (Exception ex)
             {
@@ -197,19 +195,19 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             {
                 Text = $"{medicine.Name}\nSố lượng ({medicine.Unit}):",
                 AutoSize = false,
-                Location = new System.Drawing.Point(18, 16),
-                Size = new System.Drawing.Size(310, 48)
+                Location = new Point(18, 16),
+                Size = new Size(310, 48)
             };
             NumericUpDown number = new NumericUpDown
             {
                 Minimum = 1,
                 Maximum = 100000,
                 Value = 1,
-                Location = new System.Drawing.Point(18, 72),
+                Location = new Point(18, 72),
                 Width = 310
             };
-            Button ok = new Button { Text = "Lưu", DialogResult = DialogResult.OK, Location = new System.Drawing.Point(124, 112), Width = 92 };
-            Button cancel = new Button { Text = "Hủy", DialogResult = DialogResult.Cancel, Location = new System.Drawing.Point(236, 112), Width = 92 };
+            Button ok = new Button { Text = "Lưu", DialogResult = DialogResult.OK, Location = new Point(124, 112), Width = 92 };
+            Button cancel = new Button { Text = "Hủy", DialogResult = DialogResult.Cancel, Location = new Point(236, 112), Width = 92 };
 
             form.Controls.Add(label);
             form.Controls.Add(number);
@@ -225,24 +223,18 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
         {
             using AddMedicineForm form = new AddMedicineForm(medicine, viewOnly);
             if (form.ShowDialog() == DialogResult.OK)
-            {
                 LoadInventory();
-            }
         }
 
         private void DeleteMedicine(MedicineDTO medicine)
         {
             if (MessageBox.Show($"Xóa thuốc {medicine.Name}?", "Xóa thuốc", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-            {
                 return;
-            }
 
             try
             {
-                if (inventoryBUS.DeleteMedicine(medicine.MedicineID))
-                {
+                if (_inventoryBUS.DeleteMedicine(medicine.MedicineID))
                     LoadInventory();
-                }
             }
             catch (Exception ex)
             {
@@ -276,9 +268,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             using (var form = new AddMedicineForm())
             {
                 if (form.ShowDialog() == DialogResult.OK)
-                {
                     LoadInventory();
-                }
             }
         }
     }

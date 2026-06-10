@@ -1,25 +1,33 @@
-using System;
-using System.Windows.Forms;
-using DTO;
 using ClinicManagementSystem.Winforms.Mainforms;
 using ClinicManagementSystem.Winforms.UserControls;
 using CMS.Core.Identity;
 using CMS.Core.Session;
+using DAL.Models;
+using DTO;
+using System;
+using System.Windows.Forms;
+
+// Dùng alias để tránh nhầm lẫn giữa Role constants và Role entity
+using RoleConst = CMS.Core.Identity.Role;
 
 namespace ClinicManagementSystem.Winforms.Forms
 {
     public partial class MainformRole : Form
     {
+        private readonly CMSDbContext _context;
         private readonly UserDTO currentUser;
 
+        // Constructor cho designer (không dùng)
         public MainformRole()
         {
             InitializeComponent();
         }
 
-        public MainformRole(UserDTO user) : this()
+        // Constructor chính: nhận context và user
+        public MainformRole(CMSDbContext context, UserDTO user) : this()
         {
-            currentUser = user;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            currentUser = user ?? throw new ArgumentNullException(nameof(user));
         }
 
         private void TechnicianDashboardForm_Load(object sender, EventArgs e)
@@ -42,12 +50,12 @@ namespace ClinicManagementSystem.Winforms.Forms
                 string role = RoleNormalizer.Normalize(currentUser.Role);
                 string roleText = role switch
                 {
-                    Role.Admin => "Quản trị viên",
-                    Role.Doctor => "Bác sĩ",
-                    Role.Nurse => "Điều dưỡng",
-                    Role.Pharmacist => "Dược sĩ",
-                    Role.Receptionist => "Tiếp tân",
-                    Role.Technician => "Kỹ thuật viên",
+                    RoleConst.Admin => "Quản trị viên",
+                    RoleConst.Doctor => "Bác sĩ",
+                    RoleConst.Nurse => "Điều dưỡng",
+                    RoleConst.Pharmacist => "Dược sĩ",
+                    RoleConst.Receptionist => "Tiếp tân",
+                    RoleConst.Technician => "Kỹ thuật viên",
                     _ => role
                 };
                 this.Text = "HealthCare+ - " + roleText;
@@ -55,7 +63,7 @@ namespace ClinicManagementSystem.Winforms.Forms
 
             dashboard.Dock = DockStyle.Fill;
 
-            // Wire up events dynamically
+            // Gắn sự kiện động
             try
             {
                 var logoutEvent = dashboard.GetType().GetEvent("LogoutRequested");
@@ -88,26 +96,23 @@ namespace ClinicManagementSystem.Winforms.Forms
 
         private Form CreateDashboardForCurrentUser()
         {
-            if (currentUser == null)
-            {
-                return null;
-            }
+            if (currentUser == null) return null;
 
             string role = RoleNormalizer.Normalize(currentUser.Role);
             switch (role)
             {
-                case Role.Admin:
-                    return new AdminMainform(currentUser);
-                case Role.Doctor:
-                    return new DoctorMainform(currentUser);
-                case Role.Nurse:
-                    return new NurseMainform(currentUser);
-                case Role.Pharmacist:
-                    return new PharmacyMainform(currentUser);
-                case Role.Receptionist:
-                    return new ReceptionistMainform(currentUser);
-                case Role.Technician:
-                    return new TechnicianMainform(currentUser);
+                case RoleConst.Admin:
+                    return new AdminMainform(_context, currentUser);
+                case RoleConst.Doctor:
+                    return new DoctorMainform(_context, currentUser);
+                case RoleConst.Nurse:
+                    return new NurseMainform(_context, currentUser);
+                case RoleConst.Pharmacist:
+                    return new PharmacyMainform(_context, currentUser);
+                case RoleConst.Receptionist:
+                    return new ReceptionistMainform(_context, currentUser);
+                case RoleConst.Technician:
+                    return new TechnicianMainform(_context, currentUser);
                 default:
                     return null;
             }
@@ -125,4 +130,3 @@ namespace ClinicManagementSystem.Winforms.Forms
         }
     }
 }
-

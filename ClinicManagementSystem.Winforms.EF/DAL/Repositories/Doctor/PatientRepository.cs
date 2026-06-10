@@ -1,106 +1,118 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using DAL.DataContext;
-using DAL.Interfaces.Doctor;
+using DAL.Models;
 using DTO;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using DAL.Interfaces.Doctor;
 
 namespace DAL.Repositories.Doctor
 {
     public class PatientRepository : IPatientRepository
     {
+        private readonly CMSDbContext _context;
+
+        public PatientRepository(CMSDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
         public async Task<List<ApiPatientDTO>> GetAllAsync()
         {
-            string query = @"
-                SELECT PatientID, PatientUUID, PatientCode, FullName, Gender, DOB, Phone, Address, BloodType, Allergy
-                FROM Patients";
+            var patients = await _context.Patients
+                .Select(p => new ApiPatientDTO
+                {
+                    LegacyPatientUuid = p.PatientUuid,
+                    PatientCode = p.PatientCode,
+                    FullName = p.FullName,
+                    Gender = p.Gender ?? "",
+                    DOB = p.Dob.HasValue ? p.Dob.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd") : "",
+                    Phone = p.Phone ?? "",
+                    Address = p.Address ?? "",
+                    BloodType = p.BloodType ?? "",
+                    Allergy = p.Allergy ?? ""
+                })
+                .ToListAsync();
 
-            using var conn = DatabaseHelper.GetConnection();
-            using var cmd = new SqlCommand(query, conn);
-            await conn.OpenAsync();
-            using var reader = await cmd.ExecuteReaderAsync();
-
-            List<ApiPatientDTO> list = new List<ApiPatientDTO>();
-            while (await reader.ReadAsync())
-            {
-                list.Add(MapReader(reader));
-            }
-
-            return list;
+            return patients;
         }
 
         public async Task<ApiPatientDTO> GetByCodeAsync(string code)
         {
             if (string.IsNullOrWhiteSpace(code))
-            {
                 return null;
-            }
 
-            string query = @"
-                SELECT TOP 1 PatientID, PatientUUID, PatientCode, FullName, Gender, DOB, Phone, Address, BloodType, Allergy
-                FROM Patients
-                WHERE PatientCode = @PatientCode";
+            var patient = await _context.Patients
+                .Where(p => p.PatientCode == code.Trim())
+                .Select(p => new ApiPatientDTO
+                {
+                    LegacyPatientUuid = p.PatientUuid,
+                    PatientCode = p.PatientCode,
+                    FullName = p.FullName,
+                    Gender = p.Gender ?? "",
+                    DOB = p.Dob.HasValue ? p.Dob.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd") : "",
+                    Phone = p.Phone ?? "",
+                    Address = p.Address ?? "",
+                    BloodType = p.BloodType ?? "",
+                    Allergy = p.Allergy ?? ""
+                })
+                .FirstOrDefaultAsync();
 
-            using var conn = DatabaseHelper.GetConnection();
-            using var cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@PatientCode", code.Trim());
-            await conn.OpenAsync();
-            using var reader = await cmd.ExecuteReaderAsync();
-
-            return await reader.ReadAsync() ? MapReader(reader) : null;
+            return patient;
         }
 
         public async Task<int?> GetIdByCodeAsync(string code)
         {
             if (string.IsNullOrWhiteSpace(code))
-            {
                 return null;
-            }
 
-            using var conn = DatabaseHelper.GetConnection();
-            using var cmd = new SqlCommand("SELECT TOP 1 PatientID FROM Patients WHERE PatientCode = @PatientCode", conn);
-            cmd.Parameters.AddWithValue("@PatientCode", code.Trim());
-            await conn.OpenAsync();
-            object result = await cmd.ExecuteScalarAsync();
+            var id = await _context.Patients
+                .Where(p => p.PatientCode == code.Trim())
+                .Select(p => (int?)p.PatientId)
+                .FirstOrDefaultAsync();
 
-            return result == null || result == DBNull.Value ? null : Convert.ToInt32(result);
+            return id;
         }
 
         public async Task<ApiPatientDTO> InsertAsync(ApiPatientDTO dto)
         {
-            string query = @"
-                INSERT INTO Patients(PatientUUID, PatientCode, FullName, Gender, DOB, Phone, Address, BloodType, Allergy)
-                VALUES (@uuid, @code, @name, @gender, @dob, @phone, @addr, @blood, @allergy)";
-
-            using var conn = DatabaseHelper.GetConnection();
-            using var cmd = new SqlCommand(query, conn);
-            AddParameters(cmd, dto);
-            await conn.OpenAsync();
-            await cmd.ExecuteNonQueryAsync();
+            var patient = new Patient
+            {
+                PatientUuid = dto.LegacyPatientUuid ?? Guid.NewGuid(),
+                PatientCode = dto.PatientCode,
+                FullName = dto.FullName,
+                Gender = string.IsNullOrWhiteSpace(dto.Gender) ? null : dto.Gender,
+                Dob = string.IsNullOrWhiteSpace(dto.DOB) ? null : DateOnly.FromDateTime(DateTime.Parse(dto.DOB)),
+                Phone = string.IsNullOrWhiteSpace(dto.Phone) ? null : dto.Phone,
+                Address = string.IsNullOrWhiteSpace(dto.Address) ? null : dto.Address,
+                BloodType = string.IsNullOrWhiteSpace(dto.BloodType) ? null : dto.BloodType,
+                Allergy = string.IsNullOrWhiteSpace(dto.Allergy) ? null : dto.Allergy,
+                CreatedAt = DateTime.Now
+            };
+            _context.Patients.Add(patient);
+            await _context.SaveChangesAsync();
             return dto;
         }
 
         public async Task<ApiPatientDTO> UpdateAsync(ApiPatientDTO dto)
         {
-            string query = @"
-                UPDATE Patients
-                SET PatientUUID = COALESCE(@uuid, PatientUUID),
-                    FullName = @name,
-                    Gender = @gender,
-                    DOB = @dob,
-                    Phone = @phone,
-                    Address = @addr,
-                    BloodType = @blood,
-                    Allergy = @allergy
-                WHERE PatientCode = @code";
+            var patient = await _context.Patients
+                .FirstOrDefaultAsync(p => p.PatientCode == dto.PatientCode);
+            if (patient == null)
+                throw new InvalidOperationException($"Patient with code {dto.PatientCode} not found");
 
-            using var conn = DatabaseHelper.GetConnection();
-            using var cmd = new SqlCommand(query, conn);
-            AddParameters(cmd, dto);
-            await conn.OpenAsync();
-            await cmd.ExecuteNonQueryAsync();
+            // Chỉ cập nhật các trường cho phép; không thay đổi PatientCode và PatientUuid
+            patient.FullName = dto.FullName;
+            patient.Gender = string.IsNullOrWhiteSpace(dto.Gender) ? null : dto.Gender;
+            patient.Dob = string.IsNullOrWhiteSpace(dto.DOB) ? null : DateOnly.FromDateTime(DateTime.Parse(dto.DOB));
+            patient.Phone = string.IsNullOrWhiteSpace(dto.Phone) ? null : dto.Phone;
+            patient.Address = string.IsNullOrWhiteSpace(dto.Address) ? null : dto.Address;
+            patient.BloodType = string.IsNullOrWhiteSpace(dto.BloodType) ? null : dto.BloodType;
+            patient.Allergy = string.IsNullOrWhiteSpace(dto.Allergy) ? null : dto.Allergy;
+
+            await _context.SaveChangesAsync();
             return dto;
         }
 
@@ -110,39 +122,11 @@ namespace DAL.Repositories.Doctor
             if (existingId.HasValue)
             {
                 await UpdateAsync(dto);
-                return;
             }
-
-            await InsertAsync(dto);
-        }
-
-        private static void AddParameters(SqlCommand cmd, ApiPatientDTO dto)
-        {
-            cmd.Parameters.AddWithValue("@uuid", (object)dto.SyncUuid ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@code", dto.PatientCode ?? "");
-            cmd.Parameters.AddWithValue("@name", dto.FullName ?? "");
-            cmd.Parameters.AddWithValue("@gender", (object)dto.Gender ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@dob", (object)dto.DOB ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@phone", (object)dto.Phone ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@addr", (object)dto.Address ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@blood", (object)dto.BloodType ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@allergy", (object)dto.Allergy ?? DBNull.Value);
-        }
-
-        private static ApiPatientDTO MapReader(IDataRecord reader)
-        {
-            return new ApiPatientDTO
+            else
             {
-                LegacyPatientUuid = reader["PatientUUID"] == DBNull.Value ? null : (Guid?)Guid.Parse(reader["PatientUUID"].ToString()),
-                PatientCode = reader["PatientCode"]?.ToString(),
-                FullName = reader["FullName"]?.ToString(),
-                Gender = reader["Gender"] == DBNull.Value ? "" : reader["Gender"].ToString(),
-                DOB = reader["DOB"] == DBNull.Value ? "" : Convert.ToDateTime(reader["DOB"]).ToString("yyyy-MM-dd"),
-                Phone = reader["Phone"] == DBNull.Value ? "" : reader["Phone"].ToString(),
-                Address = reader["Address"] == DBNull.Value ? "" : reader["Address"].ToString(),
-                BloodType = reader["BloodType"] == DBNull.Value ? "" : reader["BloodType"].ToString(),
-                Allergy = reader["Allergy"] == DBNull.Value ? "" : reader["Allergy"].ToString()
-            };
+                await InsertAsync(dto);
+            }
         }
     }
 }

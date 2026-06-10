@@ -1,20 +1,27 @@
+using BUS.Services;
+using DAL.Models;
+using DAL.Repositories;
+using DTO;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BUS.Services;
-using DTO;
+using RoleConst = CMS.Core.Identity.Role;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Admin
 {
     public partial class ucShiftManagement : UserControl
     {
-        private readonly EmployeeBUS employeeBUS = new EmployeeBUS(new DAL.Repositories.EmployeeDAL());
-        private readonly EmployeeShiftBUS employeeShiftBUS = new EmployeeShiftBUS();
-        private readonly WorkShiftBUS workShiftBUS = new WorkShiftBUS();
-        private readonly DepartmentBUS departmentBUS = new DepartmentBUS();
-        private readonly RoomBUS roomBUS = new RoomBUS();
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+
+        private EmployeeBUS employeeBUS;
+        private EmployeeShiftBUS employeeShiftBUS;
+        private WorkShiftBUS workShiftBUS;
+        private DepartmentBUS departmentBUS;
+        private RoomBUS roomBUS;
+
         private List<EmployeeDTO> employees = new List<EmployeeDTO>();
         private List<EmployeeShiftDTO> shifts = new List<EmployeeShiftDTO>();
         private List<WorkShiftDTO> workShifts = new List<WorkShiftDTO>();
@@ -26,7 +33,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             InitializeComponent();
             AdminUiStyle.ApplyGrid(dgvShifts);
 
-            // Add missing columns programmatically to prevent DataGridView exception
+            // Thêm các cột động (giữ nguyên logic cũ)
             dgvShifts.Columns.Add(new DataGridViewTextBoxColumn { Name = "colEmpName", HeaderText = "TÊN NHÂN VIÊN", FillWeight = 15 });
             dgvShifts.Columns.Add(new DataGridViewTextBoxColumn { Name = "colRole", HeaderText = "VAI TRÒ", FillWeight = 10 });
             dgvShifts.Columns.Add(new DataGridViewTextBoxColumn { Name = "colDept", HeaderText = "CHUYÊN KHOA", FillWeight = 15 });
@@ -37,8 +44,29 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             dgvShifts.Columns.Add(new DataGridViewTextBoxColumn { Name = "colView", HeaderText = "", FillWeight = 5, ReadOnly = true });
             dgvShifts.Columns.Add(new DataGridViewTextBoxColumn { Name = "colEdit", HeaderText = "", FillWeight = 5, ReadOnly = true });
             dgvShifts.Columns.Add(new DataGridViewTextBoxColumn { Name = "colDelete", HeaderText = "", FillWeight = 5, ReadOnly = true });
+        }
 
-            LoadData();
+        public ucShiftManagement(CMSDbContext context, UserDTO currentUser) : this()
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
+
+            // Khởi tạo BUS với context (chỉ EmployeeBUS cần context)
+            employeeBUS = new EmployeeBUS(new EmployeeDAL(_context));
+            employeeShiftBUS = new EmployeeShiftBUS();
+            workShiftBUS = new WorkShiftBUS();
+            departmentBUS = new DepartmentBUS();
+            roomBUS = new RoomBUS();
+
+            if (!CMS.Core.Identity.RoleNormalizer.Normalize(_currentUser.Role).Equals(RoleConst.Admin, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng này.", "Không thể truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.Enabled = false;
+            }
+            else
+            {
+                LoadData();
+            }
         }
 
         public void LoadData()
@@ -173,28 +201,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             }
         }
 
-        private void dtpDate_ValueChanged(object sender, EventArgs e)
-        {
-            ApplyFilters();
-        }
+        private void dtpDate_ValueChanged(object sender, EventArgs e) => ApplyFilters();
+        private void cboEmployee_SelectedIndexChanged(object sender, EventArgs e) => ApplyFilters();
 
-        private void cboEmployee_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ApplyFilters();
-        }
-
-        private void dgvShifts_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            HandleShiftGridAction(e);
-        }
+        private void dgvShifts_CellClick(object sender, DataGridViewCellEventArgs e) => HandleShiftGridAction(e);
 
         private void dgvShifts_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0 || e.ColumnIndex < 0)
-            {
-                return;
-            }
-
+            if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
             string columnName = dgvShifts.Columns[e.ColumnIndex].Name;
             if (columnName is "colView" or "colEdit" or "colDelete")
             {
@@ -205,19 +219,13 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         }
 
         private void dgvShifts_CellPainting(object sender, DataGridViewCellPaintingEventArgs e) { }
-
         private void panelKPI_Resize(object sender, EventArgs e) { }
-
-        private void dgvShifts_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-        }
+        private void dgvShifts_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 
         private void HandleShiftGridAction(DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0 || dgvShifts.Rows[e.RowIndex].Tag is not EmployeeShiftDTO shift)
-            {
                 return;
-            }
 
             string columnName = dgvShifts.Columns[e.ColumnIndex].Name;
             if (columnName == "colView")
@@ -228,19 +236,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
             if (columnName == "colEdit")
             {
-                if (!CanEditShiftDate(shift.WorkDate))
-                {
-                    return;
-                }
-
+                if (!CanEditShiftDate(shift.WorkDate)) return;
                 if (AdminRecordDialogs.EditShift(shift, employees, workShifts, departments, rooms, false, out EmployeeShiftDTO edited))
                 {
                     try
                     {
-                        if (employeeShiftBUS.UpdateShift(edited))
-                        {
-                            LoadData();
-                        }
+                        if (employeeShiftBUS.UpdateShift(edited)) LoadData();
                     }
                     catch (Exception ex)
                     {
@@ -268,11 +269,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private static bool CanEditShiftDate(DateTime workDate)
         {
-            if (workDate.Date >= DateTime.Today)
-            {
-                return true;
-            }
-
+            if (workDate.Date >= DateTime.Today) return true;
             MessageBox.Show("Không thể sửa ca trực trong quá khứ.", "Admin", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return false;
         }

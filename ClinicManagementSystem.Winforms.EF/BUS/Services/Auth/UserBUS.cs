@@ -1,13 +1,21 @@
-using System;
-using System.Collections.Generic;
+using DAL.DataContext;
+using DAL.Models;
 using DAL.Repositories;
 using DTO;
+using System;
+using System.Collections.Generic;
 
 namespace BUS.Services
 {
     public class UserBUS
     {
-        private readonly UserDAL dal = new UserDAL();
+        private readonly UserDAL _dal;
+
+        // Constructor nhận CMSDbContext
+        public UserBUS(CMSDbContext context)
+        {
+            _dal = new UserDAL(context);
+        }
 
         public UserDTO Login(string username, string password)
         {
@@ -20,12 +28,12 @@ namespace BUS.Services
                 throw new ArgumentException("Mật khẩu không được để trống.");
             }
 
-            return dal.Authenticate(username.Trim(), password);
+            return _dal.Authenticate(username.Trim(), password);
         }
 
         public List<UserDTO> GetAllUsers()
         {
-            return dal.GetAllUsers();
+            return _dal.GetAllUsers();
         }
 
         public bool CreateUser(UserDTO user)
@@ -35,7 +43,7 @@ namespace BUS.Services
             {
                 return false;
             }
-            return dal.AddUser(user);
+            return _dal.AddUser(user);
         }
 
         public bool UpdateUser(UserDTO user)
@@ -50,13 +58,12 @@ namespace BUS.Services
                 return false;
             }
 
-            return dal.UpdateUser(user);
+            return _dal.UpdateUser(user);
         }
 
         public bool SetActive(int userId, bool isActive)
         {
-            return userId > 0 && dal.SetActive(userId, isActive);
+            return userId > 0 && _dal.SetActive(userId, isActive);
         }
     }
 }
-

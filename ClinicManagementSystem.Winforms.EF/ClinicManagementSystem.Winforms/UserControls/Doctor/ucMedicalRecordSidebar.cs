@@ -1,4 +1,8 @@
-﻿using ClinicManagementSystem.Winforms.Controllers;
+﻿using BUS.Services.ERM;
+using ClinicManagementSystem.Winforms.Controllers;
+using DAL.Models;
+using DAL.Repositories.ERM;
+using DTO;
 using DTO.Clinical.erm;
 using System;
 using System.Windows.Forms;
@@ -7,11 +11,29 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
 {
     public partial class ucMedicalRecordSidebar : UserControl
     {
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+        private readonly ERMBus _ermBus;
+
         private readonly MedicalRecordController _controller;
         private List<MedicalRecordDto> _data;
 
-        public ucMedicalRecordSidebar(DTO.UserDTO currentUser) : this()
+        public ucMedicalRecordSidebar(CMSDbContext context, UserDTO currentUser) : this()
         {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
+
+            var repository = new ERMRepository(_context);
+            _ermBus = new ERMBus(repository);
+
+            InitializeGrid();
+            LoadData();
+
+            // Gắn sự kiện cho các control filter (nếu có)
+            if (txtSearch != null) txtSearch.TextChanged += (s, e) => ApplyFilter();
+            if (cboStatus != null) cboStatus.SelectedIndexChanged += (s, e) => ApplyFilter();
+            if (dtFrom != null) dtFrom.ValueChanged += (s, e) => ApplyFilter();
+            if (dtTo != null) dtTo.ValueChanged += (s, e) => ApplyFilter();
         }
 
         public ucMedicalRecordSidebar()

@@ -1,8 +1,10 @@
 ﻿﻿using BUS.Services;
-using CMS.Core.Identity;
 using ClinicManagementSystem.Winforms;
 using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
+using ClinicManagementSystem.Winforms.UserControls.Nurse;
+using CMS.Core.Identity;
 using DAL;
+using DAL.Models;
 using DTO;
 using Newtonsoft.Json.Linq;
 using System;
@@ -12,12 +14,14 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using ClinicManagementSystem.Winforms.UserControls.Nurse;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
     public partial class NurseMainform : Form
     {
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+
         private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color surface = Color.White;
         private readonly Color pageBack = Color.FromArgb(247, 249, 252);
@@ -43,14 +47,14 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             layoutReady = true;
         }
 
-        public NurseMainform(UserDTO user) : this()
+        public NurseMainform(CMSDbContext context, UserDTO user) : this()
         {
-            currentUser = user;
-            string displayName = string.IsNullOrWhiteSpace(user?.Name) ? "Y tá" : user.Name.Trim();
-            string displayEmail = !string.IsNullOrWhiteSpace(user?.Email)
-                ? user.Email.Trim()
-                : user?.Username ?? "nurse";
-
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = user ?? throw new ArgumentNullException(nameof(user));
+            string displayName = string.IsNullOrWhiteSpace(_currentUser?.Name) ? "Y tá" : _currentUser.Name.Trim();
+            string displayEmail = !string.IsNullOrWhiteSpace(_currentUser?.Email)
+                ? _currentUser.Email.Trim()
+                : _currentUser?.Username ?? "nurse";
             lblUserName.Text = displayName;
             lblUserEmail.Text = displayEmail;
             lblAvatar.Text = displayName.Substring(0, 1).ToUpper();
@@ -70,8 +74,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnQueue.Click += (s, ev) => ShowNurseControl(new ucQueueManagement(), "Hàng chờ khám", btnQueue);
             btnVitalSigns.Click += (s, ev) => ShowNurseControl(new ucNurseVitalSigns(), "Chỉ số sinh hiệu", btnVitalSigns);
             btnERM.Click += (s, ev) => ShowNurseControl(new ucNurseMedicalRecords(currentUser), "Bệnh án", btnERM);
-            btnNavShifts.Click += (s, ev) => ShowNurseControl(new RoleShiftCalendar(currentUser, Role.Nurse), "Ca làm việc", btnNavShifts);
-
+            btnNavShifts.Click += (s, ev) => ShowNurseControl(new RoleShiftCalendar(_currentUser, CMS.Core.Identity.Role.Nurse), "Ca làm việc", btnNavShifts);
             ShowNurseControl(new ucNurseOverview(currentUser), "Tổng quan", btnNavOverview);
         }
 
@@ -112,7 +115,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
                     }
                     else if (current is RoleShiftCalendar)
                     {
-                        ShowNurseControl(new RoleShiftCalendar(currentUser, Role.Nurse), "Ca làm việc", btnNavShifts);
+                        ShowNurseControl(new RoleShiftCalendar(_currentUser, CMS.Core.Identity.Role.Nurse), "Ca làm việc", btnNavShifts);
                     }
                 }
             }

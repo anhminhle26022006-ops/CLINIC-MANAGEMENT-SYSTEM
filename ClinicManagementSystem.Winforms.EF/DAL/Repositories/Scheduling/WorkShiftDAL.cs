@@ -1,89 +1,94 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
-using DAL.DataContext;
+using System.Linq;
 using DAL.Interfaces;
+using DAL.Models;
 using DTO;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
     public class WorkShiftDAL : IWorkShiftDAL
     {
+        private readonly CMSDbContext _context;
+
+        public WorkShiftDAL(CMSDbContext context)
+        {
+            _context = context;
+        }
+
         public List<WorkShiftDTO> GetAll()
         {
-            if (!SchemaHelper.TableExists("Shifts"))
-            {
-                return new List<WorkShiftDTO>();
-            }
-
-            string query = "SELECT ShiftID, Name AS ShiftName, StartTime, EndTime FROM Shifts ORDER BY StartTime";
-            return Map(DatabaseHelper.ExecuteQuery(query));
+            return _context.Shifts
+                .OrderBy(s => s.StartTime)
+                .Select(s => new WorkShiftDTO
+                {
+                    ShiftID = s.ShiftId,
+                    ShiftName = s.Name ?? "",
+                    StartTime = s.StartTime.HasValue ? s.StartTime.Value.ToTimeSpan() : TimeSpan.Zero,
+                    EndTime = s.EndTime.HasValue ? s.EndTime.Value.ToTimeSpan() : TimeSpan.Zero
+                })
+                .ToList();
         }
 
         public WorkShiftDTO GetById(int shiftId)
         {
-            if (!SchemaHelper.TableExists("Shifts") || shiftId <= 0)
-            {
-                return null;
-            }
+            if (shiftId <= 0) return null;
 
-            string query = "SELECT ShiftID, Name AS ShiftName, StartTime, EndTime FROM Shifts WHERE ShiftID = @ShiftID";
-            List<WorkShiftDTO> list = Map(DatabaseHelper.ExecuteQuery(query, new[]
+            var shift = _context.Shifts.Find(shiftId);
+            if (shift == null) return null;
+
+            return new WorkShiftDTO
             {
-                new SqlParameter("@ShiftID", shiftId)
-            }));
-            return list.Count > 0 ? list[0] : null;
+                ShiftID = shift.ShiftId,
+                ShiftName = shift.Name ?? "",
+                StartTime = shift.StartTime.HasValue ? shift.StartTime.Value.ToTimeSpan() : TimeSpan.Zero,
+                EndTime = shift.EndTime.HasValue ? shift.EndTime.Value.ToTimeSpan() : TimeSpan.Zero
+            };
         }
 
         public WorkShiftDTO GetByName(string shiftName)
         {
-            if (!SchemaHelper.TableExists("Shifts") || string.IsNullOrWhiteSpace(shiftName))
-            {
-                return null;
-            }
+            if (string.IsNullOrWhiteSpace(shiftName)) return null;
 
-            string query = "SELECT ShiftID, Name AS ShiftName, StartTime, EndTime FROM Shifts WHERE Name = @ShiftName";
-            List<WorkShiftDTO> list = Map(DatabaseHelper.ExecuteQuery(query, new[]
+            var shift = _context.Shifts
+                .FirstOrDefault(s => s.Name != null && s.Name.Trim() == shiftName.Trim());
+            if (shift == null) return null;
+
+            return new WorkShiftDTO
             {
-                new SqlParameter("@ShiftName", shiftName.Trim())
-            }));
-            return list.Count > 0 ? list[0] : null;
+                ShiftID = shift.ShiftId,
+                ShiftName = shift.Name ?? "",
+                StartTime = shift.StartTime.HasValue ? shift.StartTime.Value.ToTimeSpan() : TimeSpan.Zero,
+                EndTime = shift.EndTime.HasValue ? shift.EndTime.Value.ToTimeSpan() : TimeSpan.Zero
+            };
         }
 
         public int GetOrCreateShiftId(string shiftName)
         {
-            WorkShiftDTO existing = GetByName(shiftName);
-            if (existing != null)
-            {
-                return existing.ShiftID;
-            }
+            if (string.IsNullOrWhiteSpace(shiftName)) return 0;
 
-            if (!SchemaHelper.TableExists("Shifts"))
-            {
-                return 0;
-            }
+            // Tìm kiếm theo tên (không phân biệt hoa thường? Có thể dùng ToLower)
+            var existing = _context.Shifts
+                .FirstOrDefault(s => s.Name != null && s.Name.Trim().ToLower() == shiftName.Trim().ToLower());
+            if (existing != null) return existing.ShiftId;
 
-            TimeSpan start;
-            TimeSpan end;
-            GetDefaultTime(shiftName, out start, out end);
-
-            string query = @"
-                INSERT INTO Shifts(Name, StartTime, EndTime)
-                OUTPUT inserted.ShiftID
-                VALUES(@ShiftName, @StartTime, @EndTime)";
-            object result = DatabaseHelper.ExecuteScalar(query, new[]
+            // Tạo mới
+            GetDefaultTime(shiftName, out TimeSpan start, out TimeSpan end);
+            var newShift = new Shift
             {
-                new SqlParameter("@ShiftName", shiftName.Trim()),
-                new SqlParameter("@StartTime", start),
-                new SqlParameter("@EndTime", end)
-            });
-            return Convert.ToInt32(result);
+                Name = shiftName.Trim(),
+                StartTime = TimeOnly.FromTimeSpan(start),
+                EndTime = TimeOnly.FromTimeSpan(end)
+            };
+            _context.Shifts.Add(newShift);
+            _context.SaveChanges();
+            return newShift.ShiftId;
         }
 
         public bool Exists(int shiftId)
         {
-            return GetById(shiftId) != null;
+            return _context.Shifts.Any(s => s.ShiftId == shiftId);
         }
 
         private static void GetDefaultTime(string shiftName, out TimeSpan start, out TimeSpan end)
@@ -103,24 +108,9 @@ namespace DAL.Repositories
                 return;
             }
 
+            // Mặc định ca sáng
             start = new TimeSpan(7, 0, 0);
             end = new TimeSpan(11, 30, 0);
-        }
-
-        private static List<WorkShiftDTO> Map(DataTable table)
-        {
-            List<WorkShiftDTO> list = new List<WorkShiftDTO>();
-            foreach (DataRow row in table.Rows)
-            {
-                list.Add(new WorkShiftDTO
-                {
-                    ShiftID = Convert.ToInt32(row["ShiftID"]),
-                    ShiftName = row["ShiftName"].ToString(),
-                    StartTime = row["StartTime"] != DBNull.Value ? (TimeSpan)row["StartTime"] : TimeSpan.Zero,
-                    EndTime = row["EndTime"] != DBNull.Value ? (TimeSpan)row["EndTime"] : TimeSpan.Zero
-                });
-            }
-            return list;
         }
     }
 }

@@ -1,17 +1,22 @@
+using BUS.Services;
+using ClinicManagementSystem.Winforms.UserControls.Admin;
+using DAL.Models;
+using DAL.Repositories;
+using DTO;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BUS.Services;
-using DAL.Repositories;
-using DTO;
-using ClinicManagementSystem.Winforms.UserControls.Admin;
 
 namespace ClinicManagementSystem.Winforms.Shareforms.WorkingShifts
 {
     public class RoleShiftCalendar : UserControl
     {
+        private CMSDbContext _context;
+        private UserDTO _currentUser;
+        private string _role;
+
         private enum CalendarView
         {
             Day,
@@ -19,10 +24,8 @@ namespace ClinicManagementSystem.Winforms.Shareforms.WorkingShifts
             Month
         }
 
-        private readonly UserDTO currentUser;
-        private readonly string roleName;
         private readonly EmployeeShiftBUS shiftBUS = new EmployeeShiftBUS();
-        private readonly EmployeeBUS employeeBUS = new EmployeeBUS(new EmployeeDAL());
+        private EmployeeBUS employeeBUS;
         private readonly WorkShiftBUS workShiftBUS = new WorkShiftBUS();
         private readonly DepartmentBUS departmentBUS = new DepartmentBUS();
         private readonly RoomBUS roomBUS = new RoomBUS();
@@ -50,12 +53,28 @@ namespace ClinicManagementSystem.Winforms.Shareforms.WorkingShifts
         private Button btnWeek;
         private Button btnMonth;
 
-        public RoleShiftCalendar(UserDTO currentUser, string roleName)
+        // Constructor mặc định (dùng cho designer)
+        public RoleShiftCalendar()
         {
-            this.currentUser = currentUser;
-            this.roleName = roleName;
             BuildUi();
-            Load += (s, e) => LoadData();
+        }
+
+        // Constructor 2 tham số (không context)
+        public RoleShiftCalendar(UserDTO currentUser, string roleName) : this()
+        {
+            _currentUser = currentUser;
+            _role = roleName;
+            employeeBUS = new EmployeeBUS(new EmployeeDAL(_context));// Có thể dùng context nếu có
+            LoadData();
+        }
+
+        // Constructor 3 tham số (có context) - dùng trong DoctorMainform
+        public RoleShiftCalendar(CMSDbContext context, UserDTO currentUser, string role) : this(currentUser, role)
+        {
+            _context = context;
+            // Tạo lại employeeBUS với context nếu có
+            if (context != null)
+                employeeBUS = new EmployeeBUS(new EmployeeDAL(context));
         }
 
         private void BuildUi()
@@ -177,17 +196,23 @@ namespace ClinicManagementSystem.Winforms.Shareforms.WorkingShifts
 
         private void LoadData()
         {
+            if (employeeBUS == null)
+            {
+                // Nếu chưa có employeeBUS (do constructor không có context), dùng mặc định
+                employeeBUS = new EmployeeBUS(new EmployeeDAL(_context));
+            }
+
             try
             {
-                int employeeId = currentUser?.EmployeeID ?? 0;
-                shiftBUS.EnsureMonthlySchedule(roleName, employeeId, DateTime.Today, 30);
+                int employeeId = _currentUser?.EmployeeID ?? 0;
+                shiftBUS.EnsureMonthlySchedule(_role, employeeId, DateTime.Today, 30);
                 employees = employeeId > 0
                     ? employeeBUS.GetAll().Where(e => e.EmployeeID == employeeId).ToList()
-                    : employeeBUS.GetByRole(roleName);
+                    : employeeBUS.GetByRole(_role);
                 workShifts = workShiftBUS.GetAll();
                 departments = departmentBUS.GetAll();
                 rooms = roomBUS.GetAll();
-                shifts = employeeId > 0 ? shiftBUS.GetByEmployee(employeeId) : shiftBUS.GetByRole(roleName);
+                shifts = employeeId > 0 ? shiftBUS.GetByEmployee(employeeId) : shiftBUS.GetByRole(_role);
             }
             catch (Exception ex)
             {
@@ -539,11 +564,7 @@ namespace ClinicManagementSystem.Winforms.Shareforms.WorkingShifts
 
         private void DrawBorder(object sender, PaintEventArgs e)
         {
-            if (sender is not Control control)
-            {
-                return;
-            }
-
+            if (sender is not Control control) return;
             using Pen pen = new Pen(border);
             e.Graphics.DrawRectangle(pen, 0, 0, control.Width - 1, control.Height - 1);
         }

@@ -4,17 +4,30 @@ using System.Linq;
 using System.Windows.Forms;
 using DTO;
 using BUS;
+using DAL.Models;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 {
     public partial class ucPharmacyOverview : PharmacyDashboardViewBase
     {
-        private readonly PrescriptionBUS prescriptionBUS = new PrescriptionBUS();
-        private readonly InventoryBUS inventoryBUS = new InventoryBUS();
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+        private readonly PrescriptionBUS prescriptionBUS;
+        private readonly InventoryBUS inventoryBUS;
 
+        // Constructor mặc định (cho designer)
         public ucPharmacyOverview()
         {
             InitializeComponent();
+        }
+
+        // Constructor chính (dùng khi runtime)
+        public ucPharmacyOverview(CMSDbContext context, UserDTO currentUser) : this()
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
+            prescriptionBUS = new PrescriptionBUS(_context);
+            inventoryBUS = new InventoryBUS(_context);
         }
 
         private void ucPharmacyOverview_Load(object sender, EventArgs e)
@@ -96,8 +109,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
                     pnlAlertOne.Visible = true;
                     var m1 = sortedMeds[0];
                     lblAlertMedOne.Text = m1.Name;
-                    lblAlertStockOne.Text = $"Tồn kho:                                   {m1.Stock} {m1.Unit}";
-                    lblAlertMinOne.Text = $"Tối thiểu:                                100 {m1.Unit}";
+                    lblAlertStockOne.Text = $"Tồn kho: {m1.Stock} {m1.Unit}";
+                    lblAlertMinOne.Text = $"Tối thiểu: 100 {m1.Unit}";
                     progressAlertOne.Value = Math.Min(100, Math.Max(0, (m1.Stock * 100) / 100));
                 }
                 else
@@ -110,8 +123,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
                     pnlAlertTwo.Visible = true;
                     var m2 = sortedMeds[1];
                     lblAlertMedTwo.Text = m2.Name;
-                    lblAlertStockTwo.Text = $"Tồn kho:                                   {m2.Stock} {m2.Unit}";
-                    lblAlertMinTwo.Text = $"Tối thiểu:                                150 {m2.Unit}";
+                    lblAlertStockTwo.Text = $"Tồn kho: {m2.Stock} {m2.Unit}";
+                    lblAlertMinTwo.Text = $"Tối thiểu: 150 {m2.Unit}";
                     progressAlertTwo.Value = Math.Min(100, Math.Max(0, (m2.Stock * 100) / 150));
                 }
                 else

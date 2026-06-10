@@ -652,6 +652,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private Panel panel13;
         private Button btnQueue;
         private Button btnPharmacy;
+        private Button btnERM;
         private Panel panel14;
         private Button btnSyncCloud;
     }

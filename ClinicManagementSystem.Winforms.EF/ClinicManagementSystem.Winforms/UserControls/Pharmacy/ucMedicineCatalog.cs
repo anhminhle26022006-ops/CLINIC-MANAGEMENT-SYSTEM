@@ -1,22 +1,30 @@
+using BUS;
+using ClinicManagementSystem.Winforms.Forms;
+using DAL.Models;
+using DTO;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BUS;
-using DTO;
-using ClinicManagementSystem.Winforms.Forms;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 {
     public partial class ucMedicineCatalog : PharmacyDashboardViewBase
     {
-        private readonly InventoryBUS inventoryBUS = new InventoryBUS();
+        private readonly InventoryBUS _inventoryBUS;
         private List<MedicineDTO> allMedicines = new List<MedicineDTO>();
 
+        // Constructor mặc định (cho designer)
         public ucMedicineCatalog()
         {
             InitializeComponent();
+        }
+
+        // Constructor chính (dùng khi runtime)
+        public ucMedicineCatalog(CMSDbContext context, UserDTO currentUser) : this()
+        {
+            _inventoryBUS = new InventoryBUS(context);
         }
 
         private void ucMedicineCatalog_Load(object sender, EventArgs e)
@@ -56,7 +64,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
         {
             try
             {
-                allMedicines = inventoryBUS.GetAllMedicines();
+                allMedicines = _inventoryBUS.GetAllMedicines();
             }
             catch (Exception ex)
             {
@@ -85,10 +93,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
 
             var filtered = allMedicines.Where(m =>
             {
-                bool matchesSearch = string.IsNullOrEmpty(term) || 
-                                     m.Name.ToLower().Contains(term) || 
+                bool matchesSearch = string.IsNullOrEmpty(term) ||
+                                     m.Name.ToLower().Contains(term) ||
                                      m.MedicineID.ToString().Contains(term) ||
-                                     m.BatchNumber.ToLower().Contains(term);
+                                     (m.BatchNumber?.ToLower().Contains(term) ?? false);
 
                 string cat = GetCategory(m.Name);
                 bool matchesCategory = category == "Tất cả loại thuốc" || cat == category;
@@ -120,22 +128,16 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
         private void dgvMedicines_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0 || dgvMedicines.Rows[e.RowIndex].Tag is not MedicineDTO medicine)
-            {
                 return;
-            }
 
             if (IsActionColumn(e.ColumnIndex))
-            {
                 ShowMedicineActionMenu(medicine);
-            }
         }
 
         private bool IsActionColumn(int columnIndex)
         {
             if (columnIndex < 0 || columnIndex >= dgvMedicines.Columns.Count)
-            {
                 return false;
-            }
 
             DataGridViewColumn column = dgvMedicines.Columns[columnIndex];
             string columnName = column.Name ?? string.Empty;
@@ -160,30 +162,21 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
         {
             using AddMedicineForm form = new AddMedicineForm(medicine, viewOnly);
             if (form.ShowDialog() == DialogResult.OK)
-            {
                 LoadMedicines();
-            }
         }
 
         private void DeleteMedicine(MedicineDTO medicine)
         {
-            DialogResult confirm = MessageBox.Show(
-                $"Xóa thuốc {medicine.Name}?",
-                "Xóa thuốc",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+            DialogResult confirm = MessageBox.Show($"Xóa thuốc {medicine.Name}?",
+                "Xóa thuốc", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
             if (confirm != DialogResult.Yes)
-            {
                 return;
-            }
 
             try
             {
-                if (inventoryBUS.DeleteMedicine(medicine.MedicineID))
-                {
+                if (_inventoryBUS.DeleteMedicine(medicine.MedicineID))
                     LoadMedicines();
-                }
             }
             catch (Exception ex)
             {
@@ -205,9 +198,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Pharmacy
             using (var form = new AddMedicineForm())
             {
                 if (form.ShowDialog() == DialogResult.OK)
-                {
                     LoadMedicines();
-                }
             }
         }
     }

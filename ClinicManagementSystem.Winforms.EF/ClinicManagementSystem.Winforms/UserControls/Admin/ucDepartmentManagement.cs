@@ -1,15 +1,17 @@
+using BUS.Services;
+using DAL.Models;
+using DTO;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BUS.Services;
-using DTO;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Admin
 {
     public partial class ucDepartmentManagement : UserControl
     {
+        private readonly CMSDbContext _context;
         private readonly DepartmentBUS departmentBUS = new DepartmentBUS();
         private List<DepartmentDTO> departments = new List<DepartmentDTO>();
 
@@ -19,6 +21,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             AdminUiStyle.ApplyGrid(dgvDepartments);
             dgvDepartments.CellDoubleClick += dgvDepartments_CellDoubleClick;
             LoadData();
+        }
+        public ucDepartmentManagement(CMSDbContext context) : this()
+        {
+            _context = context;
+            // Khởi tạo thêm nếu cần, ví dụ load dữ liệu
         }
 
         public void LoadData()

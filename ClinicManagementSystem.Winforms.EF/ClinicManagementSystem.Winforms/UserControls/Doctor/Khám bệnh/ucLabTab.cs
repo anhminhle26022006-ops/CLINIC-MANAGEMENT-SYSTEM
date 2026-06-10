@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using DAL.Models;
+using DTO;
 using DTO.Doctor;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
@@ -10,10 +12,17 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         private int encounterId;
         private int doctorId;
 
+        // Constructor mặc định (cho designer)
         public ucLabTab()
         {
             InitializeComponent();
             btnAddLab.Click += BtnAddLab_Click;
+        }
+
+        // Constructor có context và user (để đồng bộ, không dùng trực tiếp)
+        public ucLabTab(CMSDbContext context, UserDTO currentUser) : this()
+        {
+            // Không cần xử lý thêm vì tab này không dùng database trực tiếp
         }
 
         public void SetContext(int encounterId, int doctorId)
@@ -27,16 +36,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
             List<DoctorRequestSaveDTO> requests = new();
             foreach (Control control in flpLabs.Controls)
             {
-                if (control is not ucLabRequestItem item)
-                {
-                    continue;
-                }
+                if (control is not ucLabRequestItem item) continue;
 
                 string serviceName = item.cboLabType.Text.Trim();
-                if (string.IsNullOrWhiteSpace(serviceName))
-                {
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(serviceName)) continue;
 
                 requests.Add(new DoctorRequestSaveDTO
                 {
@@ -48,7 +51,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
                     Priority = "Normal"
                 });
             }
-
             return requests;
         }
 
@@ -66,7 +68,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
                 flpLabs.Controls.Remove(item);
                 item.Dispose();
             };
-
             flpLabs.Controls.Add(item);
         }
     }

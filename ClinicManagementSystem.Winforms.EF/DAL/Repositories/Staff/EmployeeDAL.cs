@@ -1,17 +1,20 @@
+using DAL.DataContext;
+using DAL.Interfaces;
+using DAL.Models;
+using DTO;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using DAL.DataContext;
-using DAL.Interfaces;
-using DTO;
-using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
 {
     public class EmployeeDAL : IEmployeeDAL
     {
+        private readonly CMSDbContext _context;
+        public EmployeeDAL(CMSDbContext context) => _context = context;
         public Task<List<ApiEmployeeDTO>> GetAllAsync()
         {
             return Task.FromResult(GetAll().Select(ToApi).ToList());

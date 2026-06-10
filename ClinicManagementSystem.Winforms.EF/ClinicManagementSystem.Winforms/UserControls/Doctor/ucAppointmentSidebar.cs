@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BUS.Services.Doctor;
 using ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh;
+using DAL.Models;
 using DTO;
 using DTO.Doctor;
 
@@ -12,21 +13,26 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor
 {
     public partial class ucAppointmentSidebar : UserControl
     {
-        private readonly DoctorWorkspaceBUS doctorBUS = new();
-        private readonly UserDTO currentUser;
-        private readonly int doctorId;
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+        private readonly DoctorWorkspaceBUS _doctorBUS;
+        private readonly int _doctorId;
         private List<DoctorAppointmentDTO> appointments = new();
 
-        public ucAppointmentSidebar() : this(null)
+        // Constructor mặc định (cho designer) - không dùng khi runtime
+        public ucAppointmentSidebar()
         {
+            InitializeComponent();
         }
 
-        public ucAppointmentSidebar(UserDTO currentUser)
+        // Constructor chính (dùng khi runtime)
+        public ucAppointmentSidebar(CMSDbContext context, UserDTO currentUser) : this()
         {
-            this.currentUser = currentUser;
-            doctorId = doctorBUS.ResolveDoctorId(currentUser);
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
+            _doctorBUS = new DoctorWorkspaceBUS(_context);
+            _doctorId = _doctorBUS.ResolveDoctorId(_currentUser);
 
-            InitializeComponent();
             NormalizeGridColumns();
 
             dgvAppointments.CellFormatting += dgvAppointments_CellFormatting;
@@ -57,7 +63,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor
 
         private void LoadData()
         {
-            appointments = doctorBUS.GetAppointments(doctorId, dtpDate.Value.Date, txtSearch.Text);
+            appointments = _doctorBUS.GetAppointments(_doctorId, dtpDate.Value.Date, txtSearch.Text);
 
             dgvAppointments.Rows.Clear();
             foreach (DoctorAppointmentDTO item in appointments)
@@ -78,15 +84,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor
 
         private void dgvAppointments_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= appointments.Count)
-            {
-                return;
-            }
-
-            if (dgvAppointments.Columns[e.ColumnIndex].Name != "btnExamine")
-            {
-                return;
-            }
+            if (e.RowIndex < 0 || e.RowIndex >= appointments.Count) return;
+            if (dgvAppointments.Columns[e.ColumnIndex].Name != "btnExamine") return;
 
             OpenExamination(appointments[e.RowIndex]);
         }
@@ -95,7 +94,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor
         {
             try
             {
-                doctorBUS.StartExamination(appointment.AppointmentID, appointment.EncounterID, doctorId);
+                _doctorBUS.StartExamination(appointment.AppointmentID, appointment.EncounterID, _doctorId);
             }
             catch (Exception ex)
             {
@@ -103,11 +102,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor
                 return;
             }
 
-            ucDoctorExaminationSidebar examSidebar = new(currentUser);
+            var examSidebar = new ucDoctorExaminationSidebar(_context, _currentUser);
             examSidebar.LoadPatientByAppointment(appointment.AppointmentID);
 
-            Form form = FindForm();
-            Panel pnlContent = form?.Controls.Find("contentPanel", true).FirstOrDefault() as Panel;
+            var form = FindForm();
+            var pnlContent = form?.Controls.Find("contentPanel", true).FirstOrDefault() as Panel;
             if (pnlContent == null)
             {
                 MessageBox.Show("Không tìm thấy contentPanel!");
@@ -121,16 +120,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor
 
         private void dgvAppointments_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0 || dgvAppointments.Columns[e.ColumnIndex].Name != "colStatus")
-            {
-                return;
-            }
+            if (e.RowIndex < 0 || dgvAppointments.Columns[e.ColumnIndex].Name != "colStatus") return;
 
             string status = e.Value?.ToString();
-            if (string.IsNullOrWhiteSpace(status))
-            {
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(status)) return;
 
             if (status.Contains("Cho") || status.Contains("Chờ"))
             {

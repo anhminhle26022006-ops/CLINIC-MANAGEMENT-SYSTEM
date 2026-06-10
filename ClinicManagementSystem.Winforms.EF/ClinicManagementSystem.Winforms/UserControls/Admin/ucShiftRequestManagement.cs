@@ -6,6 +6,8 @@ using System.Linq;
 using System.Windows.Forms;
 using BUS.Services;
 using DAL.DataContext;
+using DAL.Repositories;
+using DAL.Models;
 using DTO;
 using Microsoft.Data.SqlClient;
 
@@ -13,11 +15,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 {
     public partial class ucShiftRequestManagement : UserControl
     {
-        private readonly EmployeeBUS employeeBUS = new EmployeeBUS(new DAL.Repositories.EmployeeDAL());
-        private readonly EmployeeShiftBUS employeeShiftBUS = new EmployeeShiftBUS();
-        private readonly WorkShiftBUS workShiftBUS = new WorkShiftBUS();
-        private readonly DepartmentBUS departmentBUS = new DepartmentBUS();
-        private readonly RoomBUS roomBUS = new RoomBUS();
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+
+        private EmployeeBUS employeeBUS;
+        private EmployeeShiftBUS employeeShiftBUS;
+        private WorkShiftBUS workShiftBUS;
+        private DepartmentBUS departmentBUS;
+        private RoomBUS roomBUS;
 
         private List<EmployeeDTO> employees = new List<EmployeeDTO>();
         private List<EmployeeShiftDTO> shifts = new List<EmployeeShiftDTO>();
@@ -26,11 +31,32 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         private List<RoomDTO> rooms = new List<RoomDTO>();
         private List<ShiftRequestRow> requests = new List<ShiftRequestRow>();
 
+        // Constructor mặc định (cho designer)
         public ucShiftRequestManagement()
         {
             InitializeComponent();
             btnCreate.Click += btnCreate_Click;
+        }
+
+        // Constructor dùng khi runtime (chỉ context)
+        public ucShiftRequestManagement(CMSDbContext context) : this()
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = null;
+
+            employeeBUS = new EmployeeBUS(new EmployeeDAL(_context));
+            employeeShiftBUS = new EmployeeShiftBUS();
+            workShiftBUS = new WorkShiftBUS();
+            departmentBUS = new DepartmentBUS();
+            roomBUS = new RoomBUS();
+
             LoadData();
+        }
+
+        // Constructor có cả user (nếu cần)
+        public ucShiftRequestManagement(CMSDbContext context, UserDTO currentUser) : this(context)
+        {
+            _currentUser = currentUser;
         }
 
         public void LoadData()
@@ -46,11 +72,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         }
 
         private void btnTabOverview_Click(object sender, EventArgs e) => ShowTabOverview();
-
         private void btnTabApproval_Click(object sender, EventArgs e) => ShowTabApproval();
-
         private void btnTabSchedule_Click(object sender, EventArgs e) => ShowTabSchedule();
-
         private void btnWarningAction_Click(object sender, EventArgs e) => ShowTabApproval();
 
         private void btnCreate_Click(object sender, EventArgs e)
@@ -90,13 +113,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         private void panelHeader_Resize(object sender, EventArgs e)
         {
             if (btnCreate != null)
-            {
                 btnCreate.Location = new Point(panelHeader.Width - btnCreate.Width, 18);
-            }
         }
 
         private void kpiFlow_Resize(object sender, EventArgs e) { }
-
         private void panelWarning_Paint(object sender, PaintEventArgs e)
         {
             using var pen = new Pen(Color.FromArgb(234, 179, 8), 1);
@@ -106,16 +126,13 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         private void panelWarning_Resize(object sender, EventArgs e)
         {
             if (btnWarningAction != null)
-            {
                 btnWarningAction.Location = new Point(panelWarning.Width - btnWarningAction.Width - 16, 10);
-            }
         }
 
         private void panelTabs_Paint(object sender, PaintEventArgs e)
         {
             using var pen = new Pen(Color.FromArgb(229, 231, 235), 1);
             e.Graphics.DrawLine(pen, 0, panelTabs.Height - 1, panelTabs.Width, panelTabs.Height - 1);
-
             foreach (Control control in panelTabs.Controls)
             {
                 if (control is Button button && button.Tag?.ToString() == "active")
@@ -128,10 +145,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private void KpiCard_Paint(object sender, PaintEventArgs e)
         {
-            if (sender is not Panel card) return;
-
-            using var pen = new Pen(Color.FromArgb(229, 231, 235), 1);
-            e.Graphics.DrawRectangle(pen, 0, 0, card.Width - 1, card.Height - 1);
+            if (sender is Panel card)
+                using (var pen = new Pen(Color.FromArgb(229, 231, 235), 1))
+                    e.Graphics.DrawRectangle(pen, 0, 0, card.Width - 1, card.Height - 1);
         }
 
         private void SetActiveTab(Button active)
@@ -168,7 +184,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             SetActiveTab(btnTabApproval);
             panelTabContent.Controls.Clear();
             panelTabContent.Controls.Add(BuildRequestGrid(requests
-                .Where(request => string.Equals(request.Status, "Pending", StringComparison.OrdinalIgnoreCase))
+                .Where(r => string.Equals(r.Status, "Pending", StringComparison.OrdinalIgnoreCase))
                 .ToList(), true));
         }
 
@@ -179,9 +195,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             panelTabContent.Controls.Add(BuildScheduleGrid());
         }
 
-        private Panel BuildRequestSection(
-            string title,
-            string description,
+        private Panel BuildRequestSection(string title, string description,
             (string Title, string Value, Color Accent, Color Back)[] blocks)
         {
             Panel card = BuildWhiteCard(title, 300);
@@ -222,21 +236,13 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
                 TextAlign = ContentAlignment.MiddleLeft
             };
             card.Controls.Add(emptyLabel);
-
             return card;
         }
 
         private void AddLatestRequests(Panel card)
         {
-            List<ShiftRequestRow> latest = requests
-                .OrderByDescending(request => request.CreatedAt)
-                .Take(5)
-                .ToList();
-
-            if (latest.Count == 0)
-            {
-                return;
-            }
+            var latest = requests.OrderByDescending(r => r.CreatedAt).Take(5).ToList();
+            if (latest.Count == 0) return;
 
             Label title = new Label
             {
@@ -257,14 +263,8 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             grid.Columns.Add("Reason", "LÝ DO");
             grid.Columns.Add("Status", "TRẠNG THÁI");
 
-            foreach (ShiftRequestRow request in latest)
-            {
-                grid.Rows.Add(
-                    request.RequesterName,
-                    $"{request.TargetEmployeeName} - {request.TargetWorkDate:dd/MM/yyyy}",
-                    request.Reason,
-                    TranslateRequestStatus(request.Status));
-            }
+            foreach (var req in latest)
+                grid.Rows.Add(req.RequesterName, $"{req.TargetEmployeeName} - {req.TargetWorkDate:dd/MM/yyyy}", req.Reason, TranslateRequestStatus(req.Status));
 
             card.Height = 450;
             card.Controls.Add(grid);
@@ -284,39 +284,25 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             grid.Columns.Add("Target", "CA ĐỀ XUẤT");
             grid.Columns.Add("Reason", "LÝ DO");
             grid.Columns.Add("Status", "TRẠNG THÁI");
-
             if (allowActions)
             {
                 grid.Columns.Add("Approve", "");
                 grid.Columns.Add("Reject", "");
             }
 
-            foreach (ShiftRequestRow request in data)
+            foreach (var req in data)
             {
-                int rowIndex = allowActions
-                    ? grid.Rows.Add(
-                        request.RequestID,
-                        request.RequesterName,
-                        request.CurrentShiftText,
-                        $"{request.TargetEmployeeName} - {request.TargetShiftName} {request.TargetWorkDate:dd/MM/yyyy}",
-                        request.Reason,
-                        TranslateRequestStatus(request.Status),
-                        "Duyệt",
-                        "Từ chối")
-                    : grid.Rows.Add(
-                        request.RequestID,
-                        request.RequesterName,
-                        request.CurrentShiftText,
-                        $"{request.TargetEmployeeName} - {request.TargetShiftName} {request.TargetWorkDate:dd/MM/yyyy}",
-                        request.Reason,
-                        TranslateRequestStatus(request.Status));
-                grid.Rows[rowIndex].Tag = request;
+                int rowIdx = allowActions
+                    ? grid.Rows.Add(req.RequestID, req.RequesterName, req.CurrentShiftText,
+                        $"{req.TargetEmployeeName} - {req.TargetShiftName} {req.TargetWorkDate:dd/MM/yyyy}",
+                        req.Reason, TranslateRequestStatus(req.Status), "Duyệt", "Từ chối")
+                    : grid.Rows.Add(req.RequestID, req.RequesterName, req.CurrentShiftText,
+                        $"{req.TargetEmployeeName} - {req.TargetShiftName} {req.TargetWorkDate:dd/MM/yyyy}",
+                        req.Reason, TranslateRequestStatus(req.Status));
+                grid.Rows[rowIdx].Tag = req;
             }
-
             if (data.Count == 0)
-            {
                 grid.Rows.Add(0, "Chưa có yêu cầu chờ duyệt", "", "", "", "");
-            }
 
             card.Controls.Add(grid);
             grid.BringToFront();
@@ -336,21 +322,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             grid.Columns.Add("Room", "PHÒNG");
             grid.Columns.Add("Status", "TRẠNG THÁI");
 
-            foreach (EmployeeShiftDTO shift in shifts
-                .Where(item => item.WorkDate.Date >= DateTime.Today)
-                .OrderBy(item => item.WorkDate)
-                .ThenBy(item => item.StartTime)
-                .Take(80))
-            {
-                grid.Rows.Add(
-                    shift.EmployeeName,
-                    shift.RoleName,
-                    shift.WorkDate.ToString("dd/MM/yyyy"),
-                    shift.ShiftName,
+            foreach (var shift in shifts.Where(s => s.WorkDate.Date >= DateTime.Today).OrderBy(s => s.WorkDate).ThenBy(s => s.StartTime).Take(80))
+                grid.Rows.Add(shift.EmployeeName, shift.RoleName, shift.WorkDate.ToString("dd/MM/yyyy"), shift.ShiftName,
                     $"{shift.StartTime:hh\\:mm} - {shift.EndTime:hh\\:mm}",
-                    string.IsNullOrWhiteSpace(shift.RoomCode) ? "Chưa phân phòng" : shift.RoomCode,
-                    shift.Status);
-            }
+                    string.IsNullOrWhiteSpace(shift.RoomCode) ? "Chưa phân phòng" : shift.RoomCode, shift.Status);
 
             card.Controls.Add(grid);
             grid.BringToFront();
@@ -359,7 +334,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private DataGridView CreateGrid()
         {
-            DataGridView grid = new DataGridView
+            var grid = new DataGridView
             {
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
@@ -380,22 +355,17 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private void RequestGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (sender is not DataGridView grid
-                || e.RowIndex < 0
-                || e.ColumnIndex < 0
-                || grid.Rows[e.RowIndex].Tag is not ShiftRequestRow request)
-            {
+            if (sender is not DataGridView grid || e.RowIndex < 0 || e.ColumnIndex < 0 || grid.Rows[e.RowIndex].Tag is not ShiftRequestRow request)
                 return;
-            }
 
-            string columnName = grid.Columns[e.ColumnIndex].Name;
-            if (columnName == "Approve")
+            string colName = grid.Columns[e.ColumnIndex].Name;
+            if (colName == "Approve")
             {
                 UpdateRequestStatus(request.RequestID, "Approved");
                 LoadData();
                 ShowTabApproval();
             }
-            else if (columnName == "Reject")
+            else if (colName == "Reject")
             {
                 UpdateRequestStatus(request.RequestID, "Rejected");
                 LoadData();
@@ -411,18 +381,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             lblShiftRejectedValue.Text = CountStatus("Rejected").ToString("N0");
         }
 
-        private int CountStatus(string status)
-        {
-            return requests.Count(request => string.Equals(request.Status, status, StringComparison.OrdinalIgnoreCase));
-        }
+        private int CountStatus(string status) => requests.Count(r => string.Equals(r.Status, status, StringComparison.OrdinalIgnoreCase));
 
         private List<ShiftRequestRow> LoadShiftRequests()
         {
-            List<ShiftRequestRow> result = new List<ShiftRequestRow>();
-            if (!SchemaHelper.TableExists("ShiftChangeRequests"))
-            {
-                return result;
-            }
+            var result = new List<ShiftRequestRow>();
+            if (!SchemaHelper.TableExists("ShiftChangeRequests")) return result;
 
             EnsureShiftRequestDemoData();
 
@@ -448,12 +412,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             DataTable table = DatabaseHelper.ExecuteQuery(query);
             foreach (DataRow row in table.Rows)
             {
-                DateTime currentDate = ReadDate(row, "CurrentWorkDate");
                 result.Add(new ShiftRequestRow
                 {
                     RequestID = ReadInt(row, "RequestID"),
                     RequesterName = ReadString(row, "RequesterName"),
-                    CurrentShiftText = $"{ReadString(row, "CurrentShiftName")} {FormatDate(currentDate)}".Trim(),
+                    CurrentShiftText = $"{ReadString(row, "CurrentShiftName")} {FormatDate(ReadDate(row, "CurrentWorkDate"))}".Trim(),
                     TargetEmployeeName = ReadString(row, "TargetEmployeeName"),
                     TargetShiftName = ReadString(row, "TargetShiftName"),
                     TargetWorkDate = ReadDate(row, "TargetWorkDate"),
@@ -462,7 +425,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
                     CreatedAt = ReadDate(row, "CreatedAt")
                 });
             }
-
             return result;
         }
 
@@ -475,128 +437,49 @@ IF NOT EXISTS (SELECT 1 FROM ShiftChangeRequests)
 BEGIN
     ;WITH SourceShifts AS
     (
-        SELECT TOP 6
-               es.ID,
-               es.EmployeeID,
-               ROW_NUMBER() OVER (ORDER BY es.WorkDate, es.ID) AS rn
-        FROM EmployeeShifts es
-        WHERE es.WorkDate >= CAST(GETDATE() AS date)
-        ORDER BY es.WorkDate, es.ID
+        SELECT TOP 6 es.ID, es.EmployeeID, ROW_NUMBER() OVER (ORDER BY es.WorkDate, es.ID) AS rn
+        FROM EmployeeShifts es WHERE es.WorkDate >= CAST(GETDATE() AS date)
     ),
     TargetEmployees AS
     (
-        SELECT EmployeeID,
-               ROW_NUMBER() OVER (ORDER BY EmployeeID DESC) AS rn
-        FROM Employees
-        WHERE ISNULL(Status, 'Active') <> 'Inactive'
+        SELECT EmployeeID, ROW_NUMBER() OVER (ORDER BY EmployeeID DESC) AS rn
+        FROM Employees WHERE ISNULL(Status, 'Active') <> 'Inactive'
     )
     INSERT INTO ShiftChangeRequests(RequesterEmployeeID, CurrentEmployeeShiftID, TargetEmployeeID, TargetShiftID, TargetWorkDate, Reason, Status)
-    SELECT ss.EmployeeID,
-           ss.ID,
-           ISNULL(te.EmployeeID, ss.EmployeeID),
+    SELECT ss.EmployeeID, ss.ID, ISNULL(te.EmployeeID, ss.EmployeeID),
            (SELECT TOP 1 ShiftID FROM Shifts ORDER BY StartTime DESC),
            DATEADD(DAY, ss.rn, CAST(GETDATE() AS date)),
-           CASE ss.rn
-                WHEN 1 THEN N'Đổi ca để xử lý việc cá nhân'
-                WHEN 2 THEN N'Xin đổi sang ca chiều'
-                WHEN 3 THEN N'Nhờ đồng nghiệp hỗ trợ ca trực'
-                WHEN 4 THEN N'Đã trao đổi nội bộ, cần admin duyệt'
-                ELSE N'Yêu cầu đổi ca demo'
-           END,
-           CASE WHEN ss.rn <= 3 THEN 'Pending'
-                WHEN ss.rn = 4 THEN 'Approved'
-                ELSE 'Rejected'
-           END
+           CASE ss.rn WHEN 1 THEN N'Đổi ca để xử lý việc cá nhân'
+                      WHEN 2 THEN N'Xin đổi sang ca chiều'
+                      WHEN 3 THEN N'Nhờ đồng nghiệp hỗ trợ ca trực'
+                      WHEN 4 THEN N'Đã trao đổi nội bộ, cần admin duyệt'
+                      ELSE N'Yêu cầu đổi ca demo' END,
+           CASE WHEN ss.rn <= 3 THEN 'Pending' WHEN ss.rn = 4 THEN 'Approved' ELSE 'Rejected' END
     FROM SourceShifts ss
-    OUTER APPLY
-    (
-        SELECT TOP 1 EmployeeID
-        FROM TargetEmployees te
-        WHERE te.rn = ss.rn
-          AND te.EmployeeID <> ss.EmployeeID
-    ) te;
+    OUTER APPLY (SELECT TOP 1 EmployeeID FROM TargetEmployees te WHERE te.rn = ss.rn AND te.EmployeeID <> ss.EmployeeID) te;
 END");
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Admin shift request demo seed failed: " + ex);
-            }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine("Admin shift request demo seed failed: " + ex); }
         }
 
         private void UpdateRequestStatus(int requestId, string status)
         {
             DatabaseHelper.ExecuteNonQuery(
-                @"UPDATE ShiftChangeRequests
-                  SET Status = @Status, ReviewedAt = GETDATE()
-                  WHERE RequestID = @RequestID",
-                new[]
-                {
-                    new SqlParameter("@Status", status),
-                    new SqlParameter("@RequestID", requestId)
-                });
+                "UPDATE ShiftChangeRequests SET Status = @Status, ReviewedAt = GETDATE() WHERE RequestID = @RequestID",
+                new[] { new SqlParameter("@Status", status), new SqlParameter("@RequestID", requestId) });
         }
 
-        private static int ReadInt(DataRow row, string column)
+        private static int ReadInt(DataRow row, string col) => row[col] == DBNull.Value ? 0 : Convert.ToInt32(row[col]);
+        private static string ReadString(DataRow row, string col) => row[col] == DBNull.Value ? "" : row[col].ToString();
+        private static DateTime ReadDate(DataRow row, string col) => row[col] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(row[col]);
+        private static string FormatDate(DateTime d) => d == DateTime.MinValue ? "" : d.ToString("dd/MM/yyyy");
+        private static string TranslateRequestStatus(string s) => s switch { "Pending" => "Chờ duyệt", "Approved" => "Đã duyệt", "Rejected" => "Từ chối", _ => s };
+
+        private Panel BuildInfoBlock(string title, string value, Color accent, Color back)
         {
-            return row[column] == DBNull.Value ? 0 : Convert.ToInt32(row[column]);
-        }
-
-        private static string ReadString(DataRow row, string column)
-        {
-            return row[column] == DBNull.Value ? "" : row[column].ToString();
-        }
-
-        private static DateTime ReadDate(DataRow row, string column)
-        {
-            return row[column] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(row[column]);
-        }
-
-        private static string FormatDate(DateTime date)
-        {
-            return date == DateTime.MinValue ? "" : date.ToString("dd/MM/yyyy");
-        }
-
-        private static string TranslateRequestStatus(string status)
-        {
-            return status switch
-            {
-                "Pending" => "Chờ duyệt",
-                "Approved" => "Đã duyệt",
-                "Rejected" => "Từ chối",
-                _ => status
-            };
-        }
-
-        private Panel BuildInfoBlock(string title, string value, Color accent, Color backColor)
-        {
-            var block = new Panel
-            {
-                BackColor = backColor,
-                Size = new Size(240, 92)
-            };
-
-            block.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(71, 85, 105),
-                Location = new Point(16, 14),
-                Size = new Size(208, 24),
-                Text = title,
-                TextAlign = ContentAlignment.MiddleLeft
-            });
-
-            block.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Font = new Font("Segoe UI", 15F, FontStyle.Bold),
-                ForeColor = accent,
-                Location = new Point(16, 42),
-                Size = new Size(208, 38),
-                Text = value,
-                TextAlign = ContentAlignment.MiddleLeft
-            });
-
+            var block = new Panel { BackColor = back, Size = new Size(240, 92) };
+            block.Controls.Add(new Label { AutoEllipsis = true, Font = new Font("Segoe UI", 9F, FontStyle.Bold), ForeColor = Color.FromArgb(71, 85, 105), Location = new Point(16, 14), Size = new Size(208, 24), Text = title, TextAlign = ContentAlignment.MiddleLeft });
+            block.Controls.Add(new Label { AutoEllipsis = true, Font = new Font("Segoe UI", 15F, FontStyle.Bold), ForeColor = accent, Location = new Point(16, 42), Size = new Size(208, 38), Text = value, TextAlign = ContentAlignment.MiddleLeft });
             return block;
         }
 
@@ -612,6 +495,5 @@ END");
             public string Status { get; set; }
             public DateTime CreatedAt { get; set; }
         }
-
     }
 }

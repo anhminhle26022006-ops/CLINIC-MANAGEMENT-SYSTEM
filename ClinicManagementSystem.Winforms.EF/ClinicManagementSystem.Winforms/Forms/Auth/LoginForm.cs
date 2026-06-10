@@ -1,29 +1,31 @@
 using System;
 using System.Configuration;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using BUS.Services;
-using DTO;
-using System.IO;
-using System.Text.RegularExpressions;
 using CMS.Core.Identity;
 using CMS.Core.Session;
+using DAL.Models;
+using DTO;
+using Microsoft.Data.SqlClient;
+using FileIO = System.IO.File; // Alias để tránh nhầm với DAL.Models.File
 
 namespace ClinicManagementSystem.Winforms.Forms
 {
     public partial class LoginForm : Form
     {
-        private readonly UserBUS userBUS = new UserBUS();
+        private readonly UserBUS _userBUS;
 
         public LoginForm()
         {
             InitializeComponent();
+            // Khởi tạo UserBUS với DbContext (có thể dùng chung một context cho toàn form)
+            var context = new CMSDbContext();
+            _userBUS = new UserBUS(context);
         }
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-            // Auto initialize database if missing
             AutoInitializeDatabase();
         }
 
@@ -42,7 +44,7 @@ namespace ClinicManagementSystem.Winforms.Forms
 
             try
             {
-                UserDTO user = userBUS.Login(username, password);
+                UserDTO user = _userBUS.Login(username, password);
 
                 if (user != null)
                 {
@@ -56,9 +58,13 @@ namespace ClinicManagementSystem.Winforms.Forms
                         RoleNormalizer.Normalize(user.Role),
                         user.DepartmentName);
 
-                    MainformRole dashboard = new MainformRole(user);
-                    this.Hide();
-                    dashboard.ShowDialog();
+                    // Tạo DbContext riêng cho MainformRole (đảm bảo không dùng chung)
+                    using (var dbContext = new CMSDbContext())
+                    {
+                        MainformRole dashboard = new MainformRole(dbContext, user);
+                        this.Hide();
+                        dashboard.ShowDialog();
+                    }
                     this.Close();
                 }
                 else
@@ -68,7 +74,6 @@ namespace ClinicManagementSystem.Winforms.Forms
             }
             catch (SqlException)
             {
-                // SQL Server connection error
                 ShowError("Không thể kết nối đến SQL Server. Vui lòng kiểm tra lại cấu hình App.config hoặc chạy SQL Server.");
                 var result = MessageBox.Show(
                     "Không kết nối được SQL Server. Bạn có muốn chạy chương trình mà không có database (sử dụng chế độ Demo tự tạo database tự động trên LocalDB hoặc SQL Server)?",
@@ -78,7 +83,6 @@ namespace ClinicManagementSystem.Winforms.Forms
 
                 if (result == DialogResult.Yes)
                 {
-                    // Attempt to auto-create database if possible, or run mock setup
                     TryCreateLocalDatabase();
                 }
             }
@@ -101,15 +105,12 @@ namespace ClinicManagementSystem.Winforms.Forms
 
         private void AutoInitializeDatabase()
         {
-            // Run in background / quietly check if connection works and users table exists.
-            // If the database connection works, but tables are missing, we will create them.
             string connString = ConfigurationManager.ConnectionStrings["DbConnection"]?.ConnectionString;
             if (string.IsNullOrEmpty(connString)) return;
 
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connString);
             string dbName = builder.InitialCatalog;
 
-            // 1. Try to create the database via master connection if missing.
             try
             {
                 SqlConnectionStringBuilder masterBuilder = new SqlConnectionStringBuilder(connString);
@@ -119,7 +120,6 @@ namespace ClinicManagementSystem.Winforms.Forms
                 using (SqlConnection masterConn = new SqlConnection(masterConnStr))
                 {
                     masterConn.Open();
-                    // Create DB if not exists
                     string createDbQuery = $"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'{dbName}') CREATE DATABASE [{dbName}];";
                     using (SqlCommand cmd = new SqlCommand(createDbQuery, masterConn))
                     {
@@ -132,14 +132,11 @@ namespace ClinicManagementSystem.Winforms.Forms
                 System.Diagnostics.Debug.WriteLine("Database auto-creation on master skipped or failed: " + ex.Message);
             }
 
-            // 2. Connect to the target DB and create tables if not exist.
             try
             {
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
                     conn.Open();
-
-                    // Check if Roles table exists (new CMS schema)
                     bool hasRolesTable = false;
                     try
                     {
@@ -154,7 +151,6 @@ namespace ClinicManagementSystem.Winforms.Forms
                     {
                         if (!hasRolesTable)
                         {
-                            // If CMS database exists but doesn't have the roles table, we try to run CMS.sql
                             string scriptPath = FindSqlScriptPath("CMS.sql");
                             if (!string.IsNullOrEmpty(scriptPath))
                             {
@@ -169,9 +165,6 @@ namespace ClinicManagementSystem.Winforms.Forms
                             }
                         }
                     }
-
-                    // Schema bootstrap is handled by CMS.sql. Avoid creating legacy demo tables
-                    // such as Doctors, Requests, or TechnicianShifts because DAL/BUS now use the CMS schema.
                 }
             }
             catch (Exception ex)
@@ -188,7 +181,6 @@ namespace ClinicManagementSystem.Winforms.Forms
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connString);
             string dbName = builder.InitialCatalog;
 
-            // Try connecting to master on SQLEXPRESS or default instance to create DB and tables
             string[] instances = new string[] {
                 "Server=localhost;Database=master;Trusted_Connection=True;TrustServerCertificate=True;",
                 "Server=.\\SQLEXPRESS;Database=master;Trusted_Connection=True;TrustServerCertificate=True;"
@@ -212,7 +204,7 @@ namespace ClinicManagementSystem.Winforms.Forms
                 }
                 catch
                 {
-                    // Continue trying next instance
+                    // Continue
                 }
             }
         }
@@ -224,13 +216,13 @@ namespace ClinicManagementSystem.Winforms.Forms
             for (int i = 0; i < 5; i++)
             {
                 string path1 = System.IO.Path.Combine(current, fileName);
-                if (System.IO.File.Exists(path1)) return path1;
+                if (FileIO.Exists(path1)) return path1;
 
                 string path2 = System.IO.Path.Combine(current, "Database", fileName);
-                if (System.IO.File.Exists(path2)) return path2;
+                if (FileIO.Exists(path2)) return path2;
 
                 string path3 = System.IO.Path.Combine(current, "ClinicManagementSystem.Winforms", "Database", fileName);
-                if (System.IO.File.Exists(path3)) return path3;
+                if (FileIO.Exists(path3)) return path3;
 
                 string parent = System.IO.Path.GetDirectoryName(current);
                 if (string.IsNullOrEmpty(parent) || parent == current) break;
@@ -241,15 +233,13 @@ namespace ClinicManagementSystem.Winforms.Forms
 
         private void ExecuteSqlScript(string scriptPath, string connString)
         {
-            if (!System.IO.File.Exists(scriptPath)) return;
+            if (!FileIO.Exists(scriptPath)) return;
 
-            string scriptContent = System.IO.File.ReadAllText(scriptPath);
-
-            // Split script into batches by 'GO'
-            string[] batches = System.Text.RegularExpressions.Regex.Split(
+            string scriptContent = FileIO.ReadAllText(scriptPath);
+            string[] batches = Regex.Split(
                 scriptContent,
                 @"^\s*GO\s*$",
-                System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
@@ -257,13 +247,10 @@ namespace ClinicManagementSystem.Winforms.Forms
                 foreach (string batch in batches)
                 {
                     if (string.IsNullOrWhiteSpace(batch)) continue;
-
-                    // Skip database creation commands to avoid errors
                     if (batch.Contains("CREATE DATABASE") || batch.Contains("USE "))
                     {
                         continue;
                     }
-
                     try
                     {
                         using (SqlCommand cmd = new SqlCommand(batch, conn))
@@ -278,7 +265,5 @@ namespace ClinicManagementSystem.Winforms.Forms
                 }
             }
         }
-
     }
 }
-

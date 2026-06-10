@@ -14,9 +14,6 @@ namespace BUS.Services
             return dal.GetByEncounterId(encounterId);
         }
 
-        public List<MedicalRecordDto> GetAllErmRecords()
-        {
-            return dal.GetAllErmRecords();
-        }
+        
     }
 }

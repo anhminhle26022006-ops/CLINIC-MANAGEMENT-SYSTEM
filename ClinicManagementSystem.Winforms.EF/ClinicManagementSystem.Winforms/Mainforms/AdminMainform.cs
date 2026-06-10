@@ -1,13 +1,16 @@
-﻿using System;
+﻿using ClinicManagementSystem.Winforms.UserControls.Admin;
+using DAL.Models;
+using DTO;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
-using ClinicManagementSystem.Winforms.UserControls.Admin;
-using DTO;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
     public partial class AdminMainform : Form
     {
+        private readonly CMSDbContext _context;
+
         private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color pageBack = Color.FromArgb(247, 249, 252);
         private readonly Color textMain = Color.FromArgb(17, 24, 39);
@@ -24,13 +27,13 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             layoutReady = true;
         }
 
-        public AdminMainform(UserDTO user) : this()
+        public AdminMainform(CMSDbContext context, UserDTO user) : this()
         {
-            currentUser = user;
-            string displayName = string.IsNullOrWhiteSpace(user?.Name) ? "Quản trị viên" : user.Name.Trim();
-            string displayEmail = !string.IsNullOrWhiteSpace(user?.Email)
-                ? user.Email.Trim()
-                : user?.Username ?? "admin";
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            currentUser = user ?? throw new ArgumentNullException(nameof(user));
+
+            string displayName = string.IsNullOrWhiteSpace(user.Name) ? "Quản trị viên" : user.Name.Trim();
+            string displayEmail = !string.IsNullOrWhiteSpace(user.Email) ? user.Email.Trim() : user.Username ?? "admin";
 
             lblUserName.Text = displayName;
             lblUserEmail.Text = displayEmail;
@@ -43,22 +46,21 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnStatitics.Text = "Thống kê";
             btnAdvancedAnalysis.Text = "Quản lý tài khoản";
 
-            btnNavOverview.Click += (s, ev) => ShowAdminControl(new ucAdminDashboard(), "Tổng quan", btnNavOverview);
-            btnEmployeeManagement.Click += (s, ev) => ShowAdminControl(new ucEmployeeManagement(), "Quản lý nhân viên", btnEmployeeManagement);
-            btnDepartmentManagement.Click += (s, ev) => ShowAdminControl(new ucDepartmentManagement(), "Quản lý chuyên khoa", btnDepartmentManagement);
-            btnShiftManagement.Click += (s, ev) => ShowAdminControl(new ucShiftManagement(), "Quản lý ca trực", btnShiftManagement);
-            btnNavShifts.Click += (s, ev) => ShowAdminControl(new ucShiftRequestManagement(), "Ca làm việc", btnNavShifts);
-            btnStatitics.Click += (s, ev) => ShowAdminControl(new ucAdminStatistics(), "Thống kê", btnStatitics);
-            btnAdvancedAnalysis.Click += (s, ev) => ShowAdminControl(new ucUserManagement(), "Quản lý tài khoản", btnAdvancedAnalysis);
+            btnNavOverview.Click += (s, ev) => ShowAdminControl(new ucAdminDashboard(_context), "Tổng quan", btnNavOverview);
+            btnEmployeeManagement.Click += (s, ev) => ShowAdminControl(new ucEmployeeManagement(_context), "Quản lý nhân viên", btnEmployeeManagement);
+            btnDepartmentManagement.Click += (s, ev) => ShowAdminControl(new ucDepartmentManagement(_context), "Quản lý chuyên khoa", btnDepartmentManagement);
 
-            btnLogout.Click += (s, ev) =>
-            {
-                LogoutRequested?.Invoke(this, EventArgs.Empty);
-            };
+            // SỬA DÒNG NÀY: thêm currentUser làm tham số thứ hai
+            btnShiftManagement.Click += (s, ev) => ShowAdminControl(new ucShiftManagement(_context, currentUser), "Quản lý ca trực", btnShiftManagement);
 
+            btnNavShifts.Click += (s, ev) => ShowAdminControl(new ucShiftRequestManagement(_context), "Ca làm việc", btnNavShifts);
+            btnStatitics.Click += (s, ev) => ShowAdminControl(new ucAdminStatistics(_context), "Thống kê", btnStatitics);
+            btnAdvancedAnalysis.Click += (s, ev) => ShowAdminControl(new ucUserManagement(_context), "Quản lý tài khoản", btnAdvancedAnalysis);
+
+            btnLogout.Click += (s, ev) => LogoutRequested?.Invoke(this, EventArgs.Empty);
             btnClose.Click += (s, ev) => CloseRequested?.Invoke(this, EventArgs.Empty);
 
-            ShowAdminControl(new ucAdminDashboard(), "Tổng quan", btnNavOverview);
+            ShowAdminControl(new ucAdminDashboard(_context), "Tổng quan", btnNavOverview);
         }
 
         private Button CreateSidebarButton(string text, Point location, EventHandler onClick)

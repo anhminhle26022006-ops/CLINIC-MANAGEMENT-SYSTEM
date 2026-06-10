@@ -1,23 +1,25 @@
+using BUS.Services;
+using DAL.Models;
+using DTO;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using BUS.Services;
-using DTO;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Admin
 {
     public partial class ucAdminDashboard : UserControl
     {
-        private readonly AdminStatisticsBUS statisticsBUS = new AdminStatisticsBUS();
+        private readonly AdminStatisticsBUS statisticsBUS;
         private readonly CultureInfo viCulture = new CultureInfo("vi-VN");
         private AdminStatisticsDTO currentStatistics = new AdminStatisticsDTO();
 
-        public ucAdminDashboard()
+        public ucAdminDashboard(CMSDbContext context)
         {
             InitializeComponent();
+            statisticsBUS = new AdminStatisticsBUS(context);
             AdminUiStyle.ApplyGrid(dgvAppointments);
             LoadData();
         }
