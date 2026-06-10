@@ -1,455 +1,168 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using DAL.DataContext;
+﻿using DAL.DataContext;
+using DAL.Entities;
 using DTO;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.Clinical
 {
     public class PaymentDAL
     {
-        public List<PaymentWaitingDTO>
-            GetWaitingPayments()
+        private static readonly string[] PendingStatuses = { "Pending", "Unpaid", "Chưa thanh toán" };
+
+        public async Task<List<PaymentWaitingDTO>> GetWaitingPayments()
         {
-            string query =
-            @"
-            SELECT
-    pa.PaymentID,
-    pa.EncounterID,
-    p.PatientID,
-    p.PatientCode,
-    p.FullName AS PatientName,
-    d.FullName AS DoctorName,
-    pa.Amount,
-    pa.Status
-            FROM Payments pa
-            INNER JOIN Encounters e
-                ON pa.EncounterID = e.EncounterID
-            INNER JOIN Patients p
-                ON pa.PatientID = p.PatientID
-            INNER JOIN Employees d
-                ON e.DoctorID = d.EmployeeID
-            WHERE ISNULL(pa.Status, 'Pending') IN ('Pending', 'Unpaid', N'Chưa thanh toán')
-            ORDER BY pa.PaymentID DESC
-            ";
-
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(query);
-
-            List<PaymentWaitingDTO> list =
-                new();
-
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(
-    new PaymentWaitingDTO
-    {
-        EncounterID =
-            Convert.ToInt32(
-                row["EncounterID"]),
-
-        PatientID =
-            Convert.ToInt32(
-                row["PatientID"]),
-
-        PatientCode =
-            row["PatientCode"]?.ToString()
-            ?? string.Empty,
-
-        PatientName =
-            row["PatientName"]?.ToString()
-            ?? string.Empty,
-
-        DoctorName =
-            row["DoctorName"]?.ToString()
-            ?? string.Empty,
-
-        Status =
-            row["Status"]?.ToString()
-            ?? string.Empty,
-
-        TotalAmount =
-            Convert.ToDecimal(
-                row["Amount"])
-    });
-            }
-
-            return list;
-        }
-
-        public bool CreatePendingPayment(
-            int encounterId,
-            int patientId)
-        {
-            string query =
-            @"
-            INSERT INTO Payments
-            (
-                EncounterID,
-                PatientID,
-                Amount,
-                Method,
-                Status
-            )
-            VALUES
-            (
-                @EncounterID,
-                @PatientID,
-                0,
-                '',
-                'Pending'
-            )
-            ";
-
-            SqlParameter[] parameters =
-            {
-                new("@EncounterID", encounterId),
-                new("@PatientID", patientId)
-            };
-
-            return DatabaseHelper
-                .ExecuteNonQuery(
-                    query,
-                    parameters) > 0;
-        }
-
-        public bool UpdateAmount(
-            int encounterId,
-            decimal amount)
-        {
-            string query =
-            @"
-            UPDATE Payments
-            SET Amount = @Amount
-            WHERE EncounterID = @EncounterID
-            ";
-
-            SqlParameter[] parameters =
-            {
-                new("@Amount", amount),
-                new("@EncounterID", encounterId)
-            };
-
-            return DatabaseHelper
-                .ExecuteNonQuery(
-                    query,
-                    parameters) > 0;
-        }
-
-        public bool UpdatePaymentStatus(
-            int encounterId,
-            string method)
-        {
-            string query =
-            @"
-            UPDATE Payments
-            SET
-                Status = 'Paid',
-                Method = @Method,
-                PaidAt = GETDATE()
-            WHERE EncounterID = @EncounterID
-            ";
-
-            SqlParameter[] parameters =
-            {
-                new("@Method", method),
-                new("@EncounterID", encounterId)
-            };
-
-            return DatabaseHelper
-                .ExecuteNonQuery(
-                    query,
-                    parameters) > 0;
-        }
-
-        public List<PaymentDetailDTO>
-            GetInvoiceDetails(
-                int encounterId)
-        {
-            List<PaymentDetailDTO> list =
-                new();
-
-            string paymentDetailQuery =
-            @"
-            SELECT
-                pa.FullName AS PatientName,
-                ISNULL(pd.ItemType, N'Payment') AS ItemType,
-                pd.Description,
-                ISNULL(pd.Quantity, 1) AS Quantity,
-                ISNULL(pd.UnitPrice, pd.Amount) AS UnitPrice,
-                pd.Amount
-            FROM Payments p
-            INNER JOIN Patients pa ON p.PatientID = pa.PatientID
-            INNER JOIN PaymentDetails pd ON p.PaymentID = pd.PaymentID
-            WHERE p.EncounterID = @EncounterID
-            ORDER BY pd.PaymentDetailID";
-
-            SqlParameter[] parameters =
-            {
-                new("@EncounterID", encounterId)
-            };
-
-            DataTable dt = DatabaseHelper.ExecuteQuery(paymentDetailQuery, parameters);
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(
-                    new PaymentDetailDTO
-                    {
-                        ItemType = row["ItemType"].ToString() ?? string.Empty,
-                        PatientName = row["PatientName"].ToString() ?? string.Empty,
-                        Description = row["Description"].ToString() ?? string.Empty,
-                        Quantity = Convert.ToInt32(row["Quantity"]),
-                        UnitPrice = Convert.ToDecimal(row["UnitPrice"]),
-                        Amount = Convert.ToDecimal(row["Amount"])
-                    });
-            }
-
-            if (list.Count > 0)
-            {
-                return list;
-            }
-
-            string serviceQuery =
-            @"
-            SELECT
-    p.FullName AS PatientName,
-    s.ServiceName AS Description,
-    es.Quantity,
-    es.UnitPrice,
-    es.Quantity * es.UnitPrice AS Amount
-FROM EncounterServices es
-INNER JOIN Services s
-    ON es.ServiceID = s.ServiceID
-INNER JOIN Encounters e
-    ON es.EncounterID = e.EncounterID
-INNER JOIN Patients p
-    ON e.PatientID = p.PatientID
-WHERE es.EncounterID = @EncounterID
-            ";
-
-            dt = DatabaseHelper.ExecuteQuery(serviceQuery, parameters);
-
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(
-    new PaymentDetailDTO
-    {
-        ItemType = "Service",
-
-        PatientName =
-            row["PatientName"]
-            .ToString()
-            ?? string.Empty,
-
-        Description =
-            row["Description"]
-            .ToString()
-            ?? string.Empty,
-
-        Quantity =
-            Convert.ToInt32(
-                row["Quantity"]),
-
-        UnitPrice =
-            Convert.ToDecimal(
-                row["UnitPrice"]),
-
-        Amount =
-            Convert.ToDecimal(
-                row["Amount"])
-    });
-            }
-
-            if (list.Count > 0)
-            {
-                return list;
-            }
-
-            string paymentFallbackQuery =
-            @"
-            SELECT
-                pa.FullName AS PatientName,
-                p.Amount
-            FROM Payments p
-            INNER JOIN Patients pa ON p.PatientID = pa.PatientID
-            WHERE p.EncounterID = @EncounterID";
-
-            dt = DatabaseHelper.ExecuteQuery(paymentFallbackQuery, parameters);
-            foreach (DataRow row in dt.Rows)
-            {
-                decimal amount = row["Amount"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Amount"]);
-                if (amount <= 0)
+            using var context = DbContextProvider.CreateContext();
+            return await context.Payments
+                .Where(pa => PendingStatuses.Contains(pa.Status))
+                .OrderByDescending(pa => pa.PaymentID)
+                .Select(pa => new PaymentWaitingDTO
                 {
-                    continue;
-                }
+                    EncounterID = pa.EncounterID,
+                    PatientID = pa.PatientID,
+                    PatientCode = pa.Encounter.Patient.PatientCode ?? "",
+                    PatientName = pa.Encounter.Patient.FullName ?? "",
+                    DoctorName = pa.Encounter.Doctor.FullName ?? "",
+                    Status = pa.Status ?? "",
+                    TotalAmount = pa.Amount
+                })
+                .ToListAsync();
+        }
 
-                list.Add(new PaymentDetailDTO
+        public async Task<bool> CreatePendingPayment(int encounterId, int patientId)
+        {
+            using var context = DbContextProvider.CreateContext();
+            var entity = new Payment
+            {
+                EncounterID = encounterId,
+                PatientID = patientId,
+                Amount = 0,
+                Method = "",
+                Status = "Pending"
+            };
+            context.Payments.Add(entity);
+            return await context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateAmount(int encounterId, decimal amount)
+        {
+            using var context = DbContextProvider.CreateContext();
+            var payment = await context.Payments
+                .FirstOrDefaultAsync(p => p.EncounterID == encounterId);
+
+            if (payment == null) return false;
+
+            payment.Amount = amount;
+            return await context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdatePaymentStatus(int encounterId, string method)
+        {
+            using var context = DbContextProvider.CreateContext();
+            var payment = await context.Payments
+                .FirstOrDefaultAsync(p => p.EncounterID == encounterId);
+
+            if (payment == null) return false;
+
+            payment.Status = "Paid";
+            payment.Method = method;
+            payment.PaidAt = DateTime.Now;
+            return await context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<List<PaymentDetailDTO>> GetInvoiceDetails(int encounterId)
+        {
+            using var context = DbContextProvider.CreateContext();
+
+            // Thử lấy PaymentDetails trước
+            var paymentDetails = await context.Payments
+                .Where(p => p.EncounterID == encounterId)
+                .SelectMany(p => p.Details.Select(pd => new PaymentDetailDTO
+                {
+                    ItemType = pd.ItemType ?? "Payment",
+                    PatientName = p.Encounter.Patient.FullName ?? "",
+                    Description = pd.Description ?? "",
+                    Quantity = pd.Quantity ?? 1,
+                    UnitPrice = pd.UnitPrice ?? pd.Amount,
+                    Amount = pd.Amount
+                }))
+                .ToListAsync();
+
+            if (paymentDetails.Count > 0) return paymentDetails;
+
+            // Fallback: EncounterServices
+            var serviceDetails = await context.EncounterServices
+                .Where(es => es.EncounterID == encounterId)
+                .Select(es => new PaymentDetailDTO
+                {
+                    ItemType = "Service",
+                    PatientName = es.Encounter.Patient.FullName ?? "",
+                    Description = es.Service.ServiceName ?? "",
+                    Quantity = es.Quantity ?? 1,
+                    UnitPrice = es.UnitPrice ?? 0,
+                    Amount = (es.Quantity ?? 1) * (es.UnitPrice ?? 0)
+                })
+                .ToListAsync();
+
+            if (serviceDetails.Count > 0) return serviceDetails;
+
+            // Fallback: Payment amount
+            var fallback = await context.Payments
+                .Where(p => p.EncounterID == encounterId && p.Amount > 0)
+                .Select(p => new PaymentDetailDTO
                 {
                     ItemType = "Payment",
-                    PatientName = row["PatientName"].ToString() ?? string.Empty,
+                    PatientName = p.Encounter.Patient.FullName ?? "",
                     Description = "Chi phí khám và dịch vụ",
                     Quantity = 1,
-                    UnitPrice = amount,
-                    Amount = amount
-                });
-            }
+                    UnitPrice = p.Amount,
+                    Amount = p.Amount
+                })
+                .ToListAsync();
 
-            return list;
+            return fallback;
         }
 
-        public List<Payment_RecepDTO>
-            GetPaymentHistory()
+        public async Task<List<Payment_RecepDTO>> GetPaymentHistory()
         {
-            List<Payment_RecepDTO> list =
-                new();
-
-            string query =
-            @"
-            SELECT
-    p.PaymentID,
-    p.EncounterID,
-    p.PatientID,
-    pa.FullName AS PatientName,
-    p.Amount,
-    p.Method,
-    p.Status,
-    p.PaidAt
-FROM Payments p
-INNER JOIN Patients pa
-    ON p.PatientID = pa.PatientID
-WHERE p.Status = 'Paid'
-ORDER BY p.PaidAt DESC
-            ";
-
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(
-                    query);
-
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(
-                    new Payment_RecepDTO
-                    {
-                        PaymentID =
-                            Convert.ToInt32(
-                                row["PaymentID"]),
-
-                        EncounterID =
-                            Convert.ToInt32(
-                                row["EncounterID"]),
-
-                        PatientID =
-                            Convert.ToInt32(
-                                row["PatientID"]),
-                        PatientName =
-    row["PatientName"]
-    .ToString()
-    ?? string.Empty,
-
-                        Amount =
-                            Convert.ToDecimal(
-                                row["Amount"]),
-
-                        Method =
-                            row["Method"]
-                            .ToString()
-                            ?? string.Empty,
-
-                        Status =
-                            row["Status"]
-                            .ToString()
-                            ?? string.Empty,
-
-                        PaidAt =
-                            Convert.ToDateTime(
-                                row["PaidAt"])
-                    });
-            }
-
-            return list;
+            using var context = DbContextProvider.CreateContext();
+            return await context.Payments
+                .Where(p => p.Status == "Paid")
+                .OrderByDescending(p => p.PaidAt)
+                .Select(p => new Payment_RecepDTO
+                {
+                    PaymentID = p.PaymentID,
+                    EncounterID = p.EncounterID,
+                    PatientID = p.PatientID,
+                    PatientName = p.Encounter.Patient.FullName ?? "",
+                    Amount = p.Amount,
+                    Method = p.Method ?? "",
+                    Status = p.Status ?? "",
+                    PaidAt = p.PaidAt ?? DateTime.MinValue
+                })
+                .ToListAsync();
         }
 
-        public List<Payment_RecepDTO>
-    SearchPaymentHistory(
-        string keyword)
+        public async Task<List<Payment_RecepDTO>> SearchPaymentHistory(string keyword)
         {
-            List<Payment_RecepDTO> list =
-                new();
-
-            string query =
-            @"
-    SELECT
-    p.PaymentID,
-    p.EncounterID,
-    p.PatientID,
-    pa.FullName AS PatientName,
-    p.Amount,
-    p.Method,
-    p.Status,
-    p.PaidAt
-FROM Payments p
-INNER JOIN Patients pa
-    ON p.PatientID = pa.PatientID
-WHERE p.Status = 'Paid'
-  AND
-  (
-       pa.FullName LIKE '%' + @Keyword + '%'
-    OR CAST(p.PaymentID AS NVARCHAR) LIKE '%' + @Keyword + '%'
-    OR CAST(p.EncounterID AS NVARCHAR) LIKE '%' + @Keyword + '%'
-  )
-ORDER BY p.PaidAt DESC
-    ";
-
-            SqlParameter[] parameters =
-            {
-        new("@Keyword", keyword)
-    };
-
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(
-                    query,
-                    parameters);
-
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(
-                    new Payment_RecepDTO
-                    {
-                        PaymentID =
-                            Convert.ToInt32(
-                                row["PaymentID"]),
-
-                        EncounterID =
-                            Convert.ToInt32(
-                                row["EncounterID"]),
-
-                        PatientID =
-                            Convert.ToInt32(
-                                row["PatientID"]),
-
-                        Amount =
-                            Convert.ToDecimal(
-                                row["Amount"]),
-
-                        Method =
-                            row["Method"]
-                            .ToString()
-                            ?? string.Empty,
-
-                        Status =
-                            row["Status"]
-                            .ToString()
-                            ?? string.Empty,
-
-                        PaidAt =
-                            Convert.ToDateTime(
-                                row["PaidAt"])
-                    });
-            }
-
-            return list;
+            using var context = DbContextProvider.CreateContext();
+            return await context.Payments
+                .Where(p => p.Status == "Paid"
+                         && (p.Encounter.Patient.FullName.Contains(keyword)
+                          || p.PaymentID.ToString().Contains(keyword)
+                          || p.EncounterID.ToString().Contains(keyword)))
+                .OrderByDescending(p => p.PaidAt)
+                .Select(p => new Payment_RecepDTO
+                {
+                    PaymentID = p.PaymentID,
+                    EncounterID = p.EncounterID,
+                    PatientID = p.PatientID,
+                    PatientName = p.Encounter.Patient.FullName ?? "",
+                    Amount = p.Amount,
+                    Method = p.Method ?? "",
+                    Status = p.Status ?? "",
+                    PaidAt = p.PaidAt ?? DateTime.MinValue
+                })
+                .ToListAsync();
         }
     }
-
 }

@@ -1,92 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.DataContext;
+﻿using DAL.DataContext;
 using DTO;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.Facility
 {
     public class Room_RecepDAL
     {
-        public int CountRooms()
+        public async Task<int> CountRooms()
         {
-            string query =
-                "SELECT COUNT(*) FROM Rooms";
-
-            object result =
-                DatabaseHelper.ExecuteScalar(query);
-
-            return Convert.ToInt32(result);
+            using var context = DbContextProvider.CreateContext();
+            return await context.Rooms.CountAsync();
         }
 
-        public Room_RecepDTO GetRoomByDepartment(int departmentId)
+        public async Task<Room_RecepDTO> GetRoomByDepartment(int departmentId)
         {
-            string query = @"
-    SELECT TOP 1 *
-    FROM Rooms
-    WHERE DepartmentID = @DepartmentID";
+            using var context = DbContextProvider.CreateContext();
+            var room = await context.Rooms
+                .Where(r => r.DepartmentID == departmentId)
+                .FirstOrDefaultAsync();
 
-            SqlParameter[] parameters =
-            {
-        new SqlParameter("@DepartmentID", departmentId)
-    };
-
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(query, parameters);
-
-            if (dt.Rows.Count == 0)
-                return null;
-
-            DataRow row = dt.Rows[0];
+            if (room == null) return null;
 
             return new Room_RecepDTO
             {
-                RoomID = Convert.ToInt32(row["RoomID"]),
-                RoomCode = row["RoomCode"].ToString(),
-                DepartmentID = Convert.ToInt32(row["DepartmentID"]),
-                Status = row["Status"].ToString()
+                RoomID = room.RoomID,
+                RoomCode = room.RoomCode ?? "",
+                DepartmentID = room.DepartmentID,
+                Status = room.Status ?? ""
             };
         }
 
-        public Room_RecepDTO GetById(int roomId)
+        public async Task<Room_RecepDTO> GetById(int roomId)
         {
-            string query = @"
-        SELECT *
-        FROM Rooms
-        WHERE RoomID = @RoomID";
+            using var context = DbContextProvider.CreateContext();
+            var room = await context.Rooms
+                .FirstOrDefaultAsync(r => r.RoomID == roomId);
 
-            SqlParameter[] parameters =
-            {
-        new SqlParameter("@RoomID", roomId)
-    };
-
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(
-                    query,
-                    parameters);
-
-            if (dt.Rows.Count == 0)
-                return null;
-
-            DataRow row = dt.Rows[0];
+            if (room == null) return null;
 
             return new Room_RecepDTO
             {
-                RoomID =
-                    Convert.ToInt32(row["RoomID"]),
-
-                RoomCode =
-                    row["RoomCode"].ToString(),
-
-                DepartmentID =
-                    Convert.ToInt32(row["DepartmentID"]),
-
-                Status =
-                    row["Status"].ToString()
+                RoomID = room.RoomID,
+                RoomCode = room.RoomCode ?? "",
+                DepartmentID = room.DepartmentID,
+                Status = room.Status ?? ""
             };
         }
     }

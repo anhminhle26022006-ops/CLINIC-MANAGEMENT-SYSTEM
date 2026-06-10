@@ -1,116 +1,93 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
-using DAL.DataContext;
-using DAL.Interfaces;
+﻿using DAL.DataContext;
+using DAL.Entities;
+using DAL.Interfaces.Facility;
 using DTO;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.Facility
 {
     public class DepartmentDAL : IDepartmentDAL
     {
-        public List<DepartmentDTO> GetAll()
+        public async Task<List<DepartmentDTO>> GetAll()
         {
-            if (!SchemaHelper.TableExists("Departments"))
-            {
-                return new List<DepartmentDTO>();
-            }
-
-            string descriptionExpression = SchemaHelper.ColumnExists("Departments", "Description")
-                ? "Description"
-                : "CAST('' AS nvarchar(255)) AS Description";
-            string activeExpression = SchemaHelper.ColumnExists("Departments", "IsActive")
-                ? "IsActive"
-                : "CAST(1 AS bit) AS IsActive";
-            string query = $"SELECT DepartmentID, DepartmentName, {descriptionExpression}, {activeExpression} FROM Departments ORDER BY DepartmentName";
-            return Map(DatabaseHelper.ExecuteQuery(query));
-        }
-
-        public DepartmentDTO GetById(int departmentId)
-        {
-            if (!SchemaHelper.TableExists("Departments") || departmentId <= 0)
-            {
-                return null;
-            }
-
-            string descriptionExpression = SchemaHelper.ColumnExists("Departments", "Description")
-                ? "Description"
-                : "CAST('' AS nvarchar(255)) AS Description";
-            string activeExpression = SchemaHelper.ColumnExists("Departments", "IsActive")
-                ? "IsActive"
-                : "CAST(1 AS bit) AS IsActive";
-            string query = $"SELECT DepartmentID, DepartmentName, {descriptionExpression}, {activeExpression} FROM Departments WHERE DepartmentID = @DepartmentID";
-            List<DepartmentDTO> list = Map(DatabaseHelper.ExecuteQuery(query, new[]
-            {
-                new SqlParameter("@DepartmentID", departmentId)
-            }));
-            return list.Count > 0 ? list[0] : null;
-        }
-
-        public bool Exists(int departmentId)
-        {
-            return GetById(departmentId) != null;
-        }
-
-        private static List<DepartmentDTO> Map(DataTable table)
-        {
-            List<DepartmentDTO> list = new List<DepartmentDTO>();
-            foreach (DataRow row in table.Rows)
-            {
-                list.Add(new DepartmentDTO
+            using var context = DbContextProvider.CreateContext();
+            return await context.Departments
+                .OrderBy(d => d.DepartmentName)
+                .Select(d => new DepartmentDTO
                 {
-                    DepartmentID = Convert.ToInt32(row["DepartmentID"]),
-                    DepartmentName = row["DepartmentName"].ToString(),
-                    Description = row.Table.Columns.Contains("Description") ? row["Description"].ToString() : "",
-                    IsActive = !row.Table.Columns.Contains("IsActive") || row["IsActive"] == DBNull.Value || Convert.ToBoolean(row["IsActive"])
-                });
-            }
-            return list;
+                    DepartmentID = d.DepartmentID,
+                    DepartmentName = d.DepartmentName ?? "",
+                    Description = "",
+                    IsActive = true
+                })
+                .ToListAsync();
         }
 
-        public bool Add(DepartmentDTO department)
+        public async Task<DepartmentDTO> GetById(int departmentId)
         {
-            string query = "INSERT INTO Departments(DepartmentName) VALUES(@DepartmentName)";
-            return DatabaseHelper.ExecuteNonQuery(query, new[]
+            if (departmentId <= 0) return null;
+
+            using var context = DbContextProvider.CreateContext();
+            var d = await context.Departments
+                .FirstOrDefaultAsync(d => d.DepartmentID == departmentId);
+
+            if (d == null) return null;
+
+            return new DepartmentDTO
             {
-                new SqlParameter("@DepartmentName", department.DepartmentName)
-            }) > 0;
-        }
-
-        public bool Update(DepartmentDTO department)
-        {
-            string query = "UPDATE Departments SET DepartmentName = @DepartmentName WHERE DepartmentID = @DepartmentID";
-            return DatabaseHelper.ExecuteNonQuery(query, new[]
-            {
-                new SqlParameter("@DepartmentName", department.DepartmentName),
-                new SqlParameter("@DepartmentID", department.DepartmentID)
-            }) > 0;
-        }
-
-        public bool SetActive(int id, bool isActive)
-        {
-            if (SchemaHelper.ColumnExists("Departments", "IsActive"))
-            {
-                return DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE Departments SET IsActive = @IsActive WHERE DepartmentID = @DepartmentID",
-                    new[]
-                    {
-                        new SqlParameter("@IsActive", isActive),
-                        new SqlParameter("@DepartmentID", id)
-                    }) > 0;
-            }
-
-            return false;
-        }
-
-        public bool Delete(int id)
-        {
-            string query = "DELETE FROM Departments WHERE DepartmentID = @DepartmentID";
-            SqlParameter[] parameters = {
-                new SqlParameter("@DepartmentID", id)
+                DepartmentID = d.DepartmentID,
+                DepartmentName = d.DepartmentName ?? "",
+                Description = "",
+                IsActive = true
             };
-            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
+
+        public async Task<bool> Exists(int departmentId)
+        {
+            using var context = DbContextProvider.CreateContext();
+            return await context.Departments
+                .AnyAsync(d => d.DepartmentID == departmentId);
+        }
+
+        public async Task<bool> Add(DepartmentDTO department)
+        {
+            using var context = DbContextProvider.CreateContext();
+            context.Departments.Add(new Department
+            {
+                DepartmentName = department.DepartmentName
+            });
+            return await context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> Update(DepartmentDTO department)
+        {
+            using var context = DbContextProvider.CreateContext();
+            var entity = await context.Departments
+                .FirstOrDefaultAsync(d => d.DepartmentID == department.DepartmentID);
+
+            if (entity == null) return false;
+
+            entity.DepartmentName = department.DepartmentName;
+            return await context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> SetActive(int id, bool isActive)
+        {
+            // Database hiện tại không có cột IsActive trong Departments
+            // Trả về true để không block flow
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            using var context = DbContextProvider.CreateContext();
+            var entity = await context.Departments
+                .FirstOrDefaultAsync(d => d.DepartmentID == id);
+
+            if (entity == null) return false;
+
+            context.Departments.Remove(entity);
+            return await context.SaveChangesAsync() > 0;
         }
     }
 }

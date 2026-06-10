@@ -1,12 +1,11 @@
 using DTO;
 
-namespace DAL.Interfaces
+namespace DAL.Interfaces.Facility
 {
-    public interface IDepartmentDAL : IReadOnlyRepository<DepartmentDTO, int>
+    public interface IDepartmentDAL : IReadOnlyRepository<DepartmentDTO, int>, IWriteRepository<DepartmentDTO>
     {
-        bool Add(DepartmentDTO department);
-        bool Update(DepartmentDTO department);
-        bool SetActive(int id, bool isActive);
-        bool Delete(int id);
+        Task<bool> Update(DepartmentDTO department);
+        Task<bool> SetActive(int id, bool isActive);
+        Task<bool> Delete(int id);
     }
 }
