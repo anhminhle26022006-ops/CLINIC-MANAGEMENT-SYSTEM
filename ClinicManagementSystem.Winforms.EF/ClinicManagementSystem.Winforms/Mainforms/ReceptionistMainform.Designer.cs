@@ -459,7 +459,6 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             btnLogout.TabIndex = 8;
             btnLogout.Text = "Đăng xuất";
             btnLogout.UseVisualStyleBackColor = false;
-            btnLogout.Click += btnLogout_Click;
             // 
             // panelTopbar
             // 

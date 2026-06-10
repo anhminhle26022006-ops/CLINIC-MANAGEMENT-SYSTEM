@@ -12,11 +12,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories.ERM
 {
-    public class ErmRepository : IERMRepository
+    public class ERMRepository : IERMRepository
     {
         private readonly CMSDbContext _context;
 
-        public ErmRepository(CMSDbContext context)
+        public ERMRepository(CMSDbContext context)
         {
             _context = context;
         }

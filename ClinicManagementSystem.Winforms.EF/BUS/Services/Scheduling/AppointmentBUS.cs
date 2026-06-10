@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using DAL.Models;
 using DAL.Repositories;
 using DTO;
 
@@ -6,7 +7,17 @@ namespace BUS.Services
 {
     public class AppointmentBUS
     {
-        private readonly AppointmentDAL dal = new();
+        private readonly AppointmentDAL dal;
+
+        public AppointmentBUS()
+        {
+            dal = new AppointmentDAL(new CMSDbContext());
+        }
+
+        public AppointmentBUS(CMSDbContext context)
+        {
+            dal = new AppointmentDAL(context);
+        }
 
         public bool Create(AppointmentDTO appointment)
         {
@@ -75,7 +86,7 @@ namespace BUS.Services
                 "Completed");
         }
 
-        public DataTable GetAppointmentsToday()
+        public List<AppointmentTodayDTO> GetAppointmentsToday()
         {
             return dal.GetAppointmentsToday();
         }
@@ -89,7 +100,7 @@ namespace BUS.Services
                 status);
         }
 
-        public DataTable SearchAppointmentsToday(
+        public List<AppointmentTodayDTO> SearchAppointmentsToday(
     string keyword,
     string department,
     string status)

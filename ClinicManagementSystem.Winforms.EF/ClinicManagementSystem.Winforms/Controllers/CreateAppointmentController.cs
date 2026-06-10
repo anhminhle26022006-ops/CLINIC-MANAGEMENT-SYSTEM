@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using BUS.Services;
+using DAL.Models;
 using DTO;
 
 namespace ClinicManagementSystem.Winforms.Controllers
@@ -12,8 +13,17 @@ namespace ClinicManagementSystem.Winforms.Controllers
         private readonly Department_RecepBUS departmentBUS = new();
         private readonly Employee_RecepBUS employeeBUS = new();
         private readonly Room_RecepBUS roomBUS = new();
-        private readonly AppointmentBUS appointmentBUS = new();
-        private readonly DoctorScheduleBUS doctorScheduleBUS = new();
+
+        private readonly AppointmentBUS appointmentBUS;
+        private readonly DoctorScheduleBUS doctorScheduleBUS;
+
+        public CreateAppointmentController()
+        {
+            var context = new CMSDbContext();
+
+            appointmentBUS = new AppointmentBUS(context);
+            doctorScheduleBUS = new DoctorScheduleBUS(context);
+        }
 
         public List<PatientDTO> GetPatients()
         {

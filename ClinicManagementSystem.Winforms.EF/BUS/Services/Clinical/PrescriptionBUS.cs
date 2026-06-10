@@ -1,14 +1,21 @@
 using System;
 using System.Collections.Generic;
-using DTO;
 using DAL;
+using DAL.Models;
+using DTO;
 
 namespace BUS
 {
     public class PrescriptionBUS
     {
-        private readonly PrescriptionDAL prescriptionDAL = new PrescriptionDAL();
-        private readonly MedicineDAL medicineDAL = new MedicineDAL();
+        private readonly PrescriptionDAL prescriptionDAL;
+        private readonly MedicineDAL medicineDAL;
+
+        public PrescriptionBUS(CMSDbContext context)
+        {
+            prescriptionDAL = new PrescriptionDAL();
+            medicineDAL = new MedicineDAL(context);
+        }
 
         public List<PrescriptionDTO> GetPendingPrescriptions()
         {

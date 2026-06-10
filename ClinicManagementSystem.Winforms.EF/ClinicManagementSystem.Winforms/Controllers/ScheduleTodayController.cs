@@ -1,65 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using BUS.Services;
+using DAL.DataContext;
+using DAL.Models;
+using DAL.Repositories;
+using DTO;
 
 namespace ClinicManagementSystem.Winforms.Controllers
 {
     internal class ScheduleTodayController
     {
-        private readonly AppointmentBUS appointmentBUS =
-    new();
+        private readonly AppointmentBUS appointmentBUS;
+
+        public ScheduleTodayController()
+        {
+            appointmentBUS =
+                new AppointmentBUS(
+                    new CMSDbContext());
+        }
 
         public int GetTotalToday()
-        {
-            return appointmentBUS.CountAppointmentsToday();
-        }
+            => appointmentBUS.CountAppointmentsToday();
 
         public int GetWaitingToday()
-        {
-            return appointmentBUS.CountWaitingAppointmentsToday();
-        }
+            => appointmentBUS.CountWaitingAppointmentsToday();
 
         public int GetReceivedToday()
-        {
-            return appointmentBUS.CountReceivedAppointmentsToday();
-        }
+            => appointmentBUS.CountReceivedAppointmentsToday();
 
         public int GetExaminingToday()
-        {
-            return appointmentBUS.CountExaminingAppointmentsToday();
-        }
+            => appointmentBUS.CountExaminingAppointmentsToday();
 
         public int GetCompletedToday()
-        {
-            return appointmentBUS.CountCompletedAppointmentsToday();
-        }
+            => appointmentBUS.CountCompletedAppointmentsToday();
 
-        public DataTable GetAppointmentsToday()
-        {
-            return appointmentBUS.GetAppointmentsToday();
-        }
+        public List<AppointmentTodayDTO> GetAppointmentsToday()
+            => appointmentBUS.GetAppointmentsToday();
 
-        public bool ReceiveAppointment(
-        int appointmentId)
-        {
-            return appointmentBUS.UpdateStatus(
-                appointmentId,
-                "Received");
-        }
+        public bool ReceiveAppointment(int appointmentId)
+            => appointmentBUS.UpdateStatus(appointmentId, "Received");
 
-        public DataTable SearchAppointments(
-    string keyword,
-    string department,
-    string status)
-        {
-            return appointmentBUS.SearchAppointmentsToday(
+        public List<AppointmentTodayDTO> SearchAppointments(
+            string keyword,
+            string department,
+            string status)
+            => appointmentBUS.SearchAppointmentsToday(
                 keyword,
                 department,
                 status);
-        }
     }
 }

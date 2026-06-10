@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BUS.Interfaces;
 using CMS.Core.Constants;
+using DAL.Models;
 using DAL.Repositories;
 using DTO;
 
@@ -9,10 +10,25 @@ namespace BUS.Services
 {
     public class EmployeeShiftBUS : IEmployeeShiftBUS
     {
-        private readonly EmployeeShiftDAL dal = new EmployeeShiftDAL();
-        private readonly EmployeeDAL employeeDal = new EmployeeDAL();
-        private readonly WorkShiftDAL workShiftDal = new WorkShiftDAL();
+        private readonly EmployeeShiftDAL dal;
+        private readonly EmployeeDAL employeeDal;
+        private readonly WorkShiftDAL workShiftDal;
 
+        public EmployeeShiftBUS()
+        {
+            var context = new CMSDbContext();
+
+            dal = new EmployeeShiftDAL(context);
+            employeeDal = new EmployeeDAL(context);
+            workShiftDal = new WorkShiftDAL(context);
+        }
+
+        public EmployeeShiftBUS(CMSDbContext context)
+        {
+            dal = new EmployeeShiftDAL(context);
+            employeeDal = new EmployeeDAL(context);
+            workShiftDal = new WorkShiftDAL(context);
+        }
         public bool SupportsEmployeeShiftSchema()
         {
             return dal.SupportsEmployeeShiftSchema();

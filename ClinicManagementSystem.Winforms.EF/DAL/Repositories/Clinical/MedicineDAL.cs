@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using DAL.Models;
 using DTO;
 
@@ -5,11 +8,16 @@ namespace DAL
 {
     public class MedicineDAL
     {
+        private readonly CMSDbContext _context;
+
+        public MedicineDAL(CMSDbContext context)
+        {
+            _context = context;
+        }
+
         public List<MedicineDTO> GetAllMedicines()
         {
-            using var db = new CMSDbContext();
-
-            return db.Medicines
+            return _context.Medicines
                 .Select(m => new MedicineDTO
                 {
                     MedicineID = m.MedicineId,
@@ -27,9 +35,7 @@ namespace DAL
 
         public bool InsertMedicine(MedicineDTO medicine)
         {
-            using var db = new CMSDbContext();
-
-            db.Medicines.Add(new Medicine
+            _context.Medicines.Add(new Medicine
             {
                 Name = medicine.Name,
                 Unit = medicine.Unit,
@@ -41,14 +47,12 @@ namespace DAL
                     : DateOnly.FromDateTime(medicine.ExpiryDate)
             });
 
-            return db.SaveChanges() > 0;
+            return _context.SaveChanges() > 0;
         }
 
         public bool UpdateMedicine(MedicineDTO medicine)
         {
-            using var db = new CMSDbContext();
-
-            var entity = db.Medicines
+            var entity = _context.Medicines
                 .FirstOrDefault(x => x.MedicineId == medicine.MedicineID);
 
             if (entity == null)
@@ -63,14 +67,12 @@ namespace DAL
                 ? null
                 : DateOnly.FromDateTime(medicine.ExpiryDate);
 
-            return db.SaveChanges() > 0;
+            return _context.SaveChanges() > 0;
         }
 
         public bool UpdateStock(int medicineId, int qty)
         {
-            using var db = new CMSDbContext();
-
-            var medicine = db.Medicines
+            var medicine = _context.Medicines
                 .FirstOrDefault(x => x.MedicineId == medicineId);
 
             if (medicine == null)
@@ -78,14 +80,12 @@ namespace DAL
 
             medicine.Stock = (medicine.Stock ?? 0) - qty;
 
-            return db.SaveChanges() > 0;
+            return _context.SaveChanges() > 0;
         }
 
         public bool AdjustStock(int medicineId, int quantityDelta)
         {
-            using var db = new CMSDbContext();
-
-            var medicine = db.Medicines
+            var medicine = _context.Medicines
                 .FirstOrDefault(x => x.MedicineId == medicineId);
 
             if (medicine == null)
@@ -98,14 +98,12 @@ namespace DAL
 
             medicine.Stock = newStock;
 
-            return db.SaveChanges() > 0;
+            return _context.SaveChanges() > 0;
         }
 
         public int GetStock(int medicineId)
         {
-            using var db = new CMSDbContext();
-
-            return db.Medicines
+            return _context.Medicines
                 .Where(x => x.MedicineId == medicineId)
                 .Select(x => x.Stock ?? 0)
                 .FirstOrDefault();
@@ -113,17 +111,15 @@ namespace DAL
 
         public bool DeleteMedicine(int id)
         {
-            using var db = new CMSDbContext();
-
-            var medicine = db.Medicines
+            var medicine = _context.Medicines
                 .FirstOrDefault(x => x.MedicineId == id);
 
             if (medicine == null)
                 return false;
 
-            db.Medicines.Remove(medicine);
+            _context.Medicines.Remove(medicine);
 
-            return db.SaveChanges() > 0;
+            return _context.SaveChanges() > 0;
         }
     }
 }

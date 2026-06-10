@@ -1,6 +1,6 @@
-using System;
-using System.Collections.Generic;
 using BUS.Interfaces;
+using DAL.DataContext;
+using DAL.Models;
 using DAL.Repositories;
 using DTO;
 
@@ -8,7 +8,17 @@ namespace BUS.Services
 {
     public class WorkShiftBUS : IWorkShiftBUS
     {
-        private readonly WorkShiftDAL dal = new WorkShiftDAL();
+        private readonly WorkShiftDAL dal;
+
+        public WorkShiftBUS()
+        {
+            dal = new WorkShiftDAL(new CMSDbContext());
+        }
+
+        public WorkShiftBUS(CMSDbContext context)
+        {
+            dal = new WorkShiftDAL(context);
+        }
 
         public List<WorkShiftDTO> GetAll()
         {

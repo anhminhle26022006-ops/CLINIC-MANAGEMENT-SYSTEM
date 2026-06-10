@@ -1,12 +1,23 @@
-using DTO;
 using DAL;
+using DAL.Models;
+using DTO;
 
 namespace BUS
 {
     public class InventoryBUS
     {
-        private MedicineDAL medicineDAL =
-            new MedicineDAL();
+        private readonly MedicineDAL medicineDAL;
+
+        public InventoryBUS()
+        {
+            medicineDAL = new MedicineDAL(new CMSDbContext());
+        }
+
+        public InventoryBUS(CMSDbContext context)
+        {
+            medicineDAL = new MedicineDAL(context);
+        }
+
 
         public List<MedicineDTO> GetAllMedicines()
         {

@@ -6,8 +6,16 @@ namespace ClinicManagementSystem.Winforms.Controllers
 {
     public class MedicalRecordController
     {
-        private readonly MedicalRecordBUS bus = new();
+        private readonly MedicalRecordBUS bus;
 
-        
+        public MedicalRecordController()
+        {
+            bus = new MedicalRecordBUS();
+        }
+
+        public List<MedicalRecordDto> GetAll()
+        {
+            return bus.GetAll();
+        }
     }
 }

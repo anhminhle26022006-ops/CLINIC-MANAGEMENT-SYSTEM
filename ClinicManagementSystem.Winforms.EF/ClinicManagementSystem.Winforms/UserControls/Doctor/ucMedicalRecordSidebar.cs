@@ -194,11 +194,16 @@ namespace ClinicManagementSystem.Winforms.Shareforms.ERM
                     return;
                 }
 
-                var controller = new ERMController(
-                    new BUS.Services.ERM.ERMBus(
-                        new DAL.Repositories.ERM.ERMRepository()));
+                var repository = new ERMRepository(_context);
 
-                ERMform frm = new ERMform(controller, record.PatientUUID);
+                var bus = new ERMBus(repository);
+
+                var controller = new ERMController(bus);
+
+                ERMform frm = new ERMform(
+                    controller,
+                    record.PatientUUID);
+
                 frm.ShowDialog();
             }
         }

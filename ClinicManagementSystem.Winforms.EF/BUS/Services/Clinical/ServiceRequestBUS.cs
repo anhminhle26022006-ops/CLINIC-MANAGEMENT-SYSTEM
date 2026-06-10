@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BUS.Interfaces;
 using CMS.Core.Constants;
+using DAL.Models;
 using DAL.Repositories;
 using DTO;
 
@@ -9,8 +10,14 @@ namespace BUS.Services
 {
     public class ServiceRequestBUS : IServiceRequestBUS
     {
-        private readonly ServiceRequestDAL dal = new ServiceRequestDAL();
-        private readonly EmployeeDAL employeeDal = new EmployeeDAL();
+        private readonly ServiceRequestDAL dal;
+        private readonly EmployeeDAL employeeDal;
+
+        public ServiceRequestBUS(CMSDbContext context)
+        {
+            dal = new ServiceRequestDAL(context);
+            employeeDal = new EmployeeDAL(context);
+        }
 
         public List<ServiceRequestDTO> GetAll()
         {

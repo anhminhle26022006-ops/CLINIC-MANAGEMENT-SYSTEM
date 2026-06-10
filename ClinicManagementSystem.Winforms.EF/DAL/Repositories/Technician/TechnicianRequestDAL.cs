@@ -4,6 +4,7 @@ using System.Data;
 using CMS.Core.Constants;
 using DAL.DataContext;
 using DAL.Interfaces;
+using DAL.Models;
 using DTO;
 using Microsoft.Data.SqlClient;
 
@@ -11,6 +12,13 @@ namespace DAL.Repositories
 {
     public class TechnicianRequestDAL : ITechnicianRequestDAL
     {
+        private readonly CMSDbContext _context;
+
+        public TechnicianRequestDAL(CMSDbContext context)
+        {
+            _context = context;
+        }
+
         private const string LabSource = "LabRequests";
         private const string ImagingSource = "ImagingRequests";
 

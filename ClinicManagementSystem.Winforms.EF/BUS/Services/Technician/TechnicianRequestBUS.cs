@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using BUS.Interfaces;
 using CMS.Core.Constants;
+using DAL.DataContext;
+using DAL.Models;
 using DAL.Repositories;
 using DTO;
 
@@ -9,8 +11,17 @@ namespace BUS.Services
 {
     public class TechnicianRequestBUS : ITechnicianRequestBUS
     {
-        private readonly TechnicianRequestDAL dal = new TechnicianRequestDAL();
-        private readonly ServiceRequestBUS serviceRequestBUS = new ServiceRequestBUS();
+        private readonly TechnicianRequestDAL dal;
+        private readonly ServiceRequestBUS serviceRequestBUS;
+
+        public TechnicianRequestBUS()
+        {
+            var context = new CMSDbContext();
+
+            dal = new TechnicianRequestDAL(context);
+            serviceRequestBUS = new ServiceRequestBUS(context);
+        }
+
 
         public List<TechnicianRequestDTO> GetList()
         {

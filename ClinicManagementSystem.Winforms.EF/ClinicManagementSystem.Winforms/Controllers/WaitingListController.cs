@@ -1,16 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using BUS.Services;
+using DAL.Models;
 using DTO;
 
 namespace ClinicManagementSystem.Winforms.Controllers
 {
     public class WaitingListController
     {
-        private readonly AppointmentBUS appointmentBUS = new();
-        private readonly DoctorScheduleBUS scheduleBUS = new();
+        private readonly AppointmentBUS appointmentBUS;
+        private readonly DoctorScheduleBUS scheduleBUS;
         private readonly Room_RecepBUS roomBUS = new();
         private readonly Department_RecepBUS departmentBUS = new();
+
+        public WaitingListController()
+        {
+            var context = new CMSDbContext();
+
+            appointmentBUS = new AppointmentBUS(context);
+            scheduleBUS = new DoctorScheduleBUS(context);
+        }
 
         public int GetWaitingCount()
         {

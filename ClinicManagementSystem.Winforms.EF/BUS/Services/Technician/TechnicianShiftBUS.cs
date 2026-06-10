@@ -9,7 +9,7 @@ namespace BUS.Services
 {
     public class TechnicianShiftBUS : ITechnicianShiftBUS
     {
-        private readonly TechnicianShiftDAL dal = new TechnicianShiftDAL();
+        private readonly TechnicianShiftDAL dal;
         private readonly EmployeeShiftBUS employeeShiftBUS = new EmployeeShiftBUS();
 
         public List<TechnicianShiftDTO> GetList()
