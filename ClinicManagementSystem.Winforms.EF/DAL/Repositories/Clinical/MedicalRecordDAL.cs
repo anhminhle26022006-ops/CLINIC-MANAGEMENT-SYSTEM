@@ -8,29 +8,42 @@ using Microsoft.Data.SqlClient;
 namespace DAL.Repositories
 {
     public class MedicalRecordDAL
-    {
-        private MedicalRecordDTO
-            MapRowToDTO(DataRow row)
+    {    
+
+        public List<MedicalRecordDto> GetAllErmRecords()
         {
-            return new MedicalRecordDTO
-            {
-                RecordID =
-                    Convert.ToInt32(
-                        row["RecordID"]),
+            using var db = new CMSDbContext();
 
-                EncounterID =
-                    Convert.ToInt32(
-                        row["EncounterID"]),
+            return db.MedicalRecords
+                .OrderByDescending(x => x.CreatedAt)
+                .ThenByDescending(x => x.RecordId)
+                .Select(x => new MedicalRecordDto
+                {
+                    RecordID = x.RecordId,
 
-                Diagnosis =
-                    row["Diagnosis"]?.ToString(),
+                    RecordUUID = x.RecordUuid,
 
-                Conclusion =
-                    row["Conclusion"]?.ToString(),
+                    PatientUUID =
+                        x.Encounter.Patient.PatientUuid,
 
-                Notes =
-                    row["Notes"]?.ToString()
-            };
+                    Code = "MR-" + x.RecordId.ToString("D5"),
+
+                    Date =
+                        x.CreatedAt ?? DateTime.MinValue,
+
+                    Patient =
+                        x.Encounter.Patient.FullName ?? "",
+
+                    Diagnosis =
+                        x.Diagnosis ?? "",
+
+                    Doctor =
+                        x.Encounter.Doctor.FullName ?? "",
+
+                    Status =
+                        x.Encounter.Status ?? ""
+                })
+                .ToList();
         }
 
         public MedicalRecordDTO GetByEncounterId(int encounterId)
