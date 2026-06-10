@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using BUS.Services.Doctor;
+using DAL.Models;
 using DTO;
 using DTO.Doctor;
 
@@ -10,9 +11,10 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
 {
     public partial class ucDoctorExaminationSidebar : UserControl
     {
-        private readonly DoctorWorkspaceBUS doctorBUS = new();
-        private readonly UserDTO currentUser;
-        private readonly int doctorId;
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+        private readonly DoctorWorkspaceBUS _doctorBUS;
+        private readonly int _doctorId;
 
         private DoctorAppointmentDTO selectedPatient;
         private ucExaminationTab examTab;
@@ -20,16 +22,20 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         private ucLabTab labTab;
         private ucImagingTab imagingTab;
 
-        public ucDoctorExaminationSidebar() : this(null)
+        // Constructor mặc định (cho designer)
+        public ucDoctorExaminationSidebar()
         {
+            InitializeComponent();
         }
 
-        public ucDoctorExaminationSidebar(UserDTO currentUser)
+        // Constructor chính (dùng khi runtime)
+        public ucDoctorExaminationSidebar(CMSDbContext context, UserDTO currentUser) : this()
         {
-            this.currentUser = currentUser;
-            doctorId = doctorBUS.ResolveDoctorId(currentUser);
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
+            _doctorBUS = new DoctorWorkspaceBUS(_context);
+            _doctorId = _doctorBUS.ResolveDoctorId(_currentUser);
 
-            InitializeComponent();
             InitLayout();
             InitTabs();
             InitEvents();
@@ -43,18 +49,17 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
             flpWaitingPatients.Dock = DockStyle.Fill;
             flpHistory.Dock = DockStyle.Fill;
 
-            lblDoctor.Text = string.IsNullOrWhiteSpace(currentUser?.Name)
-                ? "Bac si"
-                : currentUser.Name;
+            lblDoctor.Text = string.IsNullOrWhiteSpace(_currentUser?.Name) ? "Bac si" : _currentUser.Name;
             lblDate.Text = DateTime.Today.ToString("dd/MM/yyyy");
         }
 
         private void InitTabs()
         {
-            examTab = new ucExaminationTab();
-            prescriptionTab = new ucPrescriptionTab();
-            labTab = new ucLabTab();
-            imagingTab = new ucImagingTab();
+            // Truyền context xuống các tab nếu chúng cần (giả sử các tab đã có constructor nhận context)
+            examTab = new ucExaminationTab(_context, _currentUser);
+            prescriptionTab = new ucPrescriptionTab(_context, _currentUser);
+            labTab = new ucLabTab(_context, _currentUser);
+            imagingTab = new ucImagingTab(_context, _currentUser);
 
             ShowTab(examTab);
         }
@@ -82,12 +87,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         private void LoadWaitingPatients()
         {
             flpWaitingPatients.Controls.Clear();
-            var list = doctorBUS.GetAppointments(doctorId, DateTime.Today)
+            var list = _doctorBUS.GetAppointments(_doctorId, DateTime.Today)
                 .Where(item => item.Status is "Waiting" or "Examining")
                 .ToList();
 
             lblQueueCount.Text = "Hang cho kham (" + list.Count + ")";
-            lblProgress.Text = "Da kham: " + doctorBUS.GetDashboard(doctorId, DateTime.Today).CompletedCount + "/" + Math.Max(list.Count, 1);
+            lblProgress.Text = "Da kham: " + _doctorBUS.GetDashboard(_doctorId, DateTime.Today).CompletedCount + "/" + Math.Max(list.Count, 1);
 
             int index = 1;
             foreach (DoctorAppointmentDTO item in list)
@@ -125,15 +130,9 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
             }
         }
 
-        public void LoadPatient(string patientName, string patientInfo, string appointmentTime, string status)
-        {
-            lblPatientName.Text = patientName;
-            lblPatientInfo.Text = patientInfo + " - " + appointmentTime + " - " + status;
-        }
-
         public void LoadPatientByAppointment(int appointmentId)
         {
-            DoctorAppointmentDTO appointment = doctorBUS.GetByAppointment(doctorId, appointmentId);
+            DoctorAppointmentDTO appointment = _doctorBUS.GetByAppointment(_doctorId, appointmentId);
             if (appointment == null)
             {
                 MessageBox.Show("Không tìm thấy lịch khám.");
@@ -146,7 +145,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
 
         public void LoadPatientByEncounter(int encounterId)
         {
-            DoctorAppointmentDTO appointment = doctorBUS.GetByEncounter(doctorId, encounterId);
+            DoctorAppointmentDTO appointment = _doctorBUS.GetByEncounter(_doctorId, encounterId);
             if (appointment == null)
             {
                 MessageBox.Show("Không tìm thấy ca khám.");
@@ -159,15 +158,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
 
         private void WaitingPatient_Click(object sender, EventArgs e)
         {
-            if (sender is not ucWaitingPatient uc || uc.Tag is not DoctorAppointmentDTO data)
-            {
-                return;
-            }
+            if (sender is not ucWaitingPatient uc || uc.Tag is not DoctorAppointmentDTO data) return;
 
             try
             {
-                doctorBUS.StartExamination(data.AppointmentID, data.EncounterID, doctorId);
-                data = doctorBUS.GetByAppointment(doctorId, data.AppointmentID) ?? data;
+                _doctorBUS.StartExamination(data.AppointmentID, data.EncounterID, _doctorId);
+                data = _doctorBUS.GetByAppointment(_doctorId, data.AppointmentID) ?? data;
             }
             catch (Exception ex)
             {
@@ -186,7 +182,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
             {
                 control.BackColor = Color.White;
             }
-
             selected.BackColor = Color.FromArgb(219, 234, 254);
         }
 
@@ -204,14 +199,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
 
         private void SetTabContext(int encounterId)
         {
-            labTab.SetContext(encounterId, doctorId);
-            imagingTab.SetContext(encounterId, doctorId);
-            prescriptionTab.SetContext(encounterId, doctorId, doctorBUS.GetMedicines());
+            labTab.SetContext(encounterId, _doctorId);
+            imagingTab.SetContext(encounterId, _doctorId);
+            prescriptionTab.SetContext(encounterId, _doctorId, _doctorBUS.GetMedicines());
         }
 
         private void LoadRecord(int encounterId)
         {
-            examTab.LoadRecord(doctorBUS.GetMedicalRecord(encounterId), encounterId);
+            examTab.LoadRecord(_doctorBUS.GetMedicalRecord(encounterId), encounterId);
         }
 
         private void LoadVitalSigns(DoctorAppointmentDTO appointment)
@@ -240,7 +235,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         {
             flpHistory.Controls.Clear();
 
-            foreach (DoctorHistoryDTO item in doctorBUS.GetHistory(patientId, encounterId))
+            foreach (DoctorHistoryDTO item in _doctorBUS.GetHistory(patientId, encounterId))
             {
                 ucPreviousVisitCard card = new();
                 card.lblDate.Text = item.Date == DateTime.MinValue ? "-" : item.Date.ToString("dd/MM/yyyy");
@@ -252,7 +247,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
                 flpHistory.Controls.Add(card);
             }
 
-            foreach (DoctorLabResultDTO lab in doctorBUS.GetLabResults(encounterId))
+            foreach (DoctorLabResultDTO lab in _doctorBUS.GetLabResults(encounterId))
             {
                 ucLabResultCard card = new();
                 card.lblTitle.Text = lab.TestType;
@@ -264,7 +259,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
                 flpHistory.Controls.Add(card);
             }
 
-            foreach (DoctorImagingResultDTO img in doctorBUS.GetImagingResults(encounterId))
+            foreach (DoctorImagingResultDTO img in _doctorBUS.GetImagingResults(encounterId))
             {
                 ucImagingCard card = new();
                 card.lblTitle.Text = img.ServiceName;
@@ -288,7 +283,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
             {
                 StartPosition = FormStartPosition.CenterParent
             };
-
             form.lblPatientName.Text = selectedPatient.PatientName;
             form.lblPatientCode.Text = selectedPatient.PatientCode;
             form.ShowDialog();
@@ -304,17 +298,17 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
 
             try
             {
-                doctorBUS.SaveMedicalRecord(examTab.BuildRecord());
-                doctorBUS.CreateLabRequests(labTab.BuildRequests());
-                doctorBUS.CreateImagingRequests(imagingTab.BuildRequests());
+                _doctorBUS.SaveMedicalRecord(examTab.BuildRecord());
+                _doctorBUS.CreateLabRequests(labTab.BuildRequests());
+                _doctorBUS.CreateImagingRequests(imagingTab.BuildRequests());
 
-                DoctorPrescriptionSaveDTO prescription = prescriptionTab.BuildPrescription();
+                var prescription = prescriptionTab.BuildPrescription();
                 if (prescription.Items.Count > 0)
                 {
-                    doctorBUS.CreatePrescription(prescription);
+                    _doctorBUS.CreatePrescription(prescription);
                 }
 
-                doctorBUS.CompleteExamination(selectedPatient.AppointmentID, selectedPatient.EncounterID, doctorId);
+                _doctorBUS.CompleteExamination(selectedPatient.AppointmentID, selectedPatient.EncounterID, _doctorId);
 
                 labTab.ClearRequests();
                 imagingTab.ClearRequests();
@@ -330,11 +324,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
 
         private static double CalculateBMI(decimal weight, decimal heightCm)
         {
-            if (weight <= 0 || heightCm <= 0)
-            {
-                return 0;
-            }
-
+            if (weight <= 0 || heightCm <= 0) return 0;
             double h = (double)heightCm / 100.0;
             return (double)weight / (h * h);
         }

@@ -7,19 +7,21 @@ using System.Linq;
 using System.Windows.Forms;
 using BUS.Services;
 using DTO;
+using DAL.Models;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Admin
 {
     public partial class ucAdminStatistics : UserControl
     {
-        private readonly AdminStatisticsBUS statisticsBUS = new AdminStatisticsBUS();
+        private readonly AdminStatisticsBUS statisticsBUS;
         private readonly CultureInfo viCulture = new CultureInfo("vi-VN");
         private AdminStatisticsDTO currentStatistics = new AdminStatisticsDTO();
         private bool isBinding;
 
-        public ucAdminStatistics()
+        public ucAdminStatistics(CMSDbContext context)
         {
             InitializeComponent();
+            statisticsBUS = new AdminStatisticsBUS(context);
             AdminUiStyle.ApplyGrid(dgvAppointments);
             dtpMonth.Value = DateTime.Today;
         }

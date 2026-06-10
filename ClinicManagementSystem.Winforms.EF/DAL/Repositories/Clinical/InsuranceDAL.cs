@@ -8,19 +8,40 @@ namespace DAL.Repositories.Clinical
     {
         public async Task<bool> Add(PatientInsuranceDTO insurance)
         {
-            using var context = DbContextProvider.CreateContext();
+            string query = @"
+                INSERT INTO PatientInsurance
+                (
+                    PatientID,
+                    InsuranceNumber,
+                    Provider,
+                    EffectiveDate,
+                    ExpiryDate
+                )
+                VALUES
+                (
+                    @PatientID,
+                    @InsuranceNumber,
+                    @Provider,
+                    @EffectiveDate,
+                    @ExpiryDate
+                )";
 
             var entity = new PatientInsurance
             {
-                PatientID = insurance.PatientID,
-                InsuranceNumber = insurance.InsuranceNumber,
-                Provider = insurance.Provider,
-                EffectiveDate = insurance.EffectiveDate,
-                ExpiryDate = insurance.ExpiryDate
+                new SqlParameter("@PatientID", insurance.PatientID),
+                new SqlParameter("@InsuranceNumber",
+                    (object)insurance.InsuranceNumber ?? DBNull.Value),
+                new SqlParameter("@Provider",
+                    (object)insurance.Provider ?? DBNull.Value),
+                new SqlParameter("@EffectiveDate",
+                    insurance.EffectiveDate),
+                new SqlParameter("@ExpiryDate",
+                    insurance.ExpiryDate)
             };
 
-            context.PatientInsurances.Add(entity);
-            return await context.SaveChangesAsync() > 0;
+            return DatabaseHelper.ExecuteNonQuery(
+                query,
+                parameters) > 0;
         }
     }
 }

@@ -1,153 +1,98 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using DAL.DataContext;
 using DAL.Interfaces;
+using DAL.Models;
 using DTO;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
     public class EmployeeShiftDAL : IEmployeeShiftDAL
     {
+        private readonly CMSDbContext _context;
+
+        public EmployeeShiftDAL(CMSDbContext context)
+        {
+            _context = context;
+        }
+
         public bool SupportsEmployeeShiftSchema()
         {
-            return SchemaHelper.TableExists("EmployeeShifts")
-                && SchemaHelper.TableExists("Employees")
-                && SchemaHelper.TableExists("Shifts");
+            return true; // EF Core DbSet tồn tại
         }
 
         public List<EmployeeShiftDTO> GetAll()
         {
-            return GetFiltered(null, null, null);
+            return QueryShifts().ToList();
         }
 
         public List<EmployeeShiftDTO> GetByEmployee(int employeeId)
         {
-            return GetFiltered("es.EmployeeID = @EmployeeID", new[]
-            {
-                new SqlParameter("@EmployeeID", employeeId)
-            }, null);
+            return QueryShifts()
+                .Where(es => es.EmployeeID == employeeId)
+                .ToList();
         }
 
         public List<EmployeeShiftDTO> GetByDate(DateTime workDate)
         {
-            return GetFiltered("CAST(es.WorkDate AS date) = @WorkDate", new[]
-            {
-                new SqlParameter("@WorkDate", workDate.Date)
-            }, null);
+            var start = workDate.Date;                  // 00:00:00
+            var end = start.AddDays(1);                 // 00:00:00 ngày hôm sau
+            return QueryShifts()
+                .Where(es => es.WorkDate >= start && es.WorkDate < end)
+                .ToList();
         }
 
         public List<EmployeeShiftDTO> GetByRole(string roleName)
         {
-            return GetFiltered("r.RoleName = @RoleName", new[]
-            {
-                new SqlParameter("@RoleName", roleName)
-            }, null);
+            return QueryShifts()
+                .Where(es => es.RoleName == roleName)
+                .ToList();
         }
 
         public bool Add(EmployeeShiftDTO shift)
         {
-            if (!SupportsEmployeeShiftSchema())
+            var entity = new EmployeeShift
             {
-                return false;
-            }
-
-            List<string> columns = new List<string> { "EmployeeID", "ShiftID", "WorkDate" };
-            List<string> values = new List<string> { "@EmployeeID", "@ShiftID", "@WorkDate" };
-            List<SqlParameter> parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@EmployeeID", shift.EmployeeID),
-                new SqlParameter("@ShiftID", shift.ShiftID),
-                new SqlParameter("@WorkDate", shift.WorkDate.Date)
+                EmployeeId = shift.EmployeeID,
+                ShiftId = shift.ShiftID,
+                WorkDate = DateOnly.FromDateTime(shift.WorkDate.Date)
             };
-
-            AddOptionalColumn(columns, values, parameters, "DepartmentID", "@DepartmentID", (object)shift.DepartmentID ?? DBNull.Value);
-            AddOptionalColumn(columns, values, parameters, "RoomID", "@RoomID", (object)shift.RoomID ?? DBNull.Value);
-            AddOptionalColumn(columns, values, parameters, "Status", "@Status", string.IsNullOrWhiteSpace(shift.Status) ? "Approved" : shift.Status);
-            AddOptionalColumn(columns, values, parameters, "Notes", "@Notes", DBNull.Value);
-
-            string query = $"INSERT INTO EmployeeShifts({string.Join(", ", columns)}) VALUES({string.Join(", ", values)})";
-            return DatabaseHelper.ExecuteNonQuery(query, parameters.ToArray()) > 0;
+            _context.EmployeeShifts.Add(entity);
+            return _context.SaveChanges() > 0;
         }
 
         public bool HasConflict(int employeeId, DateTime workDate, int shiftId)
         {
-            if (!SupportsEmployeeShiftSchema())
-            {
-                return false;
-            }
-
-            string query = @"
-                SELECT COUNT(*)
-                FROM EmployeeShifts
-                WHERE EmployeeID = @EmployeeID
-                  AND ShiftID = @ShiftID
-                  AND CAST(WorkDate AS date) = @WorkDate";
-            object result = DatabaseHelper.ExecuteScalar(query, new[]
-            {
-                new SqlParameter("@EmployeeID", employeeId),
-                new SqlParameter("@ShiftID", shiftId),
-                new SqlParameter("@WorkDate", workDate.Date)
-            });
-            return Convert.ToInt32(result) > 0;
+            var date = DateOnly.FromDateTime(workDate.Date);
+            return _context.EmployeeShifts
+                .Any(es => es.EmployeeId == employeeId &&
+                           es.ShiftId == shiftId &&
+                           es.WorkDate == date);
         }
 
         public bool Update(EmployeeShiftDTO shift)
         {
-            if (!SupportsEmployeeShiftSchema() || shift.EmployeeShiftID <= 0)
-            {
-                return false;
-            }
+            var existing = _context.EmployeeShifts.Find(shift.EmployeeShiftID);
+            if (existing == null) return false;
 
-            string idColumn = SchemaHelper.ColumnExists("EmployeeShifts", "EmployeeShiftID") ? "EmployeeShiftID" : "ID";
-            List<string> assignments = new List<string>
-            {
-                "EmployeeID = @EmployeeID",
-                "ShiftID = @ShiftID",
-                "WorkDate = @WorkDate"
-            };
-            List<SqlParameter> parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@EmployeeID", shift.EmployeeID),
-                new SqlParameter("@ShiftID", shift.ShiftID),
-                new SqlParameter("@WorkDate", shift.WorkDate.Date),
-                new SqlParameter("@EmployeeShiftID", shift.EmployeeShiftID)
-            };
-
-            AddOptionalAssignment(assignments, parameters, "DepartmentID", "@DepartmentID", (object)shift.DepartmentID ?? DBNull.Value);
-            AddOptionalAssignment(assignments, parameters, "RoomID", "@RoomID", (object)shift.RoomID ?? DBNull.Value);
-            AddOptionalAssignment(assignments, parameters, "Status", "@Status", string.IsNullOrWhiteSpace(shift.Status) ? "Approved" : shift.Status);
-
-            string query = $"UPDATE EmployeeShifts SET {string.Join(", ", assignments)} WHERE {idColumn} = @EmployeeShiftID";
-            return DatabaseHelper.ExecuteNonQuery(query, parameters.ToArray()) > 0;
+            existing.EmployeeId = shift.EmployeeID;
+            existing.ShiftId = shift.ShiftID;
+            existing.WorkDate = DateOnly.FromDateTime(shift.WorkDate.Date);
+            _context.Entry(existing).State = EntityState.Modified;
+            return _context.SaveChanges() > 0;
         }
 
         public bool SetStatus(int employeeShiftId, string status)
         {
-            if (!SupportsEmployeeShiftSchema() || employeeShiftId <= 0 || !SchemaHelper.ColumnExists("EmployeeShifts", "Status"))
-            {
-                return false;
-            }
-
-            string idColumn = SchemaHelper.ColumnExists("EmployeeShifts", "EmployeeShiftID") ? "EmployeeShiftID" : "ID";
-            string query = $"UPDATE EmployeeShifts SET Status = @Status WHERE {idColumn} = @EmployeeShiftID";
-            return DatabaseHelper.ExecuteNonQuery(query, new[]
-            {
-                new SqlParameter("@Status", status),
-                new SqlParameter("@EmployeeShiftID", employeeShiftId)
-            }) > 0;
+            // Model hiện tại không có cột Status, cần thêm vào model nếu muốn dùng
+            throw new NotImplementedException("Status column does not exist in EmployeeShift entity.");
         }
 
         public int EnsureMonthlySchedule(string roleName, int employeeId, DateTime startDate, int dayCount)
         {
-            if (!SupportsEmployeeShiftSchema())
-            {
-                return 0;
-            }
-
-            string query = @"
+            const string sql = @"
                 ;WITH CalendarDays AS
                 (
                     SELECT TOP (@DayCount)
@@ -214,124 +159,44 @@ namespace DAL.Repositories
                       AND CAST(existing.WorkDate AS DATE) = ps.WorkDate
                 );";
 
-            return DatabaseHelper.ExecuteNonQuery(query, new[]
+            var parameters = new[]
             {
                 new SqlParameter("@DayCount", dayCount),
                 new SqlParameter("@StartDate", startDate.Date),
                 new SqlParameter("@EmployeeID", employeeId),
                 new SqlParameter("@RoleName", roleName ?? string.Empty)
-            });
+            };
+            return _context.Database.ExecuteSqlRaw(sql, parameters);
         }
 
-        private List<EmployeeShiftDTO> GetFiltered(string whereClause, SqlParameter[] parameters, string orderBy)
+        private IQueryable<EmployeeShiftDTO> QueryShifts()
         {
-            if (!SupportsEmployeeShiftSchema())
-            {
-                return new List<EmployeeShiftDTO>();
-            }
-
-            string idColumn = SchemaHelper.ColumnExists("EmployeeShifts", "EmployeeShiftID") ? "es.EmployeeShiftID" : "es.ID";
-            bool hasDepartment = SchemaHelper.ColumnExists("EmployeeShifts", "DepartmentID");
-            bool hasRoom = SchemaHelper.ColumnExists("EmployeeShifts", "RoomID");
-            bool hasStatus = SchemaHelper.ColumnExists("EmployeeShifts", "Status");
-
-            string departmentExpression = hasDepartment ? "COALESCE(es.DepartmentID, e.DepartmentID)" : "e.DepartmentID";
-            string roomIdExpression = hasRoom ? "es.RoomID" : "CAST(NULL AS int)";
-            string roomJoin = hasRoom ? "LEFT JOIN Rooms room ON es.RoomID = room.RoomID" : "LEFT JOIN Rooms room ON 1 = 0";
-            string statusExpression = hasStatus ? "ISNULL(es.Status, 'Approved')" : "CAST('Approved' AS nvarchar(50))";
-
-            string query = $@"
-                SELECT {idColumn} AS EmployeeShiftID,
-                       es.EmployeeID,
-                       ISNULL(e.FullName, '') AS EmployeeName,
-                       ISNULL(r.RoleName, '') AS RoleName,
-                       es.ShiftID,
-                       ISNULL(s.Name, '') AS ShiftName,
-                       es.WorkDate,
-                       ISNULL(s.StartTime, CAST('00:00:00' AS time)) AS StartTime,
-                       ISNULL(s.EndTime, CAST('00:00:00' AS time)) AS EndTime,
-                       {roomIdExpression} AS RoomID,
-                       ISNULL(room.RoomCode, '') AS RoomCode,
-                       {departmentExpression} AS DepartmentID,
-                       ISNULL(d.DepartmentName, '') AS DepartmentName,
-                       {statusExpression} AS Status
-                FROM EmployeeShifts es
-                LEFT JOIN Employees e ON es.EmployeeID = e.EmployeeID
-                LEFT JOIN Roles r ON e.RoleID = r.RoleID
-                LEFT JOIN Departments d ON {departmentExpression} = d.DepartmentID
-                LEFT JOIN Shifts s ON es.ShiftID = s.ShiftID
-                {roomJoin}";
-
-            if (!string.IsNullOrWhiteSpace(whereClause))
-            {
-                query += " WHERE " + whereClause;
-            }
-
-            query += string.IsNullOrWhiteSpace(orderBy)
-                ? " ORDER BY es.WorkDate DESC, s.StartTime ASC, e.FullName ASC"
-                : " ORDER BY " + orderBy;
-
-            return Map(DatabaseHelper.ExecuteQuery(query, parameters));
-        }
-
-        private static void AddOptionalColumn(
-            List<string> columns,
-            List<string> values,
-            List<SqlParameter> parameters,
-            string columnName,
-            string parameterName,
-            object value)
-        {
-            if (!SchemaHelper.ColumnExists("EmployeeShifts", columnName))
-            {
-                return;
-            }
-
-            columns.Add(columnName);
-            values.Add(parameterName);
-            parameters.Add(new SqlParameter(parameterName, value ?? DBNull.Value));
-        }
-
-        private static void AddOptionalAssignment(
-            List<string> assignments,
-            List<SqlParameter> parameters,
-            string columnName,
-            string parameterName,
-            object value)
-        {
-            if (!SchemaHelper.ColumnExists("EmployeeShifts", columnName))
-            {
-                return;
-            }
-
-            assignments.Add($"{columnName} = {parameterName}");
-            parameters.Add(new SqlParameter(parameterName, value ?? DBNull.Value));
-        }
-
-        private static List<EmployeeShiftDTO> Map(DataTable table)
-        {
-            List<EmployeeShiftDTO> list = new List<EmployeeShiftDTO>();
-            foreach (DataRow row in table.Rows)
-            {
-                list.Add(new EmployeeShiftDTO
-                {
-                    EmployeeShiftID = Convert.ToInt32(row["EmployeeShiftID"]),
-                    EmployeeID = row["EmployeeID"] != DBNull.Value ? Convert.ToInt32(row["EmployeeID"]) : 0,
-                    EmployeeName = row["EmployeeName"].ToString(),
-                    RoleName = row["RoleName"].ToString(),
-                    ShiftID = row["ShiftID"] != DBNull.Value ? Convert.ToInt32(row["ShiftID"]) : 0,
-                    ShiftName = row["ShiftName"].ToString(),
-                    WorkDate = row["WorkDate"] != DBNull.Value ? Convert.ToDateTime(row["WorkDate"]) : DateTime.MinValue,
-                    StartTime = row["StartTime"] != DBNull.Value ? (TimeSpan)row["StartTime"] : TimeSpan.Zero,
-                    EndTime = row["EndTime"] != DBNull.Value ? (TimeSpan)row["EndTime"] : TimeSpan.Zero,
-                    RoomID = row["RoomID"] != DBNull.Value ? Convert.ToInt32(row["RoomID"]) : (int?)null,
-                    RoomCode = row["RoomCode"].ToString(),
-                    DepartmentID = row["DepartmentID"] != DBNull.Value ? Convert.ToInt32(row["DepartmentID"]) : (int?)null,
-                    DepartmentName = row["DepartmentName"].ToString(),
-                    Status = row["Status"].ToString()
-                });
-            }
-            return list;
+            return from es in _context.EmployeeShifts
+                   join e in _context.Employees on es.EmployeeId equals e.EmployeeId into empJoin
+                   from e in empJoin.DefaultIfEmpty()
+                   join r in _context.Roles on e.RoleId equals r.RoleId into roleJoin
+                   from r in roleJoin.DefaultIfEmpty()
+                   join s in _context.Shifts on es.ShiftId equals s.ShiftId into shiftJoin
+                   from s in shiftJoin.DefaultIfEmpty()
+                   join d in _context.Departments on e.DepartmentId equals d.DepartmentId into deptJoin
+                   from d in deptJoin.DefaultIfEmpty()
+                   select new EmployeeShiftDTO
+                   {
+                       EmployeeShiftID = es.Id,
+                       EmployeeID = e != null ? e.EmployeeId : 0,
+                       EmployeeName = e != null ? e.FullName ?? "" : "",
+                       RoleName = r != null ? r.RoleName ?? "" : "",
+                       ShiftID = s != null ? s.ShiftId : 0,
+                       ShiftName = s != null ? s.Name ?? "" : "",
+                       WorkDate = es.WorkDate.HasValue ? es.WorkDate.Value.ToDateTime(TimeOnly.MinValue) : DateTime.MinValue,
+                       StartTime = s != null && s.StartTime.HasValue ? s.StartTime.Value.ToTimeSpan() : TimeSpan.Zero,
+                       EndTime = s != null && s.EndTime.HasValue ? s.EndTime.Value.ToTimeSpan() : TimeSpan.Zero,
+                       RoomID = null,
+                       RoomCode = "",
+                       DepartmentID = e != null ? e.DepartmentId : (int?)null,
+                       DepartmentName = d != null ? d.DepartmentName ?? "" : "",
+                       Status = "Approved"
+                   };
         }
     }
 }

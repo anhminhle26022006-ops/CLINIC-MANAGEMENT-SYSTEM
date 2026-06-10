@@ -5,17 +5,23 @@ using CMS.Core.Identity;
 using ClinicManagementSystem.Winforms.Shareforms.WorkingShifts;
 using ClinicManagementSystem.Winforms.UserControls.Pharmacy;
 using DTO;
+using DAL.Models; // Thêm để dùng CMSDbContext
+
+// Alias để tránh ambiguous reference
+using RoleConst = CMS.Core.Identity.Role;
 
 namespace ClinicManagementSystem.Winforms.Mainforms
 {
     public partial class PharmacyMainform : Form
     {
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+
         private readonly Color primary = Color.FromArgb(47, 94, 240);
         private readonly Color navDefaultBack = Color.White;
         private readonly Color navDefaultFore = Color.FromArgb(55, 65, 81);
         private readonly Color navActiveBack = Color.FromArgb(239, 246, 255);
 
-        private UserDTO currentUser;
         private bool layoutReady;
 
         public event EventHandler LogoutRequested;
@@ -27,9 +33,10 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             layoutReady = true;
         }
 
-        public PharmacyMainform(UserDTO user) : this()
+        public PharmacyMainform(CMSDbContext context, UserDTO user) : this()
         {
-            currentUser = user;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = user ?? throw new ArgumentNullException(nameof(user));
             lblUserName.Text = user.Name;
             lblUserEmail.Text = user.Email ?? user.Username;
             lblAvatar.Text = string.IsNullOrWhiteSpace(user.Name) ? "D" : user.Name.Substring(0, 1).ToUpper();
@@ -74,44 +81,46 @@ namespace ClinicManagementSystem.Winforms.Mainforms
         private void contentPanel_Resize(object sender, EventArgs e)
         {
             if (!layoutReady || contentPanel.Width < 400)
-            {
                 return;
-            }
         }
 
         private void ShowOverview()
         {
             SetHeader("Tổng quan", "Xin chào, " + DisplayName());
             SetActiveNav(btnNavOverview);
-            LoadContentView(new ucPharmacyOverview());
+            LoadContentView(new ucPharmacyOverview(_context, _currentUser));
         }
 
         private void ShowPrescriptions()
         {
             SetHeader("Toa thuốc", "Theo dõi toa chờ cấp phát và lịch sử cấp phát");
             SetActiveNav(btnNavPrescriptions);
-            LoadContentView(new ucPrescriptionDispense());
+            LoadContentView(new ucPrescriptionDispense(_context, _currentUser));
         }
 
         private void ShowMedicines()
         {
             SetHeader("Danh mục thuốc", "Quản lý danh sách thuốc và thông tin tồn kho");
             SetActiveNav(btnNavMedicines);
-            LoadContentView(new ucMedicineCatalog());
+            LoadContentView(new ucMedicineCatalog(_context, _currentUser));
         }
 
         private void ShowInventory()
         {
             SetHeader("Quản lý kho", "Theo dõi nhập xuất, batch, hạn dùng và cảnh báo tồn kho");
             SetActiveNav(btnNavInventory);
-            LoadContentView(new ucInventoryManagement());
+            LoadContentView(new ucInventoryManagement(_context, _currentUser));
         }
 
         private void ShowShifts()
         {
             SetHeader("Ca làm việc", "Xem lịch làm việc và yêu cầu đổi ca");
             SetActiveNav(btnNavShifts);
-            LoadContentControl(new RoleShiftCalendar(currentUser, Role.Pharmacist));
+            // Nếu RoleShiftCalendar có constructor 2 tham số, dùng như sau:
+            var shiftControl = new RoleShiftCalendar(_currentUser, RoleConst.Pharmacist);
+            // Nếu có constructor 3 tham số (context, user, role) thì dùng:
+            // var shiftControl = new RoleShiftCalendar(_context, _currentUser, RoleConst.Pharmacist);
+            LoadContentControl(shiftControl);
         }
 
         private void SetHeader(string title, string subtitle)
@@ -122,8 +131,8 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private string DisplayName()
         {
-            return currentUser != null && !string.IsNullOrWhiteSpace(currentUser.Name)
-                ? currentUser.Name
+            return _currentUser != null && !string.IsNullOrWhiteSpace(_currentUser.Name)
+                ? _currentUser.Name
                 : "Dược sĩ";
         }
 
@@ -132,7 +141,7 @@ namespace ClinicManagementSystem.Winforms.Mainforms
             contentPanel.SuspendLayout();
             contentPanel.Controls.Clear();
 
-            view.Initialize(currentUser);
+            view.Initialize(_currentUser);
             view.Dock = DockStyle.Fill;
             view.NavigateRequested += ContentView_NavigateRequested;
 
@@ -173,21 +182,12 @@ namespace ClinicManagementSystem.Winforms.Mainforms
 
         private void SetActiveNav(Button activeButton)
         {
-            Button[] buttons =
-            {
-                btnNavOverview,
-                btnNavPrescriptions,
-                btnNavMedicines,
-                btnNavInventory,
-                btnNavShifts
-            };
-
+            Button[] buttons = { btnNavOverview, btnNavPrescriptions, btnNavMedicines, btnNavInventory, btnNavShifts };
             foreach (Button button in buttons)
             {
                 button.BackColor = navDefaultBack;
                 button.ForeColor = navDefaultFore;
             }
-
             activeButton.BackColor = navActiveBack;
             activeButton.ForeColor = primary;
         }

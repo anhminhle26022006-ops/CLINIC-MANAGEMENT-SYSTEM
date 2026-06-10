@@ -1,16 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Linq;
 using DAL.DataContext;
 using DAL.Interfaces;
+using DAL.Models;
 using DTO;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
     public class AdminStatisticsDAL : IAdminStatisticsDAL
     {
         private const int LowStockThreshold = 20;
+        private readonly CMSDbContext _context;
+
+        public AdminStatisticsDAL(CMSDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public AdminStatisticsDTO GetStatistics(DateTime referenceDate)
         {
@@ -20,23 +27,23 @@ namespace DAL.Repositories
             DateTime nextMonthStart = monthStart.AddMonths(1);
             DateTime previousMonthStart = monthStart.AddMonths(-1);
 
-            int newPatientsThisMonth = CountByDateRange("Patients", "CreatedAt", monthStart, nextMonthStart);
-            int newPatientsPreviousMonth = CountByDateRange("Patients", "CreatedAt", previousMonthStart, monthStart);
-            int appointmentsThisMonth = CountByDateRange("Appointments", "AppointmentDate", monthStart, nextMonthStart);
-            int appointmentsPreviousMonth = CountByDateRange("Appointments", "AppointmentDate", previousMonthStart, monthStart);
+            int newPatientsThisMonth = CountByDateRange<Patient>(p => p.CreatedAt, monthStart, nextMonthStart);
+            int newPatientsPreviousMonth = CountByDateRange<Patient>(p => p.CreatedAt, previousMonthStart, monthStart);
+            int appointmentsThisMonth = CountByDateRange<Appointment>(a => a.AppointmentDate, monthStart, nextMonthStart);
+            int appointmentsPreviousMonth = CountByDateRange<Appointment>(a => a.AppointmentDate, previousMonthStart, monthStart);
             decimal revenueThisMonth = GetRevenue(monthStart, nextMonthStart);
             decimal revenuePreviousMonth = GetRevenue(previousMonthStart, monthStart);
 
             return new AdminStatisticsDTO
             {
-                TotalPatients = CountTable("Patients"),
+                TotalPatients = _context.Patients.Count(),
                 NewPatientsThisMonth = newPatientsThisMonth,
                 PatientGrowthPercent = CalculateGrowthPercent(newPatientsThisMonth, newPatientsPreviousMonth),
                 MonthlyAppointmentCount = appointmentsThisMonth,
                 AppointmentGrowthPercent = CalculateGrowthPercent(appointmentsThisMonth, appointmentsPreviousMonth),
                 MonthlyRevenue = revenueThisMonth,
                 RevenueGrowthPercent = CalculateGrowthPercent(revenueThisMonth, revenuePreviousMonth),
-                TodayAppointmentCount = CountByDateRange("Appointments", "AppointmentDate", today, tomorrow),
+                TodayAppointmentCount = CountByDateRange<Appointment>(a => a.AppointmentDate, today, tomorrow),
                 ActiveEmployeeCount = CountActiveEmployees(),
                 LowStockMedicineCount = CountLowStockMedicines(),
                 QueueSummary = GetQueueSummary(),
@@ -48,124 +55,78 @@ namespace DAL.Repositories
             };
         }
 
-        private static int CountTable(string tableName)
-        {
-            if (!SchemaHelper.TableExists(tableName))
-            {
-                return 0;
-            }
+        #region Private helper methods using EF Core
 
-            return ExecuteInt("SELECT COUNT(*) FROM " + tableName);
+        private int CountByDateRange<TEntity>(
+            Func<TEntity, DateTime?> dateSelector,
+            DateTime start,
+            DateTime end) where TEntity : class
+        {
+            var query = _context.Set<TEntity>().AsQueryable();
+            return query.Count(entity => dateSelector(entity) >= start && dateSelector(entity) < end);
         }
 
-        private static int CountByDateRange(string tableName, string dateColumn, DateTime start, DateTime end)
+        private int CountActiveEmployees()
         {
-            if (!SchemaHelper.TableExists(tableName) || !SchemaHelper.ColumnExists(tableName, dateColumn))
-            {
-                return 0;
-            }
-
-            string query = $@"
-                SELECT COUNT(*)
-                FROM {tableName}
-                WHERE {dateColumn} >= @StartDate
-                  AND {dateColumn} < @EndDate";
-
-            return ExecuteInt(query, new[]
-            {
-                new SqlParameter("@StartDate", start),
-                new SqlParameter("@EndDate", end)
-            });
+            var activeStatuses = new[] { "Active", "Đang làm việc" }; // tuỳ chỉnh theo dữ liệu thực tế
+            return _context.Employees.Count(e => !string.IsNullOrEmpty(e.Status) && activeStatuses.Contains(e.Status));
         }
 
-        private static int CountActiveEmployees()
+        private int CountLowStockMedicines()
         {
-            if (!SchemaHelper.TableExists("Employees"))
-            {
-                return 0;
-            }
-
-            string query = @"
-                SELECT COUNT(*)
-                FROM Employees
-                WHERE ISNULL(Status, N'Active') NOT IN (N'Inactive', N'Ngưng hoạt động', N'Nghỉ việc')";
-
-            return ExecuteInt(query);
+            return _context.Medicines.Count(m => (m.Stock ?? 0) <= LowStockThreshold);
         }
 
-        private static int CountLowStockMedicines()
+        private AdminQueueSummaryDTO GetQueueSummary()
         {
-            if (!SchemaHelper.TableExists("Medicines"))
+            var groups = _context.PatientQueues
+                .GroupBy(q => q.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToList();
+
+            var summary = new AdminQueueSummaryDTO();
+            foreach (var g in groups)
             {
-                return 0;
+                string status = g.Status?.ToLower() ?? "";
+                if (status.Contains("waiting") || status.Contains("chờ") || status == "pending")
+                    summary.Waiting += g.Count;
+                else if (status.Contains("inprogress") || status.Contains("processing") || status.Contains("đang khám"))
+                    summary.InProgress += g.Count;
+                else if (status.Contains("complete") || status.Contains("hoàn thành"))
+                    summary.Completed += g.Count;
+                else if (status.Contains("cancel") || status.Contains("hủy"))
+                    summary.Cancelled += g.Count;
             }
-
-            return ExecuteInt(
-                "SELECT COUNT(*) FROM Medicines WHERE ISNULL(Stock, 0) <= @Threshold",
-                new[] { new SqlParameter("@Threshold", LowStockThreshold) });
-        }
-
-        private static AdminQueueSummaryDTO GetQueueSummary()
-        {
-            AdminQueueSummaryDTO summary = new AdminQueueSummaryDTO();
-            if (!SchemaHelper.TableExists("PatientQueues"))
-            {
-                return summary;
-            }
-
-            string query = @"
-                SELECT
-                    SUM(CASE WHEN Status IN (N'Waiting', N'Pending', N'Chờ khám', N'Đang chờ', N'Cho kham') THEN 1 ELSE 0 END) AS Waiting,
-                    SUM(CASE WHEN Status IN (N'InProgress', N'Processing', N'Đang khám', N'In Progress') THEN 1 ELSE 0 END) AS InProgress,
-                    SUM(CASE WHEN Status IN (N'Completed', N'Done', N'Hoàn thành', N'Hoan thanh') THEN 1 ELSE 0 END) AS Completed,
-                    SUM(CASE WHEN Status IN (N'Cancelled', N'Canceled', N'Hủy', N'Huy', N'Đã hủy') THEN 1 ELSE 0 END) AS Cancelled
-                FROM PatientQueues";
-
-            DataTable table = ExecuteTable(query);
-            if (table.Rows.Count == 0)
-            {
-                return summary;
-            }
-
-            DataRow row = table.Rows[0];
-            summary.Waiting = ReadInt(row, "Waiting");
-            summary.InProgress = ReadInt(row, "InProgress");
-            summary.Completed = ReadInt(row, "Completed");
-            summary.Cancelled = ReadInt(row, "Cancelled");
             return summary;
         }
 
-        private static List<AdminChartPointDTO> GetPatientTrend(DateTime currentMonthStart)
+        private List<AdminChartPointDTO> GetPatientTrend(DateTime currentMonthStart)
         {
-            List<AdminChartPointDTO> points = CreateEmptyTrend(currentMonthStart);
-            if (!SchemaHelper.TableExists("Patients") || !SchemaHelper.ColumnExists("Patients", "CreatedAt"))
+            var points = CreateEmptyTrend(currentMonthStart);
+            for (int i = 0; i < points.Count; i++)
             {
-                return points;
+                DateTime start = points[i].PeriodStart;
+                DateTime end = start.AddMonths(1);
+                points[i].Value = _context.Patients.Count(p => p.CreatedAt >= start && p.CreatedAt < end);
             }
-
-            foreach (AdminChartPointDTO point in points)
-            {
-                DateTime end = point.PeriodStart.AddMonths(1);
-                point.Value = CountByDateRange("Patients", "CreatedAt", point.PeriodStart, end);
-            }
-
             return points;
         }
 
-        private static List<AdminChartPointDTO> GetRevenueTrend(DateTime currentMonthStart)
+        private List<AdminChartPointDTO> GetRevenueTrend(DateTime currentMonthStart)
         {
-            List<AdminChartPointDTO> points = CreateEmptyTrend(currentMonthStart);
-            foreach (AdminChartPointDTO point in points)
+            var points = CreateEmptyTrend(currentMonthStart);
+            for (int i = 0; i < points.Count; i++)
             {
-                point.Value = GetRevenue(point.PeriodStart, point.PeriodStart.AddMonths(1));
+                DateTime start = points[i].PeriodStart;
+                DateTime end = start.AddMonths(1);
+                points[i].Value = GetRevenue(start, end);
             }
-
             return points;
         }
 
-        private static List<AdminChartPointDTO> CreateEmptyTrend(DateTime currentMonthStart)
+        private List<AdminChartPointDTO> CreateEmptyTrend(DateTime currentMonthStart)
         {
-            List<AdminChartPointDTO> points = new List<AdminChartPointDTO>();
+            var points = new List<AdminChartPointDTO>();
             for (int i = 5; i >= 0; i--)
             {
                 DateTime periodStart = currentMonthStart.AddMonths(-i);
@@ -176,256 +137,94 @@ namespace DAL.Repositories
                     Value = 0
                 });
             }
-
             return points;
         }
 
-        private static decimal GetRevenue(DateTime start, DateTime end)
+        private decimal GetRevenue(DateTime start, DateTime end)
         {
-            decimal paymentRevenue = 0;
-            if (SchemaHelper.TableExists("Payments") && SchemaHelper.ColumnExists("Payments", "PaidAt"))
-            {
-                paymentRevenue = ExecuteDecimal(@"
-                    SELECT ISNULL(SUM(Amount), 0)
-                    FROM Payments
-                    WHERE PaidAt >= @StartDate
-                      AND PaidAt < @EndDate
-                      AND ISNULL(Status, N'Paid') NOT IN (N'Cancelled', N'Canceled', N'Hủy', N'Huy', N'Đã hủy')",
-                    new[]
-                    {
-                        new SqlParameter("@StartDate", start),
-                        new SqlParameter("@EndDate", end)
-                    });
-            }
+            // Ưu tiên dùng bảng Payments nếu có dữ liệu, nếu không thì dùng Invoices
+            var paymentRevenue = _context.Payments
+                .Where(p => p.PaidAt >= start && p.PaidAt < end)
+                .Where(p => !string.IsNullOrEmpty(p.Status) && !p.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+                .Sum(p => p.Amount ?? 0);
 
-            if (paymentRevenue > 0 || !SchemaHelper.TableExists("Invoices"))
-            {
+            if (paymentRevenue > 0)
                 return paymentRevenue;
-            }
 
-            return ExecuteDecimal(@"
-                SELECT ISNULL(SUM(Total), 0)
-                FROM Invoices
-                WHERE CreatedAt >= @StartDate
-                  AND CreatedAt < @EndDate
-                  AND ISNULL(Status, N'Paid') NOT IN (N'Cancelled', N'Canceled', N'Hủy', N'Huy', N'Đã hủy')",
-                new[]
-                {
-                    new SqlParameter("@StartDate", start),
-                    new SqlParameter("@EndDate", end)
-                });
+            return _context.Invoices
+                .Where(i => i.CreatedAt >= start && i.CreatedAt < end)
+                .Where(i => !string.IsNullOrEmpty(i.Status) && !i.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+                .Sum(i => i.Total ?? 0);
         }
 
-        private static List<AdminDepartmentStatisticDTO> GetDepartmentStatistics(DateTime start, DateTime end)
+        private List<AdminDepartmentStatisticDTO> GetDepartmentStatistics(DateTime start, DateTime end)
         {
-            List<AdminDepartmentStatisticDTO> list = new List<AdminDepartmentStatisticDTO>();
-            if (!SchemaHelper.TableExists("Departments"))
-            {
-                return list;
-            }
+            var query = from d in _context.Departments
+                        join e in _context.Employees on d.DepartmentId equals e.DepartmentId into empGroup
+                        from e in empGroup.DefaultIfEmpty()
+                        join a in _context.Appointments on d.DepartmentId equals a.DepartmentId into appGroup
+                        from a in appGroup.Where(a => a.AppointmentDate >= start && a.AppointmentDate < end).DefaultIfEmpty()
+                        group new { e, a } by d.DepartmentName into g
+                        select new AdminDepartmentStatisticDTO
+                        {
+                            DepartmentName = g.Key,
+                            EmployeeCount = g.Select(x => x.e.EmployeeId).Distinct().Count(),
+                            MonthlyAppointmentCount = g.Select(x => x.a.AppointmentId).Distinct().Count()
+                        };
 
-            if (!SchemaHelper.TableExists("Employees") || !SchemaHelper.TableExists("Appointments"))
-            {
-                string simpleQuery = @"
-                    SELECT TOP 6 DepartmentName
-                    FROM Departments
-                    ORDER BY DepartmentName";
-
-                foreach (DataRow row in ExecuteTable(simpleQuery).Rows)
-                {
-                    list.Add(new AdminDepartmentStatisticDTO
-                    {
-                        DepartmentName = ReadString(row, "DepartmentName"),
-                        EmployeeCount = 0,
-                        MonthlyAppointmentCount = 0
-                    });
-                }
-
-                return list;
-            }
-
-            string query = @"
-                SELECT TOP 6
-                       d.DepartmentName,
-                       COUNT(DISTINCT e.EmployeeID) AS EmployeeCount,
-                       COUNT(DISTINCT a.AppointmentID) AS MonthlyAppointmentCount
-                FROM Departments d
-                LEFT JOIN Employees e ON e.DepartmentID = d.DepartmentID
-                LEFT JOIN Appointments a ON a.DepartmentID = d.DepartmentID
-                    AND a.AppointmentDate >= @StartDate
-                    AND a.AppointmentDate < @EndDate
-                GROUP BY d.DepartmentName
-                ORDER BY MonthlyAppointmentCount DESC, EmployeeCount DESC, d.DepartmentName";
-
-            DataTable table = ExecuteTable(query, new[]
-            {
-                new SqlParameter("@StartDate", start),
-                new SqlParameter("@EndDate", end)
-            });
-
-            foreach (DataRow row in table.Rows)
-            {
-                list.Add(new AdminDepartmentStatisticDTO
-                {
-                    DepartmentName = ReadString(row, "DepartmentName"),
-                    EmployeeCount = ReadInt(row, "EmployeeCount"),
-                    MonthlyAppointmentCount = ReadInt(row, "MonthlyAppointmentCount")
-                });
-            }
-
-            return list;
+            return query.OrderByDescending(d => d.MonthlyAppointmentCount)
+                        .ThenByDescending(d => d.EmployeeCount)
+                        .ThenBy(d => d.DepartmentName)
+                        .Take(6)
+                        .ToList();
         }
 
-        private static List<AdminAppointmentSummaryDTO> GetTodayAppointments(DateTime start, DateTime end)
+        private List<AdminAppointmentSummaryDTO> GetTodayAppointments(DateTime start, DateTime end)
         {
-            List<AdminAppointmentSummaryDTO> list = new List<AdminAppointmentSummaryDTO>();
-            if (!SchemaHelper.TableExists("Appointments") ||
-                !SchemaHelper.TableExists("Patients") ||
-                !SchemaHelper.TableExists("Employees") ||
-                !SchemaHelper.TableExists("Departments"))
-            {
-                return list;
-            }
-
-            string query = @"
-                SELECT TOP 10
-                       a.AppointmentDate,
-                       CONVERT(VARCHAR(5), a.AppointmentDate, 108) AS TimeText,
-                       ISNULL(p.FullName, N'Chưa rõ') AS PatientName,
-                       ISNULL(e.FullName, N'Chưa phân công') AS DoctorName,
-                       ISNULL(d.DepartmentName, N'Chưa rõ') AS DepartmentName,
-                       ISNULL(a.Status, N'Chưa cập nhật') AS Status
-                FROM Appointments a
-                LEFT JOIN Patients p ON p.PatientID = a.PatientID
-                LEFT JOIN Employees e ON e.EmployeeID = a.DoctorID
-                LEFT JOIN Departments d ON d.DepartmentID = a.DepartmentID
-                WHERE a.AppointmentDate >= @StartDate
-                  AND a.AppointmentDate < @EndDate
-                ORDER BY a.AppointmentDate";
-
-            DataTable table = ExecuteTable(query, new[]
-            {
-                new SqlParameter("@StartDate", start),
-                new SqlParameter("@EndDate", end)
-            });
-
-            foreach (DataRow row in table.Rows)
-            {
-                list.Add(new AdminAppointmentSummaryDTO
+            var appointments = _context.Appointments
+                .Where(a => a.AppointmentDate >= start && a.AppointmentDate < end)
+                .Select(a => new AdminAppointmentSummaryDTO
                 {
-                    AppointmentDate = ReadDateTime(row, "AppointmentDate"),
-                    TimeText = ReadString(row, "TimeText"),
-                    PatientName = ReadString(row, "PatientName"),
-                    DoctorName = ReadString(row, "DoctorName"),
-                    DepartmentName = ReadString(row, "DepartmentName"),
-                    Status = ReadString(row, "Status")
-                });
-            }
+                    AppointmentDate = a.AppointmentDate ?? DateTime.MinValue,
+                    TimeText = a.AppointmentDate.HasValue ? a.AppointmentDate.Value.ToString("HH:mm") : "",
+                    PatientName = a.Patient != null ? a.Patient.FullName : "Chưa rõ",
+                    DoctorName = a.Doctor != null ? a.Doctor.FullName : "Chưa phân công",
+                    DepartmentName = a.Department != null ? a.Department.DepartmentName : "Chưa rõ",
+                    Status = a.Status ?? "Chưa cập nhật"
+                })
+                .OrderBy(a => a.AppointmentDate)
+                .Take(10)
+                .ToList();
 
-            return list;
+            return appointments;
         }
 
-        private static List<AdminLowStockMedicineDTO> GetLowStockMedicines()
+        private List<AdminLowStockMedicineDTO> GetLowStockMedicines()
         {
-            List<AdminLowStockMedicineDTO> list = new List<AdminLowStockMedicineDTO>();
-            if (!SchemaHelper.TableExists("Medicines"))
-            {
-                return list;
-            }
-
-            string query = @"
-                SELECT TOP 6 Name, Unit, Stock, ExpiryDate
-                FROM Medicines
-                WHERE ISNULL(Stock, 0) <= @Threshold
-                ORDER BY ISNULL(Stock, 0), Name";
-
-            DataTable table = ExecuteTable(query, new[] { new SqlParameter("@Threshold", LowStockThreshold) });
-            foreach (DataRow row in table.Rows)
-            {
-                list.Add(new AdminLowStockMedicineDTO
+            return _context.Medicines
+                .Where(m => (m.Stock ?? 0) <= LowStockThreshold)
+                .OrderBy(m => m.Stock)
+                .ThenBy(m => m.Name)
+                .Take(6)
+                .Select(m => new AdminLowStockMedicineDTO
                 {
-                    MedicineName = ReadString(row, "Name"),
-                    Unit = ReadString(row, "Unit"),
-                    Stock = ReadInt(row, "Stock"),
-                    ExpiryDate = ReadNullableDateTime(row, "ExpiryDate")
-                });
-            }
-
-            return list;
+                    MedicineName = m.Name,
+                    Unit = m.Unit,
+                    Stock = m.Stock ?? 0,
+                    ExpiryDate = m.ExpiryDate.HasValue
+                        ? m.ExpiryDate.Value.ToDateTime(TimeOnly.MinValue)
+                        : (DateTime?)null
+                })
+                .ToList();
         }
 
-        private static decimal CalculateGrowthPercent(decimal current, decimal previous)
+        private decimal CalculateGrowthPercent(decimal current, decimal previous)
         {
             if (previous <= 0)
-            {
                 return current > 0 ? 100 : 0;
-            }
-
             return Math.Round((current - previous) / previous * 100, 1);
         }
 
-        private static int ExecuteInt(string query, SqlParameter[] parameters = null)
-        {
-            object result = ExecuteScalar(query, parameters);
-            return result == null || result == DBNull.Value ? 0 : Convert.ToInt32(result);
-        }
-
-        private static decimal ExecuteDecimal(string query, SqlParameter[] parameters = null)
-        {
-            object result = ExecuteScalar(query, parameters);
-            return result == null || result == DBNull.Value ? 0 : Convert.ToDecimal(result);
-        }
-
-        private static object ExecuteScalar(string query, SqlParameter[] parameters = null)
-        {
-            try
-            {
-                return DatabaseHelper.ExecuteScalar(query, parameters);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private static DataTable ExecuteTable(string query, SqlParameter[] parameters = null)
-        {
-            try
-            {
-                return DatabaseHelper.ExecuteQuery(query, parameters);
-            }
-            catch
-            {
-                return new DataTable();
-            }
-        }
-
-        private static string ReadString(DataRow row, string columnName)
-        {
-            return row.Table.Columns.Contains(columnName) && row[columnName] != DBNull.Value
-                ? row[columnName].ToString()
-                : string.Empty;
-        }
-
-        private static int ReadInt(DataRow row, string columnName)
-        {
-            return row.Table.Columns.Contains(columnName) && row[columnName] != DBNull.Value
-                ? Convert.ToInt32(row[columnName])
-                : 0;
-        }
-
-        private static DateTime ReadDateTime(DataRow row, string columnName)
-        {
-            return row.Table.Columns.Contains(columnName) && row[columnName] != DBNull.Value
-                ? Convert.ToDateTime(row[columnName])
-                : DateTime.MinValue;
-        }
-
-        private static DateTime? ReadNullableDateTime(DataRow row, string columnName)
-        {
-            return row.Table.Columns.Contains(columnName) && row[columnName] != DBNull.Value
-                ? Convert.ToDateTime(row[columnName])
-                : (DateTime?)null;
-        }
+        #endregion
     }
 }

@@ -6,9 +6,20 @@ namespace DAL.Models;
 
 public partial class CMSDbContext : DbContext
 {
+    public CMSDbContext()
+    {
+    }
     public CMSDbContext(DbContextOptions<CMSDbContext> options)
         : base(options)
     {
+    }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(
+                "Data Source=MYPC;Initial Catalog=CMS;Integrated Security=True;TrustServerCertificate=True");
+        }
     }
 
     public virtual DbSet<Appointment> Appointments { get; set; }

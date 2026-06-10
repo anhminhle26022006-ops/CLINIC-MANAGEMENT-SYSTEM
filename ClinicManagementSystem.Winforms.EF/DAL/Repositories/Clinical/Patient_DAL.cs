@@ -2,66 +2,75 @@ using DAL.DataContext;
 using DAL.Entities;
 using DTO;
 using Microsoft.EntityFrameworkCore;
+using DAL.Models;
+using DTO;
 
 namespace DAL.Repositories.Clinical
 {
     public class PatientDAL
     {
-        private static readonly string[] ExcludedPrefixes = { "BS", "EMP", "KTV" };
-
-        public async Task<List<PatientDTO>> GetAll()
+        public List<PatientDTO> GetAll()
         {
-            using var context = DbContextProvider.CreateContext();
-            return await context.Patients
-                .Where(p => !ExcludedPrefixes.Any(prefix => p.PatientCode.StartsWith(prefix)))
-                .Select(p => new PatientDTO
-                {
-                    PatientID = p.PatientID,
-                    PatientCode = p.PatientCode,
-                    Name = p.FullName,
-                    BirthDate = p.DOB,
-                    Gender = p.Gender,
-                    Phone = p.Phone ?? "",
-                    Address = p.Address ?? ""
-                })
-                .ToListAsync();
+            string query = "SELECT PatientID, PatientCode, FullName AS Name, DOB AS BirthDate, Gender, Phone, Address FROM Patients WHERE PatientCode NOT LIKE 'BS%' AND PatientCode NOT LIKE 'EMP%' AND PatientCode NOT LIKE 'KTV%'";
+
+            DataTable dt = DatabaseHelper.ExecuteQuery(query);
+            List<PatientDTO> list = new List<PatientDTO>();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(MapRowToDTO(row));
+            }
+            return list;
+        }
+
+        public List<PatientDTO> Search(string term)
+        {
+            string query = "SELECT PatientID, PatientCode, FullName AS Name, DOB AS BirthDate, Gender, Phone, Address FROM Patients WHERE (FullName LIKE @Term OR PatientCode LIKE @Term OR Phone LIKE @Term) AND PatientCode NOT LIKE 'BS%' AND PatientCode NOT LIKE 'EMP%' AND PatientCode NOT LIKE 'KTV%'";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@Term", "%" + term + "%")
+            };
+
+            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+            List<PatientDTO> list = new List<PatientDTO>();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(MapRowToDTO(row));
+            }
+            return list;
         }
 
         public async Task<List<PatientDTO>> Search(string term)
         {
-            using var context = DbContextProvider.CreateContext();
-            return await context.Patients
-                .Where(p => !ExcludedPrefixes.Any(prefix => p.PatientCode.StartsWith(prefix))
-                         && (p.FullName.Contains(term)
-                          || p.PatientCode.Contains(term)
-                          || p.Phone.Contains(term)))
-                .Select(p => new PatientDTO
-                {
-                    PatientID = p.PatientID,
-                    PatientCode = p.PatientCode,
-                    Name = p.FullName,
-                    BirthDate = p.DOB,
-                    Gender = p.Gender,
-                    Phone = p.Phone ?? "",
-                    Address = p.Address ?? ""
-                })
-                .ToListAsync();
+            string query = "INSERT INTO Patients (PatientCode, FullName, DOB, Gender, Phone, Address) VALUES (@PatientCode, @Name, @BirthDate, @Gender, @Phone, @Address)";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@PatientCode", patient.PatientCode),
+                new SqlParameter("@Name", patient.Name),
+                new SqlParameter("@BirthDate", (object)patient.BirthDate ?? DBNull.Value),
+                new SqlParameter("@Gender", patient.Gender),
+                new SqlParameter("@Phone", (object)patient.Phone ?? DBNull.Value),
+                new SqlParameter("@Address", (object)patient.Address ?? DBNull.Value)
+            };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
 
-        public async Task<bool> Add(PatientDTO patient)
+        private PatientDTO MapRowToDTO(DataRow row)
         {
-            using var context = DbContextProvider.CreateContext();
-            var entity = new Patient
+            return new PatientDTO
             {
-                PatientCode = patient.PatientCode,
-                FullName = patient.Name,
-                DOB = patient.BirthDate,
-                Gender = patient.Gender,
-                Phone = patient.Phone,
-                Address = patient.Address
+                PatientID = Convert.ToInt32(row["PatientID"]),
+                PatientCode = row["PatientCode"].ToString(),
+                Name = row["Name"].ToString(),
+                BirthDate = row["BirthDate"] != DBNull.Value ? Convert.ToDateTime(row["BirthDate"]) : (DateTime?)null,
+                Gender = row["Gender"].ToString(),
+                Phone = row["Phone"] != DBNull.Value ? row["Phone"].ToString() : "",
+                Address = row["Address"] != DBNull.Value ? row["Address"].ToString() : ""
             };
-            context.Patients.Add(entity);
-            return await context.SaveChangesAsync() > 0;
         }
     }
 }

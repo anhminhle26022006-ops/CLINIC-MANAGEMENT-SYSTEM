@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BUS.Services.Doctor;
+using DAL.Models;
 using DTO;
 using DTO.Doctor;
 
@@ -12,20 +13,27 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
 {
     public partial class ucPrescriptionSidebar : UserControl
     {
-        private readonly DoctorWorkspaceBUS doctorBUS = new();
-        private readonly int doctorId;
+        private readonly CMSDbContext _context;
+        private readonly UserDTO _currentUser;
+        private readonly DoctorWorkspaceBUS _doctorBUS;
+        private readonly int _doctorId;
         private List<PrescriptionDTO> data = new();
         private List<PrescriptionDTO> filtered = new();
 
-        public ucPrescriptionSidebar() : this(null)
+        // Constructor mặc định (dùng cho designer)
+        public ucPrescriptionSidebar()
         {
+            InitializeComponent();
         }
 
-        public ucPrescriptionSidebar(UserDTO currentUser)
+        // Constructor chính (dùng khi runtime)
+        public ucPrescriptionSidebar(CMSDbContext context, UserDTO currentUser) : this()
         {
-            doctorId = doctorBUS.ResolveDoctorId(currentUser);
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
+            _doctorBUS = new DoctorWorkspaceBUS(_context);
+            _doctorId = _doctorBUS.ResolveDoctorId(_currentUser);
 
-            InitializeComponent();
             SetupCrudUi();
 
             Load += (_, __) => ReloadData();
@@ -58,11 +66,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
 
         private void AddButtonColumn(string name, string header, string text)
         {
-            if (dgvPrescriptions.Columns.Contains(name))
-            {
-                return;
-            }
-
+            if (dgvPrescriptions.Columns.Contains(name)) return;
             DataGridViewButtonColumn column = new()
             {
                 Name = name,
@@ -76,7 +80,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
 
         private void ReloadData()
         {
-            data = doctorBUS.GetPrescriptions(doctorId);
+            data = _doctorBUS.GetPrescriptions(_doctorId);
             BuildStats();
             ApplyFilter();
         }
@@ -84,7 +88,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
         private void BuildStats()
         {
             flpStats.Controls.Clear();
-
             flpStats.Controls.Add(CreateStatPanel("Tong toa thuoc", data.Count.ToString()));
             flpStats.Controls.Add(CreateStatPanel("Hom nay", data.Count(x => x.CreatedAt.Date == DateTime.Today).ToString()));
             flpStats.Controls.Add(CreateStatPanel("Tuan nay", data.Count(x => x.CreatedAt.Date >= DateTime.Today.AddDays(-7)).ToString()));
@@ -100,7 +103,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
                 Margin = new Padding(8),
                 BackColor = Color.FromArgb(240, 248, 255)
             };
-
             Label lblTitle = new()
             {
                 AutoSize = true,
@@ -108,7 +110,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
                 Location = new Point(15, 12),
                 Font = new Font("Segoe UI", 9F)
             };
-
             Label lblValue = new()
             {
                 AutoSize = true,
@@ -116,7 +117,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
                 Location = new Point(15, 32),
                 Font = new Font("Segoe UI", 16F, FontStyle.Bold)
             };
-
             panel.Controls.Add(lblTitle);
             panel.Controls.Add(lblValue);
             return panel;
@@ -131,14 +131,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
                                (item.PatientName ?? "").IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                (item.PatientCode ?? "").IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
                 .ToList();
-
             BindGrid();
         }
 
         private void BindGrid()
         {
             dgvPrescriptions.Rows.Clear();
-
             foreach (PrescriptionDTO item in filtered)
             {
                 int row = dgvPrescriptions.Rows.Add(
@@ -152,38 +150,21 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
 
         private void dgvPrescriptions_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || dgvPrescriptions.Rows[e.RowIndex].Tag is not PrescriptionDTO item)
-            {
-                return;
-            }
-
+            if (e.RowIndex < 0 || dgvPrescriptions.Rows[e.RowIndex].Tag is not PrescriptionDTO item) return;
             string column = dgvPrescriptions.Columns[e.ColumnIndex].Name;
-            if (column == "btnView")
-            {
-                ViewPrescription(item);
-            }
-            else if (column == "btnEdit")
-            {
-                EditPrescription(item);
-            }
-            else if (column == "btnDelete")
-            {
-                DeletePrescription(item);
-            }
+            if (column == "btnView") ViewPrescription(item);
+            else if (column == "btnEdit") EditPrescription(item);
+            else if (column == "btnDelete") DeletePrescription(item);
         }
 
         private void CreatePrescription()
         {
-            List<DoctorAppointmentDTO> appointments = doctorBUS.GetAppointments(doctorId, DateTime.Today);
-            using DoctorPrescriptionEditForm form = new(appointments, doctorBUS.GetMedicines(), doctorId);
-            if (form.ShowDialog(this) != DialogResult.OK)
-            {
-                return;
-            }
-
+            List<DoctorAppointmentDTO> appointments = _doctorBUS.GetAppointments(_doctorId, DateTime.Today);
+            using DoctorPrescriptionEditForm form = new(appointments, _doctorBUS.GetMedicines(), _doctorId);
+            if (form.ShowDialog(this) != DialogResult.OK) return;
             try
             {
-                doctorBUS.CreatePrescription(form.Result);
+                _doctorBUS.CreatePrescription(form.Result);
                 ReloadData();
             }
             catch (Exception ex)
@@ -195,18 +176,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
         private void EditPrescription(PrescriptionDTO item)
         {
             using DoctorPrescriptionEditForm form = new(
-                doctorBUS.GetAppointments(doctorId, DateTime.Today),
-                doctorBUS.GetMedicines(),
-                doctorId,
+                _doctorBUS.GetAppointments(_doctorId, DateTime.Today),
+                _doctorBUS.GetMedicines(),
+                _doctorId,
                 item);
-            if (form.ShowDialog(this) != DialogResult.OK)
-            {
-                return;
-            }
-
+            if (form.ShowDialog(this) != DialogResult.OK) return;
             try
             {
-                doctorBUS.UpdatePrescription(form.Result);
+                _doctorBUS.UpdatePrescription(form.Result);
                 ReloadData();
             }
             catch (Exception ex)
@@ -217,19 +194,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
 
         private void DeletePrescription(PrescriptionDTO item)
         {
-            DialogResult confirm = MessageBox.Show(
-                "Xóa toa thuốc của " + item.PatientName + "?",
-                "Toa thuốc",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-            if (confirm != DialogResult.Yes)
-            {
-                return;
-            }
-
+            DialogResult confirm = MessageBox.Show("Xóa toa thuốc của " + item.PatientName + "?", "Toa thuốc", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm != DialogResult.Yes) return;
             try
             {
-                doctorBUS.DeletePrescription(item.PrescriptionID);
+                _doctorBUS.DeletePrescription(item.PrescriptionID);
                 ReloadData();
             }
             catch (Exception ex)
@@ -255,18 +224,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Prescription
             {
                 sb.AppendLine(item.MedicineName);
                 sb.AppendLine("Lieu dung: " + item.Dosage);
-                if (!string.IsNullOrWhiteSpace(item.Frequency))
-                {
-                    sb.AppendLine("Tan suat: " + item.Frequency);
-                }
+                if (!string.IsNullOrWhiteSpace(item.Frequency)) sb.AppendLine("Tan suat: " + item.Frequency);
                 sb.AppendLine("So luong: " + item.Quantity + " " + item.MedicineUnit);
-                if (!string.IsNullOrWhiteSpace(item.Instruction))
-                {
-                    sb.AppendLine("Huong dan: " + item.Instruction);
-                }
+                if (!string.IsNullOrWhiteSpace(item.Instruction)) sb.AppendLine("Huong dan: " + item.Instruction);
                 sb.AppendLine();
             }
-
             return sb.ToString().Trim();
         }
 

@@ -1,26 +1,32 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CMS.Core.Constants;
-using CMS.Core.Identity;
 using DAL.Interfaces;
+using DAL.Models;
 using DTO;
 
 namespace DAL.Repositories
 {
     public class TechnicianShiftDAL : ITechnicianShiftDAL
     {
-        private readonly EmployeeShiftDAL employeeShiftDal = new EmployeeShiftDAL();
-        private readonly EmployeeDAL employeeDal = new EmployeeDAL();
-        private readonly WorkShiftDAL workShiftDal = new WorkShiftDAL();
+        private readonly EmployeeShiftDAL _employeeShiftDal;
+        private readonly EmployeeDAL _employeeDal;
+        private readonly WorkShiftDAL _workShiftDal;
+
+        public TechnicianShiftDAL(CMSDbContext context)
+        {
+            _employeeShiftDal = new EmployeeShiftDAL(context);
+            _employeeDal = new EmployeeDAL(context);
+            _workShiftDal = new WorkShiftDAL(context);
+        }
 
         public List<TechnicianShiftDTO> GetAll()
         {
-            List<TechnicianShiftDTO> list = new List<TechnicianShiftDTO>();
-            if (!employeeShiftDal.SupportsEmployeeShiftSchema())
-            {
+            var list = new List<TechnicianShiftDTO>();
+            if (!_employeeShiftDal.SupportsEmployeeShiftSchema())
                 return list;
-            }
 
-            foreach (EmployeeShiftDTO employeeShift in employeeShiftDal.GetByRole(Role.Technician))
+            // Sửa: thay Role.Technician bằng chuỗi "Technician"
+            foreach (var employeeShift in _employeeShiftDal.GetByRole("Technician"))
             {
                 list.Add(new TechnicianShiftDTO
                 {
@@ -47,36 +53,30 @@ namespace DAL.Repositories
 
         public bool Add(TechnicianShiftDTO shift)
         {
-            if (!employeeShiftDal.SupportsEmployeeShiftSchema())
-            {
+            if (!_employeeShiftDal.SupportsEmployeeShiftSchema())
                 return false;
-            }
 
             int employeeId = shift.EmployeeID;
             if (employeeId <= 0)
             {
-                EmployeeDTO employee = employeeDal.FindByName(
+                var employee = _employeeDal.FindByName(
                     !string.IsNullOrWhiteSpace(shift.EmployeeName)
                         ? shift.EmployeeName
                         : shift.TechnicianName);
-                employeeId = employee != null ? employee.EmployeeID : 0;
+                employeeId = employee?.EmployeeID ?? 0;
             }
 
             if (employeeId <= 0)
-            {
                 return false;
-            }
 
             int shiftId = shift.ShiftID > 0
                 ? shift.ShiftID
-                : workShiftDal.GetOrCreateShiftId(shift.ShiftName);
+                : _workShiftDal.GetOrCreateShiftId(shift.ShiftName);
 
             if (shiftId <= 0)
-            {
                 return false;
-            }
 
-            return employeeShiftDal.Add(new EmployeeShiftDTO
+            return _employeeShiftDal.Add(new EmployeeShiftDTO
             {
                 EmployeeID = employeeId,
                 ShiftID = shiftId,
@@ -89,9 +89,6 @@ namespace DAL.Repositories
             });
         }
 
-        public int GetCount()
-        {
-            return GetAll().Count;
-        }
+        public int GetCount() => GetAll().Count;
     }
 }

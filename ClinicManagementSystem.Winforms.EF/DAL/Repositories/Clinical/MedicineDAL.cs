@@ -9,99 +9,118 @@ namespace DAL.Repositories.Admin
     {
         public async Task<List<MedicineDTO>> GetAllMedicines()
         {
-            using var context = DbContextProvider.CreateContext();
-            return await context.Medicines
-                .Select(m => new MedicineDTO
-                {
-                    MedicineID = m.MedicineID,
-                    Name = m.Name,
-                    Unit = m.Unit,
-                    Price = m.Price,
-                    Stock = m.Stock,
-                    BatchNumber = m.BatchNumber ?? "",
-                    ExpiryDate = m.ExpiryDate ?? DateTime.MinValue
-                })
-                .ToListAsync();
-        }
+            List<MedicineDTO> list = new List<MedicineDTO>();
+            string query = "SELECT * FROM Medicines";
 
-        public async Task<bool> InsertMedicine(MedicineDTO medicine)
-        {
-            using var context = DbContextProvider.CreateContext();
-            var entity = new Medicine
+            DataTable dt = DatabaseHelper.ExecuteQuery(query);
+            foreach (DataRow row in dt.Rows)
             {
-                Name = medicine.Name,
-                Unit = medicine.Unit,
-                Price = medicine.Price,
-                Stock = medicine.Stock,
-                BatchNumber = medicine.BatchNumber,
-                ExpiryDate = medicine.ExpiryDate == DateTime.MinValue ? null : medicine.ExpiryDate
-            };
-            context.Medicines.Add(entity);
-            return await context.SaveChangesAsync() > 0;
+                list.Add(new MedicineDTO
+                {
+                    MedicineID = Convert.ToInt32(row["MedicineID"]),
+                    Name = row["Name"].ToString(),
+                    Unit = row["Unit"].ToString(),
+                    Price = Convert.ToDecimal(row["Price"]),
+                    Stock = Convert.ToInt32(row["Stock"]),
+                    BatchNumber = row["BatchNumber"] != DBNull.Value ? row["BatchNumber"].ToString() : "",
+                    ExpiryDate = row["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(row["ExpiryDate"]) : DateTime.MinValue
+                });
+            }
+            return list;
         }
 
         public async Task<bool> UpdateMedicine(MedicineDTO medicine)
         {
-            using var context = DbContextProvider.CreateContext();
-            var entity = await context.Medicines
-                .FirstOrDefaultAsync(m => m.MedicineID == medicine.MedicineID);
+            string query = @"
+                INSERT INTO Medicines (Name, Unit, Price, Stock, BatchNumber, ExpiryDate)
+                VALUES (@Name, @Unit, @Price, @Stock, @BatchNumber, @ExpiryDate)";
 
-            if (entity == null) return false;
+            SqlParameter[] parameters = {
+                new SqlParameter("@Name", medicine.Name),
+                new SqlParameter("@Unit", medicine.Unit),
+                new SqlParameter("@Price", medicine.Price),
+                new SqlParameter("@Stock", medicine.Stock),
+                new SqlParameter("@BatchNumber", medicine.BatchNumber ?? (object)DBNull.Value),
+                new SqlParameter("@ExpiryDate", medicine.ExpiryDate == DateTime.MinValue ? (object)DBNull.Value : medicine.ExpiryDate)
+            };
 
-            entity.Name = medicine.Name;
-            entity.Unit = medicine.Unit;
-            entity.Price = medicine.Price;
-            entity.Stock = medicine.Stock;
-            entity.BatchNumber = string.IsNullOrWhiteSpace(medicine.BatchNumber) ? null : medicine.BatchNumber;
-            entity.ExpiryDate = medicine.ExpiryDate == DateTime.MinValue ? null : medicine.ExpiryDate;
-
-            return await context.SaveChangesAsync() > 0;
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
 
         public async Task<bool> UpdateStock(int medicineId, int qty)
         {
-            using var context = DbContextProvider.CreateContext();
-            var entity = await context.Medicines
-                .FirstOrDefaultAsync(m => m.MedicineID == medicineId);
+            string query = @"
+                UPDATE Medicines
+                SET Name = @Name,
+                    Unit = @Unit,
+                    Price = @Price,
+                    Stock = @Stock,
+                    BatchNumber = @BatchNumber,
+                    ExpiryDate = @ExpiryDate
+                WHERE MedicineID = @MedicineID";
 
-            if (entity == null) return false;
+            SqlParameter[] parameters = {
+                new SqlParameter("@MedicineID", medicine.MedicineID),
+                new SqlParameter("@Name", medicine.Name),
+                new SqlParameter("@Unit", medicine.Unit),
+                new SqlParameter("@Price", medicine.Price),
+                new SqlParameter("@Stock", medicine.Stock),
+                new SqlParameter("@BatchNumber", string.IsNullOrWhiteSpace(medicine.BatchNumber) ? DBNull.Value : (object)medicine.BatchNumber),
+                new SqlParameter("@ExpiryDate", medicine.ExpiryDate == DateTime.MinValue ? DBNull.Value : (object)medicine.ExpiryDate)
+            };
 
-            entity.Stock -= qty;
-            return await context.SaveChangesAsync() > 0;
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
 
         public async Task<bool> AdjustStock(int medicineId, int quantityDelta)
         {
-            using var context = DbContextProvider.CreateContext();
-            var entity = await context.Medicines
-                .FirstOrDefaultAsync(m => m.MedicineID == medicineId
-                                       && m.Stock + quantityDelta >= 0);
+            string query = @"
+                UPDATE Medicines
+                SET Stock = Stock - @Qty
+                WHERE MedicineID = @MedicineID";
 
-            if (entity == null) return false;
+            SqlParameter[] parameters = {
+                new SqlParameter("@Qty", qty),
+                new SqlParameter("@MedicineID", medicineId)
+            };
 
-            entity.Stock += quantityDelta;
-            return await context.SaveChangesAsync() > 0;
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
 
         public async Task<int> GetStock(int medicineId)
         {
-            using var context = DbContextProvider.CreateContext();
-            var medicine = await context.Medicines
-                .FirstOrDefaultAsync(m => m.MedicineID == medicineId);
+            string query = @"
+                UPDATE Medicines
+                SET Stock = Stock + @QuantityDelta
+                WHERE MedicineID = @MedicineID
+                  AND Stock + @QuantityDelta >= 0";
 
-            return medicine?.Stock ?? 0;
+            SqlParameter[] parameters = {
+                new SqlParameter("@QuantityDelta", quantityDelta),
+                new SqlParameter("@MedicineID", medicineId)
+            };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
 
         public async Task<bool> DeleteMedicine(int id)
         {
-            using var context = DbContextProvider.CreateContext();
-            var entity = await context.Medicines
-                .FirstOrDefaultAsync(m => m.MedicineID == id);
+            string query = "SELECT Stock FROM Medicines WHERE MedicineID = @MedicineID";
+            SqlParameter[] parameters = {
+                new SqlParameter("@MedicineID", medicineId)
+            };
 
-            if (entity == null) return false;
+            object result = DatabaseHelper.ExecuteScalar(query, parameters);
+            return result != null && result != DBNull.Value ? Convert.ToInt32(result) : 0;
+        }
 
-            context.Medicines.Remove(entity);
-            return await context.SaveChangesAsync() > 0;
+        public bool DeleteMedicine(int id)
+        {
+            string query = "DELETE FROM Medicines WHERE MedicineID = @MedicineID";
+            SqlParameter[] parameters = {
+                new SqlParameter("@MedicineID", id)
+            };
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
     }
 }

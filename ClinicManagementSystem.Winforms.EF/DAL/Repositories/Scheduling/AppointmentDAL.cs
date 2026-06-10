@@ -1,460 +1,277 @@
 ﻿using System;
-using System.Data;
+using System.Collections.Generic;
+using System.Linq;
 using DAL.DataContext;
+using DAL.Models;
 using DTO;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
     public class AppointmentDAL
     {
+        private readonly CMSDbContext _context;
+
+        public AppointmentDAL(CMSDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
         public int CountNewPatients()
         {
-            string query = @"
-                SELECT COUNT(*)
-                FROM
-                (
-                    SELECT PatientID,
-                           MIN(AppointmentDate) AS FirstAppointment
-                    FROM Appointments
-                    GROUP BY PatientID
-                ) t
-                WHERE MONTH(FirstAppointment) = MONTH(GETDATE())
-                  AND YEAR(FirstAppointment) = YEAR(GETDATE())";
-
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(query));
+            var firstAppointments = _context.Appointments
+                .Where(a => a.AppointmentDate.HasValue)
+                .GroupBy(a => a.PatientId)
+                .Select(g => new
+                {
+                    PatientId = g.Key,
+                    FirstAppointment = g.Min(a => a.AppointmentDate)
+                });
+            var currentMonth = DateTime.Now.Month;
+            var currentYear = DateTime.Now.Year;
+            return firstAppointments.Count(f => f.FirstAppointment.Value.Month == currentMonth &&
+                                                  f.FirstAppointment.Value.Year == currentYear);
         }
 
         public int CountRevisitPatients()
         {
-            string query = @"
-                SELECT COUNT(*)
-                FROM
-                (
-                    SELECT PatientID
-                    FROM Appointments
-                    GROUP BY PatientID
-                    HAVING COUNT(*) > 1
-                ) t";
-
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(query));
+            return _context.Appointments
+                .Where(a => a.PatientId.HasValue)
+                .GroupBy(a => a.PatientId)
+                .Count(g => g.Count() > 1);
         }
 
         public int CountUpcomingAppointments()
         {
-            string query = @"
-                SELECT COUNT(*)
-                FROM Appointments
-                WHERE AppointmentDate >= GETDATE()
-                  AND Status <> N'Cancelled'";
-
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(query));
+            return _context.Appointments
+                .Count(a => a.AppointmentDate >= DateTime.Now && a.Status != "Cancelled");
         }
 
         public int CountAppointmentsToday()
         {
-            string query = @"
-                SELECT COUNT(*)
-                FROM Appointments
-                WHERE CAST(AppointmentDate AS DATE)
-                      = CAST(GETDATE() AS DATE)";
-
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(query));
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            return _context.Appointments
+                .Count(a => a.AppointmentDate.HasValue &&
+                            DateOnly.FromDateTime(a.AppointmentDate.Value) == today);
         }
 
         public bool Create(AppointmentDTO appointment)
         {
-            string query = @"
-    INSERT INTO Appointments
-    (
-        PatientID,
-        DoctorID,
-        DepartmentID,
-        RoomID,
-        AppointmentDate,
-        Status
-    )
-    VALUES
-    (
-        @PatientID,
-        @DoctorID,
-        @DepartmentID,
-        @RoomID,
-        @AppointmentDate,
-        @Status
-    )";
-
-            SqlParameter[] parameters =
+            var entity = new Appointment
             {
-        new SqlParameter("@PatientID", appointment.PatientID),
-        new SqlParameter("@DoctorID", appointment.DoctorID),
-        new SqlParameter("@DepartmentID", appointment.DepartmentID),
-        new SqlParameter("@RoomID", appointment.RoomID),
-        new SqlParameter("@AppointmentDate", appointment.AppointmentDate),
-        new SqlParameter("@Status", appointment.Status)
-    };
-
-            return DatabaseHelper.ExecuteNonQuery(
-                query,
-                parameters) > 0;
+                PatientId = appointment.PatientID,
+                DoctorId = appointment.DoctorID,
+                DepartmentId = appointment.DepartmentID,
+                RoomId = appointment.RoomID,
+                AppointmentDate = appointment.AppointmentDate,
+                Status = appointment.Status,
+                CreatedAt = DateTime.Now
+            };
+            _context.Appointments.Add(entity);
+            return _context.SaveChanges() > 0;
         }
 
-        public int CountAppointmentsByDoctorAndDate(
-     int doctorId,
-     DateTime date)
+        public int CountAppointmentsByDoctorAndDate(int doctorId, DateTime date)
         {
-            string query = @"
-        SELECT COUNT(*)
-        FROM Appointments
-        WHERE DoctorID = @DoctorID
-          AND CAST(AppointmentDate AS DATE) = @Date";
-
-            SqlParameter[] parameters =
-            {
-        new SqlParameter("@DoctorID", doctorId),
-        new SqlParameter("@Date", date.Date)
-    };
-
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(
-                    query,
-                    parameters));
+            var targetDate = DateOnly.FromDateTime(date.Date);
+            return _context.Appointments
+                .Count(a => a.DoctorId == doctorId &&
+                            a.AppointmentDate.HasValue &&
+                            DateOnly.FromDateTime(a.AppointmentDate.Value) == targetDate);
         }
 
-        public bool ExistsAppointment(
-    int doctorId,
-    DateTime appointmentDate)
+        public bool ExistsAppointment(int doctorId, DateTime appointmentDate)
         {
-            string query = @"
-        SELECT COUNT(*)
-        FROM Appointments
-        WHERE DoctorID = @DoctorID
-          AND AppointmentDate = @AppointmentDate";
-
-            SqlParameter[] parameters =
-            {
-        new SqlParameter("@DoctorID", doctorId),
-        new SqlParameter("@AppointmentDate", appointmentDate)
-    };
-
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(
-                    query,
-                    parameters)) > 0;
+            return _context.Appointments
+                .Any(a => a.DoctorId == doctorId && a.AppointmentDate == appointmentDate);
         }
 
-        public int CountAppointmentsByStatusToday(
-    string status)
+        public int CountAppointmentsByStatusToday(string status)
         {
-            string query = @"
-        SELECT COUNT(*)
-        FROM Appointments
-        WHERE CAST(AppointmentDate AS DATE)
-              = CAST(GETDATE() AS DATE)
-          AND Status = @Status";
-
-            SqlParameter[] parameters =
-            {
-        new SqlParameter("@Status", status)
-    };
-
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(
-                    query,
-                    parameters));
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            return _context.Appointments
+                .Count(a => a.AppointmentDate.HasValue &&
+                            DateOnly.FromDateTime(a.AppointmentDate.Value) == today &&
+                            a.Status == status);
         }
 
-        public DataTable GetAppointmentsToday()
+        public List<AppointmentTodayDTO> GetAppointmentsToday()
         {
-            string query = @"
-        SELECT
-            a.AppointmentID,
-            CONVERT(VARCHAR(5), a.AppointmentDate, 108) AS [Giờ khám],
-            p.FullName AS [Bệnh nhân],
-            e.FullName AS [Bác sĩ],
-            d.DepartmentName AS [Chuyên khoa],
-            r.RoomCode AS [Phòng],
-            a.Status AS [Trạng thái]
-        FROM Appointments a
-        INNER JOIN Patients p
-            ON a.PatientID = p.PatientID
-        INNER JOIN Employees e
-            ON a.DoctorID = e.EmployeeID
-        INNER JOIN Departments d
-            ON a.DepartmentID = d.DepartmentID
-        INNER JOIN Rooms r
-            ON a.RoomID = r.RoomID
-        WHERE CAST(a.AppointmentDate AS DATE)
-              = CAST(GETDATE() AS DATE)
-        ORDER BY a.AppointmentDate";
-
-            return DatabaseHelper.ExecuteQuery(query);
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var query = _context.Appointments
+                .Where(a => a.AppointmentDate.HasValue &&
+                            DateOnly.FromDateTime(a.AppointmentDate.Value) == today)
+                .Include(a => a.Patient)
+                .Include(a => a.Doctor)
+                .Include(a => a.Department)
+                .Include(a => a.Room)
+                .OrderBy(a => a.AppointmentDate)
+                .Select(a => new AppointmentTodayDTO
+                {
+                    AppointmentID = a.AppointmentId,
+                    TimeText = a.AppointmentDate.HasValue ? a.AppointmentDate.Value.ToString("HH:mm") : "",
+                    PatientName = a.Patient != null ? a.Patient.FullName : "",
+                    DoctorName = a.Doctor != null ? a.Doctor.FullName : "",
+                    DepartmentName = a.Department != null ? a.Department.DepartmentName : "",
+                    RoomCode = a.Room != null ? a.Room.RoomCode : "",
+                    Status = a.Status ?? ""
+                })
+                .ToList();
+            return query;
         }
 
-        public bool UpdateStatus(
-    int appointmentId,
-    string status)
+        public bool UpdateStatus(int appointmentId, string status)
         {
-            string query = @"
-        UPDATE Appointments
-        SET Status = @Status
-        WHERE AppointmentID = @AppointmentID";
-
-            SqlParameter[] parameters =
-            {
-        new("@Status", status),
-        new("@AppointmentID", appointmentId)
-    };
-
-            return DatabaseHelper.ExecuteNonQuery(
-                query,
-                parameters) > 0;
+            var app = _context.Appointments.Find(appointmentId);
+            if (app == null) return false;
+            app.Status = status;
+            return _context.SaveChanges() > 0;
         }
 
-        public DataTable SearchAppointmentsToday(
-     string keyword,
-     string department,
-     string status)
+        public List<AppointmentTodayDTO> SearchAppointmentsToday(string keyword, string department, string status)
         {
-            string query = @"
-    SELECT
-        a.AppointmentID,
-        CONVERT(VARCHAR(5), a.AppointmentDate, 108) AS [Giờ khám],
-        p.FullName AS [Bệnh nhân],
-        e.FullName AS [Bác sĩ],
-        d.DepartmentName AS [Chuyên khoa],
-        r.RoomCode AS [Phòng],
-        a.Status AS [Trạng thái]
-    FROM Appointments a
-    INNER JOIN Patients p
-        ON a.PatientID = p.PatientID
-    INNER JOIN Employees e
-        ON a.DoctorID = e.EmployeeID
-    INNER JOIN Departments d
-        ON a.DepartmentID = d.DepartmentID
-    INNER JOIN Rooms r
-        ON a.RoomID = r.RoomID
-    WHERE CAST(a.AppointmentDate AS DATE)
-          = CAST(GETDATE() AS DATE)
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var query = _context.Appointments
+                .Where(a => a.AppointmentDate.HasValue &&
+                            DateOnly.FromDateTime(a.AppointmentDate.Value) == today)
+                .Include(a => a.Patient)
+                .Include(a => a.Doctor)
+                .Include(a => a.Department)
+                .Include(a => a.Room)
+                .AsQueryable();
 
-      AND (@Keyword = ''
-           OR p.FullName LIKE '%' + @Keyword + '%'
-           OR p.PatientCode LIKE '%' + @Keyword + '%'
-           OR p.Phone LIKE '%' + @Keyword + '%')
-
-      AND (@Department = ''
-           OR d.DepartmentName = @Department)
-
-      AND (@Status = ''
-           OR a.Status = @Status)
-
-    ORDER BY a.AppointmentDate";
-
-            SqlParameter[] parameters =
+            if (!string.IsNullOrWhiteSpace(keyword))
             {
-        new("@Keyword", keyword),
-        new("@Department", department),
-        new("@Status", status)
-    };
+                query = query.Where(a => (a.Patient != null && (a.Patient.FullName.Contains(keyword) ||
+                                                                a.Patient.PatientCode.Contains(keyword) ||
+                                                                a.Patient.Phone.Contains(keyword))));
+            }
+            if (!string.IsNullOrWhiteSpace(department))
+            {
+                query = query.Where(a => a.Department != null && a.Department.DepartmentName == department);
+            }
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(a => a.Status == status);
+            }
 
-            return DatabaseHelper.ExecuteQuery(
-                query,
-                parameters);
+            var result = query.OrderBy(a => a.AppointmentDate)
+                .Select(a => new AppointmentTodayDTO
+                {
+                    AppointmentID = a.AppointmentId,
+                    TimeText = a.AppointmentDate.HasValue ? a.AppointmentDate.Value.ToString("HH:mm") : "",
+                    PatientName = a.Patient != null ? a.Patient.FullName : "",
+                    DoctorName = a.Doctor != null ? a.Doctor.FullName : "",
+                    DepartmentName = a.Department != null ? a.Department.DepartmentName : "",
+                    RoomCode = a.Room != null ? a.Room.RoomCode : "",
+                    Status = a.Status ?? ""
+                })
+                .ToList();
+            return result;
         }
 
-        public int CountAppointmentsByDoctorAndStatusToday(
-    int doctorId,
-    string status)
+        public int CountAppointmentsByDoctorAndStatusToday(int doctorId, string status)
         {
-            string query = @"
-        SELECT COUNT(*)
-        FROM Appointments
-        WHERE DoctorID = @DoctorID
-          AND Status = @Status
-          AND CAST(AppointmentDate AS DATE)
-              = CAST(GETDATE() AS DATE)";
-
-            SqlParameter[] parameters =
-            {
-        new("@DoctorID", doctorId),
-        new("@Status", status)
-    };
-
-            return Convert.ToInt32(
-                DatabaseHelper.ExecuteScalar(
-                    query,
-                    parameters));
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            return _context.Appointments
+                .Count(a => a.DoctorId == doctorId &&
+                            a.Status == status &&
+                            a.AppointmentDate.HasValue &&
+                            DateOnly.FromDateTime(a.AppointmentDate.Value) == today);
         }
 
-        public string GetCurrentPatientByDoctor(
-    int doctorId)
+        public string GetCurrentPatientByDoctor(int doctorId)
         {
-            string query = @"
-        SELECT TOP 1 p.FullName
-        FROM Appointments a
-        INNER JOIN Patients p
-            ON p.PatientID = a.PatientID
-        WHERE a.DoctorID = @DoctorID
-          AND a.Status = 'Examining'
-        ORDER BY a.AppointmentDate";
-
-            SqlParameter[] parameters =
-            {
-        new("@DoctorID", doctorId)
-    };
-
-            object result =
-                DatabaseHelper.ExecuteScalar(
-                    query,
-                    parameters);
-
-            return result?.ToString() ?? "";
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var patient = _context.Appointments
+                .Where(a => a.DoctorId == doctorId &&
+                            a.Status == "Examining" &&
+                            a.AppointmentDate.HasValue &&
+                            DateOnly.FromDateTime(a.AppointmentDate.Value) == today)
+                .OrderBy(a => a.AppointmentDate)
+                .Select(a => a.Patient != null ? a.Patient.FullName : "")
+                .FirstOrDefault();
+            return patient ?? "";
         }
 
-        public List<WaitingPatientDTO>
-GetWaitingPatientsByDoctor(
-    int doctorId)
+        public List<WaitingPatientDTO> GetWaitingPatientsByDoctor(int doctorId)
         {
-            string query = @"
-    SELECT
-        p.FullName,
-        p.PatientCode,
-        a.AppointmentDate
-    FROM Appointments a
-    INNER JOIN Patients p
-        ON a.PatientID = p.PatientID
-    WHERE a.DoctorID = @DoctorID
-      AND a.Status = 'Waiting'
-      AND CAST(a.AppointmentDate AS DATE)
-          = CAST(GETDATE() AS DATE)
-    ORDER BY a.AppointmentDate";
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var appointments = _context.Appointments
+                .Where(a => a.DoctorId == doctorId &&
+                            a.Status == "Waiting" &&
+                            a.AppointmentDate.HasValue &&
+                            DateOnly.FromDateTime(a.AppointmentDate.Value) == today)
+                .Include(a => a.Patient)
+                .OrderBy(a => a.AppointmentDate)
+                .ToList();
 
-            SqlParameter[] parameters =
-            {
-        new("@DoctorID", doctorId)
-    };
-
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(
-                    query,
-                    parameters);
-
-            List<WaitingPatientDTO> list =
-                new();
-
+            var list = new List<WaitingPatientDTO>();
             int queueNumber = 1;
-
-            foreach (DataRow row in dt.Rows)
+            foreach (var a in appointments)
             {
                 list.Add(new WaitingPatientDTO
                 {
                     QueueNumber = queueNumber++,
-
-                    PatientName =
-                        row["FullName"]
-                            .ToString(),
-
-                    PatientCode =
-                        row["PatientCode"]
-                            .ToString(),
-
-                    AppointmentTime =
-                        Convert.ToDateTime(
-                            row["AppointmentDate"])
+                    PatientName = a.Patient?.FullName ?? "",
+                    PatientCode = a.Patient?.PatientCode ?? "",
+                    AppointmentTime = a.AppointmentDate ?? DateTime.MinValue
                 });
             }
-
             return list;
         }
 
-        public int GetCurrentQueueNumber(
-    int doctorId)
+        public int GetCurrentQueueNumber(int doctorId)
         {
-            string query = @"
-    SELECT AppointmentID
-    FROM Appointments
-    WHERE DoctorID = @DoctorID
-      AND Status = 'Examining'
-      AND CAST(AppointmentDate AS DATE)
-          = CAST(GETDATE() AS DATE)";
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var examiningAppointment = _context.Appointments
+                .FirstOrDefault(a => a.DoctorId == doctorId &&
+                                     a.Status == "Examining" &&
+                                     a.AppointmentDate.HasValue &&
+                                     DateOnly.FromDateTime(a.AppointmentDate.Value) == today);
+            if (examiningAppointment == null) return 0;
 
-            SqlParameter[] parameters =
-            {
-        new("@DoctorID", doctorId)
-    };
-
-            object currentAppointmentId =
-    DatabaseHelper.ExecuteScalar(
-        query,
-        new SqlParameter[]
-        {
-            new("@DoctorID", doctorId)
-        });
-
-            if (currentAppointmentId == null)
-                return 0;
-
-            string orderQuery = @"
-    SELECT AppointmentID
-    FROM Appointments
-    WHERE DoctorID = @DoctorID
-      AND CAST(AppointmentDate AS DATE)
-          = CAST(GETDATE() AS DATE)
-    ORDER BY AppointmentDate";
-
-            DataTable dt =
-    DatabaseHelper.ExecuteQuery(
-        orderQuery,
-        new SqlParameter[]
-        {
-            new("@DoctorID", doctorId)
-        });
+            var orderedAppointments = _context.Appointments
+                .Where(a => a.DoctorId == doctorId &&
+                            a.AppointmentDate.HasValue &&
+                            DateOnly.FromDateTime(a.AppointmentDate.Value) == today)
+                .OrderBy(a => a.AppointmentDate)
+                .ToList();
 
             int queueNumber = 1;
-
-            foreach (DataRow row in dt.Rows)
+            foreach (var app in orderedAppointments)
             {
-                if (Convert.ToInt32(
-                        row["AppointmentID"])
-                    ==
-                    Convert.ToInt32(
-                        currentAppointmentId))
-                {
+                if (app.AppointmentId == examiningAppointment.AppointmentId)
                     return queueNumber;
-                }
-
                 queueNumber++;
             }
-
             return 0;
         }
 
-        public string GetCurrentPatientCodeByDoctor(
-    int doctorId)
+        public string GetCurrentPatientCodeByDoctor(int doctorId)
         {
-            string query = @"
-    SELECT TOP 1 p.PatientCode
-    FROM Appointments a
-    INNER JOIN Patients p
-        ON a.PatientID = p.PatientID
-    WHERE a.DoctorID = @DoctorID
-      AND a.Status = 'Examining'
-      AND CAST(a.AppointmentDate AS DATE)
-          = CAST(GETDATE() AS DATE)";
-
-            object result =
-    DatabaseHelper.ExecuteScalar(
-        query,
-        new SqlParameter[]
-        {
-            new("@DoctorID", doctorId)
-        });
-
-            return result?.ToString() ?? "";
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var patientCode = _context.Appointments
+                .Where(a => a.DoctorId == doctorId &&
+                            a.Status == "Examining" &&
+                            a.AppointmentDate.HasValue &&
+                            DateOnly.FromDateTime(a.AppointmentDate.Value) == today)
+                .OrderBy(a => a.AppointmentDate)
+                .Select(a => a.Patient != null ? a.Patient.PatientCode : "")
+                .FirstOrDefault();
+            return patientCode ?? "";
         }
+    }
+
+    // DTO cho lịch hẹn hôm nay (nếu chưa có)
+    public class AppointmentTodayDTO
+    {
+        public int AppointmentID { get; set; }
+        public string TimeText { get; set; }
+        public string PatientName { get; set; }
+        public string DoctorName { get; set; }
+        public string DepartmentName { get; set; }
+        public string RoomCode { get; set; }
+        public string Status { get; set; }
     }
 }

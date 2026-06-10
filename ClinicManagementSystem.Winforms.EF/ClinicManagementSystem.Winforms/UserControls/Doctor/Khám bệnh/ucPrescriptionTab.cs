@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using DAL.Models;
 using DTO;
 using DTO.Doctor;
 
@@ -13,10 +14,17 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
         private int doctorId;
         private List<MedicineDTO> medicines = new();
 
+        // Constructor mặc định (cho designer)
         public ucPrescriptionTab()
         {
             InitializeComponent();
             btnAddMedicine.Click += BtnAddMedicine_Click;
+        }
+
+        // Constructor có context và user (để đồng bộ, không dùng trực tiếp)
+        public ucPrescriptionTab(CMSDbContext context, UserDTO currentUser) : this()
+        {
+            // Không cần xử lý thêm vì tab này không dùng database trực tiếp
         }
 
         public void SetContext(int encounterId, int doctorId, List<MedicineDTO> medicines)
@@ -44,18 +52,11 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
 
             foreach (Control control in flpMedicines.Controls)
             {
-                if (control is not ucPrescriptionItem item)
-                {
-                    continue;
-                }
-
+                if (control is not ucPrescriptionItem item) continue;
                 DoctorPrescriptionItemSaveDTO dto = item.BuildItem();
                 if (dto.MedicineID > 0 && dto.Quantity > 0)
-                {
                     prescription.Items.Add(dto);
-                }
             }
-
             return prescription;
         }
 
@@ -74,7 +75,6 @@ namespace ClinicManagementSystem.Winforms.UserControls.Doctor.Khám_bệnh
                 flpMedicines.Controls.Remove(item);
                 item.Dispose();
             };
-
             flpMedicines.Controls.Add(item);
         }
     }

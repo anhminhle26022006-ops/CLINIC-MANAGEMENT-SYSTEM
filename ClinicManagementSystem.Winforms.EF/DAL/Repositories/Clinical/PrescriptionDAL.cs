@@ -9,167 +9,198 @@ namespace DAL.Repositories.Clinical
     {
         public async Task<List<PrescriptionDTO>> GetPendingPrescriptions()
         {
-            await SeedSamplePrescriptionsIfEmpty();
+            SeedSamplePrescriptionsIfEmpty();
 
-            using var context = DbContextProvider.CreateContext();
-            var list = await context.Prescriptions
-                .Where(p => p.Status != "Completed" && p.Status != "Đã cấp phát")
-                .OrderByDescending(p => p.CreatedAt)
-                .Select(p => new PrescriptionDTO
+            List<PrescriptionDTO> list = new List<PrescriptionDTO>();
+            string query = @"
+                SELECT p.PrescriptionID,
+                       p.EncounterID,
+                       p.DoctorID,
+                       p.Status,
+                       p.CreatedAt,
+                       pat.FullName AS PatientName,
+                       pat.Gender AS PatientGender,
+                       pat.DOB AS PatientDOB,
+                       pat.PatientCode AS PatientCode,
+                       pat.Allergy AS PatientAllergies,
+                       doc.FullName AS DoctorName,
+                       mr.Diagnosis AS Diagnosis,
+                       mr.Notes AS DoctorNotes
+                FROM Prescriptions p
+                JOIN Encounters enc ON p.EncounterID = enc.EncounterID
+                JOIN Patients pat ON enc.PatientID = pat.PatientID
+                JOIN Employees doc ON p.DoctorID = doc.EmployeeID
+                LEFT JOIN MedicalRecords mr ON enc.EncounterID = mr.EncounterID
+                WHERE p.Status != 'Completed' AND p.Status != N'Đã cấp phát'
+                ORDER BY p.CreatedAt DESC";
+
+            DataTable dt = DatabaseHelper.ExecuteQuery(query);
+            foreach (DataRow row in dt.Rows)
+            {
+                var dto = new PrescriptionDTO
                 {
-                    PrescriptionID = p.PrescriptionID,
-                    EncounterID = p.EncounterID,
-                    DoctorID = p.DoctorID,
-                    Status = p.Status,
-                    CreatedAt = p.CreatedAt,
-                    PatientName = p.Encounter.Patient.FullName ?? "",
-                    PatientGender = p.Encounter.Patient.Gender ?? "",
-                    PatientDOB = p.Encounter.Patient.DOB,
-                    PatientCode = p.Encounter.Patient.PatientCode ?? "",
-                    PatientAllergies = p.Encounter.Patient.Allergy ?? "Không",
-                    DoctorName = p.Encounter.Doctor.FullName ?? "",
-                    Diagnosis = p.Encounter.MedicalRecord.Diagnosis ?? "Khám sức khỏe tổng quát",
-                    DoctorNotes = p.Encounter.MedicalRecord.Notes ?? ""
-                })
-                .ToListAsync();
+                    PrescriptionID = Convert.ToInt32(row["PrescriptionID"]),
+                    EncounterID = Convert.ToInt32(row["EncounterID"]),
+                    DoctorID = Convert.ToInt32(row["DoctorID"]),
+                    Status = row["Status"].ToString(),
+                    CreatedAt = Convert.ToDateTime(row["CreatedAt"]),
+                    PatientName = row["PatientName"].ToString(),
+                    PatientGender = row["PatientGender"].ToString(),
+                    PatientDOB = row["PatientDOB"] != DBNull.Value ? Convert.ToDateTime(row["PatientDOB"]) : (DateTime?)null,
+                    PatientCode = row["PatientCode"].ToString(),
+                    PatientAllergies = row["PatientAllergies"] != DBNull.Value ? row["PatientAllergies"].ToString() : "Không",
+                    DoctorName = row["DoctorName"].ToString(),
+                    Diagnosis = row["Diagnosis"] != DBNull.Value ? row["Diagnosis"].ToString() : "Khám sức khỏe tổng quát",
+                    DoctorNotes = row["DoctorNotes"] != DBNull.Value ? row["DoctorNotes"].ToString() : ""
+                };
 
-            foreach (var dto in list)
-                dto.Items = await GetPrescriptionItems(dto.PrescriptionID);
-
+                dto.Items = GetPrescriptionItems(dto.PrescriptionID);
+                list.Add(dto);
+            }
             return list;
         }
 
-        public async Task<List<PrescriptionItemDTO>> GetPrescriptionItems(int prescriptionId)
+        public List<PrescriptionItemDTO> GetPrescriptionItems(int prescriptionId)
         {
-            using var context = DbContextProvider.CreateContext();
-            return await context.PrescriptionDetails
-                .Where(pd => pd.PrescriptionID == prescriptionId)
-                .Select(pd => new PrescriptionItemDTO
+            List<PrescriptionItemDTO> list = new List<PrescriptionItemDTO>();
+            string query = @"
+                SELECT pd.DetailID,
+                       pd.PrescriptionID,
+                       pd.MedicineID,
+                       pd.Quantity,
+                       pd.Dosage,
+                       m.Name AS MedicineName,
+                       m.Unit AS MedicineUnit,
+                       m.BatchNumber AS BatchNumber,
+                       m.Price AS Price
+                FROM PrescriptionDetails pd
+                JOIN Medicines m ON pd.MedicineID = m.MedicineID
+                WHERE pd.PrescriptionID = @PrescriptionID";
+
+            SqlParameter[] parameters = {
+                new SqlParameter("@PrescriptionID", prescriptionId)
+            };
+
+            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(new PrescriptionItemDTO
                 {
-                    DetailID = pd.DetailID,
-                    PrescriptionID = pd.PrescriptionID,
-                    MedicineID = pd.MedicineID,
-                    Quantity = pd.Quantity,
-                    Dosage = pd.Dosage ?? "",
-                    MedicineName = pd.Medicine.Name ?? "",
-                    MedicineUnit = pd.Medicine.Unit ?? "",
-                    BatchNumber = pd.Medicine.BatchNumber ?? "",
-                    Price = pd.Medicine.Price
-                })
-                .ToListAsync();
+                    DetailID = Convert.ToInt32(row["DetailID"]),
+                    PrescriptionID = Convert.ToInt32(row["PrescriptionID"]),
+                    MedicineID = Convert.ToInt32(row["MedicineID"]),
+                    Quantity = Convert.ToInt32(row["Quantity"]),
+                    Dosage = row["Dosage"].ToString(),
+                    MedicineName = row["MedicineName"].ToString(),
+                    MedicineUnit = row["MedicineUnit"].ToString(),
+                    BatchNumber = row["BatchNumber"] != DBNull.Value ? row["BatchNumber"].ToString() : "",
+                    Price = Convert.ToDecimal(row["Price"])
+                });
+            }
+            return list;
         }
 
-        public async Task<bool> UpdatePrescriptionStatus(int prescriptionId, string status)
+        public bool UpdatePrescriptionStatus(int prescriptionId, string status)
         {
-            using var context = DbContextProvider.CreateContext();
-            var entity = await context.Prescriptions
-                .FirstOrDefaultAsync(p => p.PrescriptionID == prescriptionId);
+            string query = @"
+                UPDATE Prescriptions
+                SET Status = @Status
+                WHERE PrescriptionID = @PrescriptionID";
 
-            if (entity == null) return false;
+            SqlParameter[] parameters = {
+                new SqlParameter("@Status", status),
+                new SqlParameter("@PrescriptionID", prescriptionId)
+            };
 
-            entity.Status = status;
-            return await context.SaveChangesAsync() > 0;
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
 
-        private async Task SeedSamplePrescriptionsIfEmpty()
+        private void SeedSamplePrescriptionsIfEmpty()
         {
-            using var context = DbContextProvider.CreateContext();
-
-            if (await context.Prescriptions.AnyAsync()) return;
-
-            var patient = await context.Patients.FirstOrDefaultAsync();
-            var doctor = await context.Employees
-                .FirstOrDefaultAsync(e => e.Role.RoleName == "Doctor");
-            var medicine = await context.Medicines.FirstOrDefaultAsync();
-
-            if (patient == null || doctor == null || medicine == null) return;
-
-            var secondMedicine = await context.Medicines
-                .FirstOrDefaultAsync(m => m.MedicineID != medicine.MedicineID);
-            secondMedicine ??= medicine;
-
-            // Encounter 1
-            var encounter1 = new Encounter
+            try
             {
-                PatientID = patient.PatientID,
-                DoctorID = doctor.EmployeeID,
-                StartTime = DateTime.Now,
-                Status = "Chờ cấp thuốc"
-            };
-            context.Encounters.Add(encounter1);
-            await context.SaveChangesAsync();
+                object countObj = DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM Prescriptions");
+                int count = Convert.ToInt32(countObj);
+                if (count > 0) return;
 
-            context.MedicalRecords.Add(new MedicalRecord
-            {
-                EncounterID = encounter1.EncounterID,
-                Diagnosis = "Viêm họng cấp",
-                Notes = "Uống nước ấm, nghỉ ngơi đầy đủ"
-            });
+                object patientIdObj = DatabaseHelper.ExecuteScalar("SELECT TOP 1 PatientID FROM Patients ORDER BY PatientID");
+                object doctorIdObj = DatabaseHelper.ExecuteScalar(
+                    "SELECT TOP 1 EmployeeID FROM Employees WHERE RoleID = (SELECT RoleID FROM Roles WHERE RoleName = 'Doctor') ORDER BY EmployeeID");
+                object medicineIdObj = DatabaseHelper.ExecuteScalar("SELECT TOP 1 MedicineID FROM Medicines ORDER BY MedicineID");
 
-            var presc1 = new Prescription
-            {
-                EncounterID = encounter1.EncounterID,
-                DoctorID = doctor.EmployeeID,
-                Status = "Chờ cấp phát",
-                CreatedAt = DateTime.Now
-            };
-            context.Prescriptions.Add(presc1);
-            await context.SaveChangesAsync();
-
-            context.PrescriptionDetails.AddRange(
-                new PrescriptionDetail
+                if (patientIdObj == null || doctorIdObj == null || medicineIdObj == null)
                 {
-                    PrescriptionID = presc1.PrescriptionID,
-                    MedicineID = medicine.MedicineID,
-                    Quantity = 10,
-                    Dosage = "Ngày uống 2 lần, mỗi lần 1 viên sau ăn"
-                },
-                new PrescriptionDetail
-                {
-                    PrescriptionID = presc1.PrescriptionID,
-                    MedicineID = secondMedicine.MedicineID,
-                    Quantity = 15,
-                    Dosage = "Ngày uống 1 lần, mỗi lần 1 viên sáng"
+                    return; 
                 }
-            );
 
-            // Encounter 2
-            var encounter2 = new Encounter
+                int patientId = Convert.ToInt32(patientIdObj);
+                int doctorId = Convert.ToInt32(doctorIdObj);
+                int medicineId = Convert.ToInt32(medicineIdObj);
+
+                int encounterId1 = InsertEncounter(patientId, doctorId, "Chờ cấp thuốc");
+                int encounterId2 = InsertEncounter(patientId, doctorId, "Chờ cấp thuốc");
+
+                DatabaseHelper.ExecuteNonQuery(@"
+                    INSERT INTO MedicalRecords (EncounterID, Diagnosis, Notes)
+                    VALUES 
+                    (@E1, N'Viêm họng cấp', N'Uống nước ấm, nghỉ ngơi đầy đủ'),
+                    (@E2, N'Suy nhược cơ thể', N'Hạn chế thức khuya, uống nhiều nước')",
+                    new[] {
+                        new SqlParameter("@E1", encounterId1),
+                        new SqlParameter("@E2", encounterId2)
+                    });
+
+                int prescId1 = InsertPrescription(encounterId1, doctorId, "Chờ cấp phát");
+                int prescId2 = InsertPrescription(encounterId2, doctorId, "Đang chuẩn bị");
+
+                object secondMedObj = DatabaseHelper.ExecuteScalar("SELECT TOP 1 MedicineID FROM Medicines WHERE MedicineID != @MID ORDER BY MedicineID", new[] { new SqlParameter("@MID", medicineId) });
+                int secondMedId = secondMedObj != null ? Convert.ToInt32(secondMedObj) : medicineId;
+
+                DatabaseHelper.ExecuteNonQuery(@"
+                    INSERT INTO PrescriptionDetails (PrescriptionID, MedicineID, Quantity, Dosage)
+                    VALUES 
+                    (@P1, @M1, 10, N'Ngày uống 2 lần, mỗi lần 1 viên sau ăn'),
+                    (@P1, @M2, 15, N'Ngày uống 1 lần, mỗi lần 1 viên sáng'),
+                    (@P2, @M1, 20, N'Ngày uống 2 lần, mỗi lần 1 viên sau ăn')",
+                    new[] {
+                        new SqlParameter("@P1", prescId1),
+                        new SqlParameter("@P2", prescId2),
+                        new SqlParameter("@M1", medicineId),
+                        new SqlParameter("@M2", secondMedId)
+                    });
+            }
+            catch (Exception ex)
             {
-                PatientID = patient.PatientID,
-                DoctorID = doctor.EmployeeID,
-                StartTime = DateTime.Now,
-                Status = "Chờ cấp thuốc"
-            };
-            context.Encounters.Add(encounter2);
-            await context.SaveChangesAsync();
+                System.Diagnostics.Debug.WriteLine("Error seeding prescriptions: " + ex.Message);
+            }
+        }
 
-            context.MedicalRecords.Add(new MedicalRecord
-            {
-                EncounterID = encounter2.EncounterID,
-                Diagnosis = "Suy nhược cơ thể",
-                Notes = "Hạn chế thức khuya, uống nhiều nước"
-            });
+        private int InsertEncounter(int patientId, int doctorId, string status)
+        {
+            object idObj = DatabaseHelper.ExecuteScalar(@"
+                INSERT INTO Encounters (PatientID, DoctorID, StartTime, Status)
+                OUTPUT INSERTED.EncounterID
+                VALUES (@PID, @DID, GETDATE(), @Status)",
+                new[] {
+                    new SqlParameter("@PID", patientId),
+                    new SqlParameter("@DID", doctorId),
+                    new SqlParameter("@Status", status)
+                });
+            return Convert.ToInt32(idObj);
+        }
 
-            var presc2 = new Prescription
-            {
-                EncounterID = encounter2.EncounterID,
-                DoctorID = doctor.EmployeeID,
-                Status = "Đang chuẩn bị",
-                CreatedAt = DateTime.Now
-            };
-            context.Prescriptions.Add(presc2);
-            await context.SaveChangesAsync();
-
-            context.PrescriptionDetails.Add(new PrescriptionDetail
-            {
-                PrescriptionID = presc2.PrescriptionID,
-                MedicineID = medicine.MedicineID,
-                Quantity = 20,
-                Dosage = "Ngày uống 2 lần, mỗi lần 1 viên sau ăn"
-            });
-
-            await context.SaveChangesAsync();
+        private int InsertPrescription(int encounterId, int doctorId, string status)
+        {
+            object idObj = DatabaseHelper.ExecuteScalar(@"
+                INSERT INTO Prescriptions (EncounterID, DoctorID, Status, CreatedAt)
+                OUTPUT INSERTED.PrescriptionID
+                VALUES (@EID, @DID, @Status, GETDATE())",
+                new[] {
+                    new SqlParameter("@EID", encounterId),
+                    new SqlParameter("@DID", doctorId),
+                    new SqlParameter("@Status", status)
+                });
+            return Convert.ToInt32(idObj);
         }
     }
 }

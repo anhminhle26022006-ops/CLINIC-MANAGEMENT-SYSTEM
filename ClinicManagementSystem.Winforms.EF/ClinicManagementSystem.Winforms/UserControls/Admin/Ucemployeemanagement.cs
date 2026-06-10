@@ -1,25 +1,36 @@
+using BUS.Services;
+using DAL.Models;
+using DAL.Repositories;
+using DTO;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BUS.Services;
-using DAL.Repositories;
-using DTO;
 
 namespace ClinicManagementSystem.Winforms.UserControls.Admin
 {
     public partial class ucEmployeeManagement : UserControl
     {
-        private readonly EmployeeBUS employeeBUS = new EmployeeBUS(new EmployeeDAL());
+        private readonly CMSDbContext _context;
+        private EmployeeBUS employeeBUS;          // Không khởi tạo sẵn
         private readonly DepartmentBUS departmentBUS = new DepartmentBUS();
         private List<EmployeeDTO> employees = new List<EmployeeDTO>();
 
+        // Constructor mặc định (chỉ dùng cho designer)
         public ucEmployeeManagement()
         {
             InitializeComponent();
             AdminUiStyle.ApplyGrid(dgvEmployees);
             EnsureColumns();
+            // Không gọi LoadData() vì chưa có context
+        }
+
+        // Constructor chính (dùng khi runtime)
+        public ucEmployeeManagement(CMSDbContext context) : this()
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            employeeBUS = new EmployeeBUS(new EmployeeDAL(_context));
             LoadData();
         }
 
@@ -61,12 +72,14 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         public void LoadData()
         {
+            if (employeeBUS == null) return;
             employees = employeeBUS.GetAll();
             ApplyFilters();
         }
 
         private void ApplyFilters()
         {
+            if (employeeBUS == null) return;
             string term = txtSearch.Text.Trim().ToLowerInvariant();
             string role = cboChucVu.SelectedItem?.ToString() ?? "Tất cả chức vụ";
 
@@ -105,6 +118,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private void BindKpiCards()
         {
+            if (employeeBUS == null) return;
             lblBacSiValue.Text = AdminUiStyle.CountText(CountRole("Doctor", "Bác sĩ", "Bac si"));
             lblYTaValue.Text = AdminUiStyle.CountText(CountRole("Nurse", "Y tá", "Y ta"));
             lblDuocSiValue.Text = AdminUiStyle.CountText(CountRole("Pharmacist", "Dược sĩ", "Duoc si"));
@@ -120,14 +134,12 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
         private void btnAddEmployee_Click(object sender, EventArgs e)
         {
+            if (employeeBUS == null) return;
             if (AdminRecordDialogs.CreateEmployee(GetRoleOptions(), departmentBUS.GetAll(), out EmployeeDTO created))
             {
                 try
                 {
-                    if (employeeBUS.Add(created))
-                    {
-                        LoadData();
-                    }
+                    if (employeeBUS.Add(created)) LoadData();
                 }
                 catch (Exception ex)
                 {
@@ -136,26 +148,16 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             }
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            ApplyFilters();
-        }
-
-        private void cboChucVu_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ApplyFilters();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => ApplyFilters();
+        private void cboChucVu_SelectedIndexChanged(object sender, EventArgs e) => ApplyFilters();
 
         private void panelHeader_Resize(object sender, EventArgs e) { }
-
         private void panelKPI_Resize(object sender, EventArgs e) { }
 
         private void dgvEmployees_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.ColumnIndex < 0 || dgvEmployees.Rows[e.RowIndex].Tag is not EmployeeDTO employee)
-            {
-                return;
-            }
+            if (employeeBUS == null) return;
+            if (e.RowIndex < 0 || e.ColumnIndex < 0 || dgvEmployees.Rows[e.RowIndex].Tag is not EmployeeDTO employee) return;
 
             string columnName = dgvEmployees.Columns[e.ColumnIndex].Name;
             if (columnName == "colView")
@@ -167,9 +169,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
             if (columnName == "colEdit")
             {
                 if (AdminRecordDialogs.EditEmployee(employee, GetRoleOptions(), departmentBUS.GetAll(), out EmployeeDTO edited) && employeeBUS.UpdateBasic(edited))
-                {
                     LoadData();
-                }
                 return;
             }
 
@@ -183,18 +183,13 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
 
                 if (MessageBox.Show(message, "Admin", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes
                     && employeeBUS.SetStatus(employee.EmployeeID, nextStatus))
-                {
                     LoadData();
-                }
             }
         }
 
         private void dgvEmployees_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0 || e.ColumnIndex < 0)
-            {
-                return;
-            }
+            if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
 
             string columnName = dgvEmployees.Columns[e.ColumnIndex].Name;
             if (columnName is "colView" or "colEdit" or "colDelete")
@@ -210,8 +205,7 @@ namespace ClinicManagementSystem.Winforms.UserControls.Admin
         private List<string> GetRoleOptions()
         {
             string[] defaultRoles = { "Doctor", "Nurse", "Pharmacist", "Technician", "Receptionist", "Admin" };
-            return employees
-                .Select(emp => emp.RoleName)
+            return employees.Select(emp => emp.RoleName)
                 .Where(role => !string.IsNullOrWhiteSpace(role))
                 .Concat(defaultRoles)
                 .Distinct(StringComparer.OrdinalIgnoreCase)

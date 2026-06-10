@@ -1,270 +1,210 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using DTO;
+using System.Linq;
 using DAL.DataContext;
+using DAL.Models;
+using DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
     public class UserDAL
     {
+        private readonly CMSDbContext _context;
+
+        public UserDAL(CMSDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
         public UserDTO Authenticate(string username, string password)
         {
-            string query = @"
-                    SELECT u.UserID, u.Username, u.PasswordHash AS [Password], u.Email, ISNULL(u.IsActive, 1) AS IsActive, r.RoleName AS [Role],
-                           COALESCE(e.FullName, u.Username) AS [Name],
-                           ISNULL(e.EmployeeID, 0) AS EmployeeID,
-                           ISNULL(e.EmployeeUUID, '00000000-0000-0000-0000-000000000000') AS EmployeeUUID,
-                           ISNULL(e.DepartmentID, 0) AS DepartmentID,
-                           ISNULL(d.DepartmentName, '') AS DepartmentName
-                    FROM Users u
-                    INNER JOIN Roles r ON u.RoleID = r.RoleID
-                    LEFT JOIN Employees e ON u.UserID = e.UserID
-                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-                    WHERE u.Username = @Username AND u.PasswordHash = @Password
-                      AND ISNULL(u.IsActive, 1) = 1";
+            // Tìm user theo username và password (chưa hash, nhưng giữ nguyên logic cũ)
+            var user = _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Employees)
+                    .ThenInclude(e => e.Department)
+                .FirstOrDefault(u => u.Username == username
+                                    && u.PasswordHash == password
+                                    && (u.IsActive ?? true));
 
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@Username", username),
-                new SqlParameter("@Password", password)
-            };
-
-            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
-            UserDTO user = MapFirstUser(dt);
             if (user != null)
             {
-                return user;
+                return MapToUserDTO(user);
             }
 
+            // Fallback: thử đăng nhập với tài khoản bác sĩ mặc định (password = 123456)
             return TryAuthenticateDefaultDoctor(username, password);
         }
 
         private UserDTO TryAuthenticateDefaultDoctor(string username, string password)
         {
-            if (!string.Equals(password, "123456", StringComparison.Ordinal) ||
-                (!string.Equals(username, "doctor", StringComparison.OrdinalIgnoreCase) &&
-                 !string.Equals(username, "bacsi", StringComparison.OrdinalIgnoreCase)))
-            {
+            // Chỉ cho phép với password mặc định "123456" và username dạng doctor/bacsi
+            if (password != "123456") return null;
+            if (!string.Equals(username, "doctor", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(username, "bacsi", StringComparison.OrdinalIgnoreCase))
                 return null;
-            }
 
-            string query = @"
-                    SELECT TOP 1 u.UserID, u.Username, u.PasswordHash AS [Password], u.Email, ISNULL(u.IsActive, 1) AS IsActive, r.RoleName AS [Role],
-                           COALESCE(e.FullName, u.Username) AS [Name],
-                           ISNULL(e.EmployeeID, 0) AS EmployeeID,
-                           ISNULL(e.EmployeeUUID, '00000000-0000-0000-0000-000000000000') AS EmployeeUUID,
-                           ISNULL(e.DepartmentID, 0) AS DepartmentID,
-                           ISNULL(d.DepartmentName, '') AS DepartmentName
-                    FROM Users u
-                    INNER JOIN Roles r ON u.RoleID = r.RoleID
-                    LEFT JOIN Employees e ON u.UserID = e.UserID
-                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-                    WHERE u.Username IN ('doctor', 'doctor_gp', 'bacsi')
-                      AND r.RoleName = 'Doctor'
-                      AND ISNULL(u.IsActive, 1) = 1
-                    ORDER BY CASE u.Username
-                        WHEN 'doctor' THEN 0
-                        WHEN 'doctor_gp' THEN 1
-                        ELSE 2
-                    END";
+            // Tìm một bác sĩ bất kỳ có Role = "Doctor" và IsActive = true
+            var doctorUser = _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Employees)
+                    .ThenInclude(e => e.Department)
+                .Where(u => (u.Username == "doctor" || u.Username == "doctor_gp" || u.Username == "bacsi")
+                            && u.Role.RoleName == "Doctor"
+                            && (u.IsActive ?? true))
+                .OrderBy(u => u.Username == "doctor" ? 0 : (u.Username == "doctor_gp" ? 1 : 2))
+                .FirstOrDefault();
 
-            UserDTO user = MapFirstUser(DatabaseHelper.ExecuteQuery(query));
-            if (user == null)
+            if (doctorUser == null) return null;
+
+            // Nếu password trong DB chưa phải "123456" thì cập nhật lại
+            if (doctorUser.PasswordHash != "123456")
             {
-                return null;
+                doctorUser.PasswordHash = "123456";
+                _context.SaveChanges();
             }
 
-            if (!string.Equals(user.Password, "123456", StringComparison.Ordinal))
-            {
-                DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE Users SET PasswordHash = @Password WHERE UserID = @UserID",
-                    new[]
-                    {
-                        new SqlParameter("@Password", "123456"),
-                        new SqlParameter("@UserID", user.UserID)
-                    });
-                user.Password = "123456";
-            }
-
-            user.Username = username;
-            return user;
+            var dto = MapToUserDTO(doctorUser);
+            // Ghi đè username bằng username người dùng nhập (doctor hoặc bacsi)
+            dto.Username = username;
+            return dto;
         }
 
         public List<UserDTO> GetAllUsers()
         {
-            string query = @"
-                    SELECT u.UserID, u.Username, u.PasswordHash AS [Password], u.Email, ISNULL(u.IsActive, 1) AS IsActive, r.RoleName AS [Role],
-                           COALESCE(e.FullName, u.Username) AS [Name],
-                           ISNULL(e.EmployeeID, 0) AS EmployeeID,
-                           ISNULL(e.EmployeeUUID, '00000000-0000-0000-0000-000000000000') AS EmployeeUUID,
-                           ISNULL(e.DepartmentID, 0) AS DepartmentID,
-                           ISNULL(d.DepartmentName, '') AS DepartmentName
-                    FROM Users u
-                    INNER JOIN Roles r ON u.RoleID = r.RoleID
-                    LEFT JOIN Employees e ON u.UserID = e.UserID
-                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-                    ORDER BY u.UserID DESC";
+            var users = _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Employees)
+                    .ThenInclude(e => e.Department)
+                .OrderByDescending(u => u.UserId)
+                .ToList();
 
-            DataTable dt = DatabaseHelper.ExecuteQuery(query);
-            List<UserDTO> users = new List<UserDTO>();
-            foreach (DataRow row in dt.Rows)
-            {
-                users.Add(MapUser(row));
-            }
-
-            return users;
-        }
-
-        private static UserDTO MapFirstUser(DataTable table)
-        {
-            if (table == null || table.Rows.Count == 0)
-            {
-                return null;
-            }
-
-            return MapUser(table.Rows[0]);
-        }
-
-        private static UserDTO MapUser(DataRow row)
-        {
-            return new UserDTO
-            {
-                UserID = Convert.ToInt32(row["UserID"]),
-                Username = row["Username"].ToString(),
-                Password = row["Password"].ToString(),
-                Name = row["Name"].ToString(),
-                Role = row["Role"].ToString(),
-                Email = row.Table.Columns.Contains("Email") && row["Email"] != DBNull.Value ? row["Email"].ToString() : "",
-                IsActive = !row.Table.Columns.Contains("IsActive") || row["IsActive"] == DBNull.Value || Convert.ToBoolean(row["IsActive"]),
-                EmployeeID = row.Table.Columns.Contains("EmployeeID") && row["EmployeeID"] != DBNull.Value ? Convert.ToInt32(row["EmployeeID"]) : 0,
-                EmployeeUUID = row.Table.Columns.Contains("EmployeeUUID") && row["EmployeeUUID"] != DBNull.Value ? Guid.Parse(row["EmployeeUUID"].ToString()) : Guid.Empty,
-                DepartmentID = row.Table.Columns.Contains("DepartmentID") && row["DepartmentID"] != DBNull.Value ? Convert.ToInt32(row["DepartmentID"]) : 0,
-                DepartmentName = row.Table.Columns.Contains("DepartmentName") && row["DepartmentName"] != DBNull.Value ? row["DepartmentName"].ToString() : ""
-            };
+            return users.Select(MapToUserDTO).ToList();
         }
 
         public bool AddUser(UserDTO user)
         {
-            string queryRole = "SELECT RoleID FROM Roles WHERE RoleName = @RoleName";
-            SqlParameter[] roleParams = new SqlParameter[] { new SqlParameter("@RoleName", user.Role) };
-            object roleIdObj = DatabaseHelper.ExecuteScalar(queryRole, roleParams);
-            int roleId = roleIdObj != null ? Convert.ToInt32(roleIdObj) : 1;
-
-            string query = "INSERT INTO Users (Username, PasswordHash, Email, RoleID, IsActive) VALUES (@Username, @Password, @Email, @RoleID, 1)";
-            SqlParameter[] parameters = new SqlParameter[]
+            // Tìm RoleID theo RoleName
+            var role = _context.Roles.FirstOrDefault(r => r.RoleName == user.Role);
+            if (role == null)
             {
-                new SqlParameter("@Username", user.Username),
-                new SqlParameter("@Password", user.Password),
-                new SqlParameter("@Email", (object)user.Email ?? DBNull.Value),
-                new SqlParameter("@RoleID", roleId)
-            };
-
-            int rows = DatabaseHelper.ExecuteNonQuery(query, parameters);
-            if (rows > 0)
-            {
-                try
-                {
-                    string selectUserId = "SELECT UserID FROM Users WHERE Username = @Username";
-                    int newUserId = Convert.ToInt32(DatabaseHelper.ExecuteScalar(selectUserId, new SqlParameter[] { new SqlParameter("@Username", user.Username) }));
-
-                    int departmentId = user.DepartmentID;
-                    if (departmentId <= 0)
-                    {
-                        object departmentIdObj = DatabaseHelper.ExecuteScalar(
-                            "SELECT TOP 1 DepartmentID FROM Departments ORDER BY DepartmentID");
-                        departmentId = departmentIdObj == null ? 0 : Convert.ToInt32(departmentIdObj);
-                    }
-
-                    string insertEmp = @"
-                            INSERT INTO Employees (EmployeeCode, FullName, RoleID, DepartmentID, Status, UserID) 
-                            VALUES (@EmpCode, @FullName, @RoleID, @DepartmentID, 'Active', @UserID)";
-                    SqlParameter[] empParams = new SqlParameter[]
-                    {
-                        new SqlParameter("@EmpCode", "EMP_" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper()),
-                        new SqlParameter("@FullName", user.Name),
-                        new SqlParameter("@RoleID", roleId),
-                        new SqlParameter("@DepartmentID", departmentId),
-                        new SqlParameter("@UserID", newUserId)
-                    };
-                    if (departmentId > 0)
-                    {
-                        DatabaseHelper.ExecuteNonQuery(insertEmp, empParams);
-                    }
-                }
-                catch { }
-                return true;
+                // Nếu không tìm thấy, gán role mặc định (RoleID = 1)
+                role = _context.Roles.Find(1);
+                if (role == null) return false;
             }
-            return false;
+
+            // Tạo mới User
+            var newUser = new User
+            {
+                Username = user.Username,
+                PasswordHash = user.Password,
+                Email = string.IsNullOrWhiteSpace(user.Email) ? null : user.Email,
+                RoleId = role.RoleId,
+                IsActive = true,
+                CreatedAt = DateTime.Now
+            };
+            _context.Users.Add(newUser);
+            _context.SaveChanges(); // để có UserId
+
+            // Tạo Employee liên kết nếu có thông tin
+            int departmentId = user.DepartmentID;
+            if (departmentId <= 0)
+            {
+                var anyDept = _context.Departments.OrderBy(d => d.DepartmentId).FirstOrDefault();
+                departmentId = anyDept?.DepartmentId ?? 0;
+            }
+
+            if (departmentId > 0)
+            {
+                var employee = new Employee
+                {
+                    EmployeeCode = "EMP_" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper(),
+                    FullName = user.Name,
+                    RoleId = role.RoleId,
+                    DepartmentId = departmentId,
+                    Status = "Active",
+                    UserId = newUser.UserId,
+                    // Các trường khác có thể để null hoặc giá trị mặc định
+                    EmployeeUuid = Guid.NewGuid(),
+                    HireDate = DateOnly.FromDateTime(DateTime.Now)
+                };
+                _context.Employees.Add(employee);
+                _context.SaveChanges();
+            }
+
+            return true;
         }
 
         public bool UpdateUser(UserDTO user)
         {
-            object roleIdObj = DatabaseHelper.ExecuteScalar(
-                "SELECT RoleID FROM Roles WHERE RoleName = @RoleName",
-                new[] { new SqlParameter("@RoleName", user.Role) });
-            if (roleIdObj == null)
+            var existingUser = _context.Users
+                .Include(u => u.Employees)
+                .FirstOrDefault(u => u.UserId == user.UserID);
+            if (existingUser == null) return false;
+
+            var role = _context.Roles.FirstOrDefault(r => r.RoleName == user.Role);
+            if (role == null) return false;
+
+            // Cập nhật thông tin User
+            existingUser.PasswordHash = user.Password;
+            existingUser.Email = string.IsNullOrWhiteSpace(user.Email) ? null : user.Email;
+            existingUser.RoleId = role.RoleId;
+            existingUser.IsActive = user.IsActive;
+
+            // Cập nhật Employee tương ứng (nếu có)
+            var employee = existingUser.Employees.FirstOrDefault();
+            if (employee != null)
             {
-                return false;
+                employee.FullName = user.Name;
+                employee.RoleId = role.RoleId;
+                employee.Email = string.IsNullOrWhiteSpace(user.Email) ? null : user.Email;
+                employee.Status = user.IsActive ? "Active" : "Inactive";
             }
 
-            int roleId = Convert.ToInt32(roleIdObj);
-            string updateUser = @"
-                UPDATE Users
-                SET PasswordHash = @Password,
-                    Email = @Email,
-                    RoleID = @RoleID,
-                    IsActive = @IsActive
-                WHERE UserID = @UserID";
-            int rows = DatabaseHelper.ExecuteNonQuery(updateUser, new[]
-            {
-                new SqlParameter("@Password", user.Password),
-                new SqlParameter("@Email", string.IsNullOrWhiteSpace(user.Email) ? DBNull.Value : (object)user.Email),
-                new SqlParameter("@RoleID", roleId),
-                new SqlParameter("@IsActive", user.IsActive),
-                new SqlParameter("@UserID", user.UserID)
-            });
-
-            string updateEmployee = @"
-                UPDATE Employees
-                SET FullName = @FullName,
-                    RoleID = @RoleID,
-                    Email = @Email,
-                    Status = CASE WHEN @IsActive = 1 THEN ISNULL(NULLIF(Status, N'Inactive'), N'Active') ELSE N'Inactive' END
-                WHERE UserID = @UserID";
-            DatabaseHelper.ExecuteNonQuery(updateEmployee, new[]
-            {
-                new SqlParameter("@FullName", user.Name),
-                new SqlParameter("@RoleID", roleId),
-                new SqlParameter("@Email", string.IsNullOrWhiteSpace(user.Email) ? DBNull.Value : (object)user.Email),
-                new SqlParameter("@IsActive", user.IsActive),
-                new SqlParameter("@UserID", user.UserID)
-            });
-
-            return rows > 0;
+            _context.SaveChanges();
+            return true;
         }
 
         public bool SetActive(int userId, bool isActive)
         {
-            int rows = DatabaseHelper.ExecuteNonQuery(
-                "UPDATE Users SET IsActive = @IsActive WHERE UserID = @UserID",
-                new[]
-                {
-                    new SqlParameter("@IsActive", isActive),
-                    new SqlParameter("@UserID", userId)
-                });
+            var user = _context.Users.Find(userId);
+            if (user == null) return false;
 
-            DatabaseHelper.ExecuteNonQuery(
-                "UPDATE Employees SET Status = @Status WHERE UserID = @UserID",
-                new[]
-                {
-                    new SqlParameter("@Status", isActive ? "Active" : "Inactive"),
-                    new SqlParameter("@UserID", userId)
-                });
+            user.IsActive = isActive;
 
-            return rows > 0;
+            // Đồng thời cập nhật Status của Employee liên quan
+            var employee = _context.Employees.FirstOrDefault(e => e.UserId == userId);
+            if (employee != null)
+            {
+                employee.Status = isActive ? "Active" : "Inactive";
+            }
+
+            _context.SaveChanges();
+            return true;
         }
+
+        #region Private mapping helpers
+
+        private UserDTO MapToUserDTO(User user)
+        {
+            var employee = user.Employees?.FirstOrDefault();
+            return new UserDTO
+            {
+                UserID = user.UserId,
+                Username = user.Username,
+                Password = user.PasswordHash,
+                Name = employee?.FullName ?? user.Username,
+                Role = user.Role?.RoleName ?? "",
+                Email = user.Email ?? "",
+                IsActive = user.IsActive ?? true,
+                EmployeeID = employee?.EmployeeId ?? 0,
+                EmployeeUUID = employee?.EmployeeUuid ?? Guid.Empty,
+                DepartmentID = employee?.DepartmentId ?? 0,
+                DepartmentName = employee?.Department?.DepartmentName ?? ""
+            };
+        }
+
+        #endregion
     }
 }
-
