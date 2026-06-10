@@ -1,17 +1,16 @@
-using System.Collections.Generic;
 using DTO;
 
-namespace DAL.Interfaces
+namespace DAL.Interfaces.Technician
 {
     public interface ITechnicianRequestDAL : IWriteRepository<TechnicianRequestDTO>
     {
-        List<TechnicianRequestDTO> GetAll();
-        List<TechnicianRequestDTO> GetByStatus(string status);
-        List<TechnicianRequestDTO> Search(string term, string status);
-        List<TechnicianRequestDTO> GetByPatient(int patientId);
-        bool UpdateStatus(int requestId, string status);
-        bool SaveImagingResult(int requestId, string resultFile, string note);
-        bool SavePDFResult(int requestId, string resultPDF);
-        bool SaveLabResult(int requestId, string labValues);
+        Task<List<TechnicianRequestDTO>> GetAll();
+        Task<List<TechnicianRequestDTO>> GetByStatus(string status);
+        Task<List<TechnicianRequestDTO>> Search(string term, string status);
+        Task<List<TechnicianRequestDTO>> GetByPatient(int patientId);
+        Task<bool> UpdateStatus(int requestId, string status);
+        Task<bool> SaveImagingResult(int requestId, string resultFile, string note);
+        Task<bool> SavePDFResult(int requestId, string resultPDF);
+        Task<bool> SaveLabResult(int requestId, string labValues);
     }
 }

@@ -1,45 +1,65 @@
-using System.Linq;
-using DAL.Models;
+using DAL.DataContext;
+using DAL.Entities;
 using DTO;
+using Microsoft.Data.SqlClient;
 
-namespace DAL
+namespace DAL.Repositories.Clinical
 {
     public class VitalSignsDAL
     {
-        public bool InsertVitalSigns(VitalSignsDTO vital)
+        public async Task<bool> InsertVitalSigns(VitalSignsDTO vital)
         {
-            using var db = new CMSDbContext();
+            string query = @"
+                INSERT INTO VitalSigns
+                (
+                    EncounterID,
+                    Temperature,
+                    BloodPressure,
+                    HeartRate,
+                    SPO2,
+                    Weight,
+                    Notes
+                )
+                VALUES
+                (
+                    @EncounterID,
+                    @Temperature,
+                    @BloodPressure,
+                    @HeartRate,
+                    @SPO2,
+                    @Weight,
+                    @Notes
+                )";
 
-            db.VitalSigns.Add(new VitalSign
+            SqlParameter[] parameters =
             {
-                EncounterId = vital.EncounterID,
+                new SqlParameter("@EncounterID", vital.EncounterID),
+                new SqlParameter("@Temperature", vital.Temperature),
+                new SqlParameter("@BloodPressure", vital.BloodPressure),
+                new SqlParameter("@HeartRate", vital.HeartRate),
+                new SqlParameter("@SPO2", vital.SPO2),
+                new SqlParameter("@Weight", vital.Weight),
+                new SqlParameter("@Notes", (object)vital.Notes ?? DBNull.Value)
+            };
 
-                Temperature = (decimal)vital.Temperature,
-
-                BloodPressure = vital.BloodPressure,
-
-                HeartRate = vital.HeartRate,
-
-                Spo2 = vital.SPO2,
-
-                Weight = (decimal)vital.Weight,
-
-                Notes = vital.Notes
-            });
-
-            return db.SaveChanges() > 0;
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
 
-        public int? GetLatestEncounterIdByPatient(int patientId)
+        public async Task<int?> GetLatestEncounterIdByPatient(int patientId)
         {
-            using var db = new CMSDbContext();
+            string query = @"
+                SELECT TOP 1 EncounterID
+                FROM Encounters
+                WHERE PatientID = @PatientID
+                ORDER BY CreatedAt DESC, EncounterID DESC";
 
-            return db.Encounters
-                .Where(e => e.PatientId == patientId)
-                .OrderByDescending(e => e.CreatedAt)
-                .ThenByDescending(e => e.EncounterId)
-                .Select(e => (int?)e.EncounterId)
-                .FirstOrDefault();
+            object result = DatabaseHelper.ExecuteScalar(
+                query,
+                new[] { new SqlParameter("@PatientID", patientId) });
+
+            return result == null || result == DBNull.Value
+                ? null
+                : Convert.ToInt32(result);
         }
     }
 }

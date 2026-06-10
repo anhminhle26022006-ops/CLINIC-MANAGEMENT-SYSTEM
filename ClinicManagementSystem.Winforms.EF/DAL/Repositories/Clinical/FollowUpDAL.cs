@@ -1,67 +1,74 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using DAL.Models;
+﻿using DAL.DataContext;
 using DTO;
+using Microsoft.Data.SqlClient;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.Clinical
 {
     public class FollowUpDAL
     {
-        private FollowUpDTO MapToDTO(FollowUp followUp)
-        {
-            return new FollowUpDTO
-            {
-                FollowUpID = followUp.FollowUpId,
-                EncounterID = followUp.EncounterId ?? 0,
-                FollowUpDate = followUp.FollowUpDate ?? DateTime.MinValue,
-                Status = followUp.Status
-            };
-        }
-
         public List<FollowUpDTO> GetAll()
         {
-            using var db = new CMSDbContext();
+            string query = @"
+            SELECT
+                FollowUpID,
+                EncounterID,
+                FollowUpDate,
+                Status
+            FROM FollowUps";
 
-            return db.FollowUps
-                .Select(f => new FollowUpDTO
+            DataTable dt =
+                DatabaseHelper.ExecuteQuery(query);
+
+            List<FollowUpDTO> list = new();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(new FollowUpDTO
                 {
-                    FollowUpID = f.FollowUpId,
-                    EncounterID = f.EncounterId ?? 0,
-                    FollowUpDate = f.FollowUpDate ?? DateTime.MinValue,
-                    Status = f.Status
-                })
+                    FollowUpID =
+                        Convert.ToInt32(row["FollowUpID"]),
+
+                    EncounterID =
+                        Convert.ToInt32(row["EncounterID"]),
+
+                    FollowUpDate =
+                        Convert.ToDateTime(row["FollowUpDate"]),
+
+                    Status =
+                        row["Status"].ToString()
+                });
+            }
+
+            return list;
+        }
+
+        public List<FollowUpDTO>
+            GetByStatus(params string[] statuses)
+        {
+            return GetAll()
+                .Where(x => statuses.Contains(x.Status))
                 .ToList();
         }
 
-        public List<FollowUpDTO> GetByStatus(params string[] statuses)
+        public bool UpdateStatus(
+    int followUpId,
+    string status)
         {
-            using var db = new CMSDbContext();
+            string query = @"
+UPDATE FollowUps
+SET Status = @Status
+WHERE FollowUpID = @FollowUpID";
 
-            return db.FollowUps
-                .Where(f => statuses.Contains(f.Status))
-                .Select(f => new FollowUpDTO
-                {
-                    FollowUpID = f.FollowUpId,
-                    EncounterID = f.EncounterId ?? 0,
-                    FollowUpDate = f.FollowUpDate ?? DateTime.MinValue,
-                    Status = f.Status
-                })
-                .ToList();
-        }
+            SqlParameter[] parameters =
+            {
+        new("@Status", status),
+        new("@FollowUpID", followUpId)
+    };
 
-        public bool UpdateStatus(int followUpId, string status)
-        {
-            using var db = new CMSDbContext();
-
-            var followUp = db.FollowUps
-                .FirstOrDefault(f => f.FollowUpId == followUpId);
-
-            if (followUp == null)
-                return false;
-
-            followUp.Status = status;
-
-            return db.SaveChanges() > 0;
+            return DatabaseHelper
+                .ExecuteNonQuery(
+                    query,
+                    parameters) > 0;
         }
     }
 }

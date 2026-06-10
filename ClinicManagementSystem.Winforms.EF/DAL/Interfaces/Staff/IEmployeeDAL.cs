@@ -1,23 +1,24 @@
-using System.Collections.Generic;
-using DTO;
+﻿using DTO;
 
-namespace DAL.Interfaces
+namespace DAL.Interfaces.Staff
 {
-    public interface IEmployeeDAL : IReadOnlyRepository<EmployeeDTO, int>
+    public interface IEmployeeDAL : IReadOnlyRepository<EmployeeDTO, int>, IWriteRepository<EmployeeDTO>
     {
-        List<EmployeeDTO> GetByRole(string roleName);
-        EmployeeDTO FindByName(string fullName);
+        // Query
+        Task<List<EmployeeDTO>> GetByRole(string roleName);
+        Task<EmployeeDTO> FindByName(string fullName);
+
+        // API Sync (giữ nguyên vì đang dùng ApiEmployeeDTO)
         Task<List<ApiEmployeeDTO>> GetAllAsync();
         Task<ApiEmployeeDTO> GetByCodeAsync(string code);
         Task<int?> GetIdByCodeAsync(string code);
-
         Task<ApiEmployeeDTO> InsertAsync(ApiEmployeeDTO dto);
         Task<ApiEmployeeDTO> UpdateAsync(ApiEmployeeDTO dto);
-
         Task UpsertAsync(ApiEmployeeDTO dto);
-        bool Add(EmployeeDTO employee);
-        bool UpdateBasic(EmployeeDTO employee);
-        bool SetStatus(int id, string status);
-        bool Delete(int id);
+
+        // CRUD
+        Task<bool> UpdateBasic(EmployeeDTO employee);
+        Task<bool> SetStatus(int id, string status);
+        Task<bool> Delete(int id);
     }
 }

@@ -1,18 +1,13 @@
 ﻿using DTO;
 
-namespace DAL.Interfaces
+namespace DAL.Interfaces.Clinical
 {
     public interface IPatientRepository
     {
-        List<PatientDTO> GetAll();
-
-        List<PatientDTO> Search(string term);
-
-        int Add(PatientDTO patient);
-
-        PatientDTO GetById(int id);
-
-        bool Update(PatientDTO patient);
-
+        Task<List<PatientDTO>> GetAll();
+        Task<List<PatientDTO>> Search(string term);
+        Task<int> Add(PatientDTO patient);
+        Task<PatientDTO> GetById(int id);
+        Task<bool> Update(PatientDTO patient);
     }
 }

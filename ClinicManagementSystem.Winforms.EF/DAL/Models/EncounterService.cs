@@ -1,29 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DAL.Models;
-
-public partial class EncounterService
+﻿namespace DAL.Entities
 {
-    public int EncounterServiceId { get; set; }
-
-    public int EncounterId { get; set; }
-
-    public int ServiceId { get; set; }
-
-    public int? Quantity { get; set; }
-
-    public decimal? UnitPrice { get; set; }
-
-    public int? OrderedBy { get; set; }
-
-    public DateTime? OrderedAt { get; set; }
-
-    public string Status { get; set; }
-
-    public virtual Encounter Encounter { get; set; }
-
-    public virtual Employee OrderedByNavigation { get; set; }
-
-    public virtual Service Service { get; set; }
+    public class EncounterService
+    {
+        public int EncounterServiceID { get; set; }
+        public int EncounterID { get; set; }
+        public int ServiceID { get; set; }
+        public int? Quantity { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public int? OrderedBy { get; set; }
+        public DateTime OrderedAt { get; set; }
+        public string Status { get; set; }
+        public Encounter Encounter { get; set; }
+        public Service Service { get; set; }
+    }
 }

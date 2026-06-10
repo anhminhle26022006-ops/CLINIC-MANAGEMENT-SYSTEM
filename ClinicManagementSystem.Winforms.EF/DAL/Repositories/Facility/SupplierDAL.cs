@@ -1,99 +1,67 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
 using DAL.DataContext;
+using DAL.Entities;
 using DTO;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
-namespace DAL
+namespace DAL.Repositories.Admin
 {
     public class SupplierDAL
     {
-        public List<SupplierDTO> GetAllSuppliers()
+        public async Task<List<SupplierDTO>> GetAllSuppliers()
         {
-            DataTable dt = DatabaseHelper.ExecuteQuery(
-                "SELECT SupplierID, SupplierName, Phone, Email, Address FROM Suppliers");
+            using var context = DbContextProvider.CreateContext();
+            return await context.Suppliers
+                .Select(s => new SupplierDTO
+                {
+                    SupplierID = s.SupplierID,
+                    SupplierName = s.SupplierName ?? "",
+                    Phone = s.Phone ?? "",
+                    Email = s.Email ?? "",
+                    Address = s.Address ?? ""
+                })
+                .ToListAsync();
+        }
 
-            List<SupplierDTO> list = new List<SupplierDTO>();
-            foreach (DataRow row in dt.Rows)
+        public async Task<bool> InsertSupplier(SupplierDTO supplier)
+        {
+            using var context = DbContextProvider.CreateContext();
+            context.Suppliers.Add(new Supplier
             {
-                list.Add(MapRow(row));
-            }
-
-            return list;
+                SupplierID = Guid.NewGuid(),
+                SupplierName = supplier.SupplierName,
+                Phone = supplier.Phone,
+                Email = supplier.Email,
+                Address = supplier.Address
+            });
+            return await context.SaveChangesAsync() > 0;
         }
 
-        public bool InsertSupplier(SupplierDTO supplier)
+        public async Task<bool> UpdateSupplier(SupplierDTO supplier)
         {
-            string query = @"
-                INSERT INTO Suppliers
-                (
-                    SupplierName,
-                    Phone,
-                    Email,
-                    Address
-                )
-                VALUES
-                (
-                    @SupplierName,
-                    @Phone,
-                    @Email,
-                    @Address
-                )";
+            using var context = DbContextProvider.CreateContext();
+            var entity = await context.Suppliers
+                .FirstOrDefaultAsync(s => s.SupplierID == supplier.SupplierID);
 
-            return DatabaseHelper.ExecuteNonQuery(query, BuildSupplierParameters(supplier)) > 0;
+            if (entity == null) return false;
+
+            entity.SupplierName = supplier.SupplierName;
+            entity.Phone = supplier.Phone;
+            entity.Email = supplier.Email;
+            entity.Address = supplier.Address;
+
+            return await context.SaveChangesAsync() > 0;
         }
 
-        public bool UpdateSupplier(SupplierDTO supplier)
+        public async Task<bool> DeleteSupplier(Guid supplierId)
         {
-            string query = @"
-                UPDATE Suppliers
-                SET SupplierName = @SupplierName,
-                    Phone = @Phone,
-                    Email = @Email,
-                    Address = @Address
-                WHERE SupplierID = @SupplierID";
+            using var context = DbContextProvider.CreateContext();
+            var entity = await context.Suppliers
+                .FirstOrDefaultAsync(s => s.SupplierID == supplierId);
 
-            SqlParameter[] parameters =
-            {
-                new SqlParameter("@SupplierID", supplier.SupplierID),
-                new SqlParameter("@SupplierName", supplier.SupplierName),
-                new SqlParameter("@Phone", (object)supplier.Phone ?? DBNull.Value),
-                new SqlParameter("@Email", (object)supplier.Email ?? DBNull.Value),
-                new SqlParameter("@Address", (object)supplier.Address ?? DBNull.Value)
-            };
+            if (entity == null) return false;
 
-            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
-        }
-
-        public bool DeleteSupplier(Guid supplierId)
-        {
-            return DatabaseHelper.ExecuteNonQuery(
-                "DELETE FROM Suppliers WHERE SupplierID = @SupplierID",
-                new[] { new SqlParameter("@SupplierID", supplierId) }) > 0;
-        }
-
-        private static SqlParameter[] BuildSupplierParameters(SupplierDTO supplier)
-        {
-            return new[]
-            {
-                new SqlParameter("@SupplierName", supplier.SupplierName),
-                new SqlParameter("@Phone", (object)supplier.Phone ?? DBNull.Value),
-                new SqlParameter("@Email", (object)supplier.Email ?? DBNull.Value),
-                new SqlParameter("@Address", (object)supplier.Address ?? DBNull.Value)
-            };
-        }
-
-        private static SupplierDTO MapRow(DataRow row)
-        {
-            return new SupplierDTO
-            {
-                SupplierID = row["SupplierID"] == DBNull.Value ? Guid.Empty : Guid.Parse(row["SupplierID"].ToString()),
-                SupplierName = row["SupplierName"]?.ToString(),
-                Phone = row["Phone"] == DBNull.Value ? "" : row["Phone"].ToString(),
-                Email = row["Email"] == DBNull.Value ? "" : row["Email"].ToString(),
-                Address = row.Table.Columns.Contains("Address") && row["Address"] != DBNull.Value ? row["Address"].ToString() : ""
-            };
+            context.Suppliers.Remove(entity);
+            return await context.SaveChangesAsync() > 0;
         }
     }
 }

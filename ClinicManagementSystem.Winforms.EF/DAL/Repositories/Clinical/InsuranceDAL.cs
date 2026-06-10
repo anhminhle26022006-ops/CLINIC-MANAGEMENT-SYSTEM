@@ -1,29 +1,47 @@
-﻿using DAL.Models;
+﻿using DAL.DataContext;
+using DAL.Entities;
 using DTO;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.Clinical
 {
     public class InsuranceDAL
     {
-        public bool Add(PatientInsuranceDTO insurance)
+        public async Task<bool> Add(PatientInsuranceDTO insurance)
         {
-            using var db = new CMSDbContext();
+            string query = @"
+                INSERT INTO PatientInsurance
+                (
+                    PatientID,
+                    InsuranceNumber,
+                    Provider,
+                    EffectiveDate,
+                    ExpiryDate
+                )
+                VALUES
+                (
+                    @PatientID,
+                    @InsuranceNumber,
+                    @Provider,
+                    @EffectiveDate,
+                    @ExpiryDate
+                )";
 
             var entity = new PatientInsurance
             {
-                PatientId = insurance.PatientID,
-                InsuranceNumber = insurance.InsuranceNumber,
-                Provider = insurance.Provider,
-                EffectiveDate = DateOnly.FromDateTime(
-        insurance.EffectiveDate),
-
-                ExpiryDate = DateOnly.FromDateTime(
-        insurance.ExpiryDate)
+                new SqlParameter("@PatientID", insurance.PatientID),
+                new SqlParameter("@InsuranceNumber",
+                    (object)insurance.InsuranceNumber ?? DBNull.Value),
+                new SqlParameter("@Provider",
+                    (object)insurance.Provider ?? DBNull.Value),
+                new SqlParameter("@EffectiveDate",
+                    insurance.EffectiveDate),
+                new SqlParameter("@ExpiryDate",
+                    insurance.ExpiryDate)
             };
 
-            db.PatientInsurances.Add(entity);
-
-            return db.SaveChanges() > 0;
+            return DatabaseHelper.ExecuteNonQuery(
+                query,
+                parameters) > 0;
         }
     }
 }
