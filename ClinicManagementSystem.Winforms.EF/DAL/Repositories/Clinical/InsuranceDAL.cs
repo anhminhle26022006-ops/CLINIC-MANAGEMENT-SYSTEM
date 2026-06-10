@@ -1,52 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.DataContext;
+﻿using DAL.DataContext;
+using DAL.Entities;
 using DTO;
-using Microsoft.Data.SqlClient;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.Clinical
 {
     public class InsuranceDAL
     {
-        public bool Add(PatientInsuranceDTO insurance)
+        public async Task<bool> Add(PatientInsuranceDTO insurance)
         {
-            string query = @"
-                INSERT INTO PatientInsurance
-                (
-                    PatientID,
-                    InsuranceNumber,
-                    Provider,
-                    EffectiveDate,
-                    ExpiryDate
-                )
-                VALUES
-                (
-                    @PatientID,
-                    @InsuranceNumber,
-                    @Provider,
-                    @EffectiveDate,
-                    @ExpiryDate
-                )";
+            using var context = DbContextProvider.CreateContext();
 
-            SqlParameter[] parameters =
+            var entity = new PatientInsurance
             {
-                new SqlParameter("@PatientID", insurance.PatientID),
-                new SqlParameter("@InsuranceNumber",
-                    (object)insurance.InsuranceNumber ?? DBNull.Value),
-                new SqlParameter("@Provider",
-                    (object)insurance.Provider ?? DBNull.Value),
-                new SqlParameter("@EffectiveDate",
-                    insurance.EffectiveDate),
-                new SqlParameter("@ExpiryDate",
-                    insurance.ExpiryDate)
+                PatientID = insurance.PatientID,
+                InsuranceNumber = insurance.InsuranceNumber,
+                Provider = insurance.Provider,
+                EffectiveDate = insurance.EffectiveDate,
+                ExpiryDate = insurance.ExpiryDate
             };
 
-            return DatabaseHelper.ExecuteNonQuery(
-                query,
-                parameters) > 0;
+            context.PatientInsurances.Add(entity);
+            return await context.SaveChangesAsync() > 0;
         }
     }
 }

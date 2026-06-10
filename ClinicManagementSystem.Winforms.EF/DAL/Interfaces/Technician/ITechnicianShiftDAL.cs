@@ -1,11 +1,12 @@
-using System.Collections.Generic;
 using DTO;
 
-namespace DAL.Interfaces
+namespace DAL.Interfaces.Technician
 {
     public interface ITechnicianShiftDAL : IWriteRepository<TechnicianShiftDTO>
     {
-        List<TechnicianShiftDTO> GetAll();
-        int GetCount();
+        Task<List<TechnicianShiftDTO>> GetAll();
+        Task<int> GetCount();
+        Task<bool> Update(TechnicianShiftDTO dto);
+        Task<bool> Delete(int id);
     }
 }

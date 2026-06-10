@@ -1,5 +1,5 @@
 ﻿using DAL.DataContext;
-using DAL.Interfaces.ERM;
+using DAL.Interfaces.Clinical;
 using DTO.Clinical.erm;
 using Microsoft.Data.SqlClient;
 using System;

@@ -1,74 +1,36 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
-using DAL.DataContext;
+﻿using DAL.DataContext;
 using DTO;
+using Microsoft.EntityFrameworkCore;
+using System;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.Clinical
 {
     public class EncounterDAL
     {
-        private EncounterDTO MapRowToDTO(
-            DataRow row)
+        private readonly AppDbContext _context;
+
+        public EncounterDAL(AppDbContext context)
         {
-            return new EncounterDTO
-            {
-                EncounterID =
-                    Convert.ToInt32(
-                        row["EncounterID"]),
-
-                AppointmentID =
-                    Convert.ToInt32(
-                        row["AppointmentID"]),
-
-                PatientID =
-                    Convert.ToInt32(
-                        row["PatientID"]),
-
-                DoctorID =
-                    Convert.ToInt32(
-                        row["DoctorID"]),
-
-                StartTime =
-                    row["StartTime"] != DBNull.Value
-                        ? Convert.ToDateTime(
-                            row["StartTime"])
-                        : null,
-
-                EndTime =
-                    row["EndTime"] != DBNull.Value
-                        ? Convert.ToDateTime(
-                            row["EndTime"])
-                        : null,
-
-                Status =
-                    row["Status"]?.ToString()
-            };
+            _context = context;
         }
 
-        public EncounterDTO GetById(
-            int encounterId)
+        public async Task<EncounterDTO> GetById(int encounterId)
         {
-            string query = @"
-SELECT *
-FROM Encounters
-WHERE EncounterID = @EncounterID";
+            var encounter = await _context.Encounters
+                .FirstOrDefaultAsync(e => e.EncounterID == encounterId);
 
-            SqlParameter[] parameters =
+            if (encounter == null) return null;
+
+            return new EncounterDTO
             {
-                new("@EncounterID",
-                    encounterId)
+                EncounterID = encounter.EncounterID,
+     
+                PatientID = encounter.PatientID,
+                DoctorID = encounter.DoctorID,
+                StartTime = encounter.StartTime,
+                EndTime = encounter.EndTime,
+                Status = encounter.Status
             };
-
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(
-                    query,
-                    parameters);
-
-            if (dt.Rows.Count == 0)
-                return null;
-
-            return MapRowToDTO(
-                dt.Rows[0]);
         }
     }
 }

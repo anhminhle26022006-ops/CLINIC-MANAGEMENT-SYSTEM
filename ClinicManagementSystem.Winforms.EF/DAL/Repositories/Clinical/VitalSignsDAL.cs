@@ -1,65 +1,39 @@
-using System;
 using DAL.DataContext;
+using DAL.Entities;
 using DTO;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
-namespace DAL
+namespace DAL.Repositories.Clinical
 {
     public class VitalSignsDAL
     {
-        public bool InsertVitalSigns(VitalSignsDTO vital)
+        public async Task<bool> InsertVitalSigns(VitalSignsDTO vital)
         {
-            string query = @"
-                INSERT INTO VitalSigns
-                (
-                    EncounterID,
-                    Temperature,
-                    BloodPressure,
-                    HeartRate,
-                    SPO2,
-                    Weight,
-                    Notes
-                )
-                VALUES
-                (
-                    @EncounterID,
-                    @Temperature,
-                    @BloodPressure,
-                    @HeartRate,
-                    @SPO2,
-                    @Weight,
-                    @Notes
-                )";
-
-            SqlParameter[] parameters =
+            using var context = DbContextProvider.CreateContext();
+            var entity = new VitalSign
             {
-                new SqlParameter("@EncounterID", vital.EncounterID),
-                new SqlParameter("@Temperature", vital.Temperature),
-                new SqlParameter("@BloodPressure", vital.BloodPressure),
-                new SqlParameter("@HeartRate", vital.HeartRate),
-                new SqlParameter("@SPO2", vital.SPO2),
-                new SqlParameter("@Weight", vital.Weight),
-                new SqlParameter("@Notes", (object)vital.Notes ?? DBNull.Value)
+                EncounterID = vital.EncounterID,
+                Temperature = vital.Temperature,
+                BloodPressure = vital.BloodPressure,
+                HeartRate = vital.HeartRate,
+                SPO2 = vital.SPO2,
+                Weight = vital.Weight,
+                Notes = vital.Notes
             };
-
-            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+            context.VitalSigns.Add(entity);
+            return await context.SaveChangesAsync() > 0;
         }
 
-        public int? GetLatestEncounterIdByPatient(int patientId)
+        public async Task<int?> GetLatestEncounterIdByPatient(int patientId)
         {
-            string query = @"
-                SELECT TOP 1 EncounterID
-                FROM Encounters
-                WHERE PatientID = @PatientID
-                ORDER BY CreatedAt DESC, EncounterID DESC";
+            using var context = DbContextProvider.CreateContext();
+            var encounter = await context.Encounters
+                .Where(e => e.PatientID == patientId)
+                .OrderByDescending(e => e.CreatedAt)
+                .ThenByDescending(e => e.EncounterID)
+                .FirstOrDefaultAsync();
 
-            object result = DatabaseHelper.ExecuteScalar(
-                query,
-                new[] { new SqlParameter("@PatientID", patientId) });
-
-            return result == null || result == DBNull.Value
-                ? null
-                : Convert.ToInt32(result);
+            return encounter?.EncounterID;
         }
     }
 }

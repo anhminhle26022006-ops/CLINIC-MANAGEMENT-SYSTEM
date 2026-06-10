@@ -1,38 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.DataContext;
+﻿using DAL.DataContext;
 using DTO;
+using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.Facility
 {
     public class Department_RecepDAL
     {
-        public List<DepartmentDTO> GetAll()
+        public async Task<List<DepartmentDTO>> GetAll()
         {
-            string query = @"
-        SELECT DepartmentID,
-               DepartmentName
-        FROM Departments
-        ORDER BY DepartmentName";
-
-            DataTable dt = DatabaseHelper.ExecuteQuery(query);
-
-            List<DepartmentDTO> list = new();
-
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(new DepartmentDTO
+            using var context = DbContextProvider.CreateContext();
+            return await context.Departments
+                .OrderBy(d => d.DepartmentName)
+                .Select(d => new DepartmentDTO
                 {
-                    DepartmentID = Convert.ToInt32(row["DepartmentID"]),
-                    DepartmentName = row["DepartmentName"].ToString()
-                });
-            }
-
-            return list;
+                    DepartmentID = d.DepartmentID,
+                    DepartmentName = d.DepartmentName ?? ""
+                })
+                .ToListAsync();
         }
     }
 }

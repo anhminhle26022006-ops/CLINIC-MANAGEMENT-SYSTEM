@@ -1,81 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.DataContext;
+﻿using DAL.DataContext;
 using DTO;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.Clinical
 {
     public class FollowUpDAL
     {
-        public List<FollowUpDTO> GetAll()
+        public async Task<List<FollowUpDTO>> GetAll()
         {
-            string query = @"
-            SELECT
-                FollowUpID,
-                EncounterID,
-                FollowUpDate,
-                Status
-            FROM FollowUps";
-
-            DataTable dt =
-                DatabaseHelper.ExecuteQuery(query);
-
-            List<FollowUpDTO> list = new();
-
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(new FollowUpDTO
+            using var context = DbContextProvider.CreateContext();
+            return await context.FollowUps
+                .Select(f => new FollowUpDTO
                 {
-                    FollowUpID =
-                        Convert.ToInt32(row["FollowUpID"]),
-
-                    EncounterID =
-                        Convert.ToInt32(row["EncounterID"]),
-
-                    FollowUpDate =
-                        Convert.ToDateTime(row["FollowUpDate"]),
-
-                    Status =
-                        row["Status"].ToString()
-                });
-            }
-
-            return list;
+                    FollowUpID = f.FollowUpID,
+                    EncounterID = f.EncounterID,
+                    FollowUpDate = f.FollowUpDate ?? DateTime.MinValue,
+                    Status = f.Status
+                })
+                .ToListAsync();
         }
 
-        public List<FollowUpDTO>
-            GetByStatus(params string[] statuses)
+        public async Task<List<FollowUpDTO>> GetByStatus(params string[] statuses)
         {
-            return GetAll()
-                .Where(x => statuses.Contains(x.Status))
-                .ToList();
+            using var context = DbContextProvider.CreateContext();
+            return await context.FollowUps
+                .Where(f => statuses.Contains(f.Status))
+                .Select(f => new FollowUpDTO
+                {
+                    FollowUpID = f.FollowUpID,
+                    EncounterID = f.EncounterID,
+                    FollowUpDate = f.FollowUpDate ?? DateTime.MinValue,
+                    Status = f.Status
+                })
+                .ToListAsync();
         }
 
-        public bool UpdateStatus(
-    int followUpId,
-    string status)
+        public async Task<bool> UpdateStatus(int followUpId, string status)
         {
-            string query = @"
-UPDATE FollowUps
-SET Status = @Status
-WHERE FollowUpID = @FollowUpID";
+            using var context = DbContextProvider.CreateContext();
+            var followUp = await context.FollowUps
+                .FirstOrDefaultAsync(f => f.FollowUpID == followUpId);
 
-            SqlParameter[] parameters =
-            {
-        new("@Status", status),
-        new("@FollowUpID", followUpId)
-    };
+            if (followUp == null) return false;
 
-            return DatabaseHelper
-                .ExecuteNonQuery(
-                    query,
-                    parameters) > 0;
+            followUp.Status = status;
+            return await context.SaveChangesAsync() > 0;
         }
-
     }
 }
